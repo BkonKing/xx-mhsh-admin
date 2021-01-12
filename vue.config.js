@@ -97,8 +97,7 @@ const vueConfig = {
       less: {
         modifyVars: {
           hack: `true; @import "${path.join(__dirname, 'src/styles/variable.less')}"; @import "${path.join(__dirname, 'src/styles/mixins.less')}";`,
-          // less vars，customize ant design theme
-
+          // less 变量，定制主题
           'primary-color': '#1890ff',
           // 'link-color': '#F5222D',
           'border-radius-base': '2px'
