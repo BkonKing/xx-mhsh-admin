@@ -1,7 +1,7 @@
 <template>
   <div class="msgList">
     <a-card class="card1">
-      {{form.selectValue}}
+      {{ form.selectValue }}
       <a-form-model :model="form"
                     layout="inline">
         <a-form-model-item label="消息状态">
@@ -48,30 +48,199 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
+    <a-card class="card2">
+      <div class="btn">
+        <a-button type="primary"
+                  @click="$router.push('/operatingCenter/addmsg')">
+          新增推送
+        </a-button>
+      </div>
+      <a-table class="table"
+               :columns="columns"
+               :data-source="data"
+               :pagination="false">
+        <span slot="customTitle">
+          ID
+        </span>
+        <span slot="tags"
+              slot-scope="tags">
+          <a-tag v-for="(item, index) in tags"
+                 :key="index"
+                 color="gray">
+            {{ item }}
+          </a-tag>
+        </span>
+        <span slot="operate"
+              slot-scope="operate"
+              class="operate">
+          <a-button type="link"
+                    v-for="(item, index) in operate"
+                    :key="index">{{item}}</a-button>
+
+        </span>
+      </a-table>
+      <a-locale-provider :locale="locale">
+        <a-pagination show-quick-jumper
+                      show-size-changer
+                      :default-current="pagination.currentPage"
+                      :page-size-options="pagination.sizes"
+                      :page-size="pagination.pageSize"
+                      :total="pagination.total"
+                      :show-total="(total, range) => `共 ${total} 条记录 第1/80页`"
+                      @change="onChange"
+                      @showSizeChange="sizeChange" />
+      </a-locale-provider>
+    </a-card>
   </div>
 </template>
 
 <script>
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 export default {
   data () {
     return {
+      locale: zhCN,
+      pagination: {
+        sizes: ['1', '5', '10', '15'],
+        currentPage: 1,
+        pageSize: 1,
+        total: 50
+      },
+      data: [
+        {
+          key: '1',
+          name: '小米',
+          aaa: 32,
+          address: 'New York No. 1 Lake Park',
+          tags: ['标题', '哈哈'],
+          action: '哈哈哈哈',
+          push: '系统推送',
+          pushmass: '预计10000',
+          pushtime: '(计划)立即',
+          operate: ['提交', '删除']
+        },
+        {
+          key: '2',
+          name: '夏明',
+          aaa: 42,
+          address: 'London No. 1 Lake Park',
+          tags: ['标题', '哈哈'],
+          action: '哈哈哈哈',
+          push: '系统推送',
+          pushmass: '预计10000',
+          pushtime: '(计划)立即',
+          operate: ['提交', '删除']
+        },
+        {
+          key: '3',
+          name: '王五',
+          aaa: 32,
+          address: 'Sidney No. 1 Lake Park',
+          tags: ['标题', '哈哈'],
+          action: '哈哈哈哈',
+          push: '系统推送',
+          pushmass: '预计10000',
+          pushtime: '(计划)立即',
+          operate: ['提交', '删除']
+        }
+      ],
+      columns: [
+        {
+          dataIndex: 'name',
+          key: 'name',
+          title: 'ID',
+          // slots: { title: 'customTitle' },
+          scopedSlots: { customRender: 'name' }
+        },
+        {
+          title: '状态',
+          dataIndex: 'aaa',
+          key: 'age'
+        },
+        {
+          title: '项目',
+          dataIndex: 'address',
+          key: 'address'
+        },
+        {
+          title: '消息标题',
+          key: 'tags',
+          dataIndex: 'tags',
+          scopedSlots: { customRender: 'tags' }
+        },
+        {
+          title: '类型',
+          dataIndex: 'action'
+        },
+        {
+          title: '推送方式',
+          dataIndex: 'push',
+          key: 'push'
+        },
+        {
+          title: '推送量',
+          dataIndex: 'pushmass',
+          key: 'pushmass'
+        },
+        {
+          title: '推送时间',
+          dataIndex: 'pushtime',
+          key: 'pushtime'
+        },
+        {
+          title: '操作',
+          dataIndex: 'operate',
+          key: 'operate',
+          scopedSlots: { customRender: 'operate' }
+        }
+      ],
       form: {
         selectValue: undefined
       }
     }
   },
   methods: {
+    onChange (page, size) {
+      console.log('Page: ', page)
+      // this.paginationrouter.currentPage = page
+      // console.log('size: ', size)
+    },
+    sizeChange (current, size) {
+      // console.log('current: ', current)
+      console.log('size: ', size)
+      // this.pagination.currentPage = 1
+      // this.pagination.pageSize = size
+    }
   }
 }
 </script>
 
-<style lang='less'>
+<style lang="less">
 .msgList {
   .w150 {
     width: 200px !important;
   }
   .card1 {
     margin-top: 20px;
+  }
+  .card2 {
+    margin-top: 20px;
+  }
+  .table {
+    margin-top: 20px;
+  }
+  .ant-pagination {
+    margin-top: 20px;
+  }
+  .ant-pagination-total-text {
+    margin-right: 100px;
+  }
+  .ant-pagination-total-text {
+    color: #a4a4a4;
+  }
+  .operate {
+    display: flex;
+    align-items: center;
   }
 }
 </style>

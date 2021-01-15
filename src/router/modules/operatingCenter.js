@@ -20,36 +20,6 @@ export default {
         title: 'APP消息',
         icon: 'table'
       }
-      // redirect: '/operatingCenter/appmessage/msgList',
-      // children: [
-      //   {
-      //     path: '/operatingCenter/appmessage/msgList', // 消息列表
-      //     name: 'msgList',
-      //     component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/msgList'),
-      //     meta: {
-      //       title: '消息列表',
-      //       icon: 'table'
-      //     }
-      //   },
-      //   {
-      //     path: '/operatingCenter/appmessage/history', // 推送历史
-      //     name: 'history',
-      //     component: () => import('@/views/operatingCenter/announcement/appmessage/history/history'),
-      //     meta: {
-      //       title: '推送历史',
-      //       icon: 'table'
-      //     }
-      //   },
-      //   {
-      //     path: '/operatingCenter/appmessage/msgTemplate', // 消息模板
-      //     name: 'msgTemplate',
-      //     component: () => import('@/views/operatingCenter/announcement/appmessage/msgTemplate/msgTemplate'),
-      //     meta: {
-      //       title: '消息模板',
-      //       icon: 'table'
-      //     }
-      //   }
-      // ]
     },
     {
       path: '/operatingCenter/shortNote', // 短信通知
@@ -57,6 +27,15 @@ export default {
       component: () => import('@/views/operatingCenter/announcement/shortNote/shortNote'),
       meta: {
         title: '短信通知',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/operatingCenter/addmsg', // 新增消息
+      name: 'addmsg',
+      component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/addmsg'),
+      meta: {
+        title: '新增消息',
         icon: 'table'
       }
     }
