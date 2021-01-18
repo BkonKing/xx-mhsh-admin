@@ -38,6 +38,15 @@ export default {
         title: '新增消息',
         icon: 'table'
       }
+    },
+    {
+      path: '/operatingCenter/msgDetail', // 新增消息
+      name: 'msgDetail',
+      component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/msgDetail/msgDetail'),
+      meta: {
+        title: '消息详情',
+        icon: 'table'
+      }
     }
   ]
 }

@@ -1,14 +1,14 @@
 <template>
-  <div class="addmsg">
-    <page-header-wrapper> </page-header-wrapper>
-    <a-card class="card">
+  <div class="submitAudit">
+    <a-card class="card1">
+      <stepInfo :current="1"></stepInfo>
       <a-form-model class="model"
                     ref="form"
                     :model="form"
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item label="消息模板">
+        <a-form-model-item label="消息板">
           <a-select placeholder="请选择"
                     v-model="form.selectValue">
             <a-select-option value="jack">
@@ -102,10 +102,8 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item>
-          {{time}}
           <a-locale-provider :locale="locale">
-            <a-date-picker v-model="time"
-                           format="YYYY-MM-DD HH:mm:ss"
+            <a-date-picker format="YYYY-MM-DD HH:mm:ss"
                            :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
                            class="picker" />
           </a-locale-provider>
@@ -113,7 +111,6 @@
         <a-form-model-item class="btn">
           <a-button type="primary"
                     @click="submit">提交审核</a-button>
-          <a-button type="primary">保存</a-button>
           <a-button>取消</a-button>
         </a-form-model-item>
       </a-form-model>
@@ -124,7 +121,11 @@
 <script>
 import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import moment from 'moment'
+import stepInfo from './stepInfo'
 export default {
+  components: {
+    stepInfo
+  },
   data () {
     return {
       locale: zhCN,
@@ -147,8 +148,7 @@ export default {
       selectPeople: '',
       marginTop: 0,
       marginTop1: 0,
-      isShow: false,
-      time: ''
+      isShow: false
     }
   },
   methods: {
@@ -156,7 +156,7 @@ export default {
     submit () {
       this.$refs.form.validate(result => {
         if (result) {
-          this.$message.success('验证通过')
+          this.$message.success('提交成功', 1.5)
         } else {
           this.$message.error('验证失败')
         }
@@ -179,7 +179,7 @@ export default {
     },
     // select值改变事件
     handleChange (value) {
-      console.log(value.length)
+      console.log(value)
       this.selectPeople = value.length
       if (this.selectPeople) {
         this.marginTop1 = '10px'
@@ -207,14 +207,13 @@ export default {
 </script>
 
 <style lang="less">
-.addmsg {
-  .card {
-    margin-top: 30px;
+.submitAudit {
+  .card1 {
+    margin-top: 20px;
   }
   .model {
     width: 600px;
-    margin: 0 auto;
-
+    margin: 50px auto;
     .line {
       width: 400px;
       height: 1px;

@@ -18,6 +18,7 @@ import './core/lazy_use' // 懒加载组件
 import './permission' // 路由权限控制
 import './styles/global.less' // 全局样式
 import './styles/antd-reset.less' // ant 样式覆盖
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
@@ -31,6 +32,10 @@ window.umi_plugin_ant_themeVar = themePluginConfig.theme
 // 注册全局实用过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
+})
+// 注册全局过滤器
+Vue.filter('timeFormat', function (val) {
+  return moment(val).format('YYYY-MM-DD HH:mm:ss')
 })
 
 new Vue({
