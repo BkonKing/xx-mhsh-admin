@@ -1,7 +1,7 @@
 <template>
   <div class="msgList">
     <a-card class="card1">
-      {{ form.selectValue }}
+
       <a-form-model :model="form"
                     layout="inline">
         <a-form-model-item label="消息状态">
@@ -62,13 +62,13 @@
         <span slot="customTitle">
           ID
         </span>
-        <span slot="tags"
-              slot-scope="tags">
-          <a-tag v-for="(item, index) in tags"
-                 :key="index"
-                 color="gray">
-            {{ item }}
-          </a-tag>
+        <span slot="status">
+          <a-badge color="#108ee9"
+                   text="已提交" />
+        </span>
+        <span slot="artTitle"
+              slot-scope="artTitle">
+          {{artTitle}}
         </span>
         <span slot="operate"
               slot-scope="operate"
@@ -110,9 +110,9 @@ export default {
         {
           key: '1',
           name: '小米',
-          aaa: 32,
+          status: '',
           address: 'New York No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
+          artTitle: '标题标题标题',
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
@@ -122,9 +122,9 @@ export default {
         {
           key: '2',
           name: '夏明',
-          aaa: 42,
+          status: '',
           address: 'London No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
+          artTitle: '标题标题标题',
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
@@ -134,9 +134,9 @@ export default {
         {
           key: '3',
           name: '王五',
-          aaa: 32,
+          status: '',
           address: 'Sidney No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
+          artTitle: '标题标题标题',
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
@@ -154,8 +154,9 @@ export default {
         },
         {
           title: '状态',
-          dataIndex: 'aaa',
-          key: 'age'
+          dataIndex: 'status',
+          key: 'status',
+          scopedSlots: { customRender: 'status' }
         },
         {
           title: '项目',
@@ -164,9 +165,9 @@ export default {
         },
         {
           title: '消息标题',
-          key: 'tags',
-          dataIndex: 'tags',
-          scopedSlots: { customRender: 'tags' }
+          key: 'title',
+          dataIndex: 'artTitle',
+          scopedSlots: { customRender: 'artTitle' }
         },
         {
           title: '类型',

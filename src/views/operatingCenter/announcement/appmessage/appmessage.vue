@@ -32,7 +32,7 @@ export default {
   data () {
     return {
       tabs: ['消息列表', '推送历史', '消息模块'],
-      currentIndex: 0
+      currentIndex: 2
     }
   },
   methods: {

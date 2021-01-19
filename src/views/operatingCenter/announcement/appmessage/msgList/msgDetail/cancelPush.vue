@@ -12,18 +12,27 @@
           短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <a-badge color="#00a854"
-                   text="已推送" />
+          <a-badge color="#000000"
+                   text="已取消" />
         </a-form-model-item>
         <a-form-model-item label='消息模板'>模板名称名称 <a-button type='link'>查看</a-button>
         </a-form-model-item>
-        <a-form-model-item label="消息类型">营销短信/通知短信</a-form-model-item>
+        <a-form-model-item label="消息类型">系统消息</a-form-model-item>
         <div class="line"></div>
         <a-form-model-item label="推送方式">手动推送</a-form-model-item>
         <a-form-model-item label="推送量">
-          <a-button type="link">
-            2000</a-button>（成功发送量1000，发送失败量1000）
-          <div class="txt">成功接收量1000，接收失败量1000，无状态量0，系统拦截量100</div>
+          预计2000
+        </a-form-model-item>
+        <a-form-model-item label="推送用户">
+          <a-button type="link">2000</a-button>
+        </a-form-model-item>
+        <a-form-model-item label="计划推送时间">2017-10-01 12:00:00</a-form-model-item>
+        <div class="line"></div>
+        <a-form-model-item label="审核结果">通过</a-form-model-item>
+        <a-form-model-item label="审核说明">说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明</a-form-model-item>
+        <div class="line"></div>
+        <a-form-model-item label="取消推送说明">
+          说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明
         </a-form-model-item>
       </a-form-model>
     </a-card>
