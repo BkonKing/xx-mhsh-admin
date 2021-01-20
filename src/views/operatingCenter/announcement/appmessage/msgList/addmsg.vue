@@ -103,12 +103,10 @@
         </a-form-model-item>
         <a-form-model-item>
           {{time}}
-          <a-locale-provider :locale="locale">
-            <a-date-picker v-model="time"
-                           format="YYYY-MM-DD HH:mm:ss"
-                           :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
-                           class="picker" />
-          </a-locale-provider>
+          <a-date-picker v-model="time"
+                         format="YYYY-MM-DD HH:mm:ss"
+                         :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
+                         class="picker" />
         </a-form-model-item>
         <a-form-model-item class="btn">
           <a-button type="primary"
@@ -122,12 +120,10 @@
 </template>
 
 <script>
-import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import moment from 'moment'
 export default {
   data () {
     return {
-      locale: zhCN,
       form: {
         selectValue: '',
         value1: '',

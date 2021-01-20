@@ -47,6 +47,15 @@ export default {
         title: '消息详情',
         icon: 'table'
       }
+    },
+    {
+      path: '/operatingCenter/addNote', // 新增消息
+      name: 'addNote',
+      component: () => import('@/views/operatingCenter/announcement/shortNote/noteList/addNote'),
+      meta: {
+        title: '新增短信',
+        icon: 'table'
+      }
     }
   ]
 }

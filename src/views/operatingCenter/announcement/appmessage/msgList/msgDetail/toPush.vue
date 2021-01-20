@@ -33,11 +33,9 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="">
-          <a-locale-provider :locale="locale">
-            <a-date-picker class="picker"
-                           format="YYYY-MM-DD HH:mm:ss"
-                           :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }" />
-          </a-locale-provider>
+          <a-date-picker class="picker"
+                         format="YYYY-MM-DD HH:mm:ss"
+                         :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }" />
         </a-form-model-item>
         <div class="line"></div>
         <a-form-model-item label="审核结果">通过</a-form-model-item>
@@ -60,7 +58,6 @@
 <script>
 import stepInfo from './stepInfo'
 import moment from 'moment'
-import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import cancelModal from './cancelModal'
 export default {
   components: {
@@ -69,7 +66,6 @@ export default {
   },
   data () {
     return {
-      locale: zhCN,
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }

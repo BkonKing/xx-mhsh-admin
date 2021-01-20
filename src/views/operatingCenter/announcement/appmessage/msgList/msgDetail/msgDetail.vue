@@ -25,7 +25,7 @@ export default {
   },
   data () {
     return {
-      step: 5
+      step: 3
     }
   }
 }

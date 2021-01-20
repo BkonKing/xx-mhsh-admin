@@ -1,66 +1,52 @@
 <template>
-  <div class="noteList">
-    <a-card class='card'>
-      <a-form-model :model='form'
-                    layout="inline">
-        <a-form-model-item label="短信状态">
-          <a-select placeholder="请选择"
-                    style="width: 200px">
+  <div class="noteTemplate">
+    <a-card class="card">
+      <a-form-model layout="inline"
+                    :model='form'>
+        <a-form-model-item label='是否启用'>
+          <a-select style="width: 250px">
             <a-select-option value="1">
-              待提交
+              开启
             </a-select-option>
             <a-select-option value="2">
-              待审核
-            </a-select-option>
-            <a-select-option value="3">
-              待推送
-            </a-select-option>
-            <a-select-option value="4">
-              已推送
+              关闭
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="短信模板">
-          <a-select placeholder="请选择"
-                    style="width: 200px">
+        <a-form-model-item label='短信类型'>
+          <a-select style="width: 250px">
             <a-select-option value="1">
-              待提交
+              营销短信
             </a-select-option>
             <a-select-option value="2">
-              待审核
-            </a-select-option>
-            <a-select-option value="3">
-              待推送
-            </a-select-option>
-            <a-select-option value="4">
-              已推送
+              通知短信
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="搜索">
-          <a-input placeholder="标题、内容"
-                   style="width: 200px"></a-input>
+        <a-form-model-item label='搜索'>
+          <a-input style="width: 250px"
+                   placeholder="标题、内容"></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <a-card class="card1">
-      <a-button type="primary">新增短信</a-button>
+    <a-card class="card2">
+      <a-button type='primary'
+                @click="add">新增模板</a-button>
       <a-table :columns="columns"
                :data-source="data"
                :pagination='false'
-               class="table">
-        <a slot="status">
-          <a-badge color="#108ee9"
-                   text="待推送" />
-        </a>
+               class='table'>
+        <div slot="isStart">
+          <a-switch default-checked />
+        </div>
         <div slot="opera">
-          <a-button type="link">提交</a-button>
-          <a-popconfirm title="你确定要删除吗?"
+          <a-button type='link'>编辑</a-button>
+          <a-popconfirm title="你确定要删除吗"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="confirm"
                         @cancel="cancel">
-            <a-button type="link">删除</a-button>
+            <a-button type='link'>删除</a-button>
           </a-popconfirm>
         </div>
       </a-table>
@@ -76,11 +62,16 @@
                       @showSizeChange="sizeChange" />
       </div>
     </a-card>
+    <createTemplate ref="createTemplate"></createTemplate>
   </div>
 </template>
 
 <script>
+import createTemplate from './createTemplate'
 export default {
+  components: {
+    createTemplate
+  },
   data () {
     return {
       pagination: {
@@ -89,41 +80,39 @@ export default {
         total: 100,
         pageSize: 1
       },
+      form: {},
       data: [
         {
           key: '1',
-          id: 1,
-          status: '',
-          project: '项目名称',
-          noteTitle: '标题标题标题',
+          id: 10,
           type: '营销短信',
-          pustType: '系统推送',
-          pushNum: '预计1000',
-          pushTime: '(实际)2020-11-20  08:50:08',
+          noteTitle: '标题标题标题',
+          noteContent: '内容内容内容内容内容内容内容内容内容内容内容内容内容内',
+          pushTime: 1,
+          createTime: '2020-11-20  08:50:08',
+          isStart: '',
           opera: ''
         },
         {
           key: '2',
-          id: 1,
-          status: '',
-          project: '项目名称',
+          id: 10,
+          type: '营销短信',
           noteTitle: '标题标题标题',
-          type: '通知短信',
-          pustType: '系统推送',
-          pushNum: '预计1000',
-          pushTime: '(实际)2020-11-20  08:50:08',
+          noteContent: '内容内容内容内容内容内容内容内容内容内容内容内容内容内',
+          pushTime: 1,
+          createTime: '2020-11-20  08:50:08',
+          isStart: '',
           opera: ''
         },
         {
           key: '3',
-          id: 1,
-          status: '',
-          project: '项目名称',
-          noteTitle: '标题标题标题',
+          id: 10,
           type: '营销短信',
-          pustType: '系统推送',
-          pushNum: '预计1000',
-          pushTime: '(实际)2020-11-20  08:50:08',
+          noteTitle: '标题标题标题',
+          noteContent: '内容内容内容内容内容内容内容内容内容内容内容内容内容内',
+          pushTime: 1,
+          createTime: '2020-11-20  08:50:08',
+          isStart: '',
           opera: ''
         }
       ],
@@ -133,66 +122,62 @@ export default {
           dataIndex: 'id',
           key: 'id',
           width: 80
+          // scopedSlots: { customRender: 'name' }
         },
         {
-          title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          scopedSlots: { customRender: 'status' },
-          width: 100
-        },
-        {
-          title: '项目',
-          dataIndex: 'project',
-          key: 'project',
-          ellipsis: true,
-          width: 100
+          title: '类型',
+          dataIndex: 'type',
+          key: 'type',
+          width: 120
         },
         {
           title: '短信标题',
           dataIndex: 'noteTitle',
           key: 'noteTitle',
           ellipsis: true,
-          width: 100
+          width: 120
         },
         {
-          title: '类型',
-          dataIndex: 'type',
-          key: 'type',
-          ellipsis: true,
-          width: 100
+          title: '短信内容',
+          dataIndex: 'noteContent',
+          key: 'noteContent',
+          ellipsis: true
         },
         {
-          title: '推送方式',
-          dataIndex: 'pustType',
-          key: 'pustType',
-          ellipsis: true,
-          width: 100
-        },
-        {
-          title: '推送量',
-          dataIndex: 'pushNum',
-          key: 'pushNum',
-          ellipsis: true,
-          width: 100
-        },
-        {
-          title: '推送时间',
+          title: '推送次数',
           dataIndex: 'pushTime',
-          key: 'pushTime'
+          key: 'pushTime',
+          width: 100
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          key: 'createTime',
+          ellipsis: true
+        },
+        {
+          title: '是否启用',
+          dataIndex: 'isStart',
+          key: 'isStart',
+          ellipsis: true,
+          scopedSlots: { customRender: 'isStart' },
+          width: 100
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
+          ellipsis: true,
           scopedSlots: { customRender: 'opera' }
         }
-      ],
-
-      form: {}
+      ]
     }
   },
   methods: {
+    // 新增模板
+    add () {
+      this.$refs.createTemplate.isShow = true
+    },
     confirm () { },
     cancel () { },
     currentChange (page, paseSize) {
@@ -207,11 +192,11 @@ export default {
 </script>
 
 <style lang='less'>
-.noteList {
+.noteTemplate {
   .card {
     margin-top: 20px;
   }
-  .card1 {
+  .card2 {
     margin-top: 20px;
     .table {
       margin-top: 20px;

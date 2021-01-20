@@ -83,33 +83,27 @@
 
         </span>
       </a-table>
-      <a-locale-provider :locale="locale">
-        <a-pagination show-quick-jumper
-                      show-size-changer
-                      :default-current="pagination.currentPage"
-                      :page-size-options="pagination.sizes"
-                      :page-size="pagination.pageSize"
-                      :total="pagination.total"
-                      :show-total="(total, range) => `共 ${total} 条记录 第1/80页`"
-                      @change="onChange"
-                      @showSizeChange="sizeChange" />
-      </a-locale-provider>
+      <a-pagination show-quick-jumper
+                    show-size-changer
+                    :default-current="pagination.currentPage"
+                    :page-size-options="pagination.sizes"
+                    :total="pagination.total"
+                    :show-total="(total, range) => `共 ${total} 条记录 第1/80页`"
+                    @change="onChange"
+                    @showSizeChange="sizeChange" />
     </a-card>
   </div>
 </template>
 
 <script>
-import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 export default {
   data () {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      locale: zhCN,
       pagination: {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,
-        pageSize: 1,
         total: 50
       },
       data: [
