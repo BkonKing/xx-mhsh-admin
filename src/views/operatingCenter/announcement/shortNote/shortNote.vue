@@ -31,7 +31,7 @@ export default {
   },
   data () {
     return {
-      tabs: ['短信列表', '推送历史', '短信模块'],
+      tabs: ['短信列表', '推送历史', '短信模块', '短信设置'],
       currentIndex: 2
     }
   },

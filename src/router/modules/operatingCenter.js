@@ -40,7 +40,7 @@ export default {
       }
     },
     {
-      path: '/operatingCenter/msgDetail', // 新增消息
+      path: '/operatingCenter/msgDetail', // 信息详情
       name: 'msgDetail',
       component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/msgDetail/msgDetail'),
       meta: {
@@ -49,11 +49,20 @@ export default {
       }
     },
     {
-      path: '/operatingCenter/addNote', // 新增消息
+      path: '/operatingCenter/addNote', // 新增短信
       name: 'addNote',
       component: () => import('@/views/operatingCenter/announcement/shortNote/noteList/addNote'),
       meta: {
         title: '新增短信',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/operatingCenter/noteDetail', // 信息详情
+      name: 'noteDetail',
+      component: () => import('@/views/operatingCenter/announcement/shortNote/noteList/noteDetail/noteDetail'),
+      meta: {
+        title: '短信详情',
         icon: 'table'
       }
     }

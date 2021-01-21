@@ -1,7 +1,7 @@
 <template>
-  <div class="addNote">
-    <page-header-wrapper> </page-header-wrapper>
+  <div class="toSubmit">
     <a-card class="card">
+      <stepInfo></stepInfo>
       <a-form-model class="form"
                     :model='form'
                     ref="form"
@@ -122,7 +122,6 @@
           <div class="btns">
             <a-button type='primary'
                       @click="submit">提交审核</a-button>
-            <a-button type='primary'>保存</a-button>
             <a-button>取消</a-button>
           </div>
         </a-form-model-item>
@@ -132,8 +131,12 @@
 </template>
 
 <script>
+import stepInfo from './stepInfo'
 import moment from 'moment'
 export default {
+  components: {
+    stepInfo
+  },
   data () {
     return {
       form: {
@@ -195,11 +198,12 @@ export default {
       }
     }
   }
+
 }
 </script>
 
 <style lang='less'>
-.addNote {
+.toSubmit {
   .card {
     margin-top: 20px;
     .form {
