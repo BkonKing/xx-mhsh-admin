@@ -75,7 +75,7 @@ export default {
       pagination: {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,
-        total: 50
+        total: 100000
       },
       form: {},
       data: [
@@ -198,7 +198,7 @@ export default {
       margin-top: 20px;
     }
     .ant-pagination-total-text {
-      margin-right: 100px;
+      margin-right: 300px;
     }
     .ant-pagination-total-text {
       color: #a4a4a4;

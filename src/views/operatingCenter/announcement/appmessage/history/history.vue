@@ -63,17 +63,10 @@
                :columns="columns"
                :data-source="data"
                :pagination="false">
-        <span slot="customTitle">
-          ID
-        </span>
-        <span slot="tags"
-              slot-scope="tags">
-          <a-tag v-for="(item, index) in tags"
-                 :key="index"
-                 color="gray">
-            {{ item }}
-          </a-tag>
-        </span>
+        <div slot="status">
+          <a-badge color="#108ee9"
+                   text="成功" />
+        </div>
         <span slot="operate"
               slot-scope="operate"
               class="operate">
@@ -109,89 +102,79 @@ export default {
       data: [
         {
           key: '1',
-          name: '小米',
-          aaa: 32,
-          address: 'New York No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
-          action: '哈哈哈哈',
-          push: '系统推送',
-          pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          id: 10,
+          status: '',
+          project: '项目名称',
+          phoneNumber: 15000000000,
+          user: '昵称(姓名)',
+          msgTitle: '标题标题标题',
+          msgContent: '内容内容内容内容内容',
+          pushtime: '2020-11-20  08:50:08'
         },
         {
           key: '2',
-          name: '夏明',
-          aaa: 42,
-          address: 'London No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
-          action: '哈哈哈哈',
-          push: '系统推送',
-          pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          id: 10,
+          status: '',
+          project: '项目名称',
+          phoneNumber: 15000000000,
+          user: '昵称(姓名)',
+          msgTitle: '标题标题标题',
+          msgContent: '内容内容内容内容内容',
+          pushtime: '2020-11-20  08:50:08'
         },
         {
           key: '3',
-          name: '王五',
-          aaa: 32,
-          address: 'Sidney No. 1 Lake Park',
-          tags: ['标题', '哈哈'],
-          action: '哈哈哈哈',
-          push: '系统推送',
-          pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          id: 10,
+          status: '',
+          project: '项目名称',
+          phoneNumber: 15000000000,
+          user: '昵称(姓名)',
+          msgTitle: '标题标题标题',
+          msgContent: '内容内容内容内容内容',
+          pushtime: '2020-11-20  08:50:08'
         }
       ],
       columns: [
         {
-          dataIndex: 'name',
-          key: 'name',
-          title: 'ID',
-          // slots: { title: 'customTitle' },
-          scopedSlots: { customRender: 'name' }
+          dataIndex: 'id',
+          key: 'id',
+          title: 'ID'
         },
         {
           title: '状态',
-          dataIndex: 'aaa',
-          key: 'age'
+          dataIndex: 'status',
+          key: 'status',
+          scopedSlots: { customRender: 'status' }
         },
         {
           title: '项目',
-          dataIndex: 'address',
-          key: 'address'
+          dataIndex: 'project',
+          key: 'project'
+        },
+        {
+          title: '手机号',
+          key: 'phoneNumber',
+          dataIndex: 'phoneNumber'
+        },
+        {
+          title: '用户',
+          dataIndex: 'user',
+          key: 'user'
         },
         {
           title: '消息标题',
-          key: 'tags',
-          dataIndex: 'tags',
-          scopedSlots: { customRender: 'tags' }
+          dataIndex: 'msgTitle',
+          key: 'msgTitle'
         },
         {
-          title: '类型',
-          dataIndex: 'action'
-        },
-        {
-          title: '推送方式',
-          dataIndex: 'push',
-          key: 'push'
-        },
-        {
-          title: '推送量',
-          dataIndex: 'pushmass',
-          key: 'pushmass'
+          title: '消息内容',
+          dataIndex: 'msgContent',
+          key: 'msgContent'
         },
         {
           title: '推送时间',
           dataIndex: 'pushtime',
           key: 'pushtime'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operate',
-          key: 'operate',
-          scopedSlots: { customRender: 'operate' }
         }
       ],
       form: {

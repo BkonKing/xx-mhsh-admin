@@ -31,7 +31,7 @@ export default {
   },
   data () {
     return {
-      tabs: ['消息列表', '推送历史', '消息模块'],
+      tabs: ['消息列表', '推送历史', '消息模板'],
       currentIndex: 2
     }
   },

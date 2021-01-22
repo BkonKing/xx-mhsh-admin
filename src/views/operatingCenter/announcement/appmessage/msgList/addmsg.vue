@@ -25,12 +25,14 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="标题"
+        <a-form-model-item class="item"
+                           label="标题"
                            prop="value1">
           <a-input placeholder="请输入"
                    v-model="form.value1"></a-input>
         </a-form-model-item>
-        <a-form-model-item label="内容"
+        <a-form-model-item class="item"
+                           label="内容"
                            prop="value2">
           <a-textarea placeholder="请输入"
                       :auto-size="{ minRows: 3, maxRows: 5 }"
@@ -51,7 +53,7 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item>
+        <a-form-model-item class="item">
           <div class="select">
             <a-select class="select1"
                       default-value="jack">
@@ -67,7 +69,7 @@
             </a-select>
           </div>
         </a-form-model-item>
-        <a-form-model-item>
+        <a-form-model-item class="item">
           <a-select class="tagSelect"
                     mode="tags"
                     style="width: 100%"
@@ -108,7 +110,7 @@
                          :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
                          class="picker" />
         </a-form-model-item>
-        <a-form-model-item class="btn">
+        <a-form-model-item class="btn item">
           <a-button type="primary"
                     @click="submit">提交审核</a-button>
           <a-button type="primary">保存</a-button>
@@ -204,6 +206,9 @@ export default {
 
 <style lang="less">
 .addmsg {
+  .item {
+    margin: 20px 0;
+  }
   .card {
     margin-top: 30px;
   }
@@ -215,7 +220,8 @@ export default {
       width: 400px;
       height: 1px;
       background-color: #d9d9d9;
-      margin-left: 50px;
+      margin: 20px 0;
+      margin-left: 70px;
     }
     .select {
       margin-left: 80px;
