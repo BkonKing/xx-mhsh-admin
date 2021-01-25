@@ -156,7 +156,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'opera',
-          key: 'address 6',
+          key: 'opera',
           scopedSlots: { customRender: 'opera' }
         }
       ]
