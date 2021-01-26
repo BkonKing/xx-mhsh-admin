@@ -38,6 +38,15 @@ export default {
         title: '转账',
         icon: 'table'
       }
+    },
+    {
+      path: '/happyMoney/applyTotal',
+      name: 'applyTotal',
+      component: () => import('@/views/happyMoney/apply/applyTotal'),
+      meta: {
+        title: '申请-总后台',
+        icon: 'table'
+      }
     }
   ]
 }
