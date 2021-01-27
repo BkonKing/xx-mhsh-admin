@@ -44,23 +44,9 @@
                   @click="apply">
           <a-icon type="plus" />申请
         </a-button>
-        <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item key="1">
-              <a-icon type="user" />批量发放
-            </a-menu-item>
-            <a-menu-item key="2">
-              <a-icon type="user" />批量拒绝
-            </a-menu-item>
-          </a-menu>
-          <a-button style="margin-left: 8px"> 批量审核
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
       </div>
       <a-table :pagination='false'
                class="table"
-               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                :columns="columns"
                :data-source="data">
         <div slot="voucher">
@@ -68,10 +54,7 @@
         </div>
         <div slot="opera">
           <a-button type='link'
-                    @click="check">审核</a-button>
-          <a-button type='link'
-                    @click="openDetail"
-                    v-if="false">查看</a-button>
+                    @click="openDetail">查看</a-button>
           <a-button type='link'
                     @click="remove">删除</a-button>
         </div>
@@ -88,7 +71,6 @@
                       @showSizeChange="sizeChange" />
       </div>
     </a-card>
-    <checkModel ref="checkModel"></checkModel>
     <applyModel ref="applyModel"></applyModel>
     <detailModel ref="detailModel"></detailModel>
     <delModel ref="delModel"></delModel>
@@ -96,13 +78,11 @@
 </template>
 
 <script>
-import checkModel from './checkModel'
 import applyModel from './applyModel'
 import detailModel from './detailModel'
 import delModel from './delModel'
 export default {
   components: {
-    checkModel,
     applyModel,
     detailModel,
     delModel
@@ -115,13 +95,12 @@ export default {
         total: 50,
         pageSize: 1
       },
-      titleArr: ['待审核', '已发放', '已拒绝'],
+      titleArr: ['待审核', '已发放', '已拒绝', '已取消'],
       currentIndex: 0,
       data: [
         {
           key: '1',
           applyTime: '2020-09-07 00:00:00',
-          account: '美好生活家园',
           happyMoney: 10000,
           remark: '啊啊啊啊啊啊',
           checkTime: '2020-09-09 00:00:00'
@@ -129,7 +108,6 @@ export default {
         {
           key: '2',
           applyTime: '2020-09-07 00:00:00',
-          account: '美好生活家园',
           happyMoney: 10000,
           remark: '啊啊啊啊啊啊',
           checkTime: '2020-09-09 00:00:00'
@@ -137,7 +115,6 @@ export default {
         {
           key: '3',
           applyTime: '2020-09-07 00:00:00',
-          account: '美好生活家园',
           happyMoney: 10000,
           remark: '啊啊啊啊啊啊',
           checkTime: '2020-09-09 00:00:00'
@@ -148,13 +125,8 @@ export default {
           title: '申请时间',
           dataIndex: 'applyTime',
           key: 'applyTime',
-          sorter: true
-        },
-        {
-          title: '账户',
-          dataIndex: 'account',
-          key: 'account',
-          width: 140
+          sorter: true,
+          width: 200
         },
         {
           title: '幸福币',
@@ -186,8 +158,7 @@ export default {
           key: 'opera',
           scopedSlots: { customRender: 'opera' }
         }
-      ],
-      selectedRowKeys: [] // Check here to configure the default column
+      ]
     }
   },
   methods: {
@@ -203,14 +174,6 @@ export default {
     apply () {
       this.$refs.applyModel.isShow = true
     },
-    // 审核
-    check () {
-      this.$refs.checkModel.isShow = true
-    },
-    onSelectChange (selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys)
-      this.selectedRowKeys = selectedRowKeys
-    },
     onChange (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -218,6 +181,7 @@ export default {
     sizeChange (current, size) {
       console.log('size: ', size)
     }
+
   }
 }
 </script>

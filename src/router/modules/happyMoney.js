@@ -47,6 +47,42 @@ export default {
         title: '申请-总后台',
         icon: 'table'
       }
+    },
+    {
+      path: '/happyMoney/applySon',
+      name: 'applySon',
+      component: () => import('@/views/happyMoney/apply/applySon'),
+      meta: {
+        title: '申请-子后台',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/happyMoney/task',
+      name: 'task',
+      component: () => import('@/views/happyMoney/task/task'),
+      meta: {
+        title: '任务',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/happyMoney/setTask',
+      name: 'setTask',
+      component: () => import('@/views/happyMoney/task/setTask'),
+      meta: {
+        title: '任务设置',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/happyMoney/setAccount',
+      name: 'setAccount',
+      component: () => import('@/views/happyMoney/setAccount/setAccount'),
+      meta: {
+        title: '账户设置',
+        icon: 'table'
+      }
     }
   ]
 }
