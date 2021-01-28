@@ -30,7 +30,8 @@
       </a-button>
       <a-table class="table"
                :columns="columns"
-               :data-source="data">
+               :data-source="data"
+               :pagination='false'>
         <div slot="icon">
           <img :style="{width:'60px',height:'60px'}"
                src="https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/exp/w=500/sign=09dc54243ec79f3d8fe1e4308aa3cdbc/0eb30f2442a7d9330874f5a8a84bd11372f00108.jpg"
@@ -48,6 +49,17 @@
                     @click="remove">删除</a-button>
         </div>
       </a-table>
+      <div class="pagination">
+        <a-pagination show-quick-jumper
+                      show-size-changer
+                      :default-current="pagination.currentPage"
+                      :page-size-options="pagination.sizes"
+                      :total="pagination.total"
+                      :page-size.sync="pagination.pageSize"
+                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
+                      @change="onChange"
+                      @showSizeChange="sizeChange" />
+      </div>
     </a-card>
     <addModel ref="addModel"></addModel>
     <delModel ref="delModel"></delModel>
@@ -64,6 +76,12 @@ export default {
   },
   data () {
     return {
+      pagination: {
+        sizes: ['1', '5', '10', '15'],
+        currentPage: 1,
+        total: 50,
+        pageSize: 1
+      },
       data: [
         {
           key: '1',
@@ -150,6 +168,13 @@ export default {
     // 添加
     add () {
       this.$refs.addModel.isShow = true
+    },
+    onChange (page, size) {
+      console.log('Page: ', page)
+      this.pagination.currentPage = page
+    },
+    sizeChange (current, size) {
+      console.log('size: ', size)
     }
   }
 }
@@ -164,6 +189,22 @@ export default {
     }
     .input {
       width: 100px;
+    }
+  }
+}
+.pagination {
+  margin-top: 10px;
+  .ant-pagination {
+    padding: 10px;
+  }
+  .ant-pagination-total-text {
+    margin-left: 20px;
+    margin-right: 300px;
+  }
+  .ant-pagination-item-active {
+    background-color: #1890ff;
+    a {
+      color: white;
     }
   }
 }

@@ -84,5 +84,6 @@ export default {
         icon: 'table'
       }
     }
+
   ]
 }
