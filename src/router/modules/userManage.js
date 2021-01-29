@@ -20,6 +20,15 @@ export default {
         title: 'APP用户',
         icon: 'table'
       }
+    },
+    {
+      path: '/userManage/weskitUser',
+      name: 'weskitUser',
+      component: () => import('@/views/userManage/weskitUser'),
+      meta: {
+        title: '马甲用户',
+        icon: 'table'
+      }
     }
   ]
 

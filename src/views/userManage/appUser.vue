@@ -54,7 +54,7 @@
                :pagination='false'>
         <div slot="avatar">
           <img class="img"
-               src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20171005%2Fbdc8cc9f754548a7aa835fb8ebe49df5.gif&refer=http%3A%2F%2F5b0988e595225.cdn.sohucs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614404635&t=4a515a17c5a22cf0eecddc4a8cd13b04"
+               src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3851937152,723567732&fm=26&gp=0.jpg"
                alt="">
         </div>
         <div slot="opera">
