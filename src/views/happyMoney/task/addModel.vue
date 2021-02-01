@@ -89,7 +89,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .input {
   position: relative;
   .num {
@@ -98,6 +98,9 @@ export default {
     bottom: 0;
     color: #d7d7d7;
   }
+}
+/deep/ .ant-modal-footer {
+  text-align: center;
 }
 .avatar-uploader > .ant-upload {
   width: 128px;

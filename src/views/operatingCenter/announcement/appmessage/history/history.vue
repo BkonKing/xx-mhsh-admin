@@ -198,12 +198,14 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .history {
   .card {
+    /deep/ .ant-card-body {
+      padding-bottom: 0;
+    }
     margin-top: 20px;
     .row {
-      margin-top: 10px;
       .btns {
         .icon {
           color: #1890ff;
@@ -218,17 +220,17 @@ export default {
   }
   .card2 {
     margin-top: 20px;
-    .ant-pagination {
+    /deep/ .ant-pagination {
       margin-top: 20px;
     }
-    .ant-pagination-total-text {
+    /deep/ .ant-pagination-total-text {
       margin-right: 100px;
     }
-    .ant-pagination-total-text {
+    /deep/ .ant-pagination-total-text {
       color: #a4a4a4;
     }
   }
-  .ant-form-item-label {
+  /deep/ .ant-form-item-label {
     width: 100px !important;
   }
 }

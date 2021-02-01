@@ -44,9 +44,9 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .appmessage {
-  .ant-page-header {
+  /deep/ .ant-page-header {
     padding-bottom: 0px;
   }
   .ant-page-header-content {

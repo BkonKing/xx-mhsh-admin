@@ -215,7 +215,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .history {
   .row2 {
     margin-top: 20px;

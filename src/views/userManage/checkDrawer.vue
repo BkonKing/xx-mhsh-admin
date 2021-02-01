@@ -63,19 +63,19 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .ant-drawer-title {
   .title {
     color: #c7cace;
     cursor: pointer;
   }
 }
-.ant-drawer-body {
+/deep/ .ant-drawer-body {
   background-color: #f0f2f5;
   height: 100%;
 }
-.card {
-  .darImg {
+/deep/ .card {
+  /deep/ .darImg {
     float: left;
     width: 120px;
     height: 120px;

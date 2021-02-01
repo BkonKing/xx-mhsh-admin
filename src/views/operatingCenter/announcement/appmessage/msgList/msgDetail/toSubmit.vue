@@ -202,7 +202,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .submitAudit {
   .card1 {
     margin-top: 20px;
@@ -229,7 +229,7 @@ export default {
       }
     }
     .tagSelect.ant-select {
-      margin-left: 100px;
+      margin-left: 80px;
       width: 375px !important;
     }
     .selectPeople {

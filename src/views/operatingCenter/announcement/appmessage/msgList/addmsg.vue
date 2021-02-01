@@ -204,7 +204,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .addmsg {
   .item {
     margin: 20px 0;
@@ -236,7 +236,7 @@ export default {
       }
     }
     .tagSelect.ant-select {
-      margin-left: 100px;
+      margin-left: 80px;
       width: 375px !important;
     }
     .selectPeople {

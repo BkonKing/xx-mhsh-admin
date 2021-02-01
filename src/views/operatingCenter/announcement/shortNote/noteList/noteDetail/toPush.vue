@@ -82,7 +82,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .toPush {
   .card {
     margin-top: 20px;

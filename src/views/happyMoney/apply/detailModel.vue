@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .detailModel {
   .title {
     font-weight: 600;

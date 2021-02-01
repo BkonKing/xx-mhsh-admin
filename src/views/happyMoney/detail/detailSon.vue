@@ -1,6 +1,6 @@
 <template>
-  <div class="detailTotal">
-    <a-card>
+  <div class="detailSon">
+    <a-card class="card">
       <a-form-model :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-row>
@@ -282,8 +282,16 @@ export default {
 }
 </script>
 
-<style lang='less'>
-.detailTotal {
+<style lang='less' scoped>
+.detailSon {
+  /deep/ .ant-form-item-label {
+    width: 74px;
+  }
+  .card {
+    /deep/ .ant-card-body {
+      padding-bottom: 0;
+    }
+  }
   .otherTime {
     line-height: 40px;
     span {
@@ -297,9 +305,7 @@ export default {
   .btn {
     margin-top: 5px;
   }
-  .row2 {
-    margin-top: 10px;
-  }
+
   .row3 {
     margin-top: 10px;
     .txt {
@@ -333,14 +339,14 @@ export default {
     }
     .pagination {
       margin-top: 10px;
-      .ant-pagination {
+      /deep/ .ant-pagination {
         padding: 10px;
       }
-      .ant-pagination-total-text {
+      /deep/ .ant-pagination-total-text {
         margin-left: 20px;
         margin-right: 300px;
       }
-      .ant-pagination-item-active {
+      /deep/ .ant-pagination-item-active {
         background-color: #1890ff;
         a {
           color: white;

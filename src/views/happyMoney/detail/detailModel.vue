@@ -69,13 +69,12 @@ export default {
 }
 </script>
 
-<style lang="less">
-.detailModel {
-}
+<style lang="less" scoped>
 .income {
   margin-left: 30px;
 }
 .btn {
+  margin-top: 20px;
   text-align: center;
 }
 </style>

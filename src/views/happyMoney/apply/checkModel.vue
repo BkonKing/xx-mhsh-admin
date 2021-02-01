@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .checkmodal {
   .title {
     margin-left: 28px;

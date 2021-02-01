@@ -38,7 +38,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .form {
   width: 400px;
   margin: 0 auto;

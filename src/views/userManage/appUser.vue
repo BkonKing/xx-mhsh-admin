@@ -191,14 +191,14 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .appUser {
   .col {
     white-space: nowrap;
   }
-  .card {
+  /deep/.card {
     margin-top: 20px;
-    .img {
+    /deep/ .img {
       width: 60px;
       height: 60px;
       object-fit: cover;

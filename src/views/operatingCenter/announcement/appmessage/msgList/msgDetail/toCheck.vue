@@ -79,7 +79,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .toCheck {
   .card1 {
     margin-top: 20px;

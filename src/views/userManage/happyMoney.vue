@@ -119,7 +119,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .happyMoney {
   .card {
     margin-top: 20px;

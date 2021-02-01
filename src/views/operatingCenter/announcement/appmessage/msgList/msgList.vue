@@ -71,11 +71,9 @@
           {{artTitle}}
         </span>
         <span slot="operate"
-              slot-scope="operate"
               class="operate">
-          <a-button type="link"
-                    v-for="(item, index) in operate"
-                    :key="index">{{item}}</a-button>
+          <a-button type="link">提交</a-button>
+          <a-button type="link">删除</a-button>
 
         </span>
       </a-table>
@@ -112,8 +110,7 @@ export default {
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          pushtime: '(计划)立即'
         },
         {
           key: '2',
@@ -124,8 +121,7 @@ export default {
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          pushtime: '(计划)立即'
         },
         {
           key: '3',
@@ -136,8 +132,7 @@ export default {
           action: '哈哈哈哈',
           push: '系统推送',
           pushmass: '预计10000',
-          pushtime: '(计划)立即',
-          operate: ['提交', '删除']
+          pushtime: '(计划)立即'
         }
       ],
       columns: [
@@ -212,8 +207,9 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .msgList {
+  margin-top: 20px;
   .w150 {
     width: 200px !important;
   }
@@ -222,6 +218,9 @@ export default {
   }
   .card2 {
     margin-top: 20px;
+    .btn {
+      text-align: left;
+    }
   }
   .table {
     margin-top: 20px;

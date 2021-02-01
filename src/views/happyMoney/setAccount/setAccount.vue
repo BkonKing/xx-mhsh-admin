@@ -26,7 +26,7 @@
         </a-card>
       </a-col>
       <a-col :span='18'>
-        <a-card>
+        <a-card class="panelCard">
           <div class="panel">
             <div class="t1">
               <span class="s1">账户</span>
@@ -104,7 +104,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .setAccount {
   .avatar {
     color: #ccc;
@@ -145,7 +145,7 @@ export default {
       margin: 0 10px;
     }
   }
-  .ant-card-body {
+  /deep/.ant-card-body {
     height: 394px;
   }
   .panel {
@@ -177,7 +177,7 @@ export default {
     }
   }
   .card {
-    .ant-card-body {
+    /deep/ .ant-card-body {
       height: 226px;
     }
     margin-top: 20px;

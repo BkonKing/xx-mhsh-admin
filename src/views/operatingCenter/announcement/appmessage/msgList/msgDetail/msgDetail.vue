@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import toSubmit from './toSubmit'
 import toCheck from './toCheck'
 import toPush from './toPush'
@@ -25,7 +25,7 @@ export default {
   },
   data () {
     return {
-      step: 3
+      step: 5
     }
   }
 }

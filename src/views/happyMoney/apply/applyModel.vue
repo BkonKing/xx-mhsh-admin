@@ -110,7 +110,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .upload {
   .ant-upload-select-picture-card .ant-upload-text {
     margin-top: 8px;

@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .stepInfo {
   .steps {
     margin-top: 20px;

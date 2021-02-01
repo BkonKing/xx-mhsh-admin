@@ -47,7 +47,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .successPush {
   .card {
     margin-top: 20px;

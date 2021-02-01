@@ -50,7 +50,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .pushInfo {
   .card {
     margin-top: 20px;

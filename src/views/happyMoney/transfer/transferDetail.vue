@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .model {
   padding: 0 10px;
   .title1 {

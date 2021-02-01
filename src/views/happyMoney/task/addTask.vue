@@ -111,7 +111,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .addTask {
   .boxitem {
     white-space: nowrap;
