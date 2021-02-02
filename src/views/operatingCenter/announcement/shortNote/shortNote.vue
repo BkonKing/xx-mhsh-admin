@@ -14,7 +14,7 @@
       </template>
     </page-header-wrapper>
     <noteList v-if="currentIndex===0"></noteList>
-    <history v-if="currentIndex===1"></history>
+    <history v-else-if="currentIndex===1"></history>
     <noteTemplate v-else></noteTemplate>
   </div>
 </template>

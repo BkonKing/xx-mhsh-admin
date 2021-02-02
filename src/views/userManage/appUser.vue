@@ -100,6 +100,7 @@ export default {
           project: '五凤兰庭',
           type: '游客',
           nickname: '15655555555',
+          phone: '15885787475',
           name: '孙悟空',
           registerTime: '2020-12-17 16:34:33'
         },
@@ -110,6 +111,7 @@ export default {
           project: '五凤兰庭',
           type: '游客',
           nickname: '15655555555',
+          phone: '15885787475',
           name: '孙悟空',
           registerTime: '2020-12-17 16:34:33'
         },
@@ -120,6 +122,7 @@ export default {
           project: '五凤兰庭',
           type: '游客',
           nickname: '15655555555',
+          phone: '15885787475',
           name: '孙悟空',
           registerTime: '2020-12-17 16:34:33'
         }
@@ -155,6 +158,11 @@ export default {
           dataIndex: 'nickname',
           key: 'nickname',
           width: 120
+        },
+        {
+          title: '手机号',
+          dataIndex: 'phone',
+          key: 'phone'
         },
         {
           title: '姓名',
@@ -193,6 +201,9 @@ export default {
 
 <style lang='less' scoped>
 .appUser {
+  /deep/ .ant-form-item-label {
+    width: 100px;
+  }
   .col {
     white-space: nowrap;
   }
@@ -206,14 +217,14 @@ export default {
   }
   .pagination {
     margin-top: 10px;
-    .ant-pagination {
+    /deep/ .ant-pagination {
       padding: 10px;
     }
-    .ant-pagination-total-text {
+    /deep/ .ant-pagination-total-text {
       margin-left: 20px;
       margin-right: 300px;
     }
-    .ant-pagination-item-active {
+    /deep/ .ant-pagination-item-active {
       background-color: #1890ff;
       a {
         color: white;

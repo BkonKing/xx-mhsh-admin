@@ -93,7 +93,7 @@
           </a-tooltip>
         </span>
         <div slot="pay">
-          <div>剩余：1000</div>
+          <div>剩余：<span>1000</span></div>
           <div class="use">使用：100</div>
         </div>
         <div slot="isStart">
@@ -103,8 +103,15 @@
              class="operabtns">
           <a-button type='link'
                     @click="openLimit">权限</a-button>
-          <a-button type='link'>编辑</a-button>
-          <a-button type='link'>删除</a-button>
+          <a-button type='link'
+                    @click="edit">编辑</a-button>
+          <a-popconfirm title="你确定要删除这行内容吗?"
+                        ok-text="确定"
+                        cancel-text="取消"
+                        @confirm="confirm"
+                        @cancel="cancel">
+            <a-button type='link'>删除</a-button>
+          </a-popconfirm>
         </div>
       </a-table>
       <div class="pagination">
@@ -120,14 +127,17 @@
       </div>
     </a-card>
     <limitModel ref="limitModel"></limitModel>
+    <editModel ref="editModel"></editModel>
   </div>
 </template>
 
 <script>
 import limitModel from './limitModel'
+import editModel from './editModel'
 export default {
   components: {
-    limitModel
+    limitModel,
+    editModel
   },
   data () {
     return {
@@ -227,6 +237,12 @@ export default {
     }
   },
   methods: {
+    confirm () { },
+    cancel () { },
+    // 编辑
+    edit () {
+      this.$refs.editModel.isShow = true
+    },
     // 打开权限
     openLimit () {
       this.$refs.limitModel.isShow = true
@@ -287,6 +303,9 @@ export default {
         color: white;
       }
     }
+  }
+  .active {
+    color: red;
   }
 }
 </style>

@@ -225,13 +225,13 @@ export default {
   .table {
     margin-top: 20px;
   }
-  .ant-pagination {
+  /deep/ .ant-pagination {
     margin-top: 20px;
   }
-  .ant-pagination-total-text {
+  /deep/ .ant-pagination-total-text {
     margin-right: 100px;
   }
-  .ant-pagination-total-text {
+  /deep/ .ant-pagination-total-text {
     color: #a4a4a4;
   }
   .operate {

@@ -126,7 +126,7 @@ export default {
     color: #d7d7d7;
   }
 }
-.ant-modal-footer {
+/deep/ .ant-modal-footer {
   border-top: none;
   text-align: center;
   margin-top: -10px;

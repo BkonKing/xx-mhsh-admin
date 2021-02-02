@@ -227,19 +227,19 @@ export default {
       margin-left: 80px;
       display: flex;
       align-items: center;
-      .ant-select-selection__rendered {
+      /deep/ .ant-select-selection__rendered {
         margin-left: 50px;
         width: 100px !important;
       }
-      .ant-select-selection {
+      /deep/ .ant-select-selection {
         margin-left: 20px;
       }
     }
-    .tagSelect.ant-select {
-      margin-left: 80px;
+    /deep/ .tagSelect.ant-select {
+      margin-left: 100px !important;
       width: 375px !important;
     }
-    .selectPeople {
+    /deep/ .selectPeople {
       margin-left: 100px;
       // margin-top: 256px;
       color: #c0c0c0;

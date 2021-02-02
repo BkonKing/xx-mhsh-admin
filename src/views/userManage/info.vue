@@ -47,37 +47,37 @@ export default {
 
 <style lang='less' scoped>
 .info {
-  /deep/ .card {
+  .card {
     margin-top: 20px;
-    /deep/ .title {
+    .title {
       border-bottom: 1px solid #ccc;
-      padding: 15px;
+      padding-bottom: 15px;
       font-weight: 600;
     }
     /deep/ .ant-card-body {
-      padding: 0;
+      padding: 15px;
     }
-    /deep/ .content {
+    .content {
       width: 100%;
-      /deep/ .row {
+      .row {
         width: 100%;
-        padding: 15px;
-        /deep/ div {
+        // padding: 15px;
+        div {
           line-height: 40px;
         }
-        /deep/ span {
+        span {
           color: #ccc;
         }
       }
     }
   }
-  /deep/ .card2 {
+  .card2 {
     margin-top: 20px;
-    /deep/ .ant-card-body {
+    /deep/.ant-card-body {
       padding: 15px;
     }
-    /deep/ .title {
-      padding: 0 10px;
+    .title {
+      // padding: 0 10px;
       display: flex;
       border-bottom: 1px solid #ccc;
       line-height: 40px;
@@ -91,8 +91,8 @@ export default {
         flex: 1;
       }
     }
-    /deep/ .bottom {
-      height: 20px;
+    .bottom {
+      height: 30px !important;
     }
   }
 }

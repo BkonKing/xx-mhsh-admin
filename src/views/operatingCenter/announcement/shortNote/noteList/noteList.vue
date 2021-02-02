@@ -218,11 +218,11 @@ export default {
     }
     .pagination {
       margin-top: 20px;
-      .ant-pagination-total-text {
+      /deep/ .ant-pagination-total-text {
         margin-right: 400px;
         color: #929293;
       }
-      .ant-pagination-item-active {
+      /deep/ .ant-pagination-item-active {
         background-color: #1890ff;
         a {
           color: white;

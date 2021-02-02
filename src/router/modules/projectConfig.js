@@ -20,6 +20,15 @@ export default {
         title: '项目管理',
         icon: 'table'
       }
+    },
+    {
+      path: '/projectConfig/areaDictionary',
+      name: 'areaDictionary',
+      component: () => import('@/views/projectConfig/areaDictionary/areaDictionary'),
+      meta: {
+        title: '区域字典',
+        icon: 'table'
+      }
     }
   ]
 }

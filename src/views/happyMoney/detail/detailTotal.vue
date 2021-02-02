@@ -1,6 +1,6 @@
 <template>
   <div class="detailTotal">
-    <a-card>
+    <a-card class="card">
       <a-form-model :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-row>
@@ -307,6 +307,11 @@ export default {
   /deep/ .ant-form-item-label {
     width: 74px;
   }
+  .card {
+    /deep/ .ant-card-body {
+      padding-bottom: 0;
+    }
+  }
   .otherTime {
     // margin-left: 40px;
     line-height: 40px;
@@ -321,23 +326,23 @@ export default {
   .btn {
     margin-top: 5px;
   }
-  .row2 {
-    margin-top: 10px;
-  }
+
   .row3 {
-    margin-top: 10px;
+    margin-top: 20px;
     .txt {
       color: #c2bfbf;
     }
     .num {
       line-height: 40px;
+      font-size: 25px;
+      font-weight: 600;
     }
     span {
       text-decoration: underline;
     }
   }
   .card2 {
-    margin-top: 10px;
+    margin-top: 20px;
     .type {
       display: flex;
       align-items: center;

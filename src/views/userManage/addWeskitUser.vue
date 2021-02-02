@@ -4,6 +4,11 @@
              ok-text="保存"
              cancel-text="关闭"
              @ok="handleOk">
+      <template #title>
+        <div>
+
+        </div>
+      </template>
       <a-form-model ref="form"
                     :model='form'
                     :rules='rules'
@@ -98,7 +103,13 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
+/deep/ .ant-modal-header {
+  height: 50px !important;
+}
+/deep/ .ant-modal-footer {
+  text-align: center;
+}
 .avatar-uploader > .ant-upload {
   width: 128px;
   height: 128px;

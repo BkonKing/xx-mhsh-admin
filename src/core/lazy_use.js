@@ -49,7 +49,8 @@ import {
   FormModel,
   Pagination,
   LocaleProvider,
-  Tree
+  Tree,
+  Cascader
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -106,6 +107,7 @@ Vue.use(FormModel)
 Vue.use(Pagination)
 Vue.use(LocaleProvider)
 Vue.use(Tree)
+Vue.use(Cascader)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message

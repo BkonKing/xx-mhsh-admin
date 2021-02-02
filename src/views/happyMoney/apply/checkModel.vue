@@ -84,7 +84,7 @@ export default {
     background-color: #f2f2f2;
     margin: 20px 0;
   }
-  .ant-modal-footer {
+  /deep/ .ant-modal-footer {
     margin-top: -20px;
     padding-bottom: 20px;
     border-top: none;
