@@ -13,7 +13,8 @@
     <a-card class="card">
       <a-form-model layout="inline">
         <a-form-model-item label='账户类型'>
-          <a-select style="width: 200px">
+          <a-select placeholder="请选择"
+                    style="width: 200px">
             <a-select-option value="jack">
               Jack
             </a-select-option>

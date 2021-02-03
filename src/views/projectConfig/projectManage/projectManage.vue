@@ -5,13 +5,14 @@
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label='项目'>
-              <a-input placeholder="请输入"></a-input>
+              <a-input style="width:300px"
+                       placeholder="请输入"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label='是否启用'>
               <a-select placeholder="请选择"
-                        style="width: 200px">
+                        style="width: 300px">
                 <a-select-option value="jack">
                   Jack
                 </a-select-option>
@@ -30,7 +31,7 @@
           <a-col :span='8'>
             <a-form-model-item label='地区'>
               <a-select placeholder="请选择"
-                        style="width: 200px">
+                        style="width: 300px">
                 <a-select-option value="jack">
                   Jack
                 </a-select-option>

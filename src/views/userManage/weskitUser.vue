@@ -79,19 +79,21 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 80
+          width: 200
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '头像',
           dataIndex: 'avatar',
           key: 'avatar',
-          scopedSlots: { customRender: 'avatar' }
+          scopedSlots: { customRender: 'avatar' },
+          width: 400
         },
         {
           title: '昵称',
           dataIndex: 'nickname',
-          key: 'nickname'
+          key: 'nickname',
+          width: 400
         },
         {
           title: '操作',

@@ -339,6 +339,7 @@ export default {
     }
     span {
       text-decoration: underline;
+      cursor: pointer;
     }
   }
   .card2 {

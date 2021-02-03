@@ -7,8 +7,9 @@
         添加一级区域
       </a-button>
     </a-card>
-    <a-card>
-      <a-table :columns="columns"
+    <a-card class="card">
+      <a-table :pagination='false'
+               :columns="columns"
                :data-source="data">
         <div slot="isStart">
           <a-switch default-checked />
@@ -114,5 +115,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less'>
+.areaDictionary {
+  .card {
+    margin-top: 20px;
+  }
+}
 </style>

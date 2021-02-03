@@ -35,7 +35,6 @@ export const constantRoutes = [{
     component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
   }]
 },
-
 {
   path: '/',
   name: 'index',
@@ -59,6 +58,11 @@ export const constantRoutes = [{
 {
   path: '/404',
   component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
+},
+{
+  path: '/login',
+  name: 'Login',
+  component: () => import('@/views/login/login')
 }
 ]
 

@@ -312,10 +312,13 @@ export default {
       color: #c2bfbf;
     }
     .num {
+      font-weight: 600;
+      font-size: 20px;
       line-height: 40px;
     }
     span {
       text-decoration: underline;
+      cursor: pointer;
     }
   }
   .card2 {
