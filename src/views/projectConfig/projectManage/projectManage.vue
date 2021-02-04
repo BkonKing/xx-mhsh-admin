@@ -259,7 +259,7 @@ export default {
 }
 </script>
 
-<style lang='less' >
+<style lang='less' scoped>
 .projectManage {
   .btns {
     margin-top: 20px;
@@ -291,14 +291,14 @@ export default {
   }
   .pagination {
     margin-top: 10px;
-    .ant-pagination {
+    /deep/ .ant-pagination {
       padding: 10px;
     }
-    .ant-pagination-total-text {
+    /deep/ .ant-pagination-total-text {
       margin-left: 20px;
       margin-right: 300px;
     }
-    .ant-pagination-item-active {
+    /deep/ .ant-pagination-item-active {
       background-color: #1890ff;
       a {
         color: white;

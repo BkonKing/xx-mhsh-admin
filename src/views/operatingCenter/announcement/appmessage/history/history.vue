@@ -76,14 +76,17 @@
 
         </span>
       </a-table>
-      <a-pagination show-quick-jumper
-                    show-size-changer
-                    :default-current="pagination.currentPage"
-                    :page-size-options="pagination.sizes"
-                    :total="pagination.total"
-                    :show-total="(total, range) => `共 ${total} 条记录 第1/80页`"
-                    @change="onChange"
-                    @showSizeChange="sizeChange" />
+      <div class="pagination">
+        <a-pagination show-quick-jumper
+                      show-size-changer
+                      :default-current="pagination.currentPage"
+                      :page-size-options="pagination.sizes"
+                      :total="pagination.total"
+                      :page-size.sync="pagination.pageSize"
+                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
+                      @change="onChange"
+                      @showSizeChange="sizeChange" />
+      </div>
     </a-card>
   </div>
 </template>
@@ -97,7 +100,8 @@ export default {
       pagination: {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,
-        total: 50
+        total: 50,
+        pageSize: 1
       },
       data: [
         {
@@ -185,14 +189,10 @@ export default {
   methods: {
     onChange (page, size) {
       console.log('Page: ', page)
-      // this.paginationrouter.currentPage = page
-      // console.log('size: ', size)
+      this.pagination.currentPage = page
     },
     sizeChange (current, size) {
-      // console.log('current: ', current)
       console.log('size: ', size)
-      // this.pagination.currentPage = 1
-      // this.pagination.pageSize = size
     }
   }
 }
@@ -220,14 +220,21 @@ export default {
   }
   .card2 {
     margin-top: 20px;
-    /deep/ .ant-pagination {
-      margin-top: 20px;
-    }
-    /deep/ .ant-pagination-total-text {
-      margin-right: 100px;
-    }
-    /deep/ .ant-pagination-total-text {
-      color: #a4a4a4;
+    .pagination {
+      margin-top: 10px;
+      /deep/ .ant-pagination {
+        padding: 10px;
+      }
+      /deep/ .ant-pagination-total-text {
+        margin-left: 20px;
+        margin-right: 300px;
+      }
+      /deep/ .ant-pagination-item-active {
+        background-color: #1890ff;
+        a {
+          color: white;
+        }
+      }
     }
   }
   /deep/ .ant-form-item-label {

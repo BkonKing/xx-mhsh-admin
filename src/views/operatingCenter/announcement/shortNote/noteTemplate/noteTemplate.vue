@@ -3,30 +3,38 @@
     <a-card class="card">
       <a-form-model layout="inline"
                     :model='form'>
-        <a-form-model-item label='是否启用'>
-          <a-select style="width: 250px">
-            <a-select-option value="1">
-              开启
-            </a-select-option>
-            <a-select-option value="2">
-              关闭
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label='短信类型'>
-          <a-select style="width: 250px">
-            <a-select-option value="1">
-              营销短信
-            </a-select-option>
-            <a-select-option value="2">
-              通知短信
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label='搜索'>
-          <a-input style="width: 250px"
-                   placeholder="标题、内容"></a-input>
-        </a-form-model-item>
+        <a-row>
+          <a-col :span='8'>
+            <a-form-model-item label='是否启用'>
+              <a-select style="width: 250px">
+                <a-select-option value="1">
+                  开启
+                </a-select-option>
+                <a-select-option value="2">
+                  关闭
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label='短信类型'>
+              <a-select style="width: 250px">
+                <a-select-option value="1">
+                  营销短信
+                </a-select-option>
+                <a-select-option value="2">
+                  通知短信
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label='搜索'>
+              <a-input style="width: 250px"
+                       placeholder="标题、内容"></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
       </a-form-model>
     </a-card>
     <a-card class="card2">

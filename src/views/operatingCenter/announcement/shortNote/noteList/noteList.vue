@@ -3,44 +3,53 @@
     <a-card class='card'>
       <a-form-model :model='form'
                     layout="inline">
-        <a-form-model-item label="短信状态">
-          <a-select placeholder="请选择"
-                    style="width: 200px">
-            <a-select-option value="1">
-              待提交
-            </a-select-option>
-            <a-select-option value="2">
-              待审核
-            </a-select-option>
-            <a-select-option value="3">
-              待推送
-            </a-select-option>
-            <a-select-option value="4">
-              已推送
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="短信模板">
-          <a-select placeholder="请选择"
-                    style="width: 200px">
-            <a-select-option value="1">
-              待提交
-            </a-select-option>
-            <a-select-option value="2">
-              待审核
-            </a-select-option>
-            <a-select-option value="3">
-              待推送
-            </a-select-option>
-            <a-select-option value="4">
-              已推送
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="搜索">
-          <a-input placeholder="标题、内容"
-                   style="width: 200px"></a-input>
-        </a-form-model-item>
+        <a-row>
+          <a-col :span='8'>
+            <a-form-model-item label="短信状态">
+              <a-select placeholder="请选择"
+                        style="width: 300px">
+                <a-select-option value="1">
+                  待提交
+                </a-select-option>
+                <a-select-option value="2">
+                  待审核
+                </a-select-option>
+                <a-select-option value="3">
+                  待推送
+                </a-select-option>
+                <a-select-option value="4">
+                  已推送
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label="短信模板">
+              <a-select placeholder="请选择"
+                        style="width: 300px">
+                <a-select-option value="1">
+                  待提交
+                </a-select-option>
+                <a-select-option value="2">
+                  待审核
+                </a-select-option>
+                <a-select-option value="3">
+                  待推送
+                </a-select-option>
+                <a-select-option value="4">
+                  已推送
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label="搜索">
+              <a-input placeholder="标题、内容"
+                       style="width: 300px"></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+
       </a-form-model>
     </a-card>
     <a-card class="card1">

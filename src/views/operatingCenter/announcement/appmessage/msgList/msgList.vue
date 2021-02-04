@@ -4,48 +4,56 @@
 
       <a-form-model :model="form"
                     layout="inline">
-        <a-form-model-item label="消息状态">
-          <a-select class="w150"
-                    style="width: 120px"
-                    v-model="form.selectValue"
-                    placeholder="请选择">
-            <a-select-option value="jack">
-              待提交
-            </a-select-option>
-            <a-select-option value="lucy">
-              待审核
-            </a-select-option>
-            <a-select-option value="disabled">
-              待推送
-            </a-select-option>
-            <a-select-option value="Yiminghe">
-              已推送
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="消息模板">
-          <a-select class="w150"
-                    style="width: 120px"
-                    v-model="form.selectValue"
-                    placeholder="请选择">
-            <a-select-option value="jack">
-              待提交
-            </a-select-option>
-            <a-select-option value="lucy">
-              待审核
-            </a-select-option>
-            <a-select-option value="disabled">
-              待推送
-            </a-select-option>
-            <a-select-option value="Yiminghe">
-              已推送
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="搜索">
-          <a-input class="w150"
-                   placeholder="标题、内容"></a-input>
-        </a-form-model-item>
+        <a-row>
+          <a-col :span='8'>
+            <a-form-model-item label="消息状态">
+              <a-select class="w150"
+                        style="width: 120px"
+                        v-model="form.selectValue"
+                        placeholder="请选择">
+                <a-select-option value="jack">
+                  待提交
+                </a-select-option>
+                <a-select-option value="lucy">
+                  待审核
+                </a-select-option>
+                <a-select-option value="disabled">
+                  待推送
+                </a-select-option>
+                <a-select-option value="Yiminghe">
+                  已推送
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label="消息模板">
+              <a-select class="w150"
+                        v-model="form.selectValue"
+                        placeholder="请选择">
+                <a-select-option value="jack">
+                  待提交
+                </a-select-option>
+                <a-select-option value="lucy">
+                  待审核
+                </a-select-option>
+                <a-select-option value="disabled">
+                  待推送
+                </a-select-option>
+                <a-select-option value="Yiminghe">
+                  已推送
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span='8'>
+            <a-form-model-item label="搜索">
+              <a-input class="w150"
+                       placeholder="标题、内容"></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
       </a-form-model>
     </a-card>
     <a-card class="card2">
@@ -77,15 +85,17 @@
 
         </span>
       </a-table>
-      <a-pagination show-quick-jumper
-                    show-size-changer
-                    :default-current="pagination.currentPage"
-                    :page-size-options="pagination.sizes"
-                    :total="pagination.total"
-                    :page-size.sync="pagination.pageSize"
-                    :show-total="(total, range) => `共 ${total} 条记录 第1/80页`"
-                    @change="onChange"
-                    @showSizeChange="sizeChange" />
+      <div class="pagination">
+        <a-pagination show-quick-jumper
+                      show-size-changer
+                      :default-current="pagination.currentPage"
+                      :page-size-options="pagination.sizes"
+                      :total="pagination.total"
+                      :page-size.sync="pagination.pageSize"
+                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
+                      @change="onChange"
+                      @showSizeChange="sizeChange" />
+      </div>
     </a-card>
   </div>
 </template>
@@ -194,14 +204,10 @@ export default {
   methods: {
     onChange (page, size) {
       console.log('Page: ', page)
-      // this.paginationrouter.currentPage = page
-      // console.log('size: ', size)
+      this.pagination.currentPage = page
     },
     sizeChange (current, size) {
-      // console.log('current: ', current)
       console.log('size: ', size)
-      // this.pagination.currentPage = 1
-      // this.pagination.pageSize = size
     }
   }
 }
@@ -211,7 +217,7 @@ export default {
 .msgList {
   margin-top: 20px;
   .w150 {
-    width: 200px !important;
+    width: 300px !important;
   }
   .card1 {
     margin-top: 20px;
@@ -225,14 +231,21 @@ export default {
   .table {
     margin-top: 20px;
   }
-  /deep/ .ant-pagination {
-    margin-top: 20px;
-  }
-  /deep/ .ant-pagination-total-text {
-    margin-right: 100px;
-  }
-  /deep/ .ant-pagination-total-text {
-    color: #a4a4a4;
+  .pagination {
+    margin-top: 10px;
+    /deep/ .ant-pagination {
+      padding: 10px;
+    }
+    /deep/ .ant-pagination-total-text {
+      margin-left: 20px;
+      margin-right: 300px;
+    }
+    /deep/ .ant-pagination-item-active {
+      background-color: #1890ff;
+      a {
+        color: white;
+      }
+    }
   }
   .operate {
     display: flex;
