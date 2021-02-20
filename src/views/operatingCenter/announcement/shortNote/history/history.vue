@@ -1,6 +1,7 @@
 <template>
   <div class="history">
-    <a-card class="card">
+    <a-card class="card"
+            ref="card">
       <a-form-model :model="form"
                     layout="inline">
         <a-row>
@@ -24,15 +25,25 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='短信'>
+            <a-form-model-item label='短信'
+                               v-if="cardBol">
               <a-input style="width: 250px"
                        placeholder="标题、内容"></a-input>
             </a-form-model-item>
+            <div v-else>
+              <a-button type='primary'>查询</a-button>
+              <a-button>重置</a-button>
+              <a-button type='link'
+                        @click="open">展开</a-button>
+              <a-icon class="icon"
+                      type="down" />
+            </div>
           </a-col>
         </a-row>
         <a-row class="row2">
           <a-col :span='8'>
-            <a-form-model-item label='接收状态'>
+            <a-form-model-item label='接收状态'
+                               v-if="cardBol">
               <a-select style="width: 250px"
                         placeholder="请选择">
                 <a-select-option value="1">
@@ -45,7 +56,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='短信类型'>
+            <a-form-model-item label='短信类型'
+                               v-if="cardBol">
               <a-select style="width: 250px"
                         placeholder="请选择">
                 <a-select-option value="1">
@@ -58,10 +70,12 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='6'
-                 :offset='2'>
+                 :offset='2'
+                 v-if="cardBol">
             <a-button type='primary'>查询</a-button>
             <a-button>重置</a-button>
-            <a-button type='link'>收起</a-button>
+            <a-button type='link'
+                      @click="close">收起</a-button>
             <a-icon class="icon"
                     type="up" />
           </a-col>
@@ -200,10 +214,22 @@ export default {
           dataIndex: 'pushTime',
           key: 'pushTime'
         }
-      ]
+      ],
+      oHeight: '',
+      cardBol: true
     }
   },
   methods: {
+    // 展开
+    open () {
+      this.$refs.card.$el.style.height = this.oHeight + 'px'
+      this.cardBol = true
+    },
+    // 收起
+    close () {
+      this.$refs.card.$el.style.height = '80px'
+      this.cardBol = false
+    },
     currentChange (page, paseSize) {
       console.log(page)
       this.pagination.currentPage = page
@@ -211,20 +237,27 @@ export default {
     sizeChange (current, size) {
       console.log(size)
     }
+  },
+  mounted () {
+    console.log('this.$refs.card.offsetHeight', this.$refs.card.$el.offsetHeight)
+    this.oHeight = this.$refs.card.$el.offsetHeight
   }
 }
 </script>
 
 <style lang='less' scoped>
 .history {
+  .card {
+    margin-top: 20px;
+  }
   .row2 {
     margin-top: 20px;
-    button:nth-child(2) {
-      margin-left: 10px;
-    }
-    .icon {
-      color: #1890ff;
-    }
+  }
+  button:nth-child(2) {
+    margin-left: 10px;
+  }
+  .icon {
+    color: #1890ff;
   }
   .card1 {
     margin-top: 20px;

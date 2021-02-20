@@ -1,6 +1,7 @@
 <template>
   <div class="projectManage">
-    <a-card>
+    <a-card ref="card"
+            class="cardTop">
       <a-form-model layout="inline">
         <a-row>
           <a-col :span='8'>
@@ -29,7 +30,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='地区'>
+            <a-form-model-item label='地区'
+                               v-if="cardBol">
               <a-select placeholder="请选择"
                         style="width: 300px">
                 <a-select-option value="jack">
@@ -46,16 +48,26 @@
                 </a-select-option>
               </a-select>
             </a-form-model-item>
+            <div v-else>
+              <a-button type='primary'>查询</a-button>
+              <a-button>重置</a-button>
+              <a-button type='link'
+                        @click="open">展开
+                <a-icon type="down" />
+              </a-button>
+            </div>
           </a-col>
         </a-row>
-        <div class="btns">
+        <div class="btns"
+             v-if="cardBol">
           <a-row>
             <a-col :span='8'></a-col>
             <a-col :span='8'></a-col>
             <a-col :span='8'>
               <a-button type='primary'>查询</a-button>
               <a-button>重置</a-button>
-              <a-button type='link'>收起
+              <a-button type='link'
+                        @click="close">收起
                 <a-icon type="up" />
               </a-button>
             </a-col>
@@ -234,10 +246,23 @@ export default {
           key: 'opera',
           scopedSlots: { customRender: 'opera' }
         }
-      ]
+      ],
+      oHeight: '',
+      cardBol: true
     }
   },
   methods: {
+    // 展开
+    open () {
+      this.$refs.card.$el.style.height = this.oHeight + 'px'
+      this.cardBol = true
+    },
+    // 收起
+    close () {
+      console.log('this.$refs.card.offsetHeight', this.$refs.card.$el.offsetHeight)
+      this.$refs.card.$el.style.height = '80px'
+      this.cardBol = false
+    },
     confirm () { },
     cancel () { },
     // 编辑
@@ -255,12 +280,20 @@ export default {
     sizeChange (current, size) {
       console.log('size: ', size)
     }
+  },
+  mounted () {
+    // console.log('this.$refs.card.offsetHeight', this.$refs.card.$el.offsetHeight)
+    // // 获取元素高度
+    this.oHeight = this.$refs.card.$el.offsetHeight
   }
 }
 </script>
 
 <style lang='less' scoped>
 .projectManage {
+  // .cardTop {
+  //   height: 142px;
+  // }
   .btns {
     margin-top: 20px;
     button:first-child {

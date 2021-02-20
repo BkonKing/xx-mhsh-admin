@@ -116,6 +116,9 @@
           </div>
         </div>
       </a-form-model-item>
+      <a-form-model-item label="好客通后台ID">
+        <a-input placeholder="请输入"></a-input>
+      </a-form-model-item>
     </a-form-model>
 
   </a-modal>

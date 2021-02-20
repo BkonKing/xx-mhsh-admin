@@ -1,6 +1,7 @@
 <template>
   <div class="history">
-    <a-card class="card">
+    <a-card ref="card"
+            class="card">
       <a-form-model :model='form'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
@@ -27,14 +28,25 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="消息">
+            <a-form-model-item label="消息"
+                               v-if="cardBol">
               <a-input placeholder="标题、内容"></a-input>
             </a-form-model-item>
+            <div v-else
+                 class="btns">
+              <a-button type="primary">查询</a-button>
+              <a-button>重置</a-button>
+              <a-button type="link"
+                        @click="open">展开</a-button>
+              <a-icon class="icon"
+                      type="down" />
+            </div>
           </a-col>
         </a-row>
         <a-row class="row">
           <a-col :span='8'>
-            <a-form-model-item label="消息类型">
+            <a-form-model-item label="消息类型"
+                               v-if="cardBol">
               <a-select style="width: 200px"
                         placeholder="请选择">
                 <a-select-option value="1">
@@ -45,11 +57,12 @@
           </a-col>
           <a-col :span="6"
                  :offset='10'>
-            <a-form-model-item>
+            <a-form-model-item v-if="cardBol">
               <div class="btns">
                 <a-button type="primary">查询</a-button>
                 <a-button>重置</a-button>
-                <a-button type="link">收起</a-button>
+                <a-button type="link"
+                          @click="close">收起</a-button>
                 <a-icon class="icon"
                         type="up" />
               </div>
@@ -183,10 +196,22 @@ export default {
       ],
       form: {
         selectValue: undefined
-      }
+      },
+      oHeight: '',
+      cardBol: true
     }
   },
   methods: {
+    // 展开
+    open () {
+      this.$refs.card.$el.style.height = this.oHeight + 'px'
+      this.cardBol = true
+    },
+    // 收起
+    close () {
+      this.$refs.card.$el.style.height = '80px'
+      this.cardBol = false
+    },
     onChange (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -194,6 +219,10 @@ export default {
     sizeChange (current, size) {
       console.log('size: ', size)
     }
+  },
+  mounted () {
+    console.log('this.$refs.card.offsetHeight', this.$refs.card.$el.offsetHeight)
+    this.oHeight = this.$refs.card.$el.offsetHeight
   }
 }
 </script>
@@ -205,17 +234,15 @@ export default {
       padding-bottom: 0;
     }
     margin-top: 20px;
-    .row {
-      .btns {
-        .icon {
-          color: #1890ff;
-        }
-        display: flex;
-        align-items: center;
-        button:nth-child(2) {
-          margin-left: 10px;
-        }
-      }
+  }
+  .btns {
+    .icon {
+      color: #1890ff;
+    }
+    display: flex;
+    align-items: center;
+    button:nth-child(2) {
+      margin-left: 10px;
     }
   }
   .card2 {
