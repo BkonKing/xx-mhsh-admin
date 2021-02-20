@@ -11,6 +11,7 @@ if (process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'tr
   Mock.setup({
     timeout: '500-800'
   })
+  require('./services/movie')
 
   const context = require.context('./services', true, /\.mock.js$/)
 

@@ -5,22 +5,23 @@ import {
   setDocumentTitle,
   domTitle
 } from '@/utils/domUtil'
-import storage from 'store'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+// import storage from 'store'
+// import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({
   showSpinner: false
 }) // NProgress Configuration
 
-const allowList = ['login'] // 免登录路由name
-const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
+// const allowList = ['login'] // 免登录路由name
+// const loginRoutePath = '/user/login'
+// const defaultRoutePath = '/dashboard/workplace'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
+  next()
   /* has token */
-  if (storage.get(ACCESS_TOKEN)) {
+  /* if (storage.get(ACCESS_TOKEN) || true) {
     if (to.path === loginRoutePath) {
       next({
         path: defaultRoutePath
@@ -42,7 +43,7 @@ router.beforeEach((to, from, next) => {
       })
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
-  }
+  } */
 })
 
 router.afterEach(() => {

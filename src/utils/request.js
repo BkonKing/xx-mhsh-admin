@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import storage from 'store'
+import Cookies from 'js-cookie'
 import notification from 'ant-design-vue/es/notification'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import qs from 'qs'
@@ -8,7 +9,8 @@ import qs from 'qs'
 // 创建 axios 实例
 const request = axios.create({
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    Authorization: Cookies.get('access_token')
   },
   // API 请求的默认前缀
   baseURL: process.env.VUE_APP_API_BASE_URL,
