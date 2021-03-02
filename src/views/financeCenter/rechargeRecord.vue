@@ -299,7 +299,11 @@ export default {
   /deep/ .ant-page-header {
     padding-bottom: 0;
   }
+  /deep/ .ant-page-header-content {
+    overflow: inherit;
+  }
   .header {
+    position: relative;
     .left {
       display: flex;
       align-items: center;
@@ -317,8 +321,8 @@ export default {
       }
     }
     .right {
-      position: fixed;
-      top: 92px;
+      position: absolute;
+      top: -70px;
       right: 0;
       z-index: 9999999999;
       display: flex;
@@ -347,6 +351,7 @@ export default {
     }
   }
   .btns {
+    margin-left: 190px;
     button {
       margin-right: 10px;
     }
