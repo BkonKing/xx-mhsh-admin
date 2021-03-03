@@ -1,32 +1,5 @@
 <template>
-  <div class="rechargeRecord">
-    <page-header-wrapper>
-      <template #content>
-        <div class="header">
-          <div class="left">
-            <div class="item"
-                 :class="{'active':currentIndex===0}"
-                 @click="currentIndex=0">充值记录</div>
-            <div class="item"
-                 :class="{'active':currentIndex===1}"
-                 @click="currentIndex=1">充值设置</div>
-          </div>
-          <div class="right">
-            <div class="item">
-              <div class="t1">短信剩余</div>
-              <div class="t2">2223</div>
-              <div class="t3">使用10000</div>
-            </div>
-            <div class="line"></div>
-            <div class="item">
-              <div class="t1">支付通道剩余</div>
-              <div class="t2">1,000,000</div>
-              <div class="t3">使用20000</div>
-            </div>
-          </div>
-        </div>
-      </template>
-    </page-header-wrapper>
+  <div>
     <a-card class="card"
             ref="card">
       <a-form-model :label-col="labelCol"
@@ -153,7 +126,6 @@ export default {
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      currentIndex: 0,
       mode2: ['month', 'month'],
       value: [],
       cardHeight: '',
@@ -295,95 +267,39 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.rechargeRecord {
-  /deep/ .ant-page-header {
+.btns {
+  margin-left: 190px;
+  button {
+    margin-right: 10px;
+  }
+}
+
+.card {
+  margin-top: 20px;
+  /deep/ .ant-card-body {
     padding-bottom: 0;
   }
-  /deep/ .ant-page-header-content {
-    overflow: inherit;
-  }
-  .header {
-    position: relative;
-    .left {
-      display: flex;
-      align-items: center;
-      .item {
-        width: 100px;
-        height: 40px;
-        text-align: center;
-        line-height: 40px;
-        margin-right: 20px;
-        cursor: pointer;
-      }
-      .active {
-        border-bottom: 1px solid #1890ff;
-        color: #1890ff;
-      }
+}
+.card2 {
+  margin-top: 20px;
+  .pagination {
+    margin-top: 10px;
+    /deep/ .ant-pagination {
+      padding: 10px;
     }
-    .right {
-      position: absolute;
-      top: -70px;
-      right: 0;
-      z-index: 9999999999;
-      display: flex;
-      align-items: center;
-      .item {
-        text-align: right;
-        padding-right: 24px;
-        .t1 {
-          color: #959494;
-        }
-        .t2 {
-          margin: 5px 0;
-          font-size: 25px;
-          font-weight: 600;
-        }
-        .t3 {
-          color: #959494;
-        }
-      }
-      .line {
-        margin: 0 15px;
-        width: 1px;
-        height: 36px;
-        background-color: #e9e9e9;
+    /deep/ .ant-pagination-total-text {
+      margin-left: 20px;
+      margin-right: 300px;
+    }
+    /deep/ .ant-pagination-item-active {
+      background-color: #1890ff;
+      a {
+        color: white;
       }
     }
   }
-  .btns {
-    margin-left: 190px;
-    button {
-      margin-right: 10px;
-    }
-  }
-
-  .card {
-    margin-top: 20px;
-    /deep/ .ant-card-body {
-      padding-bottom: 0;
-    }
-  }
-  .card2 {
-    margin-top: 20px;
-    .pagination {
-      margin-top: 10px;
-      /deep/ .ant-pagination {
-        padding: 10px;
-      }
-      /deep/ .ant-pagination-total-text {
-        margin-left: 20px;
-        margin-right: 300px;
-      }
-      /deep/ .ant-pagination-item-active {
-        background-color: #1890ff;
-        a {
-          color: white;
-        }
-      }
-    }
-  }
-  .table {
-    margin-top: 20px;
-  }
+}
+.table {
+  margin-top: 20px;
 }
 </style>

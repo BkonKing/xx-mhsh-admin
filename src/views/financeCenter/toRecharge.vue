@@ -10,17 +10,29 @@
           {{toform.radioValue===1?'短信':'支付通道(生活缴费支付)'}}
         </a-form-model-item>
         <a-form-model-item label='充值条数'
-                           v-if="!payBol">10000条</a-form-model-item>
-        <a-form-model-item label='支付额度'></a-form-model-item>
-        <a-form-model-item label='支付金额'>
+                           v-if="!payBol && toform.radioValue===1">10000条</a-form-model-item>
+        <a-form-model-item label='充值额度'
+                           v-if="toform.radioValue===2">1000000元</a-form-model-item>
+        <!-- <a-form-model-item label="充值额度"
+                           v-if="payBol && toform.radioValue===2">
+          1000000元
+        </a-form-model-item> -->
+        <a-form-model-item label='支付金额'
+                           v-if="!payBol || toform.radioValue===1">
           <div class="money"
-               v-if="!payBol">
+               v-if="!payBol && toform.radioValue===1">
             <span>￥</span> 100.00
           </div>
-          <div v-else>
+          <div v-else-if="payBol && toform.radioValue===1">
             <small>￥</small> <span style="fontSize:18px">100.00</span> <small>(10000条短信)</small>
           </div>
+          <div v-else
+               style="color:#1890ff">
+            <small>￥</small> <span style="fontSize:18px">3500.00</span>
+          </div>
         </a-form-model-item>
+        <a-form-model-item label='充值金额'
+                           v-if="payBol && toform.radioValue===2"> <small>￥</small> <span>35000.00</span></a-form-model-item>
         <a-form-model-item label='支付方式'>
           <a-radio-group v-model="form.value"
                          v-if="!payBol">
@@ -50,7 +62,8 @@
       </a-form-model>
     </div>
     <div class="footer">
-      <a-button v-if="!payBol">取消</a-button>
+      <a-button v-if="!payBol"
+                @click="show=false">取消</a-button>
       <a-button v-else
                 type="primary"
                 @click="submit">完成</a-button>

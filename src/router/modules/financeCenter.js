@@ -22,9 +22,9 @@ export default {
       }
     },
     {
-      path: '/financeCenter/rechargeRecord',
-      name: 'rechargeRecord',
-      component: () => import('@/views/financeCenter/rechargeRecord.vue'),
+      path: '/financeCenter/accountRecharge',
+      name: 'accountRecharge',
+      component: () => import('@/views/financeCenter/accountRecharge.vue'),
       meta: {
         title: '账户充值',
         icon: 'table'
