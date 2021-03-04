@@ -26,8 +26,10 @@
             充值
           </a-button>
         </div>
-        <div class="line"></div>
-        <div class="item">
+        <div class="line"
+             v-if="false"></div>
+        <div class="item"
+             v-if="false">
           <div class="t1">支付通道</div>
           <div class="t2"><span>10W</span> 元</div>
           <a-button type="link">
@@ -42,7 +44,7 @@
         </div>
         <div class="line"></div>
         <div class="item">
-          <div class="t1">项目</div>
+          <div class="t1">{{true?'项目':'业主'}}</div>
           <div class="t2">100</div>
         </div>
       </div>
