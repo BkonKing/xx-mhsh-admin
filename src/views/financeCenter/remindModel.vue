@@ -10,15 +10,16 @@
       <div class="right">
         <div class="item"
              v-for="(item, index) in list"
-             :key="index">
+             :key="item">
           <a-select mode="tags"
                     style="width: 200px"
-                    placeholder="手机号"
                     :token-separators="[',']"
                     @change="handleChange">
-            <a-select-option v-for="i in 25"
-                             :key="(i + 9).toString(36) + i">
-              {{ (i + 9).toString(36) + i }}
+            <a-select-option v-for="i in 10"
+                             :key="i.toString(36)">
+              <div class="selectItem">用户昵称
+                <span class="mg200">业主</span>
+              </div>
             </a-select-option>
           </a-select>
           <a-input style="width:200px"
@@ -64,7 +65,7 @@ export default {
       if (this.list.length >= 5) {
         return
       }
-      this.list.push(1)
+      this.list.push(Math.random() * 999)
     }
   }
 
