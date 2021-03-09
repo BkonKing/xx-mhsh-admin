@@ -29,6 +29,15 @@ export default {
         title: '区域字典',
         icon: 'table'
       }
+    },
+    {
+      path: '/projectConfig/permissList',
+      name: 'permissList',
+      component: () => import('@/views/projectConfig/permissList/permissList'),
+      meta: {
+        title: '权限列表',
+        icon: 'table'
+      }
     }
   ]
 }

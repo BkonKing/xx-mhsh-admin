@@ -207,9 +207,9 @@ export default {
   .col {
     white-space: nowrap;
   }
-  /deep/.card {
+  .card {
     margin-top: 20px;
-    /deep/ .img {
+    .img {
       width: 60px;
       height: 60px;
       object-fit: cover;
