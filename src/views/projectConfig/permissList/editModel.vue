@@ -24,12 +24,11 @@
         </a-select>
       </a-form-model-item>
       <a-form-model-item label='模块名称'>
-        <a-input></a-input>
+        <a-input v-model="item.title"></a-input>
       </a-form-model-item>
       <a-form-model-item label='简称'>
         <a-input></a-input>
       </a-form-model-item>
-
     </a-form-model>
 
   </a-modal>
@@ -42,9 +41,11 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       isShow: false,
-      form: {}
+      form: {},
+      item: {}
     }
   }
+
 }
 </script>
 

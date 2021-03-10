@@ -14,7 +14,7 @@
                       type="drag" />
               <a-icon class="icon"
                       type="form"
-                      @click="edit" />
+                      @click="edit(item)" />
               <a-icon class="icon"
                       type="delete"
                       @click="del" />
@@ -31,14 +31,15 @@
             <div class="left">
               <div>
                 美好生活家园APP
-                <a-icon type="right" />
+                <a-icon class="rightIcon"
+                        type="right" />
               </div>
               <div class="t1"
-                   v-show="titleArr.length>0"
-                   v-for="(item, index) in titleArr"
-                   :key="index">
+                   v-for="(item,index) in titleArr"
+                   :key='index'>
                 {{item}}
-                <a-icon type="right" />
+                <a-icon class="rightIcon"
+                        type="right" />
               </div>
             </div>
             <div class="right">
@@ -65,6 +66,7 @@
                         class="plus"
                         @click="add" />
                 <a-icon type="close"
+                        class="close"
                         @click="remove(index)" />
               </div>
               <a-button type='primary'>保存</a-button>
@@ -154,7 +156,23 @@ const treeData2 = [
             key: '0-2-1',
             scopedSlots: {
               title: 'custom'
-            }
+            },
+            children: [
+              {
+                title: '购物车',
+                key: '0-3-0',
+                scopedSlots: {
+                  title: 'custom'
+                }
+              },
+              {
+                title: '页面详情',
+                key: '0-3-1',
+                scopedSlots: {
+                  title: 'custom'
+                }
+              }
+            ]
           }
         ]
       }
@@ -162,6 +180,24 @@ const treeData2 = [
   }
 
 ]
+
+let arr = []
+// 递归获取标题
+function getParentTitle (parent2) {
+  if (parent2.dataRef.title) {
+    arr.unshift(parent2.dataRef.title)
+  }
+  // console.log('parent2.dataRef.title', parent2.dataRef.title)
+  const parent = parent2.$parent
+  // console.log('parent', parent)
+  // console.log('parent.dataRef', parent.dataRef)
+  if (parent.dataRef) {
+    // console.log(1111)
+    getParentTitle(parent)
+  }
+  return arr
+}
+
 export default {
   components: {
     editModel,
@@ -176,17 +212,27 @@ export default {
     }
   },
   methods: {
+    // 设置标题
     selectInfo (selectedKeys, info) {
-      console.log('selectedKeys', selectedKeys)
-      console.log('info', info)
+      let arr2 = []
+      if (info.node.$parent.dataRef) {
+        arr2 = getParentTitle(info.node.$parent)
+      }
+      // console.log(info.node.dataRef.title)
+      arr2.push(info.node.dataRef.title)
+      this.titleArr = arr2
+      arr2 = []
+      arr = []
+      // console.log(this.titleArr)
     },
     // 删除节点
     del () {
       this.$refs.delModel.isShow = true
     },
     // 编辑
-    edit () {
+    edit (item) {
       this.$refs.editModel.isShow = true
+      this.$refs.editModel.item = item
     },
     // 添加输入框
     add () {
@@ -204,7 +250,6 @@ export default {
       } else {
         console.log(item)
         let obj = {}
-
         obj = {
           ...item.dataRef
         }
@@ -225,24 +270,32 @@ export default {
     font-size: 16px;
   }
   .content {
+    line-height: 30px;
     .left {
       display: flex;
       align-items: center;
+      .rightIcon {
+        margin: 0 10px;
+      }
     }
-    .right {
-      margin-top: 30px;
-      .r1 {
-        margin-bottom: 10px;
-        .plus {
-          margin: 0 10px;
-        }
+  }
+  .right {
+    margin-top: 30px;
+    .r1 {
+      margin-bottom: 10px;
+      .plus {
+        margin: 0 10px;
+        font-size: 18px;
       }
-      .r2 {
-        margin-bottom: 10px;
+      .close {
+        font-size: 18px;
       }
-      button {
-        margin-right: 10px;
-      }
+    }
+    .r2 {
+      margin-bottom: 10px;
+    }
+    button {
+      margin-right: 10px;
     }
   }
 }
