@@ -63,7 +63,7 @@ const vueConfig = {
       .use('file-loader')
       .loader('file-loader')
       .options({
-        name: 'assets/[name].[hash:8].[ext]'
+        name: 'assets/[name].[ext]'
       })
 
     // if prod is on
@@ -85,11 +85,20 @@ const vueConfig = {
         .use(WebpackBundleAnalyzer.BundleAnalyzerPlugin)
     }
 
+    // 清除js版本号
+    config.output.filename('static/[name].js').end()
+    config.output.chunkFilename('static/[name].js').end()
+
     if (process.env.NODE_ENV === 'production') {
       // gzip开启
-      config
-        .plugin('CompressionPlugin')
-        .use(CompressionPlugin, [])
+      // config
+      //   .plugin('CompressionPlugin')
+      //   .use(CompressionPlugin, [])
+      // 清除hashcss
+      config.plugin('extract-css').tap(args => [{
+          filename: 'static/[name].css',
+          chunkFilename: 'static/[name].css'
+        }])
     }
   },
 
