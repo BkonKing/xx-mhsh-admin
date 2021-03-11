@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const buildDate = JSON.stringify(new Date().toLocaleString())
 const createThemeColorReplacerPlugin = require('./config/plugin.config')
 const WebpackBundleAnalyzer = require('webpack-bundle-analyzer')
-const CompressionPlugin = require('compression-webpack-plugin')
+// const CompressionPlugin = require('compression-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, dir)
@@ -86,19 +86,19 @@ const vueConfig = {
     }
 
     // 清除js版本号
-    config.output.filename('static/[name].js').end()
-    config.output.chunkFilename('static/[name].js').end()
+    // config.output.filename('static/[name].js').end()
+    // config.output.chunkFilename('static/[name].js').end()
 
     if (process.env.NODE_ENV === 'production') {
       // gzip开启
       // config
       //   .plugin('CompressionPlugin')
       //   .use(CompressionPlugin, [])
-      // 清除hashcss
-      config.plugin('extract-css').tap(args => [{
-          filename: 'static/[name].css',
-          chunkFilename: 'static/[name].css'
-        }])
+      // 清除hash css
+      // config.plugin('extract-css').tap(args => [{
+      //     filename: 'static/[name].css',
+      //     chunkFilename: 'static/[name].css'
+      //   }])
     }
   },
 
