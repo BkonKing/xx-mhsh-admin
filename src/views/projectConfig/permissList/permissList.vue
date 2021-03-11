@@ -3,7 +3,6 @@
     <a-row :gutter="24">
       <a-col :span='10'>
         <a-card>
-
           <a-tree class="draggable-tree"
                   :tree-data="treeData2"
                   @select='selectInfo'>
@@ -55,7 +54,7 @@
                            placeholder="简称"></a-input>
                 </div>
               </div>
-              <div class="r1"
+              <div class="r1 inputItem"
                    v-for="(item,index) in inputArr"
                    :key='item'>
                 <a-input style="width:300px"
@@ -192,7 +191,6 @@ function getParentTitle (parent2) {
   // console.log('parent', parent)
   // console.log('parent.dataRef', parent.dataRef)
   if (parent.dataRef) {
-    // console.log(1111)
     getParentTitle(parent)
   }
   return arr
@@ -211,6 +209,7 @@ export default {
       titleArr: []
     }
   },
+
   methods: {
     // 设置标题
     selectInfo (selectedKeys, info) {
