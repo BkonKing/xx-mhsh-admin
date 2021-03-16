@@ -64,7 +64,8 @@
 </template>
 
 <script>
-// import { login } from '@/api/user.js'
+import { doLogin } from '@/api/login.js'
+import { setLocal } from '@/utils/local.js'
 export default {
   data () {
     return {
@@ -87,10 +88,18 @@ export default {
     }
   },
   methods: {
+    // 登录
     login () {
       this.$refs.form.validate(async result => {
         if (result) {
+          const res = await doLogin(this.form)
+          // 保存token
+          setLocal('token', res.data.access_token)
+          // 提示一下
           this.$message.success('登录成功')
+          // 跳转到首页
+          this.$router.push('/home')
+          console.log('登录', res)
         } else {
           this.$message.error('验证失败')
         }

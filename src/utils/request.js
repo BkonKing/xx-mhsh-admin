@@ -1,8 +1,9 @@
 import axios from 'axios'
 import store from '@/store'
-import storage from 'store'
+// import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+// import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { getLocal } from '@/utils/local.js'
 import qs from 'qs'
 
 // 创建 axios 实例
@@ -20,7 +21,8 @@ const errorHandler = (error) => {
   if (error.response) {
     const data = error.response.data
     // 从 localstorage 获取 token
-    const token = storage.get(ACCESS_TOKEN)
+    // const token = storage.get(ACCESS_TOKEN)
+    const token = getLocal('token')
     if (error.response.status === 403) {
       notification.error({
         message: 'Forbidden',
@@ -46,12 +48,13 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  const token = storage.get(ACCESS_TOKEN)
+  const token = getLocal('token')
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
-  if (token) {
-    config.headers['Access-Token'] = token
-  }
+  console.log(token)
+  // if (token) {
+  //   config.headers.Authorization = token
+  // }
   // 转换参数格式
   if (config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
     config.data = qs.stringify(config.data)

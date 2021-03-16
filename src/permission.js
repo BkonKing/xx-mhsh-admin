@@ -5,26 +5,25 @@ import {
   setDocumentTitle,
   domTitle
 } from '@/utils/domUtil'
-import storage from 'store'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+// import storage from 'store'
+// import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { getLocal } from '@/utils/local.js'
 
 NProgress.configure({
   showSpinner: false
 }) // NProgress Configuration
 
-const allowList = ['login'] // 免登录路由name
-const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
-
+const allowList = ['Login'] // 免登录路由name
+const loginRoutePath = '/login'
+// const defaultRoutePath = '/dashboard/workplace'
+const token = getLocal('token')
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
   /* has token */
-  if (storage.get(ACCESS_TOKEN)) {
+  if (token) {
     if (to.path === loginRoutePath) {
-      next({
-        path: defaultRoutePath
-      })
+      next()
       NProgress.done()
     } else {
       next()

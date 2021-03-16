@@ -3,6 +3,10 @@
     <a-row :gutter="24">
       <a-col :span='10'>
         <a-card>
+          <a-button type="danger"
+                    ghost
+                    class="newAdd"
+                    @click="newAdd">+新增</a-button>
           <a-tree class="draggable-tree"
                   :tree-data="treeData"
                   @select='selectInfo'>
@@ -17,7 +21,7 @@
                       @click="edit(item)" />
               <a-icon class="icon"
                       type="delete"
-                      @click="del" />
+                      @click="del(item.id)" />
               <a-icon class="icon"
                       type="cluster"
                       @click="selectItem(item)" />
@@ -69,6 +73,10 @@
                       显示
                     </a-radio>
                   </a-radio-group>
+
+                  <a-icon type="close"
+                          class="close"
+                          @click="removeMe(item.id,index)" />
                 </div>
               </div>
               <div class="r1 inputItem"
@@ -104,7 +112,6 @@
               </div>
               <a-button type='primary'
                         @click="save">保存</a-button>
-
             </div>
           </div>
         </a-card>
@@ -112,7 +119,7 @@
     </a-row>
     <editModel ref="editModel"></editModel>
     <delModel ref="delModel"></delModel>
-    {{inputArr}}
+    <addModel ref="addModel"></addModel>
   </div>
 </template>
 
@@ -120,7 +127,8 @@
 
 import editModel from './editModel'
 import delModel from './delModel'
-import { getMenus, updateBatchMenu } from '@/api/projectConfig.js'
+import addModel from './addModel'
+import { getMenus, updateBatchMenu, removeBatchMenu } from '@/api/projectConfig.js'
 // const treeData2 = [
 //   {
 //     title: '首页',
@@ -248,51 +256,88 @@ for (let i = 0; i < 5; i++) {
 export default {
   components: {
     editModel,
-    delModel
+    delModel,
+    addModel
   },
   data () {
     return {
-      treeData: [],
-      inputArr,
-      itemInfo: {},
-      titleArr: [],
-      parentId: 0,
+      treeData: [], // 左侧树结构数据
+      inputArr, // 右侧 空输入框结构数据
+      itemInfo: {}, // 右侧 编辑的菜单数据
+      titleArr: [], // 题目标题
       rightShow: false,
-      value: ''
+      idArr: [], // 权限id数组
+      parentId: 0
     }
   },
 
   methods: {
+    // 新增权限菜单
+    newAdd () {
+      this.$refs.addModel.isShow = true
+    },
     // 批量编辑权限菜单
     async save () {
-      console.log('this.itemInfo', this.itemInfo.children)
-      let menus = this.itemInfo.children.map(item => {
-        return {
-          id: item.id,
-          parentId: item.parent_id,
-          menuText: item.menu_text,
-          limitsPath: item.limits_path,
-          icon: item.icon,
-          listOrder: item.list_order,
-          display: item.display
-        }
-      })
-      const arr = this.inputArr.filter(item => {
-        return item.menuText !== ''
-      })
-      menus = [...menus, ...arr]
-      console.log(arr)
-      const res = await updateBatchMenu({
-        menus: menus
-      })
-      console.log('批量编辑菜单', res)
+      if (this.parentId === 0) {
+        let menus = this.itemInfo.children.map(item => {
+          return {
+            id: item.id,
+            parentId: item.parent_id,
+            menuText: item.menu_text,
+            limitsPath: item.limits_path,
+            icon: item.icon,
+            listOrder: item.list_order,
+            display: item.display
+          }
+        })
+        const arr = this.inputArr.filter(item => {
+          return item.menuText !== ''
+        })
+        arr.forEach(item => {
+          item.parentId = menus[0].parentId
+          item.id = 0
+        })
+        menus = [...menus, ...arr]
+        await updateBatchMenu({
+          menus: menus
+        })
+      } else {
+        const arr = this.inputArr.filter(item => {
+          return item.menuText !== ''
+        })
+        arr.forEach(item => {
+          item.parentId = this.parentId
+          item.id = 0
+        })
+        await updateBatchMenu({
+          menus: arr
+        })
+      }
+      if (this.idArr.length > 0) {
+        await removeBatchMenu({ ids: this.idArr })
+      }
       this.getData()
+      this.itemInfo = {}
+      // 清空右侧输入框数组
+      this.inputArr = []
+      for (let i = 0; i < 5; i++) {
+        this.inputArr.push({
+          id: '',
+          parentId: '',
+          menuText: '',
+          limitsPath: '',
+          icon: '',
+          listOrder: '',
+          display: ''
+        })
+      }
+      this.rightShow = false
     },
     // 获取权限菜单数据
     async getData () {
       const res = await getMenus()
       this.treeData = res.data
-      // console.log('权限菜单', res)
+      console.log('权限菜单列表', res)
     },
     // 设置标题
     selectInfo (selectedKeys, info) {
@@ -308,13 +353,16 @@ export default {
       // console.log(this.titleArr)
     },
     // 删除节点
-    del () {
+    del (id) {
       this.$refs.delModel.isShow = true
+      this.$refs.delModel.id = id
+      this.$refs.delModel.itemInfo = this.itemInfo
     },
     // 编辑
     edit (item) {
       this.$refs.editModel.isShow = true
-      this.$refs.editModel.item = item
+      item.display = +item.display
+      this.$refs.editModel.item = JSON.parse(JSON.stringify(item))
     },
     // 添加输入框
     add () {
@@ -332,45 +380,64 @@ export default {
     remove (index) {
       this.inputArr.splice(index, 1)
     },
+    // 批量删除菜单
+    removeMe (id, index) {
+      console.log(id)
+      this.idArr.push(id)
+      this.itemInfo.children.splice(index, 1)
+    },
     // 选择菜单
     selectItem (item) {
       // 显示右边结构
       this.rightShow = true
+      this.itemInfo = {}
+      // 清空右侧输入框数组
+      this.inputArr = []
+      for (let i = 0; i < 5; i++) {
+        this.inputArr.push({
+          id: '',
+          parentId: '',
+          menuText: '',
+          limitsPath: '',
+          icon: '',
+          listOrder: '',
+          display: ''
+        })
+      }
       if (item.children) {
         this.itemInfo = JSON.parse(JSON.stringify(item))
         this.itemInfo.children.forEach(item => {
           item.display = +item.display
         })
-        // console.log('父id', item.children[0].parent_id)
-        this.parentId = item.children[0].parent_id
-        console.log(item)
       } else {
-        console.log(item)
-        let obj = {}
-        obj = {
-          ...JSON.parse(JSON.stringify(item.dataRef))
-        }
-        const arr = []
-        arr.push(obj)
-        this.parentId = item.parent_id
-        // console.log('父id', item.parent_id)
-        this.itemInfo = { children: arr }
-        this.itemInfo.children.forEach(item => {
-          item.display = +item.display
-        })
+        this.parentId = item.id
+        // let obj = {}
+        // obj = {
+        //   ...JSON.parse(JSON.stringify(item.dataRef))
+        // }
+        // const arr = []
+        // arr.push(obj)
+        // this.itemInfo = { children: arr }
+        // this.itemInfo.children.forEach(item => {
+        //   item.display = +item.display
+        // })
       }
     }
 
   },
   created () {
     this.getData()
-    console.log('inputArr', this.inputArr)
   }
 }
 </script>
 
 <style lang='less' scoped>
 .permissList {
+  .newAdd {
+    margin-left: 20px;
+    width: 100px;
+    text-align: left;
+  }
   .icon {
     margin: 0 5px;
     font-size: 16px;
@@ -387,18 +454,22 @@ export default {
   }
   .right {
     margin-top: 30px;
+    .close {
+      font-size: 18px;
+    }
     .r1 {
       margin-bottom: 10px;
       .plus {
         margin: 0 10px;
         font-size: 18px;
       }
-      .close {
-        font-size: 18px;
-      }
     }
     .r2 {
       margin-bottom: 10px;
+      .close {
+        font-size: 18px;
+        margin-left: 37px;
+      }
     }
     button {
       margin-right: 10px;

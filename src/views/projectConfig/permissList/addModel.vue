@@ -1,28 +1,29 @@
 <template>
   <a-modal v-model="isShow"
-           title="编辑模块">
+           title="新增模块">
     <template #footer>
       <div class="footer">
         <a-button type='primary'
-                  @click="save">保存</a-button>
+                  @click="add">保存</a-button>
       </div>
     </template>
-    <a-form-model :label-col="labelCol"
+    <a-form-model :model='form'
+                  :label-col="labelCol"
                   :wrapper-col="wrapperCol">
       <a-form-model-item label='菜单名称'>
-        <a-input v-model="item.menu_text"></a-input>
+        <a-input v-model="form.menuText"></a-input>
       </a-form-model-item>
       <a-form-model-item label='菜单图标样式'>
-        <a-input v-model="item.icon"></a-input>
+        <a-input v-model="form.icon"></a-input>
       </a-form-model-item>
       <a-form-model-item label='访问路径'>
-        <a-input v-model='item.limits_path'></a-input>
+        <a-input v-model='form.limitsPath'></a-input>
       </a-form-model-item>
       <a-form-model-item label='排序'>
-        <a-input v-model="item.list_order"></a-input>
+        <a-input v-model="form.listOrder"></a-input>
       </a-form-model-item>
       <a-form-model-item label='是否显示'>
-        <a-radio-group v-model="item.display">
+        <a-radio-group v-model="form.display">
           <a-radio :value="0">
             隐藏
           </a-radio>
@@ -37,31 +38,28 @@
 </template>
 
 <script>
-import { updateMenu } from '@/api/projectConfig.js'
+import { addMenu } from '@/api/projectConfig.js'
 export default {
   data () {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       isShow: false,
-      item: {}
+      form: {
+        menuText: '',
+        limitsPath: '',
+        icon: '',
+        listOrder: '',
+        display: ''
+      }
     }
   },
   methods: {
-    // 修改菜单
-    async save () {
-      const res = await updateMenu({
-        id: this.item.id,
-        parentId: this.item.parent_id,
-        menuText: this.item.menu_text,
-        limitsPath: this.item.limits_path,
-        icon: this.item.icon,
-        listOrder: this.item.list_order,
-        display: this.item.display
-      })
-      this.isShow = false
+    async add () {
+      await addMenu(this.form)
       this.$parent.getData()
-      console.log(res)
+      this.isShow = false
+      // console.log(res)
     }
   }
 

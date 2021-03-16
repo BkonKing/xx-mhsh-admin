@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import {
-  UserLayout,
+  // UserLayout,
   BasicLayout
   // BlankLayout
 } from '@/layouts'
@@ -24,46 +24,51 @@ export {
  * 基础路由
  * @type { *[] }
  */
-export const constantRoutes = [{
-  path: '/user',
-  component: UserLayout,
-  redirect: '/user/login',
-  hidden: true,
-  children: [{
-    path: 'login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
-  }]
-},
-{
-  path: '/',
-  name: 'index',
-  component: BasicLayout,
-  hideChildrenInMenu: true,
-  meta: {
-    title: '首页'
+export const constantRoutes = [
+  {
+    path: '/',
+    redirect: '/login'
   },
-  redirect: 'home',
-  children: [{
-    path: '/home',
-    name: 'home',
-    component: () => import('@/views/user/home'),
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login/login')
+  },
+  // {
+  //   path: '/user',
+  //   component: UserLayout,
+  //   redirect: '/user/login',
+  //   hidden: true,
+  //   children: [{
+  //     path: 'login',
+  //     name: 'login',
+  //     component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
+  //   }]
+  // },
+  {
+    path: '/',
+    name: 'index',
+    component: BasicLayout,
+    hideChildrenInMenu: true,
     meta: {
-      title: '首页',
-      icon: 'table'
-    }
-  }].concat(asyncRoutes)
-},
+      title: '首页'
+    },
+    redirect: 'home',
+    children: [{
+      path: '/home',
+      name: 'home',
+      component: () => import('@/views/user/home'),
+      meta: {
+        title: '首页',
+        icon: 'table'
+      }
+    }].concat(asyncRoutes)
+  },
 
-{
-  path: '/404',
-  component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
-},
-{
-  path: '/login',
-  name: 'Login',
-  component: () => import('@/views/login/login')
-}
+  {
+    path: '/404',
+    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
+  }
 ]
 
 // 找不到路由则显示404
