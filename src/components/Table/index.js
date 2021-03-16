@@ -11,7 +11,35 @@ export default {
 
       localLoading: false,
       localDataSource: [],
-      localPagination: Object.assign({}, this.pagination)
+      // localPagination: this.pagination
+      localPagination: Object.assign({
+        defaultCurrent: 1, // 默认当前页数
+        defaultPageSize: 10, // 默认当前页显示数据的大小
+        total: 0, // 总数，必须先有
+        showSizeChanger: true,
+        showQuickJumper: true,
+        pageSizeOptions: ['10', '20', '30', '50'],
+        showTotal: (total) => {
+          console.log('total', total, this.localPagination, this.pageSize)
+          let pageTotal = 0
+          if (total % this.localPagination.defaultPageSize > 0) {
+            pageTotal = parseInt(total / this.localPagination.defaultPageSize) + 1
+          } else {
+            pageTotal = parseInt(total / this.localPagination.defaultPageSize)
+          }
+          return '共 ' + total + ' 条记录 第 ' + this.localPagination.defaultCurrent + ' / ' + pageTotal + ' 页'
+        },
+        // 改变每页数量时更新显示
+        onShowSizeChange: (current, pageSize) => {
+          this.localPagination.defaultCurrent = current
+          this.localPagination.defaultPageSize = pageSize
+        },
+        // 页面改变
+        onChange: (current, size) => {
+          this.localPagination.defaultCurrent = current
+          this.localPagination.defaultPageSize = size
+        }
+      }, this.pagination)
     }
   },
   props: Object.assign({}, T.props, {
@@ -115,6 +143,7 @@ export default {
       showSizeChanger: this.showSizeChanger
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
+    console.log('this.localPagination', this.pagination)
     this.loadData()
   },
   methods: {
@@ -124,9 +153,13 @@ export default {
      * @param Boolean bool
      */
     refresh (bool = false) {
-      bool && (this.localPagination = Object.assign({}, {
-        current: 1, pagesize: this.pagesize
+      // bool && (this.localPagination = Object.assign({}, {
+      //   current: 1, pagesize: this.pagesize
+      // }))
+      bool && (this.localPagination = Object.assign({}, this.localPagination, {
+        current: 1, pagesize: this.pagesize, defaultCurrent: 1, defaultPageSize: this.pagesize
       }))
+      console.log(this.localPagination)
       this.loadData()
     },
     /**
@@ -183,6 +216,9 @@ export default {
             }
             this.localDataSource = r.list // 返回结果中的数组数据
           } else {
+            this.localPagination = Object.assign({}, {
+              total: 0
+            })
             this.localDataSource = [] // 返回结果中的数组数据
           }
           this.localLoading = false
@@ -237,17 +273,18 @@ export default {
     renderClear (callback) {
       if (this.selectedRowKeys.length <= 0) return null
       return (
-        <a style="margin-left: 24px" onClick={() => {
+        <a onClick={() => {
           callback()
           this.clearSelected()
         }}>清空</a>
       )
     },
     renderAlert () {
-      // 绘制统计列数据
+      console.log(this.alert)
+      // 绘制统计列数据 totalTitle统计字段文字描述
       const needTotalItems = this.needTotalList.map((item) => {
         return (<span style="margin-right: 12px">
-          {item.title}总计 <a style="font-weight: 600">{!item.customRender ? item.total : item.customRender(item.total)}</a>
+          {this.alert.totalTitle || item.title}总计 <span style="font-weight: 600; color: #000">{this.alert.totalUnit || ''}{!item.customRender ? item.total : item.customRender(item.total)}</span>
         </span>)
       })
 
@@ -259,15 +296,19 @@ export default {
       ) : null
 
       // 绘制 alert 组件
-      return (
-        <a-alert showIcon={true} style="margin-bottom: 16px">
-          <template slot="message">
-            <span style="margin-right: 12px">已选择: <a style="font-weight: 600">{this.selectedRows.length}</a></span>
-            {needTotalItems}
-            {clearItem}
-          </template>
-        </a-alert>
-      )
+      if (this.selectedRows.length) {
+        return (
+          <a-alert showIcon={true} style="margin-bottom: 16px">
+            <template slot="message">
+              <span style="margin-right: 12px">已选择: <a style="font-weight: 600">{this.selectedRows.length} </a>项</span>
+              {needTotalItems}
+              {clearItem}
+            </template>
+          </a-alert>
+        )
+      } else {
+        return ''
+      }
     }
   },
 

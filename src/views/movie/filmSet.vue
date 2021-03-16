@@ -21,30 +21,35 @@
 </template>
 
 <script>
-import { setTel } from '@/api/movie'
+import { getTel, setTel } from '@/api/movie'
 export default {
   name: 'filmSet',
   components: {
   },
   data () {
     return {
-      form: {}
+      form: {
+        tel: ''
+      }
     }
   },
   created () {
-    setTel()
+    this.getServeTel()
   },
   beforeCreate () {
     this.form = this.$form.createForm(this, { name: 'time_related_controls' })
   },
   methods: {
+    getServeTel () {
+      getTel().then(res => {
+        this.form.tel = res.data
+      })
+    },
     handleSubmit (e) {
+      console.log(this.form)
       e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values)
-          // this.$store.commit('update', values)
-        }
+      setTel({ phone: this.form.tel }).then(res => {
+        this.$message.success(res.message)
       })
     }
   }

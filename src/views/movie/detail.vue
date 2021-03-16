@@ -24,7 +24,7 @@
             </div>
           </template>
         </a-step>
-        <a-step>
+        <a-step v-if="dataInfo.basic.status == 3 || dataInfo.basic.status == 5">
           <template v-slot:title>
             <span>售后</span>
           </template>
@@ -35,18 +35,32 @@
             </div>
           </template>
         </a-step>
-        <a-step title="完成" />
+        <a-step v-if="dataInfo.basic.status == 3 || dataInfo.basic.status == 5" title="售后完成" />
+        <a-step v-else-if="dataInfo.basic.status == 4" title="订单成功" />
+        <a-step v-else-if="dataInfo.basic.status == 11">
+          <template v-slot:title>
+            <span>交易取消</span>
+          </template>
+          <template v-slot:description>
+            <div v-if="dataInfo.process.refund_time && dataInfo.process.refund_time!='0'" class="antd-pro-pages-profile-advanced-style-stepDescription">
+              {{ dataInfo.process.refund_username }}
+              <div>{{ dataInfo.process.refund_time }}</div>
+            </div>
+          </template>
+        </a-step>
       </a-steps>
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="基础信息">
       <a-descriptions>
         <a-descriptions-item label="订单状态">{{ dataInfo.basic.order_status }}</a-descriptions-item>
-        <a-descriptions-item label="支付方式">{{ dataInfo.basic.pay_type }}</a-descriptions-item>
-        <a-descriptions-item label="支付订单号">{{ dataInfo.basic.pay_number }}</a-descriptions-item>
-        <a-descriptions-item label="订单编号">{{ dataInfo.basic.order_no }}</a-descriptions-item>
-        <!-- <a-descriptions-item label="退款编号"><a href="">{{ dataInfo.basic.ssss }}</a></a-descriptions-item>
-        <a-descriptions-item label="退款状态">{{ dataInfo.basic.ssss }}</a-descriptions-item> -->
-        <a-descriptions-item label="支付金额">￥{{ dataInfo.basic.pay_price }}</a-descriptions-item>
+        <a-descriptions-item label="支付方式">{{ dataInfo.basic.status != 11 ? dataInfo.basic.pay_type : '--' }}</a-descriptions-item>
+        <a-descriptions-item label="支付订单号">{{ dataInfo.basic.status != 11 ? dataInfo.basic.pay_number : '--' }}</a-descriptions-item>
+        <a-descriptions-item label="订单编号" :span="dataInfo.basic.status == 11 || dataInfo.basic.status == 4 ? 3 : 1">{{ dataInfo.basic.order_no }}</a-descriptions-item>
+        <template v-if="dataInfo.basic.status == 3 || dataInfo.basic.status == 5">
+          <a-descriptions-item label="退款编号"><a :href="'/zht/film/film/getrefundlist?order_id='+dataInfo.basic.order_id" target="_parent">{{ dataInfo.basic.returnfund_numb }}</a></a-descriptions-item>
+          <a-descriptions-item label="退款状态">{{ dataInfo.basic.status == 3 ? '已退款' : '退款中' }}</a-descriptions-item>
+        </template>
+        <a-descriptions-item label="支付金额"><template v-if="dataInfo.basic.status != 11">￥</template>{{ dataInfo.basic.status != 11 ? dataInfo.basic.pay_price : '--' }}</a-descriptions-item>
         <a-descriptions-item label="优惠金额">￥{{ dataInfo.basic.coupon_price }}</a-descriptions-item>
         <a-descriptions-item label="总座位费">￥{{ dataInfo.basic.seat_price }}</a-descriptions-item>
       </a-descriptions>
@@ -54,8 +68,8 @@
     <a-card style="margin-top: 24px" :bordered="false" title="影票信息">
       <a-descriptions>
         <a-descriptions-item label="取票号">{{ dataInfo.ticket_info.print_no }}</a-descriptions-item>
-        <a-descriptions-item label="是否取票">{{ dataInfo.ticket_info.is_get == '已取票' || '未取票' }}</a-descriptions-item>
-        <a-descriptions-item label="取票码">{{ dataInfo.ticket_info.print_no }}</a-descriptions-item>
+        <!-- <a-descriptions-item label="是否取票">{{ dataInfo.ticket_info.is_get == '已取票' || '未取票' }}</a-descriptions-item> -->
+        <a-descriptions-item label="取票码" span="2"><span style="display: flex; vertical-align: middle" @click="dataInfo.ticket_info.printno_url ? imgShow=true : ''"><a-icon style="fontSize: 20px" type="qrcode" /></span></a-descriptions-item>
         <a-descriptions-item label="场次">{{ dataInfo.ticket_info.sessions + ' ' + dataInfo.ticket_info.week + ' ' + dataInfo.ticket_info.time }}</a-descriptions-item>
         <a-descriptions-item label="厅号" span="2">{{ dataInfo.ticket_info.hall_name }}</a-descriptions-item>
         <a-descriptions-item label="座位" span="3">{{ dataInfo.ticket_info.seat_name }}</a-descriptions-item>
@@ -71,8 +85,8 @@
     <a-card style="margin-top: 24px" :bordered="false" title="影片影院">
       <a-descriptions>
         <a-descriptions-item label="影片">
-          <a v-if="dataInfo.cinema_info.is_jump == 1" href="">{{ dataInfo.cinema_info.film_name }}</a>
-          <template v-else>{{ dataInfo.cinema_info.film_name }}</template>
+          <a v-if="dataInfo.cinema_info.is_jump == 1" :href="'/zht/film/film/getfilmlist?film_code='+dataInfo.cinema_info.film_no" target="_parent">《{{ dataInfo.cinema_info.film_name }}》</a>
+          <template v-else>《{{ dataInfo.cinema_info.film_name }}》</template>
         </a-descriptions-item>
         <a-descriptions-item label="影片时长">{{ dataInfo.cinema_info.total_time }}</a-descriptions-item>
         <a-descriptions-item label="影片类型">{{ dataInfo.cinema_info.film_type }}</a-descriptions-item>
@@ -83,15 +97,16 @@
     <a-card style="margin-top: 24px" :bordered="false" title="用户信息">
       <a-descriptions>
         <a-descriptions-item label="项目">{{ dataInfo.user_info.proejct_name }}</a-descriptions-item>
-        <a-descriptions-item label="用户"><a href="">{{ dataInfo.user_info.username }}</a></a-descriptions-item>
+        <a-descriptions-item label="用户"><a :href="'/zht/user/user/getUserList?uid='+dataInfo.user_info.uid" target="_parent">{{ dataInfo.user_info.username }}</a></a-descriptions-item>
         <a-descriptions-item label="手机号">{{ dataInfo.user_info.mobile }}</a-descriptions-item>
       </a-descriptions>
     </a-card>
-    <a-card style="margin-top: 24px" :bordered="false" title="操作日志">
+    <a-card style="margin: 24px 0" :bordered="false" title="操作日志">
       <a-table
         :columns="operationColumns"
         :dataSource="logData"
-        :pagination="true"
+        :pagination="false"
+        rowKey="id"
       >
         <template
           slot="opt_status"
@@ -105,6 +120,15 @@
         </template>
       </a-table>
     </a-card>
+    <a-modal
+      width="460px"
+      :visible="imgShow"
+      class="cztx-modal"
+      :footer="null"
+      @cancel="imgShow = false"
+    >
+      <div><img width="400px" height="400px" :src="dataInfo.ticket_info.printno_url" /></div>
+    </a-modal>
   </div>
 </template>
 
@@ -122,18 +146,15 @@ export default {
       operationColumns: [
         {
           title: '操作类型',
-          dataIndex: 'type_desc',
-          key: 'type_desc'
+          dataIndex: 'type_desc'
         },
         {
           title: '操作员',
-          dataIndex: 'nickname',
-          key: 'nickname'
+          dataIndex: 'handle_name'
         },
         {
           title: '执行结果',
           dataIndex: 'opt_status',
-          key: 'opt_status',
           scopedSlots: { customRender: 'opt_status' }
         },
         {
@@ -144,12 +165,12 @@ export default {
         {
           title: '耗时',
           dataIndex: 'end_time',
-          key: 'end_time',
           scopedSlots: { customRender: 'opt_usetime' }
         }
       ],
       stepIndex: 0,
-      logData: []
+      logData: [],
+      imgShow: false
     }
   },
   mounted () {
@@ -161,13 +182,19 @@ export default {
       getOrderDetail({ order_id: this.order_id }).then(res => {
         this.dataInfo = res.data
         this.logData = res.data.log_info
-        if (res.data.process.pay_time) {
-          this.stepIndex = 1
-          if (res.data.process.is_finished) {
+        switch (res.data.basic.status) {
+          case 3: // 已取消（已退款）
             this.stepIndex = 3
-          } else {
+            break
+          case 4: // 已成功
             this.stepIndex = 2
-          }
+            break
+          case 5: // 已取消（退款中）
+            this.stepIndex = 2
+            break
+          case 11: // 取消付款
+            this.stepIndex = 2
+            break
         }
       })
     }

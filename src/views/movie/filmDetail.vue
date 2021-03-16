@@ -1,28 +1,32 @@
 <template>
   <div>
     <a-card :bordered="false" title="状态">
-      <a-steps direction="horizontal" :current="1" progressDot>
-        <a-step>
-          <template v-slot:title>
-            <span>创建时间</span>
-          </template>
-          <template v-slot:description>
-            <div class="antd-pro-pages-profile-advanced-style-stepDescription">
-              {{ dataInfo.ctime }}
-            </div>
-          </template>
-        </a-step>
-        <a-step>
-          <template v-slot:title>
-            <span>{{ dataInfo.is_shown == 1 ? '热映' : '待映' }}</span>
-          </template>
-          <template v-slot:description>
-            <div class="antd-pro-pages-profile-advanced-style-stepDescription">
-              {{ dataInfo.publish_date }}
-            </div>
-          </template>
-        </a-step>
-      </a-steps>
+      <a-row>
+        <a-col :span="14" :push="5" >
+          <a-steps direction="horizontal" :current="1" progressDot>
+            <a-step>
+              <template v-slot:title>
+                <span>创建时间</span>
+              </template>
+              <template v-slot:description>
+                <div class="antd-pro-pages-profile-advanced-style-stepDescription">
+                  {{ dataInfo.ctime }}
+                </div>
+              </template>
+            </a-step>
+            <a-step>
+              <template v-slot:title>
+                <span>{{ dataInfo.is_shown == 1 ? '热映' : '待映' }}</span>
+              </template>
+              <template v-slot:description>
+                <div class="antd-pro-pages-profile-advanced-style-stepDescription">
+                  {{ dataInfo.publish_date }}
+                </div>
+              </template>
+            </a-step>
+          </a-steps>
+        </a-col>
+      </a-row>
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="基础信息">
       <a-row>
@@ -39,7 +43,7 @@
               <a-descriptions-item label="时长">{{ dataInfo.duration }}</a-descriptions-item>
               <a-descriptions-item v-if="dataInfo.ticket_price" label="最低售价">￥{{ dataInfo.ticket_price }}</a-descriptions-item>
               <a-descriptions-item label="评分">{{ dataInfo.score }}</a-descriptions-item>
-              <a-descriptions-item label="已售票数">{{ dataInfo.tickets_sold }}</a-descriptions-item>
+              <a-descriptions-item label="已售票数"><a v-if="dataInfo.tickets_sold>0" :href="'/zht/film/film/orderlist?tabIndex=1&film_name='+encodeURI(dataInfo.film_name)" target="_parent">{{ dataInfo.tickets_sold }}</a><span v-else>{{ dataInfo.tickets_sold }}</span></a-descriptions-item>
               <a-descriptions-item label="想看">{{ dataInfo.want_view }}</a-descriptions-item>
             </a-descriptions>
         </a-col>
@@ -95,7 +99,7 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="搜索">
-                  <a-input v-model="queryParam.search" placeholder="手机号、订单编号、取票号、影片" style="width: 100%" />
+                  <a-input v-model="queryParam.search" placeholder="影城" style="width: 100%" />
                 </a-form-model-item>
               </a-col>
             </template>
@@ -139,7 +143,7 @@
 
 <script>
 import { STable } from '@/components'
-import { getFilmDetail, getFilmScheduling, getSchedulingDate, getScreensList } from '@/api/movie'
+import { getFilmDetail, getFilmDetail2, getFilmScheduling, getSchedulingDate, getScreensList } from '@/api/movie'
 import { cityOpction } from '@/const/city'
 
 const columns = [
@@ -192,11 +196,17 @@ export default {
   },
   methods: {
     getData () {
-      getFilmDetail({ film_id: this.film_id }).then(res => {
-        this.dataInfo = res.data
-        // this.getScheduling()
-        this.getScreens()
-      })
+      if (this.film_id) {
+        getFilmDetail({ film_id: this.film_id }).then(res => {
+          this.dataInfo = res.data
+          this.getScreens()
+        })
+      } else {
+        getFilmDetail2({ film_no: this.film_code }).then(res => {
+          this.dataInfo = res.data
+          this.getScreens()
+        })
+      }
     },
     toggleAdvanced () {
       this.advanced = !this.advanced

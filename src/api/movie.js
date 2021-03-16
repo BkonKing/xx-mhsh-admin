@@ -12,9 +12,11 @@ const movieApi = {
   refundDetail: '/film/film/getrefunddetail',
   filmList: '/film/film/getfilmlist',
   filmDetail: '/film/film/filmdetail',
+  filmDetail2: '/film/film/filmdetailbycode',
   filmScheduling: '/film/film/getschedulebyfilmno',
   schedulingDate: '/film/film/getschedudate',
   screensList: '/film/film/gethall',
+  getTel: '/film/film/getcustomerphone',
   setTel: '/film/film/customerPhone'
 }
 
@@ -118,6 +120,13 @@ export function getFilmDetail (parameter) {
     data: parameter
   })
 }
+export function getFilmDetail2 (parameter) {
+  return request({
+    url: movieApi.filmDetail2,
+    method: 'post',
+    data: parameter
+  })
+}
 
 // 影片详情-影片排期
 export function getFilmScheduling (parameter) {
@@ -141,6 +150,24 @@ export function getSchedulingDate (parameter) {
 export function getScreensList (parameter) {
   return request({
     url: movieApi.screensList,
+    method: 'post',
+    data: parameter
+  })
+}
+
+// 电影设置-获取客服电话
+export function getTel (parameter) {
+  return request({
+    url: movieApi.getTel,
+    method: 'post',
+    data: parameter
+  })
+}
+
+// 电影设置-设置客服电话
+export function setTel (parameter) {
+  return request({
+    url: movieApi.setTel,
     method: 'post',
     data: parameter
   })

@@ -1,0 +1,353 @@
+<template>
+  <page-header-wrapper>
+    <template v-slot:extraContent>
+      <div v-if="dataObj" class="extra-content">
+        <div class="stat-item">
+          <a-statistic :title="'水费余额('+dataObj.w_count+'户)'" :value="'￥' + dataObj.w_money | NumberFormat" />
+        </div>
+        <div class="stat-item">
+          <a-statistic :title="'电费余额('+dataObj.e_count+'户)'" :value="'￥' + dataObj.e_money | NumberFormat" />
+        </div>
+        <div class="stat-item">
+          <a-statistic :title="'燃气费('+dataObj.g_count+'户)'" :value="'￥' + dataObj.g_money | NumberFormat" />
+        </div>
+        <div class="stat-item">
+          <a-statistic :title="'其他费用余额('+dataObj.o_count+'户)'" :value="'￥' + dataObj.o_money | NumberFormat" />
+        </div>
+      </div>
+    </template>
+    <div>
+      <a-card class="search-card" :bordered="false">
+        <div class="table-page-search-wrapper">
+          <a-form layout="inline">
+            <a-row :gutter="48">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="区域">
+                  <div style="display: flex;">
+                    <a-select v-model="queryParam.building_id" placeholder="楼栋" default-value="0" @change="selectHouse" style="margin-right: 15px">
+                      <a-select-option v-for="item in houseList" :key="item.id" :value="item.id">
+                        {{ item.building_name }}
+                      </a-select-option>
+                    </a-select>
+                    <a-select v-model="queryParam.unit_id" placeholder="单元" default-value="0">
+                      <a-select-option v-for="item in unitList" :key="item.id" :value="item.id">
+                        {{ item.unit_name }}
+                      </a-select-option>
+                    </a-select>
+                  </div>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="搜索">
+                  <a-input v-model="queryParam.search" placeholder="业主姓名/电话" style="width: 100%" />
+                </a-form-model-item>
+              </a-col>
+              <template v-if="advanced">
+                <!-- <a-col :md="8" :sm="24">
+                  <a-form-model-item label="余额">
+                    <div style="display: flex;">
+                      <a-input v-model="queryParam.search" placeholder="最低金额" style="width: 100%" />
+                      <div style="padding: 0 8px;">—</div>
+                      <a-input v-model="queryParam.search" placeholder="最高金额" style="width: 100%" />
+                    </div>
+                  </a-form-model-item>
+                </a-col> -->
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="是否欠费">
+                    <div>
+                      <a-select v-model="queryParam.qf_type" placeholder="请选择" default-value="0">
+                        <a-select-option value="1">欠费</a-select-option>
+                        <a-select-option value="2">无</a-select-option>
+                      </a-select>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="上次充缴" prop="releaseDate">
+                    <a-range-picker
+                      showTime
+                      class="piker-time"
+                      :value="publishDate"
+                      :placeholder="['开始时间', '结束时间']"
+                      format="YYYY-MM-DD"
+                      @change="getTime"
+                    />
+                  </a-form-model-item>
+                </a-col>
+              </template>
+              <a-col :md="!advanced && 8 || 16" :sm="24">
+                <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
+                  <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                  <a-button style="margin-left: 8px" @click="reSet">重置</a-button>
+                  <a @click="toggleAdvanced" style="margin-left: 8px">
+                    {{ advanced ? '收起' : '展开' }}
+                    <a-icon :type="advanced ? 'up' : 'down'"/>
+                  </a>
+                </span>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
+      </a-card>
+      <a-card>
+        <div class="table-operator">
+          <a-button type="default"><a-icon type="upload" />导入文件</a-button>
+        </div>
+        <s-table
+          ref="table"
+          size="default"
+          rowKey="film_id"
+          class="table-box"
+          :columns="columns"
+          :data="loadTableData"
+        >
+          <span slot="house" slot-scope="text, record">
+            {{ text + '-' + record.unit_name + '-' + record.house_name }}
+          </span>
+          <span slot="balance">水费余额
+            <a-popover overlayClassName="popover-toast">
+              <template slot="content">
+                余额（-欠费金额）
+              </template>
+              <a-icon type="exclamation-circle" />
+            </a-popover>
+          </span>
+          <span slot="water" slot-scope="text, record">
+            <span :class="[record.w_money < 0 ? 'color-red' : '']">{{ record.w_money }}</span>
+            <template v-if="record.w_qf_money > 0">（<span class="color-red">-{{ record.w_qf_money }}</span>）</template>
+          </span>
+          <span slot="electricity" slot-scope="text, record">
+            <span :class="[record.e_money < 0 ? 'color-red' : '']">{{ record.e_money }}</span>
+            <template v-if="record.e_qf_money > 0">（<span class="color-red">-{{ record.e_qf_money }}</span>）</template>
+          </span>
+          <span slot="gas" slot-scope="text, record">
+            <span :class="[record.g_money < 0 ? 'color-red' : '']">{{ record.g_money }}</span>
+            <template v-if="record.g_qf_money > 0">（<span class="color-red">-{{ record.g_qf_money }}</span>）</template>
+          </span>
+          <span slot="other" slot-scope="text, record">
+            <span :class="[record.o_money < 0 ? 'color-red' : '']">{{ record.o_money }}</span>
+            <template v-if="record.o_qf_money > 0">（<span class="color-red">-{{ record.o_qf_money }}</span>）</template>
+          </span>
+          <span slot="action" slot-scope="text, record">
+            <template>
+              <a @click="goDetail(record.id)">查看</a>
+              <a-divider type="vertical" />
+              <a @click="investModal(record)">充值</a>
+            </template>
+          </span>
+          <template slot="user" slot-scope="text, record">
+            {{ record.realname }}<br />{{ record.mobile }}
+          </template>
+        </s-table>
+      </a-card>
+      <recharge-money ref="recharge" :modalShow.sync="modalShow" :params="params" @rechargeCall="rechargeCall"></recharge-money>
+    </div>
+  </page-header-wrapper>
+</template>
+
+<script>
+// import moment from 'moment'
+import { STable } from '@/components'
+import { getBuildList, getUnitList, getBalanceList } from '@/api/property'
+import rechargeMoney from './components/rechargeMoney'
+const columns = [
+  {
+    title: '序号',
+    dataIndex: 'id'
+  },
+  {
+    title: '房产',
+    dataIndex: 'building_name',
+    scopedSlots: { customRender: 'house' }
+  },
+  {
+    slots: { title: 'balance' },
+    scopedSlots: { customRender: 'water' },
+    sorter: true
+  },
+  {
+    title: '电费余额',
+    scopedSlots: { customRender: 'electricity' },
+    sorter: true
+  },
+  {
+    title: '燃气费余额',
+    scopedSlots: { customRender: 'gas' },
+    sorter: true
+  },
+  {
+    title: '其他费用余额',
+    scopedSlots: { customRender: 'other' },
+    sorter: true
+  },
+  {
+    title: '业主',
+    scopedSlots: { customRender: 'user' }
+  },
+  {
+    title: '上次充缴',
+    dataIndex: 'pay_time',
+    sorter: true
+  },
+  {
+    title: '充缴次数',
+    dataIndex: 'cj_count',
+    sorter: true
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: '150px',
+    scopedSlots: { customRender: 'action' }
+  }
+]
+export default {
+  name: 'balanceManage',
+  components: {
+    STable,
+    rechargeMoney
+  },
+  data () {
+    // this.columns = columns
+    return {
+      columns: columns,
+      tabList: [
+        { key: '0', tab: '全部' },
+        { key: '1', tab: '已成功' },
+        { key: '2', tab: '已取消' }
+      ],
+      productList: [
+        { id: 0, name: '请选择' },
+        { id: 1, name: '全部' },
+        { id: 2, name: '已成功' }
+      ],
+      statusList: [
+        { id: 0, name: '请选择' },
+        { id: 1, name: '全部' },
+        { id: 2, name: '取消付款' }
+      ],
+      publishDate: [],
+      modalShow: false, // 充值余额弹窗
+      advanced: false, // 高级搜索 展开/关闭
+      queryParam: {}, // 查询参数
+      params: {}, // 充值弹窗参数
+      dataObj: {},
+      houseList: [], // 楼栋
+      unitList: [] // 单元
+    }
+  },
+  mounted () {
+    this.getBuildList()
+    this.getUnitList()
+  },
+  methods: {
+    // 楼栋
+    getBuildList () {
+      getBuildList().then(res => {
+        this.houseList = res.data.list
+      })
+    },
+    // 单元
+    getUnitList () {
+      getUnitList({ building_id: this.queryParam.building_id }).then(res => {
+        this.unitList = res.data.list
+      })
+    },
+    // 选择楼栋
+    selectHouse () {
+      delete this.queryParam.unit_id
+      this.getUnitList()
+    },
+    getTime (dates, dateStrings) {
+      this.publishDate = dates
+      this.queryParam.start_time = dateStrings[0]
+      this.queryParam.end_time = dateStrings[1]
+    },
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    // 重置
+    reSet () {
+      this.queryParam = {}
+      this.publishDate = []
+    },
+    // 刷新表格数据
+    loadTableData (page) {
+      if (page.sortOrder && page.sortField) {
+        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
+          // 升序
+        } else {
+          // 降序
+        }
+        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
+        } else {}
+        if (page.sortField == 'want_view' && page.sortOrder == 'ascend') {
+        } else {}
+        if (page.sortField == 'tickets_sold' && page.sortOrder == 'ascend') {
+        } else {}
+        if (page.sortField == 'ticket_price' && page.sortOrder == 'ascend') {
+        } else {}
+        if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
+        } else {}
+      }
+      // console.log(this.queryParam, page)
+      const requestParameters = Object.assign(this.queryParam, page)
+        console.log('loadData request parameters:', requestParameters)
+        return getBalanceList(requestParameters)
+          .then(res => {
+            this.columns = JSON.parse(JSON.stringify(columns))
+            // this.columns.splice(1, 1) // 隐藏第二列
+            this.dataObj = res.tab_data
+            return res
+          })
+    },
+    // 充值
+    investModal (item) {
+      this.params = {
+        expenses_house_id: item.id
+      }
+      this.$nextTick(() => {
+        this.$refs.recharge.getData()
+      })
+      this.modalShow = true
+    },
+    // 充值成功回调
+    rechargeCall () {
+      this.$refs.table.refresh(true)
+      this.modalShow = false
+    },
+    goDetail (id) {
+      this.$router.push({
+        path: '/property/lifePay/balanceDetail',
+        query: {
+          houseId: id
+        }
+      })
+    }
+    // 表单提交
+    // handleSubmit (e) {
+    //   e.preventDefault()
+    //   this.form.validateFields((err, values) => {
+    //     if (!err) {
+    //       console.log('Received values of form: ', values)
+    //     }
+    //   })
+    // }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import "../../../styles/Workplace.less";
+.table-page-search-wrapper {
+  /deep/ .ant-form-item-label {
+    min-width: 88px;
+  }
+  .piker-time {
+    width: 100% !important;
+  }
+}
+.ant-card {
+  margin-bottom: 24px;
+}
+</style>

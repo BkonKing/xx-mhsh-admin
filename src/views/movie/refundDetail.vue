@@ -29,26 +29,26 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="基础信息">
       <a-descriptions>
-        <a-descriptions-item label="退款状态">{{ dataInfo.basic.returnfund_numb }}</a-descriptions-item>
-        <a-descriptions-item label="退款编号">{{ dataInfo.basic.order_no }}</a-descriptions-item>
-        <a-descriptions-item label="订单编号"><a href="">{{ dataInfo.basic.order_no }}</a></a-descriptions-item>
-        <a-descriptions-item label="申请退款">￥{{ dataInfo.basic.apply_price }}</a-descriptions-item>
-        <a-descriptions-item v-if="dataInfo.basic.actual_price > 0" label="实际退款">￥{{ dataInfo.basic.actual_price }}</a-descriptions-item>
-        <a-descriptions-item v-if="dataInfo.basic.refund_type > 0" label="退回方式">{{ dataInfo.basic.refund_type }}</a-descriptions-item>
+        <a-descriptions-item label="退款状态">{{ dataInfo.basic.refund_desc }}</a-descriptions-item>
+        <a-descriptions-item label="退款编号">{{ dataInfo.basic.returnfund_numb }}</a-descriptions-item>
+        <a-descriptions-item label="订单编号"><a :href="'/zht/film/film/orderlist?order_id='+dataInfo.basic.order_id" target="_parent">{{ dataInfo.basic.order_no }}</a></a-descriptions-item>
+        <a-descriptions-item label="申请退款">￥{{ dataInfo.basic.apply_price }}（￥{{ dataInfo.basic.apply_rmb_price }} + 幸福币{{ dataInfo.basic.apply_refund_happiness }}）</a-descriptions-item>
+        <a-descriptions-item v-if="dataInfo.basic.refund_status == 1" label="实际退款">￥{{ dataInfo.basic.actual_price }}（￥{{ dataInfo.basic.actual_rmb_price }} + 幸福币{{ dataInfo.basic.actual_refund_happiness }}）</a-descriptions-item>
+        <a-descriptions-item v-if="dataInfo.basic.refund_status == 1" label="退回方式">{{ dataInfo.basic.refund_type }}</a-descriptions-item>
       </a-descriptions>
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false" title="用户信息">
       <a-descriptions>
         <a-descriptions-item label="项目">{{ dataInfo.user.project_name }}</a-descriptions-item>
-        <a-descriptions-item label="用户"><a href="">{{ dataInfo.user.nickname }}({{ dataInfo.user.realname }})</a></a-descriptions-item>
+        <a-descriptions-item label="用户"><a :href="'/zht/user/user/getUserList?uid='+dataInfo.user.uid" target="_parent">{{ dataInfo.user.nickname }}({{ dataInfo.user.realname }})</a></a-descriptions-item>
         <a-descriptions-item label="手机号">{{ dataInfo.user.mobile }}</a-descriptions-item>
       </a-descriptions>
     </a-card>
-    <a-card style="margin-top: 24px" :bordered="false" title="操作日志">
+    <a-card style="margin: 24px 0" :bordered="false" title="操作日志">
       <a-table
         :columns="operationColumns"
         :dataSource="logData"
-        :pagination="true"
+        :pagination="false"
       >
         <template
           slot="opt_status"
@@ -62,21 +62,21 @@
         </template>
       </a-table>
     </a-card>
-    <a-card v-if="dataInfo.process.refund_status != 1" style="margin-top: 24px" :bordered="false" title="确认退款">
+    <!-- <a-card v-if="dataInfo.process.refund_status != 1" style="margin-top: 24px" :bordered="false" title="确认退款">
       <a-row>
         <a-col :span="8" class="text-right"><p>申请金额：</p></a-col>
-        <a-col :span="16"><p>￥100.00（￥50.00 + 幸福币500）</p></a-col>
+        <a-col :span="16"><p>￥{{ dataInfo.basic.apply_price }}（￥{{ dataInfo.basic.apply_rmb_price }} + 幸福币{{ dataInfo.basic.apply_refund_happiness }}）</p></a-col>
       </a-row>
       <a-row>
         <a-col :span="8" class="text-right"><p>退款金额：</p></a-col>
-        <a-col :span="16" class="color-F5222D"><p>￥100.00（￥50.00 + 幸福币500）</p></a-col>
+        <a-col :span="16" class="color-F5222D"><p>￥{{ dataInfo.basic.actual_price }}（￥{{ dataInfo.basic.actual_rmb_price }} + 幸福币{{ dataInfo.basic.actual_refund_happiness }}）</p></a-col>
       </a-row>
       <a-row>
         <a-col :span="16" :offset="8">
           <a-button type="primary" @click="tkSure">退款</a-button>
         </a-col>
       </a-row>
-    </a-card>
+    </a-card> -->
   </div>
 </template>
 
@@ -96,8 +96,8 @@ export default {
         },
         {
           title: '操作员',
-          dataIndex: 'nickname',
-          key: 'nickname'
+          dataIndex: 'handle_name',
+          key: 'handle_name'
         },
         {
           title: '执行结果',

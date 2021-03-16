@@ -123,7 +123,44 @@ body,
 
 #app {
   background-color: #f0f2f5;
+  overflow-y: auto;
 }
 div.ant-pro-grid-content.wide {
   max-width: inherit;
+}
+
+.ant-table-wrapper {
+  .ant-table-pagination {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    float: none;
+  }
+  .ant-pagination-total-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+.ant-pro-page-header-wrap-page-header-warp {
+  position: relative;
+  .ant-pro-page-header-wrap-extraContent {
+    position: absolute;
+    right: 24px;
+    top: 16px;
+  }
+}
+
+.search-card {
+  .ant-card-body {
+    padding-bottom: 0;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.color-red {
+  color: #F5222D;
 }

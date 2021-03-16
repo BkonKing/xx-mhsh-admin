@@ -10,7 +10,8 @@ import qs from 'qs'
 const request = axios.create({
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    Authorization: Cookies.get('access_token')
+    Authorization: Cookies.get('access_token'),
+    Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
   baseURL: process.env.VUE_APP_API_BASE_URL,

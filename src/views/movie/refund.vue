@@ -4,7 +4,7 @@
     @tabCall="tabSelect"
     :tabList="tabList">
     </headerTabs>
-    <a-card :bordered="false">
+    <a-card class="search-card" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
@@ -22,6 +22,7 @@
                 <a-range-picker
                   showTime
                   class="piker-time"
+                  :value="refundTime"
                   :placeholder="['开始时间', '结束时间']"
                   format="YYYY-MM-DD"
                   @change="getRefundTime"
@@ -39,6 +40,7 @@
                   <a-range-picker
                     showTime
                     class="piker-time"
+                    :value="applyTime"
                     :placeholder="['开始时间', '结束时间']"
                     format="YYYY-MM-DD"
                     @change="getApplyTime"
@@ -49,7 +51,7 @@
             <a-col :md="!advanced && 8 || 16" :sm="24">
               <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="reSet">重置</a-button>
                 <a @click="toggleAdvanced" style="margin-left: 8px">
                   {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -62,7 +64,7 @@
     </a-card>
     <a-card>
       <div class="table-operator">
-        <a-button type="default" @click="pltkClick">批量退款</a-button>
+        <!-- <a-button type="default" :disabled="selectedRowKeys.length ? false : true" @click="pltkClick">批量退款</a-button> -->
         <a-button type="default" @click="cztxClick">充值提醒</a-button>
       </div>
       <s-table
@@ -71,22 +73,21 @@
         rowKey="order_id"
         :columns="columns"
         :data="loadTableData"
-        :alert="true"
-        :rowSelection="rowSelection"
+        :alert="options.alert"
         showPagination="auto"
       >
         <span slot="status" slot-scope="refund_status, record">
           <a-badge :status="refund_status | statusTypeFilter" :text="record.refund_desc"/>
         </span>
-        <!-- <span slot="description" slot-scope="text">
-          {{ text }}
-        </span> -->
+        <span slot="price" slot-scope="pay_price, record">
+          {{ '￥' + pay_price +' (￥'+ record.rmb_price + ' + 币' + record.happiness + ')' }}
+        </span>
 
         <span slot="operation" slot-scope="text, record">
           <template>
             <a @click="goDetail(record)">查看</a>
             <a-divider type="vertical" />
-            <a v-if="record.refund_status == 0" @click="handleSub(record)">退款</a>
+            <!-- <a v-if="record.refund_status == 0" @click="handleSub(record)">退款</a> -->
           </template>
         </span>
       </s-table>
@@ -94,7 +95,7 @@
     <a-modal
       title="批量退款"
       :visible="pltkShow"
-      @ok="pltkSure"
+      @ok="pltkSure('')"
       @cancel="pltkShow = false"
     >
       <div class="ant-alert ant-alert-info" style="margin-bottom: 20px">
@@ -153,7 +154,11 @@ const columns = [
   },
   {
     title: '支付金额',
-    dataIndex: 'pay_price'
+    // totalTitle: '需要退款',
+    // totalUnit: '￥',
+    dataIndex: 'pay_price',
+    needTotal: true,
+    scopedSlots: { customRender: 'price' }
   },
   {
     title: '申请时间',
@@ -188,7 +193,7 @@ export default {
       ],
       productList: [],
       // 高级搜索 展开/关闭
-      advanced: true,
+      advanced: false,
       // 查询参数
       queryParam: {},
       selectedRowKeys: [],
@@ -199,26 +204,32 @@ export default {
       // 批量退款
       pltkShow: false,
       pltkData: '',
-      mobile: '' // 手机号
-      // 加载数据方法 必须为 Promise 对象
-      // loadData: parameter => {
-      //   const requestParameters = Object.assign({}, parameter, this.queryParam)
-      //   console.log('loadData request parameters:', requestParameters)
-      //   return getRefundList(requestParameters)
-      //     .then(res => {
-      //       console.log(res.result)
-      //       return res.result
-      //     })
-      // }
+      mobile: '', // 手机号
+      defultTime: ['', ''],
+      applyTime: [], // 申请时间
+      refundTime: [], // 退款时间
+      options: {
+        alert: {
+          show: false,
+          totalTitle: '需要退款',
+          totalUnit: '￥',
+          clear: () => { this.selectedRowKeys = [] }
+        }
+      }
     }
   },
   computed: {
-    rowSelection () {
-      return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
-      }
-    }
+    // rowSelection () {
+    //   return {
+    //     selectedRowKeys: this.selectedRowKeys,
+    //     getCheckboxProps: record => ({
+    //       props: {
+    //         disabled: record.refund_status > 0
+    //       }
+    //     }),
+    //     onChange: this.onSelectChange
+    //   }
+    // }
   },
   created () {
     console.log(moment())
@@ -235,10 +246,12 @@ export default {
     },
     // 时间
     getRefundTime (dates, dateStrings) {
+      this.refundTime = dates
       this.queryParam.refund_time = dateStrings[0] + '~' + dateStrings[1]
     },
     // 时间
     getApplyTime (dates, dateStrings) {
+      this.applyTime = dates
       this.queryParam.apply_time = dateStrings[0] + '~' + dateStrings[1]
     },
     // 搜索收起/展开
@@ -255,7 +268,12 @@ export default {
         this.cztxShow = false
       })
     },
-    onSubmit () {},
+    // 重置
+    reSet () {
+      this.queryParam = {}
+      this.applyTime = []
+      this.refundTime = []
+    },
     // 表格选中行
     onSelectChange (selectedRowKeys, selectedRows) {
       console.log(selectedRowKeys, selectedRows)
@@ -269,11 +287,21 @@ export default {
     // 刷新表格数据
     loadTableData (page) {
       if (page.sortOrder && page.sortField) {
+        const startTime = moment().month(moment().month()).startOf('month').format('YYYY-MM-DD')
+        const endTime = moment().month(moment().month()).endOf('month').format('YYYY-MM-DD')
         if (page.sortField == 'ctime') {
+          if (!this.queryParam.apply_time) {
+            this.applyTime = [moment(startTime, 'YYYY-MM-DD'), moment(endTime, 'YYYY-MM-DD')]
+            this.queryParam.apply_time = startTime + '~' + endTime
+          }
           page.pay_sort = page.sortOrder == 'ascend' ? 1 : 2
           page.order_sort = ''
         }
         if (page.sortField == 'htime') {
+          if (!this.queryParam.refund_time) {
+            this.refundTime = [moment(startTime, 'YYYY-MM-DD'), moment(endTime, 'YYYY-MM-DD')]
+            this.queryParam.refund_time = startTime + '~' + endTime
+          }
           page.order_sort = page.sortOrder == 'ascend' ? 1 : 2
           page.pay_sort = ''
         }
@@ -303,9 +331,17 @@ export default {
         })
       }
     },
+    // 单个退款
+    handleSub (item) {
+      this.pltkSure(item.order_id)
+    },
     // 批量退款提交
-    pltkSure () {
-      sendBatchRefund({ order_id: this.selectedRowKeys.join(',') }).then(res => {
+    pltkSure (orderId) {
+      let paramId = this.selectedRowKeys.join(',')
+      if (orderId) {
+        paramId = orderId
+      }
+      sendBatchRefund({ order_id: paramId }).then(res => {
         if (res.success) {
             this.pltkShow = false
             this.loadAllData()

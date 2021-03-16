@@ -31,7 +31,7 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/film' : './',
+  publicPath: process.env.NODE_ENV === 'production' ? '/film' : '/',
   configureWebpack: {
     // webpack plugins
     plugins: [
@@ -125,15 +125,22 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/apilife': {
-        // target: 'http://192.168.1.102/life/spi/v1',
         target: 'http://develop.mhshjy.com/life/spi/v1',
+        // target: 'https://live.tosolomo.com/life/spi/v1',
         pathRewrite: {
           '^/apilife': ''
         }
       },
+      '/apiwsolid': {
+        target: 'http://develop.mhshjy.com/wsolid/spi/v1',
+        // target: 'https://live.tosolomo.com/wsolid/spi/v1',
+        pathRewrite: {
+          '^/apiwsolid': ''
+        }
+      },
       '/api': {
         target: 'http://develop.mhshjy.com/nsolid/spi/v1',
-        // target: 'http://192.168.1.102/life/spi/v1',
+        // target: 'https://live.tosolomo.com/nsolid/spi/v1',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

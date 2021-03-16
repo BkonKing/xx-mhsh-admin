@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card :bordered="false">
+    <a-card class="search-card" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
@@ -16,7 +16,6 @@
             <a-col :md="8" :sm="24">
               <a-form-model-item label="是否预售">
                 <a-select v-model="queryParam.saleflag" placeholder="请选择">
-                  <!-- <a-select-option value="0">全部</a-select-option> -->
                   <a-select-option value="1">是</a-select-option>
                   <a-select-option value="2">否</a-select-option>
                 </a-select>
@@ -59,9 +58,9 @@
         ref="table"
         size="default"
         rowKey="key"
+        class="table-box"
         :columns="columns"
         :data="loadTableData"
-        showPagination="auto"
       >
         <span slot="look">实际想看
           <a-popover overlayClassName="popover-toast">
@@ -87,7 +86,9 @@
         <template
           slot="tickets_sold"
           slot-scope="tickets_sold, record">
-          <a @click="goOrder(record)">{{ tickets_sold }}</a>
+          <a v-if="tickets_sold > 0" :href="'/zht/film/film/orderlist?tabIndex=1&film_name='+encodeURI(record.film_name)" target="_parent">{{ tickets_sold }}</a>
+          <span v-else>{{ tickets_sold }}</span>
+          <!-- <a @click="goOrder(record)">{{ tickets_sold }}</a> -->
         </template>
         <template
           slot="ticket_price"
@@ -186,7 +187,7 @@ export default {
         { id: 2, name: '取消付款' }
       ],
       // 高级搜索 展开/关闭
-      advanced: true,
+      advanced: false,
       // 查询参数
       queryParam: {}
     }

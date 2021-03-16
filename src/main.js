@@ -32,6 +32,13 @@ window.umi_plugin_ant_themeVar = themePluginConfig.theme
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+Vue.filter('NumberFormat', function (value) {
+  if (!value) {
+    return '0'
+  }
+  const intPartFormat = value.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
+  return intPartFormat
+})
 
 new Vue({
   router,

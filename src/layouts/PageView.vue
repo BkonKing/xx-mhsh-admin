@@ -5,7 +5,7 @@
 </template>
 
 <script>
-
+import 'moment/locale/zh-cn'
 export default {
   name: 'PageView'
 }
