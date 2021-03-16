@@ -94,7 +94,7 @@ export default {
         if (result) {
           const res = await doLogin(this.form)
           // 保存token
-          setLocal('token', res.data.access_token)
+          // setLocal('token', res.data.access_token)
           // 提示一下
           this.$message.success('登录成功')
           // 跳转到首页
