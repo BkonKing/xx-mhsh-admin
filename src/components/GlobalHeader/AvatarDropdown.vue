@@ -1,11 +1,15 @@
 <template>
-  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
+  <a-dropdown v-if="currentUser && currentUser.name"
+              placement="bottomRight">
     <span class="ant-pro-account-avatar">
-      <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
+      <a-avatar size="small"
+                src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"
+                class="antd-pro-global-header-index-avatar" />
       <span>{{ currentUser.name }}</span>
     </span>
     <template v-slot:overlay>
-      <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
+      <a-menu class="ant-pro-drop-down menu"
+              :selected-keys="[]">
         <!-- <a-menu-item v-if="menu" key="center" @click="handleToCenter">
           <a-icon type="user" />
           个人中心
@@ -15,7 +19,8 @@
           个人设置
         </a-menu-item> -->
         <!-- <a-menu-divider v-if="menu" /> -->
-        <a-menu-item key="logout" @click="handleLogout">
+        <a-menu-item key="logout"
+                     @click="handleLogout">
           <a-icon type="logout" />
           退出登录
         </a-menu-item>
@@ -23,12 +28,14 @@
     </template>
   </a-dropdown>
   <span v-else>
-    <a-spin size="small" :style="{ marginLeft: 8, marginRight: 8 }" />
+    <a-spin size="small"
+            :style="{ marginLeft: 8, marginRight: 8 }" />
   </span>
 </template>
 
 <script>
 import { Modal } from 'ant-design-vue'
+import { outlogin } from '@/api/login.js'
 
 export default {
   name: 'AvatarDropdown',
@@ -53,15 +60,17 @@ export default {
       Modal.confirm({
         title: '提示',
         content: '是否退出登录？',
-        onOk: () => {
+        onOk: async () => {
           // return new Promise((resolve, reject) => {
           //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
           // }).catch(() => console.log('Oops errors!'))
-          return this.$store.dispatch('Logout').then(() => {
-            this.$router.push({ name: 'login' })
-          })
+          // return this.$store.dispatch('Logout').then(() => {
+          //   this.$router.push('/login')
+          // })
+          await outlogin()
+          this.$router.push('/login')
         },
-        onCancel () {}
+        onCancel () { }
       })
     }
   }

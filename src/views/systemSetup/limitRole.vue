@@ -12,7 +12,7 @@
                   @select='selectInfo'>
             <template slot="custom"
                       slot-scope="item">
-              {{item.menu_text}}
+              {{item.role_name}}
               <a-icon class="icon"
                       type="drag"
                       v-if='false' />
@@ -25,6 +25,9 @@
               <a-icon class="icon"
                       type="cluster"
                       @click="selectItem(item)" />
+              <a-icon class="icon"
+                      type="appstore"
+                      @click="getMenus(item.id)" />
             </template>
           </a-tree>
         </a-card>
@@ -52,28 +55,12 @@
                      v-show="itemInfo"
                      v-for="(item,index) in itemInfo.children"
                      :key='index'>
-                  <a-input v-model="item.menu_text"
+                  <a-input v-model="item.role_name"
                            style="width:150px"
-                           placeholder="菜单名称"></a-input>
-                  <a-input v-model="item.icon"
-                           style="width:150px"
-                           placeholder="菜单图标样式"></a-input>
-                  <a-input v-model="item.limits_path"
-                           style="width:150px"
-                           placeholder="访问路径"></a-input>
+                           placeholder="权限名称"></a-input>
                   <a-input v-model="item.list_order"
                            style="width:150px"
                            placeholder="排序"></a-input>
-
-                  <a-radio-group v-model="item.display">
-                    <a-radio :value="0">
-                      隐藏
-                    </a-radio>
-                    <a-radio :value="1">
-                      显示
-                    </a-radio>
-                  </a-radio-group>
-
                   <a-icon type="close"
                           class="close"
                           @click="removeMe(item.id,index)" />
@@ -82,27 +69,12 @@
               <div class="r1 inputItem"
                    v-for="(item,index) in inputArr"
                    :key='index'>
-                <a-input v-model="item.menuText"
+                <a-input v-model="item.roleName"
                          style="width:150px"
                          placeholder="菜单名称"></a-input>
-                <a-input v-model="item.icon"
-                         style="width:150px"
-                         placeholder="菜单图标样式"></a-input>
-                <a-input v-model="item.limitsPath"
-                         style="width:150px"
-                         placeholder="访问路径"></a-input>
                 <a-input v-model="item.listOrder"
                          style="width:150px"
                          placeholder="排序"></a-input>
-
-                <a-radio-group v-model="item.display">
-                  <a-radio :value="0">
-                    隐藏
-                  </a-radio>
-                  <a-radio :value="1">
-                    显示
-                  </a-radio>
-                </a-radio-group>
                 <a-icon type="plus"
                         class="plus"
                         @click="add" />
@@ -115,20 +87,38 @@
             </div>
           </div>
         </a-card>
+        <a-card v-if="showMunes">
+          <a-button style='marginLeft:20px'
+                    type='primary'
+                    @click="setRoleMenus">保存</a-button>
+          <a-tree v-model="checkedKeys"
+                  checkable
+                  class="draggable-tree"
+                  :tree-data="roleMunes"
+                  :replaceFields='{key:"id"}'
+                  @select="onSelect"
+                  :default-expanded-keys="openArr">
+            <template slot="custom"
+                      slot-scope="item">
+              {{item.menu_text}}
+            </template>
+          </a-tree>
+
+        </a-card>
       </a-col>
     </a-row>
-    <editModel ref="editModel"></editModel>
     <delModel ref="delModel"></delModel>
     <addModel ref="addModel"></addModel>
+    <editModel ref="editModel"></editModel>
   </div>
 </template>
 
 <script>
 
-import editModel from './editModel'
+import { getRoles, updateBatchRole, removeBatchRole, getAllotsMenus, updateAllotsMenus } from '@/api/systemSetup'
 import delModel from './delModel'
 import addModel from './addModel'
-import { getMenus, updateBatchMenu, removeBatchMenu } from '@/api/projectConfig.js'
+import editModel from './editMdoel'
 // const treeData2 = [
 //   {
 //     title: '首页',
@@ -227,8 +217,8 @@ import { getMenus, updateBatchMenu, removeBatchMenu } from '@/api/projectConfig.
 let arr = []
 // 递归获取标题
 function getParentTitle (parent2) {
-  if (parent2.dataRef.menu_text) {
-    arr.unshift(parent2.dataRef.menu_text)
+  if (parent2.dataRef.role_name) {
+    arr.unshift(parent2.dataRef.role_name)
   }
   // console.log('parent2.dataRef.title', parent2.dataRef.title)
   const parent = parent2.$parent
@@ -245,33 +235,96 @@ for (let i = 0; i < 5; i++) {
   inputArr.push({
     id: '',
     parentId: '',
-    menuText: '',
-    limitsPath: '',
-    icon: '',
     listOrder: '',
-    display: ''
+    roleName: ''
   })
 }
 
 export default {
   components: {
-    editModel,
     delModel,
-    addModel
+    addModel,
+    editModel
   },
   data () {
     return {
-      treeData: [], // 权限菜单列表
+      treeData: [], // 角色菜单列表
       inputArr, // 右侧 空输入框结构数据
       itemInfo: {}, // 右侧 编辑的菜单数据
       titleArr: [], // 题目标题
-      rightShow: false,
+      rightShow: false, // 显示编辑菜单
       idArr: [], // 权限id数组
-      parentId: 0
+      parentId: 0,
+      showMunes: false,
+      roleMunes: [], // 角色菜单数组
+      checkedKeys: [], // 选中的权限菜单
+      openArr: [], // 展开的菜单节点
+      roleId: '' // 角色id
     }
   },
-
+  watch: {
+    // 选中复选框时触发
+    checkedKeys (val) {
+      console.log('onCheck1111', val)
+    }
+  },
   methods: {
+    // 配置角色对应的菜单
+    async setRoleMenus () {
+      const res = await updateAllotsMenus({
+        roleId: this.roleId,
+        allots: this.checkedKeys.join(',')
+      })
+      this.showMunes = false
+      console.log('配置角色菜单', res)
+    },
+    // 获取所有需要展开的id数组
+    getOpenArr (arr) {
+      arr.forEach(item => {
+        if (item.state.opened === 1) {
+          this.openArr.push(item.id)
+        }
+        if (item.state.selected === 1) {
+          this.checkedKeys.push(item.id)
+        }
+        if (item.children) {
+          this.getOpenArr(item.children)
+        }
+      })
+    },
+    // 展开 和关闭 时触发
+    // onExpand (expandedKeys) {
+    //   console.log('onExpand', expandedKeys)
+    //   // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+    //   // or, you can remove all expanded children keys.
+    //   this.expandedKeys = expandedKeys
+    //   this.autoExpandParent = false
+    // },
+    // onCheck (checkedKeys) {
+    //   console.log('onCheck22222', checkedKeys)
+    //   this.checkedKeys = checkedKeys
+    // },
+    // 选中节点时候触发
+    onSelect (selectedKeys, info) {
+      console.log('onSelect', info)
+      this.selectedKeys = selectedKeys
+    },
+
+    //  获取角色对应的权限菜单
+    async getMenus (id) {
+      this.roleId = id
+      this.rightShow = false
+      this.openArr = []
+      this.checkedKeys = []
+      // console.log(id)
+      const res = await getAllotsMenus({ roleId: id })
+      this.roleMunes = res.data
+      this.showMunes = true
+      this.getOpenArr(this.roleMunes)
+      // console.log('openArr', this.openArr)
+      console.log('checkedKeys', this.checkedKeys)
+      // console.log('角色对应的权限菜单', res)
+    },
     // 新增权限菜单
     newAdd () {
       this.$refs.addModel.isShow = true
@@ -279,42 +332,40 @@ export default {
     // 批量编辑权限菜单
     async save () {
       if (this.parentId === 0) {
-        let menus = this.itemInfo.children.map(item => {
+        let roles = this.itemInfo.children.map(item => {
           return {
-            id: item.id,
-            parentId: item.parent_id,
-            menuText: item.menu_text,
-            limitsPath: item.limits_path,
-            icon: item.icon,
-            listOrder: item.list_order,
-            display: item.display
+            id: +item.id,
+            parentId: +item.parent_id,
+            roleName: item.role_name,
+            listOrder: item.list_order
           }
         })
         const arr = this.inputArr.filter(item => {
-          return item.menuText !== ''
+          return item.roleName !== ''
         })
         arr.forEach(item => {
-          item.parentId = menus[0].parentId
+          item.parentId = +roles[0].parentId
           item.id = 0
         })
-        menus = [...menus, ...arr]
-        await updateBatchMenu({
-          menus: menus
+        roles = [...roles, ...arr]
+        await updateBatchRole({
+          roles: roles
         })
       } else {
         const arr = this.inputArr.filter(item => {
-          return item.menuText !== ''
+          return item.roleName !== ''
         })
         arr.forEach(item => {
           item.parentId = this.parentId
           item.id = 0
         })
-        await updateBatchMenu({
-          menus: arr
+        await updateBatchRole({
+          roles: arr
         })
+        // console.log('修改角色菜单', res)
       }
       if (this.idArr.length > 0) {
-        await removeBatchMenu({ ids: this.idArr })
+        await removeBatchRole({ ids: this.idArr })
       }
       this.getData()
       this.itemInfo = {}
@@ -324,29 +375,27 @@ export default {
         this.inputArr.push({
           id: '',
           parentId: '',
-          menuText: '',
-          limitsPath: '',
-          icon: '',
-          listOrder: '',
-          display: ''
+          roleName: '',
+          listOrder: ''
         })
       }
       this.rightShow = false
     },
     // 获取权限菜单数据
     async getData () {
-      const res = await getMenus()
+      const res = await getRoles()
       this.treeData = res.data
-      console.log('权限菜单列表', res)
+      // console.log('所有角色列表', res)
     },
     // 设置标题
     selectInfo (selectedKeys, info) {
+      // console.log(info.node.$parent.dataRef)
       let arr2 = []
       if (info.node.$parent.dataRef) {
         arr2 = getParentTitle(info.node.$parent)
       }
       // console.log(info.node.dataRef.title)
-      arr2.push(info.node.dataRef.menu_text)
+      arr2.push(info.node.dataRef.role_name)
       this.titleArr = arr2
       arr2 = []
       arr = []
@@ -369,11 +418,8 @@ export default {
       this.inputArr.push({
         id: '',
         parentId: '',
-        menuText: '',
-        limitsPath: '',
-        icon: '',
-        listOrder: '',
-        display: ''
+        ruleName: '',
+        listOrder: ''
       })
     },
     // 删除输入框
@@ -382,7 +428,7 @@ export default {
     },
     // 批量删除菜单
     removeMe (id, index) {
-      console.log(id)
+      // console.log(id)
       this.idArr.push(id)
       this.itemInfo.children.splice(index, 1)
     },
@@ -390,6 +436,7 @@ export default {
     selectItem (item) {
       // 显示右边结构
       this.rightShow = true
+      this.showMunes = false
       this.itemInfo = {}
       // 清空右侧输入框数组
       this.inputArr = []
@@ -397,18 +444,13 @@ export default {
         this.inputArr.push({
           id: '',
           parentId: '',
-          menuText: '',
-          limitsPath: '',
-          icon: '',
-          listOrder: '',
-          display: ''
+          roleName: '',
+          listOrder: ''
+
         })
       }
       if (item.children) {
         this.itemInfo = JSON.parse(JSON.stringify(item))
-        this.itemInfo.children.forEach(item => {
-          item.display = +item.display
-        })
       } else {
         this.parentId = item.id
         // let obj = {}
