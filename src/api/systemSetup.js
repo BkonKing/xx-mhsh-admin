@@ -66,3 +66,37 @@ export function updateAllotsMenus (data) {
     data
   })
 }
+
+// 管理用户对象列表接口
+export function getAdminList (params) {
+  return request({
+    url: '/system/admin/getAdminList',
+    params
+  })
+}
+
+// 新增管理用户接口
+export function addAdmin (data) {
+  return request({
+    url: '/system/admin/addAdmin',
+    method: 'post',
+    data
+  })
+}
+
+// 删除管理用户接口
+export function removeAdmin (data) {
+  return request({
+    url: '/system/admin/removeAdmin',
+    method: 'post',
+    data
+  })
+}
+// 编辑管理用户接口
+export function updateAdmin (data) {
+  return request({
+    url: '/system/admin/updateAdmin',
+    method: 'post',
+    data
+  })
+}

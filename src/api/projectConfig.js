@@ -42,6 +42,7 @@ export function removeBatchMenu (data) {
   })
 }
 
+// 新增菜单
 export function addMenu (data) {
   return request({
     url: '/system/menus/addMenu',

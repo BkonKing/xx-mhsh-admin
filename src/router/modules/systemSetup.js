@@ -20,6 +20,15 @@ export default {
         title: '权限角色',
         icon: 'table'
       }
+    },
+    {
+      path: '/systemSetup/adminer',
+      name: 'adminer',
+      component: () => import('@/views/systemSetup/adminer'),
+      meta: {
+        title: '管理员',
+        icon: 'table'
+      }
     }
   ]
 }

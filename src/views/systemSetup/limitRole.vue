@@ -292,18 +292,7 @@ export default {
         }
       })
     },
-    // 展开 和关闭 时触发
-    // onExpand (expandedKeys) {
-    //   console.log('onExpand', expandedKeys)
-    //   // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    //   // or, you can remove all expanded children keys.
-    //   this.expandedKeys = expandedKeys
-    //   this.autoExpandParent = false
-    // },
-    // onCheck (checkedKeys) {
-    //   console.log('onCheck22222', checkedKeys)
-    //   this.checkedKeys = checkedKeys
-    // },
+
     // 选中节点时候触发
     onSelect (selectedKeys, info) {
       console.log('onSelect', info)
