@@ -17,7 +17,18 @@
         >
         <span v-if="infoData && infoData.data">{{ infoData.data.house_property_name }}</span>
       </a-form-item>
-      <a-form-item label="余额种类">
+      <a-form-item v-if="params.genre_type" label="余额种类">
+        <a-select
+          placeholder="请选择"
+          @change="selectType"
+          v-decorator="[
+            'genre_type',
+            {rules: [{ required: true, message: '请选择余额种类'}],initialValue: (params.genre_type|'')+''}
+          ]" >
+          <a-select-option v-for="(item, index) in infoData.genre_select_data" :key="index" :value="index">{{ item }}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item v-else label="余额种类">
         <a-select
           placeholder="请选择"
           @change="selectType"
@@ -53,12 +64,18 @@
       <a-form-item label="充值凭证">
         <div class="clearfix">
           <a-upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            action="/api/upload/uploads/uImages"
+            :data="uploadData"
             list-type="picture-card"
             :file-list="fileList"
             :multiple="true"
+            :headers="headers"
             @preview="handlePreview"
             @change="handleChange"
+            v-decorator="[
+              'fileList',
+              {rules: [{ required: true, message: '请上传充值凭证' }]}
+            ]"
           >
             <div v-if="fileList.length < 3">
               <a-icon type="plus" />
@@ -77,6 +94,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { getInvest, submitInvest } from '@/api/property'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -113,7 +131,15 @@ export default {
         //   status: 'done',
         //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
         // }
-      ]
+      ],
+      uploadData: {
+        field_name: 'file'
+      },
+      headers: {
+        // Authorization: Cookies.get('access_token'),
+        Authorization: 'fc58d4dcb702624e2be057276f4a79a77f3a1a42',
+        Projectid: Cookies.get('project_id')
+      }
     }
   },
   created () {
@@ -121,6 +147,7 @@ export default {
   },
   methods: {
     getData () {
+      this.fileList = []
       this.form.resetFields()
       getInvest(this.params).then(res => {
         this.infoData = res
@@ -149,6 +176,7 @@ export default {
       this.previewVisible = true
     },
     handleChange ({ fileList }) {
+      console.log(fileList)
       this.fileList = fileList
     },
     // 表单提交
@@ -159,11 +187,16 @@ export default {
           if (!values.uid) {
             values.uid = this.userId
           }
-          console.log(this.fileList)
+          const imgArr = this.fileList.map((item) => {
+            return item.response.data
+          })
+          console.log('imgArr', imgArr)
+          values.proof = imgArr
           console.log('Received values of form: ', values)
           // Object.assign({}, this.params, values)
           submitInvest(Object.assign({}, this.params, values)).then(res => {
             this.$message.success(res.message)
+            this.$emit('update:modalShow', false)
             this.$emit('rechargeCall')
           })
         }

@@ -4,14 +4,14 @@
       <a-card style="margin-top: 24px" :bordered="false" title="基础信息">
         <a-descriptions v-if="infoData.data">
           <a-descriptions-item label="房产">{{ infoData.data.house_property_name }}</a-descriptions-item>
-          <a-descriptions-item label="业主" span="2"><a href="">{{ infoData.data.realname + ' ' + infoData.data.mobile }}</a></a-descriptions-item>
-          <a-descriptions-item label="水费">户号{{ infoData.data.w_account_numb }} 表号{{ infoData.data.w_surface }}</a-descriptions-item>
-          <a-descriptions-item label="电费">户号{{ infoData.data.e_account_numb }} 表号{{ infoData.data.e_surface }}</a-descriptions-item>
-          <a-descriptions-item label="燃气费">户号{{ infoData.data.g_account_numb }} 表号{{ infoData.data.g_surface }}</a-descriptions-item>
+          <a-descriptions-item label="业主" span="2"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.data.uid}`" target="_parent">{{ infoData.data.realname + ' ' + infoData.data.mobile }}</a></a-descriptions-item>
+          <a-descriptions-item label="水费" v-if="infoData.data.w_account_numb || infoData.data.w_surface"><template v-if="infoData.data.w_account_numb">户号{{ infoData.data.w_account_numb }}</template> <template v-if="infoData.data.w_surface">表号{{ infoData.data.w_surface }}</template></a-descriptions-item>
+          <a-descriptions-item label="电费" v-if="infoData.data.e_account_numb || infoData.data.e_surface"><template v-if="infoData.data.e_account_numb">户号{{ infoData.data.e_account_numb }}</template> <template v-if="infoData.data.e_surface">表号{{ infoData.data.e_surface }}</template></a-descriptions-item>
+          <a-descriptions-item label="燃气费" v-if="infoData.data.g_account_numb || infoData.data.g_surface"><template v-if="infoData.data.g_account_numb">户号{{ infoData.data.g_account_numb }}</template> <template v-if="infoData.data.g_surface">表号{{ infoData.data.g_surface }}</template></a-descriptions-item>
         </a-descriptions>
         <a-card v-if="infoData.data" :bordered="true">
           <a-row>
-            <a-col :sm="6" :xs="12">
+            <a-col v-if="payStatu[0]" :sm="cloSm" :xs="12">
               <div class="header-info">
                 <span>水费余额</span>
                 <p>
@@ -24,7 +24,7 @@
                 </div>
               </div>
             </a-col>
-            <a-col :sm="6" :xs="12">
+            <a-col v-if="payStatu[1]" :sm="cloSm" :xs="12">
               <div class="header-info">
                 <span>电费余额</span>
                 <p>
@@ -37,7 +37,7 @@
                 </div>
               </div>
             </a-col>
-            <a-col :sm="6" :xs="12">
+            <a-col v-if="payStatu[2]" :sm="cloSm" :xs="12">
               <div class="header-info">
                 <span>燃气费余额</span>
                 <p>
@@ -50,7 +50,7 @@
                 </div>
               </div>
             </a-col>
-            <a-col :sm="6" :xs="12">
+            <a-col v-if="payStatu[3]" :sm="cloSm" :xs="12">
               <div class="header-info">
                 <span>其他费用余额</span>
                 <p>
@@ -145,17 +145,23 @@
         </s-table>
       </a-card>
       <a-card style="margin-top: 24px" :bordered="false" title="操作日志">
-        <a-table
+        <div slot="extra" class="extra-wrapper">
+          <a-input-search v-model="search" @search="$refs.logtable.refresh(true)" style="margin-left: 16px; width: 272px;" />
+        </div>
+        <s-table
+          ref="logtable"
+          size="default"
+          rowKey="id"
+          class="table-box"
           :columns="operationColumns"
-          :dataSource="logData"
-          :pagination="true"
+          :data="loadLogTableData"
         >
           <template
             slot="status"
             slot-scope="is_success, record">
             <a-badge :status="is_success | statusTypeFilter" :text="record.is_success_name"/>
           </template>
-        </a-table>
+        </s-table>
       </a-card>
       <a-modal
         :title="`调整余额-${adjustmentInfo.genre_type_name}`"
@@ -177,7 +183,7 @@
           <a-form-item label="当前余额" >
             <span>{{ adjustmentInfo.balance | NumberFormat }}元</span>
           </a-form-item>
-          <a-form-item label="调整余额" help="最终余额">
+          <a-form-item label="调整余额" extra="最终余额">
             <a-input
               addonBefore="￥"
               v-decorator="[
@@ -198,7 +204,7 @@
           </a-form-item>
         </a-form>
       </a-modal>
-      <recharge-money ref="recharge" :params="czparams" :modalShow.sync="rechargeShow"></recharge-money>
+      <recharge-money ref="recharge" :params="czparams" :modalShow.sync="rechargeShow" @rechargeCall="rechargeCall"></recharge-money>
       <detail-info ref="info" :params="ckparams" :modalShow.sync="infoShow"></detail-info>
     </div>
   </page-header-wrapper>
@@ -207,7 +213,7 @@
 <script>
 // import moment from 'moment'
 import { STable } from '@/components'
-import { getBasisInfo, getDetailList, getLogList, getAdjustmentInfo, submitAdjustment } from '@/api/property'
+import { getBasisInfo, getDetailList, getLogList, getAdjustmentInfo, submitAdjustment, getPayType } from '@/api/property'
 import rechargeMoney from './components/rechargeMoney'
 import detailInfo from './components/detailInfo'
 const columns = [
@@ -254,6 +260,35 @@ const columns = [
     scopedSlots: { customRender: 'action' }
   }
 ]
+const operationColumns = [
+  {
+    title: '操作类型',
+    dataIndex: 'type_name',
+    key: 'type_desc'
+  },
+  {
+    title: '操作员',
+    dataIndex: 'admin_name'
+  },
+  {
+    title: '执行结果',
+    dataIndex: 'is_success',
+    scopedSlots: { customRender: 'status' }
+  },
+  {
+    title: '操作时间',
+    dataIndex: 'ctime'
+  },
+  // {
+  //   title: '耗时',
+  //   dataIndex: 'end_time',
+  //   scopedSlots: { customRender: 'opt_usetime' }
+  // },
+  {
+    title: '操作说明',
+    dataIndex: 'explain_text'
+  }
+]
 export default {
   name: 'balanceDetail',
   components: {
@@ -263,39 +298,13 @@ export default {
   },
   data () {
     this.columns = columns
+    this.operationColumns = operationColumns
     return {
       houseId: '',
+      payStatu: '',
+      cloSm: 6,
       infoData: '',
-      operationColumns: [
-        {
-          title: '操作类型',
-          dataIndex: 'type_name',
-          key: 'type_desc'
-        },
-        {
-          title: '操作员',
-          dataIndex: 'admin_name'
-        },
-        {
-          title: '执行结果',
-          dataIndex: 'is_success',
-          scopedSlots: { customRender: 'status' }
-        },
-        {
-          title: '操作时间',
-          dataIndex: 'ctime'
-        },
-        // {
-        //   title: '耗时',
-        //   dataIndex: 'end_time',
-        //   scopedSlots: { customRender: 'opt_usetime' }
-        // },
-        {
-          title: '操作说明',
-          dataIndex: 'explain'
-        }
-      ],
-      logData: [],
+      search: '',
       advanced: false, // 高级搜索 展开/关闭
       queryParam: {}, // 查询参数
       publishDate: [], // 时间
@@ -314,17 +323,56 @@ export default {
   },
   mounted () {
     this.getData()
+    this.getPayType()
   },
   methods: {
     getData () {
       getBasisInfo({ expenses_house_id: this.houseId }).then(res => {
         this.infoData = res
       })
-      getLogList({ expenses_house_id: this.houseId }).then(res => {
-        console.log(res)
-        this.logData = res.data.list
+    },
+    // 缴费状态
+    getPayType () {
+      getPayType().then(res => {
+        const arr = []
+        let showLength = 0
+        for (const key in res.data) {
+          arr.push(res.data[key])
+          if (res.data[key]) {
+            showLength++
+          }
+        }
+        switch (showLength) {
+          case 0:
+            this.cloSm = 0
+            break
+          case 1:
+            this.cloSm = 24
+            break
+          case 2:
+            this.cloSm = 12
+            break
+          case 3:
+            this.cloSm = 8
+            break
+          case 4:
+            this.cloSm = 6
+            break
+        }
+        this.payStatu = arr
       })
     },
+    // 充值成功回调
+    rechargeCall () {
+      this.getData()
+    },
+    // 日志
+    // getLogList () {
+    //   getLogList({ expenses_house_id: this.houseId, search: this.search }).then(res => {
+    //     console.log(res)
+    //     this.logData = res.data.list
+    //   })
+    // },
     getTime (dates, dateStrings) {
       this.publishDate = dates
       this.queryParam.start_time = dateStrings[0]
@@ -345,6 +393,7 @@ export default {
     // 充值
     investModal (id) {
       this.czparams = {
+        genre_type: id,
         expenses_house_id: this.houseId
       }
       this.$nextTick(() => {
@@ -398,7 +447,14 @@ export default {
         console.log('loadData request parameters:', requestParameters)
         return getDetailList(requestParameters)
           .then(res => {
-            console.log(res.data)
+            return res
+          })
+    },
+    loadLogTableData (page) {
+      const requestParameters = Object.assign({}, { expenses_house_id: this.houseId, search: this.search }, page)
+        console.log('loadData request parameters:', requestParameters)
+        return getLogList(requestParameters)
+          .then(res => {
             return res
           })
     }

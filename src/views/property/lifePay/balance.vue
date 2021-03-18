@@ -2,16 +2,16 @@
   <page-header-wrapper>
     <template v-slot:extraContent>
       <div v-if="dataObj" class="extra-content">
-        <div class="stat-item">
+        <div v-if="payStatu[0]" class="stat-item">
           <a-statistic :title="'水费余额('+dataObj.w_count+'户)'" :value="'￥' + dataObj.w_money | NumberFormat" />
         </div>
-        <div class="stat-item">
+        <div v-if="payStatu[1]" class="stat-item">
           <a-statistic :title="'电费余额('+dataObj.e_count+'户)'" :value="'￥' + dataObj.e_money | NumberFormat" />
         </div>
-        <div class="stat-item">
+        <div v-if="payStatu[2]" class="stat-item">
           <a-statistic :title="'燃气费('+dataObj.g_count+'户)'" :value="'￥' + dataObj.g_money | NumberFormat" />
         </div>
-        <div class="stat-item">
+        <div v-if="payStatu[3]" class="stat-item">
           <a-statistic :title="'其他费用余额('+dataObj.o_count+'户)'" :value="'￥' + dataObj.o_money | NumberFormat" />
         </div>
       </div>
@@ -91,12 +91,12 @@
       </a-card>
       <a-card>
         <div class="table-operator">
-          <a-button type="default"><a-icon type="upload" />导入文件</a-button>
+          <a-button type="default" @click="importModal=true"><a-icon type="upload" />导入文件</a-button>
         </div>
         <s-table
           ref="table"
           size="default"
-          rowKey="film_id"
+          rowKey="id"
           class="table-box"
           :columns="columns"
           :data="loadTableData"
@@ -141,6 +141,42 @@
         </s-table>
       </a-card>
       <recharge-money ref="recharge" :modalShow.sync="modalShow" :params="params" @rechargeCall="rechargeCall"></recharge-money>
+      <a-modal
+        title="导入文件"
+        :visible="importModal"
+        okText="保存"
+        @ok="importFile"
+        @cancel="importModal=false"
+      >
+        <a-form
+          class="form-file"
+          :labelCol="{lg: {span: 5}, sm: {span: 5}}"
+          :wrapperCol="{lg: {span: 18}, sm: {span: 18} }"
+          >
+          <a-form-model-item label="选择文件" :required="true">
+            <a-input id="upload" type="file" @change="uploadFile" style="width: 100%" />
+            <label for="upload" class="file-box">
+              <div class="file-name">{{ fileUrl.name }}</div>
+              <div class="file-size"><span>{{ fileSize }}</span>/10MB</div>
+              <div class="file-icon"><a-icon type="file" /></div>
+            </label>
+          </a-form-model-item>
+          <a-form-model-item :wrapperCol="{lg: {push: 5,span: 18}, sm: {push: 5,span: 18} }">
+            <a-button @click="downFile" type="default"><a-icon type="download" />下载模板</a-button>
+            <!-- <a href="http://develop.mhshjy.com/library/mb/mb_billEntry.xlsx" type="default"><a-icon type="download" />下载模板</a> -->
+          </a-form-model-item>
+        </a-form>
+        <!-- <a-form
+          :labelCol="{lg: {span: 5}, sm: {span: 5}}"
+          :wrapperCol="{lg: {span: 18}, sm: {span: 18} }"
+          :form="Importform"
+          @submit="importFile"
+        >
+          <a-form-item label="选择文件">
+            <a-input type="file" />
+          </a-form-item>
+        </a-form> -->
+      </a-modal>
     </div>
   </page-header-wrapper>
 </template>
@@ -148,7 +184,7 @@
 <script>
 // import moment from 'moment'
 import { STable } from '@/components'
-import { getBuildList, getUnitList, getBalanceList } from '@/api/property'
+import { getBuildList, getUnitList, getBalanceList, importData, getPayType } from '@/api/property'
 import rechargeMoney from './components/rechargeMoney'
 const columns = [
   {
@@ -210,6 +246,7 @@ export default {
   data () {
     // this.columns = columns
     return {
+      payStatu: '',
       columns: columns,
       tabList: [
         { key: '0', tab: '全部' },
@@ -227,6 +264,9 @@ export default {
         { id: 2, name: '取消付款' }
       ],
       publishDate: [],
+      importModal: false, // 导入弹窗
+      fileUrl: '',
+      fileSize: 0,
       modalShow: false, // 充值余额弹窗
       advanced: false, // 高级搜索 展开/关闭
       queryParam: {}, // 查询参数
@@ -239,6 +279,7 @@ export default {
   mounted () {
     this.getBuildList()
     this.getUnitList()
+    this.getPayType()
   },
   methods: {
     // 楼栋
@@ -253,6 +294,16 @@ export default {
         this.unitList = res.data.list
       })
     },
+    // 缴费状态
+    getPayType () {
+      getPayType().then(res => {
+        const arr = []
+        for (const key in res.data) {
+          arr.push(res.data[key])
+        }
+        this.payStatu = arr
+      })
+    },
     // 选择楼栋
     selectHouse () {
       delete this.queryParam.unit_id
@@ -262,6 +313,30 @@ export default {
       this.publishDate = dates
       this.queryParam.start_time = dateStrings[0]
       this.queryParam.end_time = dateStrings[1]
+    },
+    // 上传文件
+    uploadFile (e) {
+      const _this = e.target.files[0]
+      this.fileSize = (_this.size / 1024 / 1024).toFixed(3)
+      this.fileUrl = _this
+    },
+    // 下载模板
+    downFile () {
+      location.href = 'http://develop.mhshjy.com/library/mb/mb_billEntry.xlsx'
+    },
+    // 导入提交
+    importFile () {
+      console.log(this.fileUrl)
+      const data = new FormData()
+      data.append('housefile', this.fileUrl)
+      importData(data).then(res => {
+        this.importModal = false
+        this.$success({
+          okText: '确定',
+          title: res.message,
+          content: res.txt
+        })
+      })
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
@@ -296,6 +371,18 @@ export default {
         return getBalanceList(requestParameters)
           .then(res => {
             this.columns = JSON.parse(JSON.stringify(columns))
+            if (!this.payStatu[3]) {
+              this.columns.splice(5, 1)
+            }
+            if (!this.payStatu[2]) {
+              this.columns.splice(4, 1)
+            }
+            if (!this.payStatu[1]) {
+              this.columns.splice(3, 1)
+            }
+            if (!this.payStatu[0]) {
+              this.columns.splice(2, 1)
+            }
             // this.columns.splice(1, 1) // 隐藏第二列
             this.dataObj = res.tab_data
             return res
@@ -349,5 +436,38 @@ export default {
 }
 .ant-card {
   margin-bottom: 24px;
+}
+
+.form-file {
+  /deep/ .ant-form-item-children {
+    display: block;
+  }
+}
+.file-box {
+  position: absolute;
+  display: flex;
+  top: 1px;
+  left: 1px;
+  bottom: 1px;
+  right: 1px;
+  border-radius: 5px;
+  z-index: 5;
+  background-color: #fff;
+  margin-bottom: 0;
+  .file-name {
+    width: 65%;color: #ccc;flex-grow: 1;display: flex;align-items: center;padding-left: 10px;
+  }
+  .file-size,.file-icon,.flex-shrink {
+    flex-shrink: 0;
+  }
+  .file-size {
+    width: 70px;color: #e4e4e4;display: flex;align-items: center;justify-content: flex-end;
+  }
+  .file-icon {
+    width: 25px;display: flex;align-items: center;justify-content: center;font-size: 14px;color: #e4e4e4;
+  }
+  .file-box div {
+    height: 100%;font-weight: normal;
+  }
 }
 </style>

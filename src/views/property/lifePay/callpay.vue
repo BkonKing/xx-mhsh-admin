@@ -10,7 +10,7 @@
                   <a-range-picker
                     showTime
                     class="piker-time"
-                    :value="defultTime"
+                    :value="publicTime"
                     :placeholder="['开始时间', '结束时间']"
                     format="YYYY-MM-DD"
                     @change="getTime"
@@ -39,8 +39,8 @@
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="区域">
                     <div style="display: flex;">
-                      <a-select v-model="queryParam.building_id" placeholder="楼栋" default-value="0" style="margin-right: 15px">
-                        <a-select-option v-for="item in houserList" :key="item.id" :value="item.id">
+                      <a-select @change="selectHouse" v-model="queryParam.building_id" placeholder="楼栋" default-value="0" style="margin-right: 15px">
+                        <a-select-option v-for="item in houseList" :key="item.id" :value="item.id">
                           {{ item.building_name }}
                         </a-select-option>
                       </a-select>
@@ -77,7 +77,7 @@
               <a-col :md="!advanced && 8 || 16" :sm="24">
                 <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
                   <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                  <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                  <a-button style="margin-left: 8px" @click="reSet">重置</a-button>
                   <a @click="toggleAdvanced" style="margin-left: 8px">
                     {{ advanced ? '收起' : '展开' }}
                     <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -139,7 +139,7 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { getCallpayList, sendBatchRefund } from '@/api/property'
+import { getBuildList, getUnitList, getCallpayList, sendBatchRefund } from '@/api/property'
 const columns = [
   {
     title: '催缴时间',
@@ -194,7 +194,7 @@ export default {
         { key: '2', tab: '已退款' }
       ],
       monthList: [], // 账单月份
-      houserList: [], // 楼栋
+      houseList: [], // 楼栋
       unitList: [], // 单元
       advanced: false, // 高级搜索 展开/关闭
       queryParam: {}, // 查询参数
@@ -205,7 +205,7 @@ export default {
       pltkShow: false,
       pltkData: '',
       mobile: '', // 手机号
-      defultTime: ['', ''],
+      publicTime: ['', ''],
       options: {
         alert: {
           show: true
@@ -226,6 +226,10 @@ export default {
       }
     }
   },
+  mounted () {
+    this.getBuildList()
+    this.getUnitList()
+  },
   created () {
     console.log(moment())
     // getCallpayList().then(res => {
@@ -233,6 +237,23 @@ export default {
     // })
   },
   methods: {
+    // 楼栋
+    getBuildList () {
+      getBuildList().then(res => {
+        this.houseList = res.data.list
+      })
+    },
+    // 单元
+    getUnitList () {
+      getUnitList({ building_id: this.queryParam.building_id }).then(res => {
+        this.unitList = res.data.list
+      })
+    },
+    // 选择楼栋
+    selectHouse () {
+      delete this.queryParam.unit_id
+      this.getUnitList()
+    },
     // tab切换
     tabSelect (key) {
       this.queryParam = {}
@@ -242,7 +263,7 @@ export default {
     // 时间
     getTime (dates, dateStrings) {
       console.log(dates, dateStrings)
-      this.defultTime = dates
+      this.publicTime = dates
       this.queryParam.start_time = dateStrings[0]
       this.queryParam.end_time = dateStrings[1]
     },
@@ -253,7 +274,7 @@ export default {
     // 重置
     reSet () {
       this.queryParam = {}
-      this.defultTime = []
+      this.publicTime = []
     },
     // 表格选中行
     onSelectChange (selectedRowKeys, selectedRows) {
@@ -275,8 +296,6 @@ export default {
         return getCallpayList(requestParameters)
           .then(res => {
             this.monthList = res.month_list
-            this.houserList = res.building_list
-            this.unitList = res.unit_list
             console.log('res.data', res.data)
             return res
           })

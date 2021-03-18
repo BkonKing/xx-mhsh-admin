@@ -9,7 +9,7 @@
     <a-descriptions title="房间" :column="2">
       <a-descriptions-item label="房产">{{ infoData.house_property_name }}</a-descriptions-item>
       <a-descriptions-item :label="infoData.genre_type_name"><template v-if="infoData.account_numb">户号{{ infoData.account_numb }}</template> <template v-if="infoData.surface">表号{{ infoData.surface }}</template></a-descriptions-item>
-      <a-descriptions-item label="业主">{{ infoData.realname + ' ' + infoData.mobile }}</a-descriptions-item>
+      <a-descriptions-item label="业主"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.uid}`" target="_parent">{{ infoData.realname + ' ' + infoData.mobile }}</a></a-descriptions-item>
     </a-descriptions>
     <template v-if="params && params.bill_type == 3">
       <a-descriptions title="调整" :column="2">
@@ -25,9 +25,13 @@
         <a-descriptions-item label="月份属期">{{ orderData.month_setmeal_days }}</a-descriptions-item>
         <a-descriptions-item label="使用数">{{ orderData.disparity }}</a-descriptions-item>
         <a-descriptions-item label="上次读表数">{{ orderData.old_record }}</a-descriptions-item>
-        <a-descriptions-item label="应缴金额">￥<span class="big-bold">{{ orderData.money }}</span><br />5元/单位；<span class="color-FAAD14">含违约金￥10.00</span></a-descriptions-item>
-        <a-descriptions-item label="本次读表数">10100</a-descriptions-item>
-        <a-descriptions-item label="图片" span="2"><div class="pic-list"><img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /><img src="https://test.tosolomo.com/upload/image/20200826/20200826173404_56269.png" /></div></a-descriptions-item>
+        <a-descriptions-item label="应缴金额">￥<span class="big-bold">{{ orderData.money }}</span><br />5元/单位；<span class="color-FAAD14"><template v-if="orderData.violations_money && orderData.violations_money!='0.00'">含违约金￥{{ orderData.violations_money }}</template></span></a-descriptions-item>
+        <a-descriptions-item label="本次读表数">{{ orderData.record }}</a-descriptions-item>
+        <a-descriptions-item v-if="orderData.pic" label="图片" span="2">
+          <div class="pic-list">
+            <img v-for="(item, index) in orderData.pic" :key="index" :src="item" />
+          </div>
+        </a-descriptions-item>
       </a-descriptions>
       <a-descriptions v-if="infoData.bill_type == 1" :title="`充值 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
         <a-descriptions-item label="充值金额">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
@@ -38,19 +42,27 @@
         <a-descriptions-item label="充值时间">{{ infoData.pay_time }}</a-descriptions-item>
         <template v-if="infoData.zf_type == 1">
           <a-descriptions-item :class="'dddaaa'" label="充值操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
-          <a-descriptions-item v-if="infoData.proof" label="充值凭证" span="2"><div class="pic-list"><img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /><img src="https://test.tosolomo.com/upload/image/20200826/20200826173404_56269.png" /></div></a-descriptions-item>
+          <a-descriptions-item v-if="infoData.proof" label="充值凭证" span="2">
+            <div class="pic-list">
+              <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
+            </div>
+          </a-descriptions-item>
         </template>
       </a-descriptions>
-      <!-- <a-descriptions v-if="infoData.bill_type == 2" :title="`充值 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
+      <a-descriptions v-if="infoData.bill_type == 2" :title="`缴费 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
         <a-descriptions-item label="缴费金额">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
         <a-descriptions-item label="账户余额">￥{{ infoData.balance }}</a-descriptions-item>
         <a-descriptions-item label="缴费单号">0000000000</a-descriptions-item>
-        <a-descriptions-item label="超时天数">30天</a-descriptions-item>
-        <a-descriptions-item label="缴费用户">XXX(租户)   15050505050</a-descriptions-item>
-        <a-descriptions-item label="缴费时间">2021-02-08  08:50:08</a-descriptions-item>
-        <a-descriptions-item :class="'dddaaa'" label="缴费操作人" span="2">[后台操作人姓名]</a-descriptions-item>
-        <a-descriptions-item label="缴费凭证" span="2"><div class="pic-list"><img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" /><img src="https://test.tosolomo.com/upload/image/20200826/20200826173404_56269.png" /></div></a-descriptions-item>
-      </a-descriptions> -->
+        <a-descriptions-item label="超时天数">{{ infoData.over_day }}</a-descriptions-item>
+        <a-descriptions-item label="缴费用户">{{ infoData.user_name }}</a-descriptions-item>
+        <a-descriptions-item label="缴费时间">{{ infoData.pay_time }}</a-descriptions-item>
+        <a-descriptions-item :class="'dddaaa'" label="缴费操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
+        <a-descriptions-item v-if="infoData.proof" label="缴费凭证" span="2">
+          <div class="pic-list">
+            <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
+          </div>
+        </a-descriptions-item>
+      </a-descriptions>
     </template>
   </a-modal>
 </template>
