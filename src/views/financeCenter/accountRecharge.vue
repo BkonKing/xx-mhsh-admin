@@ -42,7 +42,7 @@ export default {
   },
   data () {
     return {
-      currentIndex: 1
+      currentIndex: 0
     }
   }
 }

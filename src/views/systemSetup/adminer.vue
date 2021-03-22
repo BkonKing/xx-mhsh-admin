@@ -124,7 +124,6 @@ export default {
     del (record) {
       this.$refs.delAdmin.isShow = true
       this.$refs.delAdmin.id = record.id
-      console.log(record)
     },
     // 添加管理员
     add () {
@@ -140,11 +139,10 @@ export default {
       this.tableData = res.data.records
       this.pagination.total = +res.data.total
       this.pagination.pages = res.data.pages
-      console.log('管理员对象列表', res)
+      // console.log('管理员对象列表', res)
     },
     // 页码改变事件
     onChange (page, size) {
-      // console.log('Page: ', page)
       this.pagination.currentPage = page
       this.getData()
     },
@@ -153,7 +151,6 @@ export default {
       this.pagination.pageSize = size
       this.pagination.currentPage = 1
       this.getData()
-      // console.log('size: ', size)
     }
   },
   created () {
@@ -173,7 +170,7 @@ export default {
   }
   /deep/ .ant-pagination-total-text {
     margin-left: 20px;
-    margin-right: 800px;
+    margin-right: 600px;
   }
   /deep/ .ant-pagination-item-active {
     background-color: #1890ff;

@@ -28,6 +28,7 @@ export default {
     // 删除菜单
     async remove () {
       await removeAdmin({ id: this.id })
+      this.$parent.pagination.currentPage = 1
       this.$parent.getData()
       this.isShow = false
     }

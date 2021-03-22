@@ -2,16 +2,18 @@
   <div>
     <a-card class="card"
             ref="card">
-      <a-form-model :label-col="labelCol"
+      <a-form-model :model='form'
+                    :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label='充值类型'>
-              <a-select style="width: 300px">
-                <a-select-option value="jack">
+              <a-select v-model="form.recharge_type"
+                        style="width: 300px">
+                <a-select-option value="1">
                   短信
                 </a-select-option>
-                <a-select-option value="lucy">
+                <a-select-option value="2">
                   支付通道
                 </a-select-option>
               </a-select>
@@ -39,7 +41,7 @@
             <a-form-model-item label='支付时间'
                                v-if="cardBol">
               <a-range-picker format="YYYY-MM"
-                              :value="value"
+                              :value="form.pay_time"
                               :mode="mode2"
                               @panelChange="handlePanelChange2"
                               @change="handleChange" />
@@ -59,12 +61,13 @@
           <a-col :span='8'>
             <a-form-model-item label='支付方式'
                                v-if="cardBol">
-              <a-select style="width: 300px">
-                <a-select-option value="jack">
-                  支付宝
-                </a-select-option>
-                <a-select-option value="lucy">
+              <a-select v-model="form.pay_type"
+                        style="width: 300px">
+                <a-select-option value="1">
                   微信
+                </a-select-option>
+                <a-select-option value="2">
+                  支付宝
                 </a-select-option>
               </a-select>
             </a-form-model-item>
@@ -112,6 +115,7 @@
 
 <script>
 import rechargeModel from './rechargeModel'
+import { getRechargeList } from '@/api/financeCenter.js'
 export default {
   components: {
     rechargeModel
@@ -122,12 +126,16 @@ export default {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,
         total: 50,
-        pageSize: 1
+        pageSize: 10
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       mode2: ['month', 'month'],
-      value: [],
+      // value: [],
+      form: {
+        recharge_type: '',
+        pay_time: []
+      },
       cardHeight: '',
       cardBol: true,
       data: [
@@ -229,6 +237,14 @@ export default {
     }
   },
   methods: {
+    // 获取充值列表
+    async getData () {
+      const res = await getRechargeList({
+        pageindex: this.pagination.currentPage,
+        pagesize: this.pagination.pageSize
+      })
+      console.log('充值记录列表', res)
+    },
     // 充值
     recharge () {
       this.$refs.rechargeModel.isShow = true
@@ -262,6 +278,9 @@ export default {
   mounted () {
     console.log(this.$refs.card.$el.offsetHeight)
     this.cardHeight = this.$refs.card.$el.offsetHeight
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
