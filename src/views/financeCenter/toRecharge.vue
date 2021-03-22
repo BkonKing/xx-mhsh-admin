@@ -7,23 +7,23 @@
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='充值类型'>
-          {{toform.radioValue===1?'短信':'支付通道(生活缴费支付)'}}
+          {{toform.recharge_type===1?'短信':'支付通道(生活缴费支付)'}}
         </a-form-model-item>
         <a-form-model-item label='充值条数'
-                           v-if="!payBol && toform.radioValue===1">10000条</a-form-model-item>
+                           v-if="!payBol && toform.recharge_type===1">10000条</a-form-model-item>
         <a-form-model-item label='充值额度'
-                           v-if="toform.radioValue===2">1000000元</a-form-model-item>
+                           v-if="toform.recharge_type===2">1000000元</a-form-model-item>
         <!-- <a-form-model-item label="充值额度"
-                           v-if="payBol && toform.radioValue===2">
+                           v-if="payBol && toform.recharge_type===2">
           1000000元
         </a-form-model-item> -->
         <a-form-model-item label='支付金额'
-                           v-if="!payBol || toform.radioValue===1">
+                           v-if="!payBol || toform.recharge_type===1">
           <div class="money"
-               v-if="!payBol && toform.radioValue===1">
+               v-if="!payBol && toform.recharge_type===1">
             <span>￥</span> 100.00
           </div>
-          <div v-else-if="payBol && toform.radioValue===1">
+          <div v-else-if="payBol && toform.recharge_type===1">
             <small>￥</small> <span style="fontSize:18px">100.00</span> <small>(10000条短信)</small>
           </div>
           <div v-else
@@ -32,7 +32,7 @@
           </div>
         </a-form-model-item>
         <a-form-model-item label='充值金额'
-                           v-if="payBol && toform.radioValue===2"> <small>￥</small> <span>35000.00</span></a-form-model-item>
+                           v-if="payBol && toform.recharge_type===2"> <small>￥</small> <span>35000.00</span></a-form-model-item>
         <a-form-model-item label='支付方式'>
           <a-radio-group v-model="form.value"
                          v-if="!payBol">
@@ -88,9 +88,9 @@ export default {
   watch: {
     show (newVal) {
       if (newVal === true) {
-        setTimeout(() => {
-          this.payBol = true
-        }, 2000)
+        // setTimeout(() => {
+        //   this.payBol = true
+        // }, 2000)
       } else {
         this.payBol = false
       }

@@ -7,7 +7,7 @@ export default {
   name: 'financeCenter',
   component: RouteView,
   meta: {
-    title: '财务中心',
+    title: '账户中心',
     icon: 'table'
   },
   redirect: '/financeCenter/accountInfo',

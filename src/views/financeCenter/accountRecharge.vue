@@ -14,14 +14,14 @@
           <div class="right">
             <div class="item">
               <div class="t1">短信剩余</div>
-              <div class="t2">2223</div>
-              <div class="t3">使用10000</div>
+              <div class="t2">{{smsUseInfo.srmeain_numbers}}</div>
+              <div class="t3">使用{{smsUseInfo.suseremain_numbers}}</div>
             </div>
             <div class="line"></div>
             <div class="item">
               <div class="t1">支付通道剩余</div>
-              <div class="t2">1,000,000</div>
-              <div class="t3">使用20000</div>
+              <div class="t2">{{smsUseInfo.spayment_limit}}</div>
+              <div class="t3">使用{{smsUseInfo.susepayment_limit}}</div>
             </div>
           </div>
         </div>
@@ -35,6 +35,7 @@
 <script>
 import rechargeRecord from './rechargeRecord'
 import rechargeSet from './rechargeSet'
+import { getSmsUseInfo } from '@/api/financeCenter.js'
 export default {
   components: {
     rechargeRecord,
@@ -42,8 +43,14 @@ export default {
   },
   data () {
     return {
-      currentIndex: 1
+      currentIndex: 0,
+      smsUseInfo: ''
     }
+  },
+  async created () {
+    const res2 = await getSmsUseInfo()
+    this.smsUseInfo = res2.data
+    console.log('短信使用信息', res2)
   }
 }
 </script>
