@@ -312,7 +312,7 @@ export default {
     getTime (dates, dateStrings) {
       this.publishDate = dates
       this.queryParam.start_time = dateStrings[0]
-      this.queryParam.end_time = dateStrings[1]
+      this.queryParam.end_time = dateStrings[1] + ' 23:59:59'
     },
     // 上传文件
     uploadFile (e) {

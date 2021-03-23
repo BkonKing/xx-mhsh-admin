@@ -32,6 +32,7 @@
                   <a-range-picker
                     showTime
                     class="piker-time"
+                    :value="showTime"
                     :placeholder="['开始时间', '结束时间']"
                     format="YYYY-MM-DD"
                     @change="getTime"
@@ -42,7 +43,7 @@
             <a-col :md="!advanced && 8 || 16" :sm="24">
               <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="reSet">重置</a-button>
                 <a @click="toggleAdvanced" style="margin-left: 8px">
                   {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -70,6 +71,7 @@
             <a-icon type="exclamation-circle" />
           </a-popover>
         </span>
+        <template slot="score" slot-scope="score">{{ score/10 }}</template>
         <span slot="sellNum">已售票数
           <a-popover overlayClassName="popover-toast">
             <template slot="content">
@@ -106,7 +108,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable } from '@/components'
 import { getFilmList } from '@/api/movie'
 const columns = [
@@ -126,6 +127,7 @@ const columns = [
   {
     title: '评分',
     dataIndex: 'score',
+    scopedSlots: { customRender: 'score' },
     sorter: (a, b) => a.score - b.score
   },
   {
@@ -154,7 +156,8 @@ const columns = [
   {
     title: '上映时间',
     dataIndex: 'publish_date',
-    sorter: (a, b) => moment(a.publish_date).valueOf() - moment(b.publish_date).valueOf()
+    sorter: true
+    // sorter: (a, b) => moment(a.publish_date).valueOf() - moment(b.publish_date).valueOf()
   },
   {
     title: '操作',
@@ -189,36 +192,31 @@ export default {
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
-      queryParam: {}
+      queryParam: {},
+      showTime: []
     }
   },
   methods: {
     getTime (dates, dateStrings) {
       console.log(dates, dateStrings)
+      this.showTime = dates
       this.queryParam.publish_date = dateStrings[0] + '~' + dateStrings[1]
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
     },
-    onSubmit () {},
+    // 重置
+    reSet () {
+      this.queryParam = {}
+      this.showTime = []
+    },
     // 刷新表格数据
     loadTableData (page) {
       if (page.sortOrder && page.sortField) {
-        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
-          // 升序
-        } else {
-          // 降序
+        if (page.sortField == 'publish_date') {
+          page.sort_field = 'publish_date'
+          page.order_type = page.sortOrder == 'ascend' ? 'asc' : 'desc'
         }
-        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'want_view' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'tickets_sold' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'ticket_price' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
-        } else {}
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)

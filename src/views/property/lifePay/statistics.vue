@@ -121,10 +121,10 @@
           ref="aline"
           color="typename"
           position="name*value"
-          :showLegend="false"
+          :showLegend="true"
           :height="300"
           :data="lineData"
-          :padding="[25, 30, 34]"
+          :padding="[25, 30, 70]"
         ></a-line>
       </a-card>
       <a-row :gutter="24" class="row-block">
@@ -136,7 +136,7 @@
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
           <a-card v-if="alreadyPayData" :bordered="false" title="已缴费">
             <div slot="extra" class="extra-wrapper">
-              <a-range-picker :value="defultTime" @change="getTime" :ranges="{ '今天': [moment(), moment()],'昨天': [moment().subtract('days', 1), moment().subtract('days', 1)], '最近7天': [moment().subtract('days', 6), moment()], '最近30天': [moment().subtract('days', 29), moment()], '本月': [moment().startOf('month'), moment().endOf('month')], '今年': [moment().startOf('year'), moment().endOf('year')] }" :style="{width: '256px'}" />
+              <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
             </div>
             <div class="analysis-salesTypeRadio">
               <a-radio-group defaultValue="0" v-model="alreadyPayType" @change="payChange">
@@ -153,16 +153,13 @@
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
           <a-card v-if="noPayData" :bordered="false" title="未缴费">
             <div slot="extra" class="extra-wrapper">
-              <a-range-picker :value="defultTime" @change="getTime" :ranges="{ '今天': [moment(), moment()],'昨天': [moment().subtract('days', 1), moment().subtract('days', 1)], '最近7天': [moment().subtract('days', 6), moment()], '最近30天': [moment().subtract('days', 29), moment()], '本月': [moment().startOf('month'), moment().endOf('month')], '今年': [moment().startOf('year'), moment().endOf('year')] }" :style="{width: '256px'}" />
+              <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
             </div>
             <a-pie :data="noPayData"></a-pie>
           </a-card>
         </a-col>
         <a-col :sm="12" :md="12" :xl="12">
           <a-card :loading="loading" :bordered="false" title="未缴费情况" :style="{ height: '100%' }">
-            <div slot="extra" class="extra-wrapper">
-              <a-range-picker :value="defultTime" @change="getTime" :ranges="{ '今天': [moment(), moment()],'昨天': [moment().subtract('days', 1), moment().subtract('days', 1)], '最近7天': [moment().subtract('days', 6), moment()], '最近30天': [moment().subtract('days', 29), moment()], '本月': [moment().startOf('month'), moment().endOf('month')], '今年': [moment().startOf('year'), moment().endOf('year')] }" :style="{width: '256px'}" />
-            </div>
             <a-row :gutter="68">
               <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
                 <div class="ant-pro-number-info">
@@ -170,12 +167,8 @@
                     <span>未缴费金额</span>
                   </span>
                   <div class="number-info-value">
-                    <span style="font-size: 26px"> ￥12321</span>
+                    <span style="font-size: 26px"> ￥{{ noMoney | NumberFormat}}</span>
                   </div>
-                </div>
-                <!-- miniChart -->
-                <div>
-                  <mini-smooth-area :style="{ height: '45px' }" :dataSource="searchUserData" :scale="searchUserScale" />
                 </div>
               </a-col>
               <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
@@ -184,12 +177,8 @@
                     <span>未缴费户数</span>
                   </span>
                   <div class="number-info-value">
-                    <span style="font-size: 26px"> 100</span>
+                    <span style="font-size: 26px"> {{ noCount}}</span>
                   </div>
-                </div>
-                <!-- miniChart -->
-                <div>
-                  <mini-smooth-area :style="{ height: '45px' }" :dataSource="searchUserData" :scale="searchUserScale" />
                 </div>
               </a-col>
             </a-row>
@@ -202,6 +191,25 @@
                 :columns="columns"
                 :data="loadTableData"
               >
+                <span slot="number" slot-scope="text, record, index">
+                  {{ index + 1 }}
+                </span>
+                <span slot="money">欠费金额
+                  <a-popover overlayClassName="popover-toast">
+                    <template slot="content">
+                      所有费用类型的欠费金额总和
+                    </template>
+                    <a-icon type="exclamation-circle" />
+                  </a-popover>
+                </span>
+                <span slot="days">欠费天数
+                  <a-popover overlayClassName="popover-toast">
+                    <template slot="content">
+                      所有费用类型的欠费天数总和
+                    </template>
+                    <a-icon type="exclamation-circle" />
+                  </a-popover>
+                </span>
               </s-table>
             </div>
           </a-card>
@@ -250,52 +258,34 @@ import {
   Bar,
   aLine,
   aPie,
-  Trend,
-  MiniSmoothArea
+  Trend
 } from '@/components'
-import { getFilmList } from '@/api/movie'
+// import { getFilmList } from '@/api/movie'
 import { getSelectList, getHouseList, getTotalData, getTabPie, getLineData, getShoudPay, getAlreadyPay, getNoPay, getNoPaySituation } from '@/api/property'
 import moment from 'moment'
 const columns = [
   {
-    title: '明细单号',
-    dataIndex: 'film_id'
+    title: '排名',
+    scopedSlots: { customRender: 'number' }
   },
   {
-    title: '明细类型',
-    dataIndex: 'film_name2'
+    title: '房产',
+    dataIndex: 'house_property_name'
   },
   {
-    title: '费用类型',
-    dataIndex: 'is_shown',
-    scopedSlots: { customRender: 'hot' }
+    dataIndex: 'z_money',
+    slots: { title: 'money' },
+    sorter: true
   },
   {
-    title: '充缴金额',
-    dataIndex: 'film_name3'
+    dataIndex: 'day_num',
+    slots: { title: 'days' },
+    sorter: true
   }
 ]
 
 // 未缴费情况
 const DataSet = require('@antv/data-set')
-const searchUserData = []
-for (let i = 0; i < 7; i++) {
-  searchUserData.push({
-    x: moment().add(i, 'days').format('YYYY-MM-DD'),
-    y: Math.ceil(Math.random() * 10)
-  })
-}
-const searchUserScale = [
-  {
-    dataKey: 'x',
-    alias: '时间'
-  },
-  {
-    dataKey: 'y',
-    alias: '用户数',
-    min: 0,
-    max: 10
-  }]
 
 // 圆环-百分比
 const eachView = function (view, facet) {
@@ -325,8 +315,7 @@ export default {
     Bar,
     aLine,
     aPie,
-    Trend,
-    MiniSmoothArea
+    Trend
   },
   data () {
     this.columns = columns
@@ -339,24 +328,23 @@ export default {
       monthKey: '', // 账单月份
       monthList: [], // 月份列表
       payType: 0, // 缴费类型
+      payType2: 0, // 缴费类型-折线图
       payList: [], // 缴费类型列表
       houseList: [], // 楼栋列表
       checkedList: [], // 选中的楼栋id合集
       searchHouse: '', // 楼栋搜索
       totalData: '',
       loading: false,
-
-      // 搜索用户数
-      searchUserData,
-      searchUserScale,
       // 圆环
       defultTime: ['', ''],
-      start_time: '',
-      end_time: '',
+      startTime: '',
+      endTime: '',
       alreadyPayType: '0',
       shoudPayData: '', // 应缴费
       alreadyPayData: '', // 已缴费
       noPayData: '', // 未缴费
+      noMoney: '', // 未缴费金额
+      noCount: 0, // 未缴费户数
       data: [],
       padding: [50, 400, 50, 0],
       offset: [15, 0],
@@ -402,7 +390,8 @@ export default {
       summaryList: [
 
       ],
-      eachView
+      eachView,
+      ranges: { 今天: [this.moment(), this.moment()], 昨天: [this.moment().subtract('days', 1), this.moment().subtract('days', 1)], 最近7天: [this.moment().subtract('days', 6), this.moment()], 最近30天: [this.moment().subtract('days', 29), this.moment()], 本月: [this.moment().startOf('month'), this.moment().endOf('month')], 今年: [this.moment().startOf('year'), this.moment().endOf('year')] }
     }
   },
   mounted () {
@@ -421,22 +410,27 @@ export default {
       this.getShoudPay()
       this.getAlreadyPay()
       this.getNoPay()
+      this.loadAllData()
       this.jfldShow = false
     },
     // 时间
     getTime (dates, dateStrings) {
       console.log(dates, dateStrings)
       this.defultTime = dates
-      this.start_time = dateStrings[0]
-      this.end_time = dateStrings[1]
-      this.getShoudPay()
+      this.startTime = dateStrings[0]
+      this.endTime = dateStrings[1]
+      // this.getShoudPay()
       this.getAlreadyPay()
       this.getNoPay()
+      // this.getNoPaySituation()
     },
     // 下拉筛选数据
     getSelectList () {
       getSelectList().then(res => {
         this.monthList = res.month_list
+        this.defultTime = [res.month_list[0].sss_time, res.month_list[0].eee_time]
+        this.startTime = res.month_list[0].sss_time
+        this.endTime = res.month_list[0].eee_time
         this.monthKey = res.month_list[0].id
         this.payList = res.project_genre_list
         this.payType = res.project_genre_list[0].genre_id
@@ -470,8 +464,12 @@ export default {
       })
     },
     // 支付户数、支付笔数
-    getLineData () {
-      getLineData(this.params).then(res => {
+    getLineData (id) {
+      const paramsData = this.params
+      if (id) {
+        paramsData.genre_id = id
+      }
+      getLineData(paramsData).then(res => {
         const listArr = []
         for (const i in res.households_data) {
           const obj = {}
@@ -502,7 +500,7 @@ export default {
         const listArr = res.data.map(item => {
           return {
             payType: item.genre_name,
-            litres: item.money
+            litres: parseFloat(item.money)
           }
         })
         this.shoudPayData = this.transformPie(listArr)
@@ -514,11 +512,11 @@ export default {
     },
     // 已缴费
     getAlreadyPay () {
-      getAlreadyPay(Object.assign({ zf_type: this.alreadyPayType }, this.params)).then(res => {
+      getAlreadyPay(Object.assign({ zf_type: this.alreadyPayType, start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
         const listArr = res.data.map(item => {
           return {
             payType: item.genre_name,
-            litres: item.money
+            litres: parseFloat(item.money)
           }
         })
         this.alreadyPayData = this.transformPie(listArr)
@@ -526,19 +524,14 @@ export default {
     },
     // 未缴费
     getNoPay () {
-      getNoPay(this.params).then(res => {
+      getNoPay(Object.assign({ start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
         const listArr = res.data.map(item => {
           return {
             payType: item.genre_name,
-            litres: item.money
+            litres: parseFloat(item.money)
           }
         })
         this.noPayData = this.transformPie(listArr)
-      })
-    },
-    // 未缴费
-    getNoPaySituation () {
-      getNoPaySituation(this.params).then(res => {
       })
     },
     // 转换pie数据
@@ -554,7 +547,7 @@ export default {
     },
     // tab切换
     tabSelect (key) {
-      this.queryParam = {}
+      // this.queryParam = {}
       // this.queryParam.is_refund = key
       this.loadAllData()
     },
@@ -587,6 +580,10 @@ export default {
       // })
     },
     // 刷新表格数据
+    loadAllData () {
+      this.$refs.table.refresh(true)
+    },
+    // 刷新表格数据
     loadTableData (page) {
       if (page.sortOrder && page.sortField) {
         if (page.sortField == 'score' && page.sortOrder == 'ascend') {
@@ -605,17 +602,20 @@ export default {
         if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
         } else {}
       }
-      const requestParameters = Object.assign({}, this.queryParam, page)
+      const requestParameters = Object.assign({}, this.params, page)
         console.log('loadData request parameters:', requestParameters)
-        return getFilmList(requestParameters)
+        return getNoPaySituation(requestParameters)
           .then(res => {
+            this.noMoney = res.z_money / 100
+            this.noCount = res.data.total
             console.log(res.data)
             return res
           })
     },
     // 费用类型切换
     lineChange () {
-      console.log('lineActive', this.lineActive)
+      this.payType2 = this.summaryList[this.lineActive].id
+      this.getLineData(this.payType2)
     }
   },
   filters: {
@@ -625,6 +625,11 @@ export default {
       }
       const intPartFormat = value.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') // 将整数部分逢三一断
       return intPartFormat
+    }
+  },
+  watch: {
+    payType () {
+      this.lineActive = 0
     }
   }
 }

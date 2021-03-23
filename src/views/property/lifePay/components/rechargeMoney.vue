@@ -177,7 +177,7 @@ export default {
     },
     handleChange ({ fileList }) {
       console.log(fileList)
-      this.fileList = fileList
+      this.fileList = fileList.splice(0, 3)
     },
     // 表单提交
     handleSubmit (e) {

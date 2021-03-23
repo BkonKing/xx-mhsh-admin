@@ -34,17 +34,17 @@
             <a-descriptions :column="2">
               <a-descriptions-item label="影片ID">{{ dataInfo.film_id }}</a-descriptions-item>
               <a-descriptions-item label="上映阶段">{{ dataInfo.is_shown == 1 ? '热映' : '待映' }}影片</a-descriptions-item>
-              <a-descriptions-item label="影片">{{ dataInfo.film_name }}</a-descriptions-item>
+              <a-descriptions-item label="影片">《{{ dataInfo.film_name }}》</a-descriptions-item>
               <a-descriptions-item label="是否预售">{{ dataInfo.pre_saleflag == 1 ? '是' : '否' }}</a-descriptions-item>
               <a-descriptions-item label="类型">{{ dataInfo.type }}</a-descriptions-item>
               <a-descriptions-item label="上映时间">{{ dataInfo.publish_date }}</a-descriptions-item>
-              <a-descriptions-item label="制式">￥{{ dataInfo.version }}</a-descriptions-item>
-              <a-descriptions-item label="归属地区">￥{{ dataInfo.area }}</a-descriptions-item>
-              <a-descriptions-item label="时长">{{ dataInfo.duration }}</a-descriptions-item>
+              <a-descriptions-item label="制式">{{ dataInfo.version }}</a-descriptions-item>
+              <a-descriptions-item label="归属地区">{{ dataInfo.area }}</a-descriptions-item>
+              <a-descriptions-item label="时长">{{ dataInfo.duration }}分钟</a-descriptions-item>
               <a-descriptions-item v-if="dataInfo.ticket_price" label="最低售价">￥{{ dataInfo.ticket_price }}</a-descriptions-item>
-              <a-descriptions-item label="评分">{{ dataInfo.score }}</a-descriptions-item>
+              <a-descriptions-item label="评分">{{ dataInfo.score/10 }}</a-descriptions-item>
               <a-descriptions-item label="已售票数"><a v-if="dataInfo.tickets_sold>0" :href="'/zht/film/film/orderlist?tabIndex=1&film_name='+encodeURI(dataInfo.film_name)" target="_parent">{{ dataInfo.tickets_sold }}</a><span v-else>{{ dataInfo.tickets_sold }}</span></a-descriptions-item>
-              <a-descriptions-item label="想看">{{ dataInfo.want_view }}</a-descriptions-item>
+              <a-descriptions-item label="想看">实际{{ dataInfo.actual_account }} / 总数{{ dataInfo.sum_watchount }}</a-descriptions-item>
             </a-descriptions>
         </a-col>
         <a-col :span="8">

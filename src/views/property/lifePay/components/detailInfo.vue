@@ -7,8 +7,8 @@
     @cancel="cancelModal"
   >
     <a-descriptions title="房间" :column="2">
-      <a-descriptions-item label="房产">{{ infoData.house_property_name }}</a-descriptions-item>
-      <a-descriptions-item :label="infoData.genre_type_name"><template v-if="infoData.account_numb">户号{{ infoData.account_numb }}</template> <template v-if="infoData.surface">表号{{ infoData.surface }}</template></a-descriptions-item>
+      <a-descriptions-item label="房产" :span="infoData.account_numb || infoData.surface ? 1 : 2">{{ infoData.house_property_name }}</a-descriptions-item>
+      <a-descriptions-item v-if="infoData.account_numb || infoData.surface" :label="infoData.genre_type_name"><template v-if="infoData.account_numb">户号{{ infoData.account_numb }}</template> <template v-if="infoData.surface">表号{{ infoData.surface }}</template></a-descriptions-item>
       <a-descriptions-item label="业主"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.uid}`" target="_parent">{{ infoData.realname + ' ' + infoData.mobile }}</a></a-descriptions-item>
     </a-descriptions>
     <template v-if="params && params.bill_type == 3">
@@ -25,7 +25,7 @@
         <a-descriptions-item label="月份属期">{{ orderData.month_setmeal_days }}</a-descriptions-item>
         <a-descriptions-item label="使用数">{{ orderData.disparity }}</a-descriptions-item>
         <a-descriptions-item label="上次读表数">{{ orderData.old_record }}</a-descriptions-item>
-        <a-descriptions-item label="应缴金额">￥<span class="big-bold">{{ orderData.money }}</span><br />5元/单位；<span class="color-FAAD14"><template v-if="orderData.violations_money && orderData.violations_money!='0.00'">含违约金￥{{ orderData.violations_money }}</template></span></a-descriptions-item>
+        <a-descriptions-item label="应缴金额">￥<span class="big-bold">{{ orderData.money }}</span><br /><template v-if="orderData.electric_formula_name">{{ orderData.electric_formula_name }}；</template><span class="color-FAAD14"><template v-if="orderData.violations_money && orderData.violations_money!='0.00'">含违约金￥{{ orderData.violations_money }}</template></span></a-descriptions-item>
         <a-descriptions-item label="本次读表数">{{ orderData.record }}</a-descriptions-item>
         <a-descriptions-item v-if="orderData.pic" label="图片" span="2">
           <div class="pic-list">
@@ -33,36 +33,37 @@
           </div>
         </a-descriptions-item>
       </a-descriptions>
-      <a-descriptions v-if="infoData.bill_type == 1" :title="`充值 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
-        <a-descriptions-item label="充值金额">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
+      <a-descriptions :title="`${billTypeName} - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
+        <a-descriptions-item :label="`${billTypeName}金额`">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
         <a-descriptions-item label="账户余额">￥{{ infoData.balance }}</a-descriptions-item>
-        <a-descriptions-item label="充值单号">0000000000</a-descriptions-item>
-        <a-descriptions-item label="充值状态">成功</a-descriptions-item>
-        <a-descriptions-item label="充值用户">{{ infoData.user_name }}</a-descriptions-item>
-        <a-descriptions-item label="充值时间">{{ infoData.pay_time }}</a-descriptions-item>
+        <a-descriptions-item :label="`${billTypeName}单号`">{{ infoData.pay_log_id }}</a-descriptions-item>
+        <a-descriptions-item v-if="infoData.bill_type == 1" :label="`${billTypeName}状态`">成功</a-descriptions-item>
+        <a-descriptions-item v-if="infoData.bill_type == 2" label="超时天数">{{ infoData.over_day }}</a-descriptions-item>
+        <a-descriptions-item :label="`${billTypeName}用户`"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.owner_id}`" target="_parent">{{ infoData.user_name }}</a></a-descriptions-item>
+        <a-descriptions-item :label="`${billTypeName}时间`">{{ infoData.pay_time }}</a-descriptions-item>
         <template v-if="infoData.zf_type == 1">
-          <a-descriptions-item :class="'dddaaa'" label="充值操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
-          <a-descriptions-item v-if="infoData.proof" label="充值凭证" span="2">
+          <a-descriptions-item v-if="infoData.admin_name" :label="`${billTypeName}操作人`" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
+          <a-descriptions-item v-if="infoData.proof" :label="`${billTypeName}凭证`" span="2">
             <div class="pic-list">
               <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
             </div>
           </a-descriptions-item>
         </template>
       </a-descriptions>
-      <a-descriptions v-if="infoData.bill_type == 2" :title="`缴费 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
+      <!-- <a-descriptions v-if="infoData.bill_type == 2" :title="`缴费 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
         <a-descriptions-item label="缴费金额">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
         <a-descriptions-item label="账户余额">￥{{ infoData.balance }}</a-descriptions-item>
-        <a-descriptions-item label="缴费单号">0000000000</a-descriptions-item>
+        <a-descriptions-item label="缴费单号">{{ infoData.pay_log_id }}</a-descriptions-item>
         <a-descriptions-item label="超时天数">{{ infoData.over_day }}</a-descriptions-item>
-        <a-descriptions-item label="缴费用户">{{ infoData.user_name }}</a-descriptions-item>
+        <a-descriptions-item label="缴费用户"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.owner_id}`" target="_parent">{{ infoData.user_name }}</a></a-descriptions-item>
         <a-descriptions-item label="缴费时间">{{ infoData.pay_time }}</a-descriptions-item>
-        <a-descriptions-item :class="'dddaaa'" label="缴费操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
+        <a-descriptions-item label="缴费操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
         <a-descriptions-item v-if="infoData.proof" label="缴费凭证" span="2">
           <div class="pic-list">
             <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
           </div>
         </a-descriptions-item>
-      </a-descriptions>
+      </a-descriptions> -->
     </template>
   </a-modal>
 </template>
@@ -84,13 +85,15 @@ export default {
   data () {
     return {
       infoData: '',
-      orderData: ''
+      orderData: '',
+      billTypeName: '充值'
     }
   },
   methods: {
     getData () {
       getPayDetail(this.params).then(res => {
         this.infoData = res.house_data
+        this.billTypeName = res.house_data.bill_type == 1 ? '充值' : '缴费'
         this.orderData = res.order_data || ''
       })
     },
@@ -114,6 +117,9 @@ export default {
   }
   .ant-descriptions-item > span {
     vertical-align: top;
+  }
+  .ant-descriptions-item .ant-descriptions-item-label {
+    white-space: nowrap;
   }
   .big-bold {
     font-size: 23px;

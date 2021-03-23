@@ -20,9 +20,9 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="缴费状态">
                   <a-select v-model="queryParam.order_status" placeholder="请选择">
-                    <!-- <a-select-option value="0">全部</a-select-option> -->
-                    <a-select-option value="1">是</a-select-option>
-                    <a-select-option value="2">否</a-select-option>
+                    <a-select-option value="1">已催缴</a-select-option>
+                    <a-select-option value="2">待催缴</a-select-option>
+                    <a-select-option value="3">超时未缴</a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
@@ -90,7 +90,7 @@
       </a-card>
       <a-card>
         <div class="table-operator">
-          <a-button type="primary" :disabled="selectedRowKeys.length ? false : true" @click="pltkSure">再次催缴</a-button>
+          <a-button type="primary" :disabled="selectedRowKeys.length ? false : true" @click="plcjSure()">再次催缴</a-button>
         </div>
         <s-table
           ref="table"
@@ -102,36 +102,22 @@
           :rowSelection="rowSelection"
           showPagination="auto"
         >
-          <span slot="status" slot-scope="refund_status, record">
-            <a-badge :status="refund_status | statusTypeFilter" :text="record.refund_desc"/>
+          <span slot="status" slot-scope="order_status, record">
+            <a-badge :status="order_status | statusTypeFilter" :text="record.order_status_name"/>
           </span>
-          <span slot="price" slot-scope="pay_price, record">
-            {{ '￥' + pay_price +' (￥'+ record.rmb_price + ' + 币' + record.happiness + ')' }}
+          <span slot="house" slot-scope="text">
+            <a>{{ text }}</a>
+            <!-- <a :href="record.uid" target="_parent">{{ text }}</a> -->
           </span>
 
           <span slot="operation" slot-scope="text, record">
             <template>
-              <a v-if="record.refund_status == 0" @click="handleSub(record)">催缴</a>
+              <a v-if="record.is_urge == 1 && record.order_status!=2" @click="handleSub(record)">催缴</a>
               <a v-else disabled>催缴</a>
             </template>
           </span>
         </s-table>
       </a-card>
-      <a-modal
-        title="批量退款"
-        :visible="pltkShow"
-        @ok="pltkSure('')"
-        @cancel="pltkShow = false"
-      >
-        <div class="ant-alert ant-alert-info" style="margin-bottom: 20px">
-          <a-icon class="ant-alert-icon" type="exclamation-circle" />
-          <span>已选择 <span class="color-1890FF">{{ pltkData.count }}</span> 项</span>
-        </div>
-        <div>
-          <p>申请金额： <span>￥{{ pltkData.sum_price }}（￥{{ pltkData.rmb_price }} + 幸福币{{ pltkData.hapiness }}）</span></p>
-          <p>退款金额： <span class="color-F5222D">￥{{ pltkData.refund_price }}（￥{{ pltkData.refund_rmbprice }} + 幸福币{{ pltkData.refund_hapiness }}）</span></p>
-        </div>
-      </a-modal>
     </div>
   </page-header-wrapper>
 </template>
@@ -139,38 +125,40 @@
 <script>
 import moment from 'moment'
 import { STable } from '@/components'
-import { getBuildList, getUnitList, getCallpayList, sendBatchRefund } from '@/api/property'
+import { getBuildList, getUnitList, getCallpayList, sendCallPay } from '@/api/property'
 const columns = [
   {
     title: '催缴时间',
-    dataIndex: 'returnfund_numb'
-  },
-  {
-    title: '催缴次数',
-    dataIndex: 'refund_status',
-    scopedSlots: { customRender: 'status' }
-  },
-  {
-    title: '缴费状态',
-    dataIndex: 'project_name'
-  },
-  {
-    title: '账单月份',
-    dataIndex: 'mobile'
-  },
-  {
-    title: '房产',
-    dataIndex: 'pay_price',
-    scopedSlots: { customRender: 'price' }
-  },
-  {
-    title: '类型',
-    dataIndex: 'ctime',
+    dataIndex: 'u_time',
     sorter: true
   },
   {
+    title: '催缴次数',
+    dataIndex: 'urge_num',
+    sorter: true
+  },
+  {
+    title: '缴费状态',
+    dataIndex: 'order_status',
+    scopedSlots: { customRender: 'status' }
+  },
+  {
+    title: '账单月份',
+    dataIndex: 'setmeal_days',
+    sorter: true
+  },
+  {
+    title: '房产',
+    dataIndex: 'house_property_name',
+    scopedSlots: { customRender: 'house' }
+  },
+  {
+    title: '类型',
+    dataIndex: 'genre_name'
+  },
+  {
     title: '金额',
-    dataIndex: 'htime',
+    dataIndex: 'money',
     sorter: true
   },
   {
@@ -188,11 +176,6 @@ export default {
   data () {
     this.columns = columns
     return {
-      tabList: [
-        { key: '0', tab: '全部' },
-        { key: '1', tab: '退款中' },
-        { key: '2', tab: '已退款' }
-      ],
       monthList: [], // 账单月份
       houseList: [], // 楼栋
       unitList: [], // 单元
@@ -201,10 +184,6 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       // tipShow: true,
-      // 批量退款
-      pltkShow: false,
-      pltkData: '',
-      mobile: '', // 手机号
       publicTime: ['', ''],
       options: {
         alert: {
@@ -219,7 +198,7 @@ export default {
         selectedRowKeys: this.selectedRowKeys,
         getCheckboxProps: record => ({
           props: {
-            disabled: record.refund_status > 0
+            disabled: record.is_urge == 0 || record.order_status == 2
           }
         }),
         onChange: this.onSelectChange
@@ -265,7 +244,7 @@ export default {
       console.log(dates, dateStrings)
       this.publicTime = dates
       this.queryParam.start_time = dateStrings[0]
-      this.queryParam.end_time = dateStrings[1]
+      this.queryParam.end_time = dateStrings[1] + ' 23:59:59'
     },
     // 搜索收起/展开
     toggleAdvanced () {
@@ -288,8 +267,8 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
-      if (page.sortOrder && page.sortField) {
-
+      if (page.sortOrder) {
+        page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)
@@ -300,62 +279,31 @@ export default {
             return res
           })
     },
-    // 单个退款
+    // 单个催缴
     handleSub (item) {
-      this.pltkSure(item.order_id)
+      this.plcjSure(item.order_id)
     },
-    // 批量退款提交
-    pltkSure (orderId) {
+    // 批量催缴提交
+    plcjSure (orderId) {
       let paramId = this.selectedRowKeys.join(',')
       if (orderId) {
         paramId = orderId
       }
-      sendBatchRefund({ order_id: paramId }).then(res => {
+      sendCallPay({ order_ids: paramId }).then(res => {
         if (res.success) {
-            this.pltkShow = false
-            this.loadAllData()
-            if (this.selectedRowKeys.length == 1) {
-              this.$message.success(res.message)
-            } else {
-              this.modalSuccess('退款成功', res.message)
-            }
+          this.$message.success(res.message)
+          this.selectedRowKeys = []
+          this.$refs.table.refresh(true)
         } else {
-          if (res.type == 1) {
-            if (this.selectedRowKeys.length == 1) {
-              this.modalError('退款失败', '请重试')
-            } else {
-              this.modalError('退款失败', res.message)
-            }
-          } else if (res.type == 3) {
-            this.modalWarning('余额不足', '账户余额不足，请先充值')
-          }
+          this.$message.error(res.message)
         }
       }).catch(res => {
-      })
-    },
-    modalSuccess (title, content) {
-      this.$success({
-        okText: '确定',
-        title: title,
-        content: content
-      })
-    },
-    modalError (title, content) {
-      this.$error({
-        title: title,
-        content: content
-      })
-    },
-    modalWarning (title, content) {
-      this.$warning({
-        title: title,
-        content: content
       })
     }
   },
   filters: {
     statusTypeFilter (type) {
-      return type === 0 ? 'processing' : 'success'
+      return type == 0 ? 'default' : (type == 1 ? 'error' : 'success')
     }
   }
 }

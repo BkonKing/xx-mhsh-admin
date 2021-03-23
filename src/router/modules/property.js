@@ -77,6 +77,15 @@ export default {
             title: '数据统计',
             icon: 'table'
           }
+        },
+        {
+          path: '/property/lifePay/logs', // 完整地址
+          name: 'logs',
+          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/logs'),
+          meta: {
+            title: '操作日志',
+            icon: 'table'
+          }
         }
       ]
     }

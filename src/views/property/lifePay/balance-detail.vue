@@ -193,14 +193,16 @@
               name="money"
               placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="原因说明">
+          <a-form-item class="reason-area" label="原因说明" :extra="((tzyeform.getFieldValue('adjust') && tzyeform.getFieldValue('adjust').length) || 0) + '/200'">
             <a-textarea
               rows="3"
+              maxlength="200"
               placeholder="请输入"
               v-decorator="[
                 'adjust',
                 {rules: [{ required: true, message: '请输入原因说明' }]}
               ]" />
+              <!-- <span>{{ tzyeform.getFieldValue('adjust') && tzyeform.getFieldValue('adjust').length || 0 }}</span> -->
           </a-form-item>
         </a-form>
       </a-modal>
@@ -376,7 +378,7 @@ export default {
     getTime (dates, dateStrings) {
       this.publishDate = dates
       this.queryParam.start_time = dateStrings[0]
-      this.queryParam.end_time = dateStrings[1]
+      this.queryParam.end_time = dateStrings[1] + ' 23:59:59'
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
@@ -521,6 +523,11 @@ export default {
     width: 1px;
     height: 56px;
     background-color: #e8e8e8;
+  }
+}
+.reason-area {
+  /deep/ .ant-form-extra {
+    text-align: right;
   }
 }
 </style>

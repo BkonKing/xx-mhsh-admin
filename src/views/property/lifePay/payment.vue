@@ -80,7 +80,7 @@
                     </a-select>
                   </a-form-model-item>
                 </a-col>
-                <a-col :md="8" :sm="24">
+                <a-col v-if="tabIndex==0 || tabIndex==4" :md="8" :sm="24">
                   <a-form-model-item label="费用类型">
                     <a-select v-model="queryParam.saleflag" placeholder="请选择">
                       <!-- <a-select-option value="0">全部</a-select-option> -->
@@ -90,7 +90,7 @@
                   </a-form-model-item>
                 </a-col>
               </template>
-              <a-col :md="!advanced && 8 || 16" :sm="24">
+              <a-col :md="!advanced && 8 || ((tabIndex ==0 || tabIndex == 4) && 16 || 24)" :sm="24">
                 <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
                   <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
                   <a-button style="margin-left: 8px" @click="reSet">重置</a-button>
@@ -255,7 +255,7 @@ export default {
     getTime (dates, dateStrings) {
       this.publishDate = dates
       this.queryParam.start_time = dateStrings[0]
-      this.queryParam.end_time = dateStrings[1]
+      this.queryParam.end_time = dateStrings[1] + ' 23:59:59'
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
@@ -282,22 +282,8 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
-      if (page.sortOrder && page.sortField) {
-        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
-          // 升序
-        } else {
-          // 降序
-        }
-        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'want_view' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'tickets_sold' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'ticket_price' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
-        } else {}
+      if (page.sortOrder) {
+        page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)

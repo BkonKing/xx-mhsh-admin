@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 const movieApi = {
   callpayList: '/butler/urgeLog/getUrgeLogList',
+  sendCallPay: '/butler/urgeLog/call_order',
   selectList: '/butler/statistics/statistics',
   houseList: '/butler/statistics/statistics_building_screen',
   totalData: '/butler/statistics/basicStatistics',
@@ -12,7 +13,11 @@ const movieApi = {
   noPaySituation: '/butler/statistics/life_qoq_details_data',
   buildList: '/butler/payRecords/building_data',
   unitList: '/butler/payRecords/unit_data',
+  paymentList: '/butler/payRecords/getPayRecordsList',
+  billMonth: '/butler/payRecords/month_data',
+  payType: '/butler/balance/genre_type_data',
   balanceList: '/butler/balance/balance_data',
+  importData: '/butler/balance/importBalanceRecord',
   invest: '/butler/balance/recharge_json',
   submitInvest: '/butler/balance/recharge_balance',
   basisInfo: '/butler/balance/balance_details_json',
@@ -27,6 +32,15 @@ const movieApi = {
 export function getCallpayList (parameter) {
   return request({
     url: movieApi.callpayList,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+// 催缴记录-催缴操作
+export function sendCallPay (parameter) {
+  return request({
+    url: movieApi.sendCallPay,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter
@@ -105,7 +119,7 @@ export function getNoPay (parameter) {
     data: parameter
   })
 }
-// 统计页面-未缴费
+// 统计页面-未缴费-情况
 export function getNoPaySituation (parameter) {
   return request({
     url: movieApi.noPaySituation,
@@ -134,10 +148,47 @@ export function getUnitList (parameter) {
   })
 }
 
+// 充缴记录页面-列表
+export function getPaymentList (parameter) {
+  return request({
+    url: movieApi.paymentList,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+// 充缴记录页面-账单月份
+export function getBillMonth (parameter) {
+  return request({
+    url: movieApi.billMonth,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+
+// 缴费状态
+export function getPayType (parameter) {
+  return request({
+    url: movieApi.payType,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
 // 余额管理页面-列表
 export function getBalanceList (parameter) {
   return request({
     url: movieApi.balanceList,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+// 余额管理页面-导入文件
+export function importData (parameter) {
+  return request({
+    url: movieApi.importData,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter
