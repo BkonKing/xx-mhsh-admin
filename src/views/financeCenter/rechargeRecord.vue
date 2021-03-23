@@ -92,7 +92,8 @@
       <a-table :columns="columns"
                :data-source="tableData"
                :pagination='false'
-               class="table">
+               class="table"
+               @change="tableChange">
         <div slot="recharge_type"
              slot-scope="recharge_type">
           {{recharge_type==='1'?'短信':'支付通道'}}
@@ -143,6 +144,8 @@ export default {
       value: [],
       pay_type: '',
       project_id: '',
+      sort_type: '',
+      sort_field: '',
       cardHeight: '',
       cardBol: true,
       tableData: [],
@@ -219,6 +222,13 @@ export default {
     }
   },
   methods: {
+    // 排序时触发
+    tableChange (pagination, filters, sorter) {
+      console.log(sorter)
+      this.sort_field = sorter.field
+      this.sort_type = sorter.order === 'ascend' ? 1 : 2
+      this.getData()
+    },
     // 重置
     reset () {
       this.value = []
@@ -245,7 +255,9 @@ export default {
         pay_type: this.pay_type,
         recharge_type: this.recharge_type,
         project_id: this.project_id,
-        pay_time: str
+        pay_time: str,
+        sort_field: this.sort_field,
+        sort_type: this.sort_type
       })
       this.tableData = res.data.list
       this.pagination.total = res.data.total

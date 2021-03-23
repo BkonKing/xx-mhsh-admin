@@ -6,7 +6,7 @@ export function getRechargeList (data) {
     url: '/recharge/recharge/getRechargeList',
     method: 'post',
     headers: {
-      Authorization: '10a3accbf89e327a5c0ac3cb2d3984ea7a4b16de'
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
     },
     data
   })
@@ -17,7 +17,7 @@ export function getProjectList (params) {
     url: '/recharge/recharge/getProjectList',
     method: 'post',
     headers: {
-      Authorization: '10a3accbf89e327a5c0ac3cb2d3984ea7a4b16de'
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
     }
   })
 }
@@ -27,15 +27,66 @@ export function getSmsUseInfo () {
     url: '/recharge/recharge/getSmsUseInfo',
     method: 'post',
     headers: {
-      Authorization: '10a3accbf89e327a5c0ac3cb2d3984ea7a4b16de'
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
     }
   })
 }
 // 添加充值记录
 export function addRecharge (data) {
   return request({
-    url: '/recharge/recharge/addRecharge',
+    url: '/recharge/newrecharge/addRecharge',
     method: 'post',
+    headers: {
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
+    },
+    data
+  })
+}
+
+// 预警设置
+export function setWarning (data) {
+  return request({
+    url: '/recharge/recharge/setWarning',
+    method: 'post',
+    headers: {
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
+    },
+    data
+  })
+}
+
+// 获取充值提醒用户列表
+export function getRemindUser (data) {
+  return request({
+    url: '/recharge/recharge/getRemindUser',
+    method: 'post',
+    headers: {
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
+    },
+    data
+  })
+}
+
+// 获取用户信息（新接收方式）
+export function getUserInfo (data) {
+  return request({
+    url: '/recharge/newrecharge/getUserInfo',
+    method: 'post',
+    headers: {
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
+    },
+    data
+  })
+}
+
+// 设置提醒用户（新接收方式）
+export function setReminder (data) {
+  return request({
+    url: '/recharge/newrecharge/setReminder',
+    method: 'post',
+    headers: {
+      Authorization: '2f87e286a4f57b6b5a848e986bdd1271e4f5ed85'
+    },
     data
   })
 }

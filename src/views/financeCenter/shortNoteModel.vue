@@ -3,20 +3,15 @@
            title="扫码支付">
     <template #footer>
       <div>
-        <a-button v-if="toform.recharge_type===1"
-                  type='primary'>去支付</a-button>
-        <a-button v-else>取消</a-button>
+        <a-button type='primary'>去支付</a-button>
       </div>
     </template>
     <a-form-model :label-col="labelCol"
                   :wrapper-col="wrapperCol">
       <a-form-model-item label='充值类型'>
-        {{toform.recharge_type===1?'短信':'支付通道'}}
+        短信
       </a-form-model-item>
-      <a-form-model-item v-if="toform.recharge_type===1"
-                         label='充值条数'>10000条</a-form-model-item>
-      <a-form-model-item v-if="toform.recharge_type===2"
-                         label='充值额度'>1000000元</a-form-model-item>
+      <a-form-model-item label='充值条数'>10000条</a-form-model-item>
 
       <a-form-model-item label='支付金额'>
         <div style="color:#1890FF">
@@ -32,7 +27,9 @@
             微信
           </a-radio>
         </a-radio-group>
+
       </a-form-model-item>
+
     </a-form-model>
   </a-modal>
 </template>
@@ -46,8 +43,10 @@ export default {
       isShow: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 }
+
     }
   }
+
 }
 </script>
 

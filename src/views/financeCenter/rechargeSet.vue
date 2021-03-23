@@ -4,13 +4,19 @@
       <div class="title">预警</div>
       <div class="content">
         <div class="t1">
-          短信剩余条数小于 <a-input v-model="input1"></a-input>时，短信提醒指定人
+          短信剩余条数小于 <a-input v-model="sremain_amount1"
+                   onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"></a-input>时，短信提醒指定人
         </div>
         <div class="t2">
-          支付通道剩余额度小于<a-input v-model="input1"></a-input>时，短信提醒指定人
+          支付通道剩余额度小于<a-input onkeyup="this.value=this.value.replace( /\D|^0/g,'')"
+                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+                   v-model="payment_amount1">
+          </a-input>时，短信提醒指定人
         </div>
         <div class="t3">
-          <a-button type='primary'>提交</a-button>
+          <a-button type='primary'
+                    @click="submit1">提交</a-button>
         </div>
       </div>
     </a-card>
@@ -18,16 +24,23 @@
       <div class="title">预警</div>
       <div class="content">
         <div class="t1">
-          短信剩余条数小于 <a-input v-model="input1"></a-input>时，短信提醒指定人
+          短信剩余条数小于 <a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+                   v-model="sremain_amount2"></a-input>时，短信提醒指定人
         </div>
         <div class="t2">
-          支付通道剩余额度小于<a-input v-model="input1"></a-input>时，短信提醒指定人
+          支付通道剩余额度小于<a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+                   v-model="payment_amount2"></a-input>时，短信提醒指定人
         </div>
         <div class="t4">
-          项目方支付剩余额度小于 <a-input v-model="input1"></a-input>时，短信提醒指定人
+          项目方支付剩余额度小于 <a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+                   v-model="project_amount"></a-input>时，短信提醒指定人
         </div>
         <div class="t3">
-          <a-button type='primary'>提交</a-button>
+          <a-button type='primary'
+                    @click="submit2">提交</a-button>
         </div>
       </div>
     </a-card>
@@ -36,24 +49,24 @@
       <div class="content">
         <div class="t1">
           <span>余额：</span>
-          15050505050；15050505050(姓名)；15050505050(姓名名)；15050505050(姓名名)；
+          {{balance}}
           <a-icon class="icon"
                   type="edit"
-                  @click="$refs.remindModel.isShow=true" />
+                  @click="remind(1)" />
         </div>
         <div class="t2">
           <span>短信：</span>
-          15050505050；15050505050(姓名)；15050505050(姓名名)；15050505050(姓名名)；15050505050(姓名名)；15050505050(姓名名)；
+          {{sms_list}}
           <a-icon class="icon"
                   type="edit"
-                  @click="$refs.remindModel.isShow=true" />
+                  @click="remind(2)" />
         </div>
         <div class="t3">
           <span>支付通道：</span>
-          15050505050；15050505050(姓名);
+          {{channel}}
           <a-icon class="icon"
                   type="edit"
-                  @click="$refs.remindModel.isShow=true" />
+                  @click="remind(3)" />
         </div>
       </div>
     </a-card>
@@ -63,14 +76,63 @@
 
 <script>
 import remindModel from './remindModel'
+import { setWarning, getRemindUser } from '@/api/financeCenter.js'
 export default {
   components: {
     remindModel
   },
   data () {
     return {
-      input1: 200
+      sremain_amount1: 200,
+      payment_amount1: 5000,
+      sremain_amount2: 200,
+      payment_amount2: 5000,
+      project_amount: 0,
+      balance: '',
+      channel: '',
+      sms_list: ''
     }
+  },
+  methods: {
+    // 获取充值提醒用户列表
+    async getData () {
+      const res = await getRemindUser()
+      this.balance = res.data.balance.map(item => {
+        return item.mobile + ' (' + item.realname + ')' + ''
+      }).join('；')
+      this.channel = res.data.channel.map(item => {
+        return item.mobile + ' (' + item.realname + ')' + ''
+      }).join('；')
+      this.sms_list = res.data.sms_list.map(item => {
+        return item.mobile + ' (' + item.realname + ')' + ''
+      }).join('；')
+      // console.log('获取充值提醒用户列表', res)
+    },
+    // 提醒
+    remind (type) {
+      this.$refs.remindModel.isShow = true
+      this.$refs.remindModel.type = type
+    },
+    // 预警
+    async submit1 () {
+      const res = await setWarning({
+        sremain_amount: this.sremain_amount1,
+        payment_amount: this.payment_amount1
+      })
+      console.log('预警', res)
+    },
+    // 预警
+    async submit2 () {
+      const res = await setWarning({
+        sremain_amount: this.sremain_amount1,
+        payment_amount: this.payment_amount1,
+        project_amount: this.project_amount
+      })
+      console.log('预警', res)
+    }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
