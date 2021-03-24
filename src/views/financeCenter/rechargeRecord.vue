@@ -36,6 +36,7 @@
             <a-form-model-item label='支付时间'
                                v-if="cardBol">
               <a-range-picker format="YYYY-MM"
+                              locale={locale}
                               :value="value"
                               :mode="mode2"
                               @panelChange="handlePanelChange2"
@@ -125,12 +126,16 @@
 import rechargeModel from './rechargeModel'
 import { getRechargeList, getProjectList } from '@/api/financeCenter.js'
 import moment from 'moment'
+import locale from 'ant-design-vue/lib/locale-provider/zh_CN'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   components: {
     rechargeModel
   },
   data () {
     return {
+      locale,
       pagination: {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,

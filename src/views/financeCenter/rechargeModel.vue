@@ -29,6 +29,7 @@
                    placeholder="请输入"
                    v-model="rechargeMoney"
                    @input="setPrice"
+                   @blur="ismore100"
                    suffix="3.5%手续费" />
         </a-form-model-item>
         <a-form-model-item label='金额'>
@@ -39,9 +40,11 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <shortNoteModel ref="shortNoteModel"
+    <shortNoteModel :payInfo='payInfo'
+                    ref="shortNoteModel"
                     :rechargeType="recharge_type"></shortNoteModel>
-    <payChannelModel ref="payChannelModel"></payChannelModel>
+    <payChannelModel :payInfo='payInfo'
+                     ref="payChannelModel"></payChannelModel>
   </div>
 </template>
 
@@ -49,6 +52,24 @@
 import shortNoteModel from './shortNoteModel.vue'
 import payChannelModel from './payChannelModel'
 import { addRecharge } from '@/api/financeCenter.js'
+function keepTwoDecimalFull (num) {
+  var result = parseFloat(num)
+  if (isNaN(result)) {
+    alert('传递参数错误，请检查！')
+    return false
+  }
+  result = Math.round(num * 100) / 100
+  var sX = result.toString()
+  var posDecimal = sX.indexOf('.')
+  if (posDecimal < 0) {
+    posDecimal = sX.length
+    sX += '.'
+  }
+  while (sX.length <= posDecimal + 2) {
+    sX += '0'
+  }
+  return sX
+}
 
 export default {
   components: {
@@ -61,11 +82,12 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       title: '哈哈哈',
-      count: '',
-      rechargeMoney: '',
-      price: '',
+      count: '', // 充值条数
+      rechargeMoney: '', // 充值额度
+      price: '', // 金额
       recharge_type: 1, // 是int充值类型 1短信2支付通道
-      smsUseInfo: {}
+      smsUseInfo: {},
+      payInfo: {}
     }
   },
   watch: {
@@ -87,38 +109,50 @@ export default {
         this.recharge_type = 1
         this.count = ''
         this.price = ''
+        this.rechargeMoney = ''
       }
     }
   },
 
   methods: {
+    // 判断充值额度是否大于100
+    ismore100 () {
+      if (this.rechargeMoney < 100) {
+        this.rechargeMoney = ''
+        this.price = ''
+        this.$message.error('充值额度要大于100')
+      }
+    },
     // 设置充值金额
     setRechargeMoney () {
-      this.rechargeMoney = Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
+      // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
+      this.rechargeMoney = keepTwoDecimalFull(this.rechargeMoney / 0.0035)
     },
     // 设置金额
     setPrice () {
-      this.price = Number((this.rechargeMoney * 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
+      this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
     },
     // 充值
     async recharge () {
       if (this.recharge_type === 1) {
         this.$refs.shortNoteModel.isShow = true
-        await addRecharge({
+        const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: this.count,
           pay_price: this.price
         })
+        this.payInfo = res.data
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1
-        // console.log('充值短信', res)
+        console.log('充值短信', res)
       } else {
         this.$refs.payChannelModel.isShow = true
-        await addRecharge({
+        const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: +this.rechargeMoney,
           pay_price: this.price
         })
+        this.payInfo = res.data
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1
       }

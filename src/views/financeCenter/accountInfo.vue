@@ -12,7 +12,7 @@
       <div class="middle">
         <div class="item">
           <div class="t1">幸福币</div>
-          <div class="t2"> <span>50000</span> </div>
+          <div class="t2"> <span>{{accountInfo.credits}}</span> </div>
           <a-button type="link"
                     @click="$router.push('/happyMoney/transfer')">
             转账
@@ -21,7 +21,7 @@
         <div class="line"></div>
         <div class="item">
           <div class="t1">短信</div>
-          <div class="t2"><span>10000</span> 条</div>
+          <div class="t2"><span>{{accountInfo.sms_total}}</span> 条</div>
           <a-button type="link">
             充值
           </a-button>
@@ -40,12 +40,12 @@
       <div class="bottom">
         <div class="item">
           <div class="t1">用户</div>
-          <div class="t2">50000</div>
+          <div class="t2">{{accountInfo.user_total}}</div>
         </div>
         <div class="line"></div>
         <div class="item">
           <div class="t1">{{true?'项目':'业主'}}</div>
-          <div class="t2">100</div>
+          <div class="t2">{{accountInfo.project_total}}</div>
         </div>
       </div>
     </a-card>
@@ -53,8 +53,19 @@
 </template>
 
 <script>
+import { getAccountInfo } from '@/api/financeCenter'
 export default {
-
+  data () {
+    return {
+      accountInfo: {}
+    }
+  },
+  async created () {
+    // 获取账户信息
+    const res = await getAccountInfo()
+    this.accountInfo = res.data
+    console.log('账户信息', res)
+  }
 }
 </script>
 
