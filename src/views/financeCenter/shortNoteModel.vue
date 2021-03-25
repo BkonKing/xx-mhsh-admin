@@ -77,7 +77,6 @@ export default {
       pay_type: 2, // 支付类型
       isPay: false, // 是否支付
       payMa: '', // 支付二维码
-      orderNum: '', // 订单编号
       timeId: null
     }
   },
@@ -98,7 +97,17 @@ export default {
           pay_type: this.pay_type
         })
         this.payMa = res.data
-        this.orderNum = res.data.order_num
+        this.timeId = setInterval(async () => {
+          const res2 = await payQuery({
+            pay_type: this.pay_type,
+            put_trade_no: res.data.order_num
+          })
+          // console.log('是否支付成功', res2)
+          if (res2.is_success === 1) {
+            this.isPay = true
+            clearInterval(this.timeId)
+          }
+        }, 1000)
         // console.log('支付', res)
       }
     },
@@ -116,7 +125,11 @@ export default {
           pay_type: this.pay_type,
           put_trade_no: res.data.order_num
         })
-        console.log('是否支付成功', res2)
+        // console.log('是否支付成功', res2)
+        if (res2.is_success === 1) {
+          this.isPay = true
+          clearInterval(this.timeId)
+        }
       }, 1000)
       window.open(res.data.url)
     }
