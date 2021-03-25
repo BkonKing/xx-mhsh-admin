@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { payOrder } from '@/api/financeCenter.js'
+import { payOrder, payQuery } from '@/api/financeCenter.js'
 export default {
   props: ['payInfo'],
   data () {
@@ -74,9 +74,11 @@ export default {
       isShow: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      pay_type: 2,
-      isPay: false,
-      payMa: ''
+      pay_type: 2, // 支付类型
+      isPay: false, // 是否支付
+      payMa: '', // 支付二维码
+      orderNum: '', // 订单编号
+      timeId: null
     }
   },
   watch: {
@@ -96,7 +98,8 @@ export default {
           pay_type: this.pay_type
         })
         this.payMa = res.data
-        console.log('支付', res)
+        this.orderNum = res.data.order_num
+        // console.log('支付', res)
       }
     },
     // 支付宝支付
@@ -106,7 +109,15 @@ export default {
         pay_price: +this.payInfo.pay_price,
         pay_type: this.pay_type
       })
-      console.log('支付', res)
+      // console.log('支付', res)
+
+      this.timeId = setInterval(async () => {
+        const res2 = await payQuery({
+          pay_type: this.pay_type,
+          put_trade_no: res.data.order_num
+        })
+        console.log('是否支付成功', res2)
+      }, 1000)
       window.open(res.data.url)
     }
   }
