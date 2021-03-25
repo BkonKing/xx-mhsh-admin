@@ -82,10 +82,15 @@
                 </a-col>
                 <a-col v-if="tabIndex==0 || tabIndex==4" :md="8" :sm="24">
                   <a-form-model-item label="费用类型">
-                    <a-select v-model="queryParam.saleflag" placeholder="请选择">
-                      <!-- <a-select-option value="0">全部</a-select-option> -->
-                      <a-select-option value="1">水费</a-select-option>
-                      <a-select-option value="2">电费</a-select-option>
+                    <a-select v-model="queryParam.genre_id" placeholder="请选择">
+                      <template v-if="tabIndex==0">
+                        <a-select-option value="1">水费</a-select-option>
+                        <a-select-option value="2">电费</a-select-option>
+                        <a-select-option value="3">燃气费</a-select-option>
+                      </template>
+                      <a-select-option v-for="item in costList" :key="item.id" :value="item.id">
+                        {{ item.genre_name }}
+                      </a-select-option>
                     </a-select>
                   </a-form-model-item>
                 </a-col>
@@ -140,7 +145,7 @@
 <script>
 // import moment from 'moment'
 import { STable } from '@/components'
-import { getBuildList, getUnitList, getBillMonth, getPaymentList } from '@/api/property'
+import { getBuildList, getUnitList, getBillMonth, getCostType, getPaymentList } from '@/api/property'
 import detailInfo from './components/detailInfo'
 const columns = [
   {
@@ -212,10 +217,12 @@ export default {
       tzyeform: this.$form.createForm(this),
       houseList: [], // 楼栋
       unitList: [], // 单元
-      monthList: [] // 账单月份
+      monthList: [], // 账单月份
+      costList: [] // 缴费类型
     }
   },
   mounted () {
+    this.getCostType()
     this.getBuildList()
     this.getUnitList()
     this.getBillMonth()
@@ -237,6 +244,12 @@ export default {
     getBillMonth () {
       getBillMonth().then(res => {
         this.monthList = res.data.list
+      })
+    },
+    // 费用类型
+    getCostType () {
+      getCostType().then(res => {
+        this.costList = res.data.list
       })
     },
     // 选择楼栋
