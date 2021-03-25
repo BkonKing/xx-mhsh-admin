@@ -85,7 +85,7 @@ export default {
       this.list[this.currentIndex].phone = item.mobile
       this.userInfoList = []
       this.elm.disabled = true
-      console.log(this.elm)
+      // console.log(this.elm)
     },
     // 获取用户信息
     async getData (index, e) {

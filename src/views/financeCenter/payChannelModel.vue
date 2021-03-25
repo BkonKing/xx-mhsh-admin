@@ -90,7 +90,7 @@ export default {
         pay_price: +this.payInfo.pay_price,
         pay_type: this.pay_type
       })
-      console.log('支付', res)
+      // console.log('支付', res)
       this.timeId = setInterval(async () => {
         const res2 = await payQuery({
           pay_type: this.pay_type,
@@ -112,7 +112,7 @@ export default {
           pay_price: +this.payInfo.pay_price,
           pay_type: this.pay_type
         })
-        this.payMa = res.data
+        this.payMa = res.data.url
         this.timeId = setInterval(async () => {
           const res2 = await payQuery({
             pay_type: this.pay_type,
@@ -124,7 +124,7 @@ export default {
             clearInterval(this.timeId)
           }
         }, 1000)
-        console.log('支付', res)
+        // console.log('支付', res)
       }
     }
   }

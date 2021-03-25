@@ -6,18 +6,18 @@ export function getRechargeList (data) {
     url: '/recharge/recharge/getRechargeList',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
 }
 // 获取所有项目
-export function getProjectList (params) {
+export function getProjectList () {
   return request({
     url: '/recharge/recharge/getProjectList',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     }
   })
 }
@@ -27,7 +27,7 @@ export function getSmsUseInfo () {
     url: '/recharge/recharge/getSmsUseInfo',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     }
   })
 }
@@ -37,7 +37,7 @@ export function addRecharge (data) {
     url: '/recharge/newrecharge/addRecharge',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -49,7 +49,7 @@ export function setWarning (data) {
     url: '/recharge/recharge/setWarning',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -61,7 +61,7 @@ export function getRemindUser (data) {
     url: '/recharge/recharge/getRemindUser',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -73,7 +73,7 @@ export function getUserInfo (data) {
     url: '/recharge/newrecharge/getUserInfo',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -85,7 +85,7 @@ export function setReminder (data) {
     url: '/recharge/newrecharge/setReminder',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -97,7 +97,7 @@ export function payOrder (data) {
     url: '/recharge/newrecharge/pay_order',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })
@@ -108,7 +108,7 @@ export function getAccountInfo () {
     url: '/recharge/recharge/getAccountInfo',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     }
   })
 }
@@ -119,7 +119,7 @@ export function payQuery (data) {
     url: '/recharge/newrecharge/payQuery',
     method: 'post',
     headers: {
-      Authorization: '70652de97ac3133a41f5674d695c529699995f37'
+      Authorization: '25ede03a8863c6ad814884b03dc92bd05f8ca455'
     },
     data
   })

@@ -115,20 +115,20 @@ export default {
     },
     // 预警
     async submit1 () {
-      const res = await setWarning({
+      await setWarning({
         sremain_amount: this.sremain_amount1,
         payment_amount: this.payment_amount1
       })
-      console.log('预警', res)
+      // console.log('预警', res)
     },
     // 预警
     async submit2 () {
-      const res = await setWarning({
+      await setWarning({
         sremain_amount: this.sremain_amount1,
         payment_amount: this.payment_amount1,
         project_amount: this.project_amount
       })
-      console.log('预警', res)
+      // console.log('预警', res)
     }
   },
   created () {

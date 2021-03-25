@@ -64,7 +64,7 @@ export default {
     // 获取账户信息
     const res = await getAccountInfo()
     this.accountInfo = res.data
-    console.log('账户信息', res)
+    // console.log('账户信息', res)
   }
 }
 </script>

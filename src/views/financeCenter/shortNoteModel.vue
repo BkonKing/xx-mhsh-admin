@@ -96,7 +96,7 @@ export default {
           pay_price: +this.payInfo.pay_price,
           pay_type: this.pay_type
         })
-        this.payMa = res.data
+        this.payMa = res.data.url
         this.timeId = setInterval(async () => {
           const res2 = await payQuery({
             pay_type: this.pay_type,

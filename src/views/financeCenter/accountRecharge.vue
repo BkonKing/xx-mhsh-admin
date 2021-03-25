@@ -51,7 +51,7 @@ export default {
     const res2 = await getSmsUseInfo()
     this.smsUseInfo = res2.data
     window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
-    console.log('短信使用信息', res2)
+    // console.log('短信使用信息', res2)
   }
 }
 </script>

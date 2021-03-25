@@ -144,7 +144,7 @@ export default {
         this.payInfo = res.data
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1
-        console.log('充值短信', res)
+        // console.log('充值短信', res)
       } else {
         this.$refs.payChannelModel.isShow = true
         const res = await addRecharge({

@@ -229,7 +229,7 @@ export default {
   methods: {
     // 排序时触发
     tableChange (pagination, filters, sorter) {
-      console.log(sorter)
+      // console.log(sorter)
       this.sort_field = sorter.field
       this.sort_type = sorter.order === 'ascend' ? 1 : 2
       this.getData()
@@ -266,7 +266,7 @@ export default {
       })
       this.tableData = res.data.list
       this.pagination.total = res.data.total
-      console.log('充值记录列表', res)
+      // console.log('充值记录列表', res)
       // console.log('currentPage', this.pagination.currentPage)
     },
     // 充值
