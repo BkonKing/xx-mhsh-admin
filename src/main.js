@@ -18,6 +18,7 @@ import './core/lazy_use' // 懒加载组件
 import './permission' // 路由权限控制
 import './styles/global.less' // 全局样式
 import './styles/antd-reset.less' // ant 样式覆盖
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
@@ -38,6 +39,10 @@ Vue.filter('NumberFormat', function (value) {
   }
   const intPartFormat = value.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
   return intPartFormat
+})
+// 注册全局过滤器
+Vue.filter('timeFormat', function (val) {
+  return moment(val).format('YYYY-MM-DD HH:mm:ss')
 })
 
 new Vue({

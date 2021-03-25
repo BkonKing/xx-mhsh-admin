@@ -1,14 +1,12 @@
 <template>
-  <pro-layout
-    :menus="menus"
-    :collapsed="collapsed"
-    :mediaQuery="query"
-    :isMobile="isMobile"
-    :handleMediaQuery="handleMediaQuery"
-    :handleCollapse="handleCollapse"
-    :sider-width="210"
-    v-bind="settings"
-  >
+  <pro-layout :menus="menus"
+              :collapsed="collapsed"
+              :mediaQuery="query"
+              :isMobile="isMobile"
+              :handleMediaQuery="handleMediaQuery"
+              :handleCollapse="handleCollapse"
+              :sider-width="210"
+              v-bind="settings">
 
     <!-- 1.0.0+ 版本 pro-layout 提供 API，
           我们推荐使用这种方式进行 LOGO 和 title 自定义
@@ -36,7 +34,9 @@
       </div>
     </setting-drawer> -->
     <template v-slot:rightContentRender>
-      <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
+      <right-content :top-menu="settings.layout === 'topmenu'"
+                     :is-mobile="isMobile"
+                     :theme="settings.theme" />
     </template>
     <!-- custom footer / 自定义Footer -->
     <template v-slot:footerRender>
