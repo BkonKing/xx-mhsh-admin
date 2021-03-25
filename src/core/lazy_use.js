@@ -13,7 +13,6 @@ import {
   Select,
   Card,
   Form,
-  FormModel,
   Row,
   Col,
   Modal,
@@ -47,13 +46,10 @@ import {
   Space,
   message,
   notification,
-<<<<<<< HEAD
-=======
   FormModel,
   Pagination,
   LocaleProvider,
   Tree,
->>>>>>> remotes/origin/financeCenter
   Cascader
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
@@ -108,7 +104,6 @@ Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Space)
-Vue.use(FormModel)
 Vue.use(Pagination)
 Vue.use(LocaleProvider)
 Vue.use(Tree)

@@ -33,13 +33,6 @@ window.umi_plugin_ant_themeVar = themePluginConfig.theme
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-Vue.filter('NumberFormat', function (value) {
-  if (!value) {
-    return '0'
-  }
-  const intPartFormat = value.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
-  return intPartFormat
-})
 // 注册全局过滤器
 Vue.filter('timeFormat', function (val) {
   return moment(val).format('YYYY-MM-DD HH:mm:ss')
