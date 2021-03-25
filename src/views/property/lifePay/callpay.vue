@@ -105,11 +105,9 @@
           <span slot="status" slot-scope="order_status, record">
             <a-badge :status="order_status | statusTypeFilter" :text="record.order_status_name"/>
           </span>
-          <span slot="house" slot-scope="text">
-            <a>{{ text }}</a>
-            <!-- <a :href="record.uid" target="_parent">{{ text }}</a> -->
-          </span>
-
+          <template slot="moneyUse" slot-scope="text, record">
+            <div class="flex"><span style="min-width: 60px;padding-right: 6px;">{{ '￥' + text }}</span> 使用数:<span :class="record.is_red == 1 ? 'color-red' : ''">{{ record.disparity }}</span></div>
+          </template>
           <span slot="operation" slot-scope="text, record">
             <template>
               <a v-if="record.is_urge == 1 && record.order_status!=2" @click="handleSub(record)">催缴</a>
@@ -149,8 +147,7 @@ const columns = [
   },
   {
     title: '房产',
-    dataIndex: 'house_property_name',
-    scopedSlots: { customRender: 'house' }
+    dataIndex: 'house_property_name'
   },
   {
     title: '类型',
@@ -159,6 +156,7 @@ const columns = [
   {
     title: '金额',
     dataIndex: 'money',
+    scopedSlots: { customRender: 'moneyUse' },
     sorter: true
   },
   {
@@ -269,6 +267,17 @@ export default {
     loadTableData (page) {
       if (page.sortOrder) {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
+      }
+      if (page.sortOrder && page.sortField) {
+        const startTime = moment().month(moment().month()).startOf('month').format('YYYY-MM-DD')
+        const endTime = moment().month(moment().month()).endOf('month').format('YYYY-MM-DD')
+        if (page.sortField == 'u_time' || page.sortField == 'urge_num' || page.sortField == 'money') {
+          if (!this.queryParam.start_time) {
+            this.publicTime = [moment(startTime, 'YYYY-MM-DD'), moment(endTime, 'YYYY-MM-DD')]
+            this.queryParam.start_time = startTime
+            this.queryParam.end_time = endTime + ' 23:59:59'
+          }
+        }
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)

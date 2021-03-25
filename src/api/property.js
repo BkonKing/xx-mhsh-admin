@@ -15,6 +15,7 @@ const movieApi = {
   unitList: '/butler/payRecords/unit_data',
   paymentList: '/butler/payRecords/getPayRecordsList',
   billMonth: '/butler/payRecords/month_data',
+  costType: '/butler/payRecords/genre_data',
   payType: '/butler/balance/genre_type_data',
   balanceList: '/butler/balance/balance_data',
   importData: '/butler/balance/importBalanceRecord',
@@ -161,6 +162,15 @@ export function getPaymentList (parameter) {
 export function getBillMonth (parameter) {
   return request({
     url: movieApi.billMonth,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+// 充缴记录页面-费用类型
+export function getCostType (parameter) {
+  return request({
+    url: movieApi.costType,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter

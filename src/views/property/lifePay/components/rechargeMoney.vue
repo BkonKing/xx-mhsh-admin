@@ -42,9 +42,11 @@
       <a-form-item label="当前余额">
         <span v-if="infoData.data">{{ infoData.data.balance | NumberFormat }}元</span>
       </a-form-item>
-      <a-form-item label="充值金额">
-        <a-input
+      <a-form-item class="money-item" label="充值金额">
+        <span class="ant-input-group-addon">￥</span>
+        <a-input-number
           addonBefore="￥"
+          :min="0.01"
           v-decorator="[
             'money',
             {rules: [{ required: true, message: '请输入充值金额' }]}
@@ -161,7 +163,8 @@ export default {
     },
     // 选择余额种类
     selectType (val) {
-      getInvest(Object.assign({ genre_type: val }, this.params)).then(res => {
+      console.log(val, this.params)
+      getInvest(Object.assign(this.params, { genre_type: val })).then(res => {
         this.infoData.data.balance = res.data.balance
       })
     },
@@ -210,5 +213,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.money-item {
+  .ant-input-number {
+    width: 100%;
+  }
+  /deep/ span.ant-form-item-children {
+    display: flex;
+    .ant-input-group-addon {
+      width: 37px;
+      height: 32px;
+      line-height: 30px;
+    }
+  }
+}
 </style>

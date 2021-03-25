@@ -14,11 +14,11 @@ export default {
       // localPagination: this.pagination
       localPagination: Object.assign({
         defaultCurrent: 1, // 默认当前页数
-        defaultPageSize: 10, // 默认当前页显示数据的大小
+        defaultPageSize: this.pageInfo ? this.pageInfo.defaultPageSize : 10, // 默认当前页显示数据的大小
         total: 0, // 总数，必须先有
         showSizeChanger: true,
         showQuickJumper: true,
-        pageSizeOptions: ['10', '20', '30', '50'],
+        pageSizeOptions: this.pageInfo ? this.pageInfo.pageSizeOptions : ['10', '20', '30', '50'],
         showTotal: (total) => {
           console.log('total', total, this.localPagination, this.pageSize)
           let pageTotal = 0
@@ -102,6 +102,10 @@ export default {
     pageURI: {
       type: Boolean,
       default: false
+    },
+    pageInfo: {
+      type: Object,
+      default: null
     }
   }),
   watch: {

@@ -104,7 +104,7 @@
           <span slot="house" slot-scope="text, record">
             {{ text + '-' + record.unit_name + '-' + record.house_name }}
           </span>
-          <span slot="balance">水费余额
+          <span slot="watertit">水费余额
             <a-popover overlayClassName="popover-toast">
               <template slot="content">
                 余额（-欠费金额）
@@ -153,7 +153,7 @@
           :labelCol="{lg: {span: 5}, sm: {span: 5}}"
           :wrapperCol="{lg: {span: 18}, sm: {span: 18} }"
           >
-          <a-form-model-item label="选择文件" :required="true">
+          <a-form-model-item label="选择文件" :required="true" :help="helpMessage" :validateStatus="validateStatus">
             <a-input id="upload" type="file" @change="uploadFile" style="width: 100%" />
             <label for="upload" class="file-box">
               <div class="file-name">{{ fileUrl.name }}</div>
@@ -197,27 +197,32 @@ const columns = [
     scopedSlots: { customRender: 'house' }
   },
   {
-    slots: { title: 'balance' },
+    slots: { title: 'watertit' },
     scopedSlots: { customRender: 'water' },
+    dataIndex: 'w_money',
     sorter: true
   },
   {
     title: '电费余额',
     scopedSlots: { customRender: 'electricity' },
+    dataIndex: 'e_money',
     sorter: true
   },
   {
     title: '燃气费余额',
     scopedSlots: { customRender: 'gas' },
+    dataIndex: 'g_money',
     sorter: true
   },
   {
     title: '其他费用余额',
     scopedSlots: { customRender: 'other' },
+    dataIndex: 'o_money',
     sorter: true
   },
   {
     title: '业主',
+    dataIndex: 'realname',
     scopedSlots: { customRender: 'user' }
   },
   {
@@ -273,7 +278,9 @@ export default {
       params: {}, // 充值弹窗参数
       dataObj: {},
       houseList: [], // 楼栋
-      unitList: [] // 单元
+      unitList: [], // 单元
+      helpMessage: '',
+      validateStatus: 'validating' // 导入文件验证
     }
   },
   mounted () {
@@ -302,6 +309,7 @@ export default {
           arr.push(res.data[key])
         }
         this.payStatu = arr
+        this.$refs.table.refresh(true)
       })
     },
     // 选择楼栋
@@ -319,14 +327,21 @@ export default {
       const _this = e.target.files[0]
       this.fileSize = (_this.size / 1024 / 1024).toFixed(3)
       this.fileUrl = _this
+      this.helpMessage = ''
+      this.validateStatus = 'validating'
     },
     // 下载模板
     downFile () {
-      location.href = 'http://develop.mhshjy.com/library/mb/mb_billEntry.xlsx'
+      location.href = 'http://develop.mhshjy.com/library/mb/mb_balance.xlsx'
     },
     // 导入提交
     importFile () {
       console.log(this.fileUrl)
+      if (!this.fileUrl) {
+        this.helpMessage = '请选择文件'
+        this.validateStatus = 'error'
+        return
+      }
       const data = new FormData()
       data.append('housefile', this.fileUrl)
       importData(data).then(res => {
@@ -348,40 +363,31 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
-      if (page.sortOrder && page.sortField) {
-        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
-          // 升序
-        } else {
-          // 降序
-        }
-        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'want_view' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'tickets_sold' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'ticket_price' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
-        } else {}
+      if (page.sortOrder) {
+        page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
+      }
+      if (!this.payStatu) {
+        return []
       }
       // console.log(this.queryParam, page)
       const requestParameters = Object.assign(this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)
         return getBalanceList(requestParameters)
           .then(res => {
-            this.columns = JSON.parse(JSON.stringify(columns))
-            if (!this.payStatu[3]) {
-              this.columns.splice(5, 1)
-            }
-            if (!this.payStatu[2]) {
-              this.columns.splice(4, 1)
-            }
-            if (!this.payStatu[1]) {
-              this.columns.splice(3, 1)
-            }
-            if (!this.payStatu[0]) {
-              this.columns.splice(2, 1)
+            if (columns.length == 10) {
+              this.columns = columns
+              if (!this.payStatu[3]) {
+                this.columns.splice(5, 1)
+              }
+              if (!this.payStatu[2]) {
+                this.columns.splice(4, 1)
+              }
+              if (!this.payStatu[1]) {
+                this.columns.splice(3, 1)
+              }
+              if (!this.payStatu[0]) {
+                this.columns.splice(2, 1)
+              }
             }
             // this.columns.splice(1, 1) // 隐藏第二列
             this.dataObj = res.tab_data
@@ -411,15 +417,6 @@ export default {
         }
       })
     }
-    // 表单提交
-    // handleSubmit (e) {
-    //   e.preventDefault()
-    //   this.form.validateFields((err, values) => {
-    //     if (!err) {
-    //       console.log('Received values of form: ', values)
-    //     }
-    //   })
-    // }
   }
 }
 </script>

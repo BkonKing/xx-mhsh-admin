@@ -183,8 +183,9 @@
           <a-form-item label="当前余额" >
             <span>{{ adjustmentInfo.balance | NumberFormat }}元</span>
           </a-form-item>
-          <a-form-item label="调整余额" extra="最终余额">
-            <a-input
+          <a-form-item class="money-item" label="调整余额" extra="最终余额">
+            <span class="ant-input-group-addon">￥</span>
+            <a-input-number
               addonBefore="￥"
               v-decorator="[
                 'money',
@@ -436,14 +437,8 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
-      if (page.sortOrder && page.sortField) {
-        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
-          // 升序
-        } else {
-          // 降序
-        }
-        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
-        } else {}
+      if (page.sortOrder) {
+        page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, { expenses_house_id: this.houseId }, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)
@@ -528,6 +523,19 @@ export default {
 .reason-area {
   /deep/ .ant-form-extra {
     text-align: right;
+  }
+}
+.money-item {
+  .ant-input-number {
+    width: 100%;
+  }
+  /deep/ span.ant-form-item-children {
+    display: flex;
+    .ant-input-group-addon {
+      width: 37px;
+      height: 32px;
+      line-height: 30px;
+    }
   }
 }
 </style>

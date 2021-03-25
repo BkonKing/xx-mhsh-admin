@@ -36,7 +36,7 @@
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card :loading="loading" title="应缴费" :total="'￥'+totalData.payable_money | NumberFormat">
             <div>
-              <trend flag="up" style="margin-right: 16px;">
+              <trend :flag="totalData.payable_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                 <span slot="term">月环比</span>
                 {{ totalData.payable_qoq }}%
               </trend>
@@ -47,7 +47,7 @@
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card :loading="loading" title="已缴费" :total="'￥' + totalData.paid_money | NumberFormat">
             <div>
-              <trend flag="down" style="margin-right: 16px;">
+              <trend :flag="totalData.paid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                 <span slot="term">月环比</span>
                 {{ totalData.paid_qoq }}%
               </trend>
@@ -58,7 +58,7 @@
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card :loading="loading" title="应缴费" :total="'￥' + totalData.unpaid_money | NumberFormat">
             <div>
-              <trend flag="up" style="margin-right: 16px;">
+              <trend :flag="totalData.unpaid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                 <span slot="term">月环比</span>
                 {{ totalData.unpaid_qoq }}%
               </trend>
@@ -67,7 +67,7 @@
           </chart-card>
         </a-col>
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="缴费率" total="78%">
+          <chart-card :loading="loading" title="缴费率" :total="totalData.contributionRate+'%'">
             <a-tooltip title="缴费率=已缴费户数/应缴费户数" slot="action">
               <a-icon type="info-circle-o" />
             </a-tooltip>
@@ -75,7 +75,7 @@
               <mini-progress color="rgb(19, 194, 194)" :target="100" :percentage="totalData.contributionRate" height="8px" />
             </div>
             <template slot="footer">
-              <trend flag="up">
+              <trend :flag="totalData.contributionRate_qoq>0 ? 'up' : 'down'">
                 <span slot="term">月环比</span>
                 {{ totalData.contributionRate_qoq }}%
               </trend>
@@ -130,7 +130,7 @@
       <a-row :gutter="24" class="row-block">
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
           <a-card v-if="shoudPayData != ''" :bordered="false" title="应缴费">
-            <a-pie :data="shoudPayData"></a-pie>
+            <a-pie :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
           </a-card>
         </a-col>
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
@@ -145,7 +145,7 @@
                 <a-radio-button value="2">线下缴费</a-radio-button>
               </a-radio-group>
             </div>
-            <a-pie :data="alreadyPayData" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
+            <a-pie :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
           </a-card>
         </a-col>
       </a-row>
@@ -155,7 +155,7 @@
             <div slot="extra" class="extra-wrapper">
               <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
             </div>
-            <a-pie :data="noPayData"></a-pie>
+            <a-pie :data="noPayData" :pieGuide="noPieGuide"></a-pie>
           </a-card>
         </a-col>
         <a-col :sm="12" :md="12" :xl="12">
@@ -185,10 +185,11 @@
             <div class="ant-table-wrapper">
               <s-table
                 ref="table"
-                size="default"
-                rowKey="key"
+                size="small"
+                rowKey="expenses_house_id"
                 class="table-box"
                 :columns="columns"
+                :pageInfo="pageInfo"
                 :data="loadTableData"
               >
                 <span slot="number" slot-scope="text, record, index">
@@ -251,11 +252,7 @@
 import {
   STable,
   ChartCard,
-  MiniArea,
-  MiniBar,
   MiniProgress,
-  RankList,
-  Bar,
   aLine,
   aPie,
   Trend
@@ -308,11 +305,7 @@ export default {
   components: {
     STable,
     ChartCard,
-    MiniArea,
-    MiniBar,
     MiniProgress,
-    RankList,
-    Bar,
     aLine,
     aPie,
     Trend
@@ -341,8 +334,11 @@ export default {
       endTime: '',
       alreadyPayType: '0',
       shoudPayData: '', // 应缴费
+      shoudPieGuide: '',
       alreadyPayData: '', // 已缴费
+      alreadyPieGuide: '',
       noPayData: '', // 未缴费
+      noPieGuide: '',
       noMoney: '', // 未缴费金额
       noCount: 0, // 未缴费户数
       data: [],
@@ -391,7 +387,11 @@ export default {
 
       ],
       eachView,
-      ranges: { 今天: [this.moment(), this.moment()], 昨天: [this.moment().subtract('days', 1), this.moment().subtract('days', 1)], 最近7天: [this.moment().subtract('days', 6), this.moment()], 最近30天: [this.moment().subtract('days', 29), this.moment()], 本月: [this.moment().startOf('month'), this.moment().endOf('month')], 今年: [this.moment().startOf('year'), this.moment().endOf('year')] }
+      ranges: { 今天: [this.moment(), this.moment()], 昨天: [this.moment().subtract('days', 1), this.moment().subtract('days', 1)], 最近7天: [this.moment().subtract('days', 6), this.moment()], 最近30天: [this.moment().subtract('days', 29), this.moment()], 本月: [this.moment().startOf('month'), this.moment().endOf('month')], 今年: [this.moment().startOf('year'), this.moment().endOf('year')] },
+      pageInfo: {
+        defaultPageSize: 5,
+        pageSizeOptions: ['5', '10', '20', '30']
+      }
     }
   },
   mounted () {
@@ -497,12 +497,20 @@ export default {
     // 应缴费
     getShoudPay () {
       getShoudPay(this.params).then(res => {
+        let moneyTotal = 0
         const listArr = res.data.map(item => {
+          moneyTotal += parseFloat(item.money)
           return {
             payType: item.genre_name,
             litres: parseFloat(item.money)
           }
         })
+        this.shoudPieGuide = {
+          name: '应缴费',
+          moneyTotal: '￥' + moneyTotal,
+          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+        }
+        console.log('this.shoudPieGuide', (moneyTotal + '').length)
         this.shoudPayData = this.transformPie(listArr)
       })
     },
@@ -513,24 +521,38 @@ export default {
     // 已缴费
     getAlreadyPay () {
       getAlreadyPay(Object.assign({ zf_type: this.alreadyPayType, start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
+        let moneyTotal = 0
         const listArr = res.data.map(item => {
+          moneyTotal += parseFloat(item.money)
           return {
             payType: item.genre_name,
             litres: parseFloat(item.money)
           }
         })
+        this.alreadyPieGuide = {
+          name: '已缴费',
+          moneyTotal: '￥' + moneyTotal,
+          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+        }
         this.alreadyPayData = this.transformPie(listArr)
       })
     },
     // 未缴费
     getNoPay () {
       getNoPay(Object.assign({ start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
+        let moneyTotal = 0
         const listArr = res.data.map(item => {
+          moneyTotal += parseFloat(item.money)
           return {
             payType: item.genre_name,
             litres: parseFloat(item.money)
           }
         })
+        this.noPieGuide = {
+          name: '未缴费',
+          moneyTotal: '￥' + moneyTotal,
+          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+        }
         this.noPayData = this.transformPie(listArr)
       })
     },
@@ -585,29 +607,15 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
-      if (page.sortOrder && page.sortField) {
-        if (page.sortField == 'score' && page.sortOrder == 'ascend') {
-          // 升序
-        } else {
-          // 降序
-        }
-        if (page.sortField == 'actual_account' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'want_view' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'tickets_sold' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'ticket_price' && page.sortOrder == 'ascend') {
-        } else {}
-        if (page.sortField == 'publish_date' && page.sortOrder == 'ascend') {
-        } else {}
+      if (page.sortOrder) {
+        page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, this.params, page)
         console.log('loadData request parameters:', requestParameters)
         return getNoPaySituation(requestParameters)
           .then(res => {
             this.noMoney = res.z_money / 100
-            this.noCount = res.data.total
+            this.noCount = res.data && res.data.total
             console.log(res.data)
             return res
           })
