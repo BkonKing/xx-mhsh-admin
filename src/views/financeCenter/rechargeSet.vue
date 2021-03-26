@@ -99,11 +99,11 @@ export default {
       sremain_amount2: 200,
       payment_amount2: 5000,
       project_amount: 0,
-      balance: '',
-      channel: '',
-      sms_list: '',
+      balance: '', // 余额
+      channel: '', // 支付通道
+      sms_list: '', // 短信
       userData: '',
-      projectID: ''
+      projectID: '' // 项目ID
     }
   },
   methods: {
@@ -146,6 +146,7 @@ export default {
         sremain_amount: this.sremain_amount1,
         payment_amount: this.payment_amount1
       })
+      this.$message.success('提交成功')
       // console.log('预警', res)
     },
     // 预警
@@ -155,6 +156,7 @@ export default {
         payment_amount: this.payment_amount1,
         project_amount: this.project_amount
       })
+      this.$message.success('提交成功')
       // console.log('预警', res)
     }
   },

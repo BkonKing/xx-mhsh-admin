@@ -99,6 +99,7 @@ type="link"
         :data-source="tableData"
         :pagination="false"
         class="table"
+        rowKey="uid"
         @change="tableChange"
       >
         <div slot="recharge_type" slot-scope="recharge_type">
@@ -274,17 +275,14 @@ export default {
       this.tableData = res.data.list
       if (+Cookies.get('project_id') === 1) {
         const index = this.columns.findIndex(item => {
-         return item.title === '项目'
+          return item.title === '项目'
         })
         // console.log('index', index)
         if (index !== -1) {
-             this.columns.splice(index, 1)
+          this.columns.splice(index, 1)
         }
       }
       this.pagination.total = res.data.total
-
-      // console.log('充值记录列表', res)
-      // console.log('currentPage', this.pagination.currentPage)
     },
     // 充值
     recharge () {
