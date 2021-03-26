@@ -133,11 +133,11 @@ export default {
       this.$refs.remindModel.isShow = true
       this.$refs.remindModel.type = type
       if (type === 1) {
-        this.$refs.remindModel.userData = this.userData.balance
+        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.balance))
       } else if (type === 2) {
-        this.$refs.remindModel.userData = this.userData.sms_list
+        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.sms_list))
       } else {
-        this.$refs.remindModel.userData = this.userData.channel
+        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.channel))
       }
     },
     // 预警
