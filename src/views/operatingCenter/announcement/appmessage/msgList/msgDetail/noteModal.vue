@@ -1,12 +1,14 @@
 <template>
   <div class="noteModal">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="短信模板"
              @ok="handleOk"
              @cancel="isShow=false"
              ok-text="确认"
              cancel-text="取消">
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label="短信类型">营销短信/通知短信</a-form-model-item>

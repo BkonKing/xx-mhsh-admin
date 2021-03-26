@@ -3,7 +3,8 @@
     <div class="mid">
       <div class="left">
         <div class="top">
-          <img src="@/assets/imgs/logo.png"
+          <img
+src="@/assets/imgs/logo.png"
                alt="">
         </div>
         <div class="bottom">
@@ -12,43 +13,51 @@
       </div>
       <div class="right">
         <div class="title">欢迎登陆</div>
-        <a-form-model class="form"
+        <a-form-model
+class="form"
                       :model='form'
                       ref="form"
                       :rules='rules'
                       :label-col="labelCol"
                       :wrapper-col="wrapperCol">
           <a-form-model-item prop='account'>
-            <a-input style="width:380px"
+            <a-input
+style="width:380px"
                      v-model="form.account"
                      placeholder="用户名">
               <template #suffix>
-                <img v-if="form.account==''"
+                <img
+v-if="form.account==''"
                      src="@/assets/imgs/user1.png"
                      alt="">
-                <img v-else
+                <img
+v-else
                      src="@/assets/imgs/user2.png"
                      alt="">
               </template>
             </a-input>
           </a-form-model-item>
           <a-form-model-item prop='password'>
-            <a-input style="width:380px"
+            <a-input
+style="width:380px"
                      type='password'
                      v-model="form.password"
                      placeholder="密码">
               <template #suffix>
-                <img v-if="form.password==''"
+                <img
+v-if="form.password==''"
                      src="@/assets/imgs/pwd1.png"
                      alt="">
-                <img v-else
+                <img
+v-else
                      src="@/assets/imgs/pwd2.png"
                      alt="">
               </template>
             </a-input>
           </a-form-model-item>
           <a-form-model-item>
-            <a-button style="width:380px"
+            <a-button
+style="width:380px"
                       block
                       :class={active:!bol}
                       :disabled="!bol"

@@ -1,9 +1,11 @@
 <template>
-  <a-modal class="detailModel"
+  <a-modal
+class="detailModel"
            v-model="isShow"
            title="发放详情"
            :footer='null'>
-    <a-form-model :label-col="labelCol"
+    <a-form-model
+:label-col="labelCol"
                   :wrapper-col="wrapperCol">
       <a-form-model-item>
         <div class="title">申请信息</div>
@@ -15,7 +17,8 @@
       <a-form-model-item label='幸福币'>100</a-form-model-item>
       <a-form-model-item label='凭证'>
         <div class="imgs">
-          <img v-for="(item, index) in 5"
+          <img
+v-for="(item, index) in 5"
                :key="index"
                src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2086430614,3322794183&fm=26&gp=0.jpg"
                alt="">

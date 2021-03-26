@@ -1,5 +1,6 @@
 <template>
-  <a-modal class="modal"
+  <a-modal
+class="modal"
            v-model="isShow"
            :footer='null'>
     <template slot="title">

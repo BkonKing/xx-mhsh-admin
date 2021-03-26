@@ -1,11 +1,13 @@
 <template>
   <div>
-    <a-modal class="modal"
+    <a-modal
+class="modal"
              v-model="isShow"
              title="转账申请"
              :footer='false'
              destroyOnClose>
-      <a-form-model ref="form"
+      <a-form-model
+ref="form"
                     :rules='rules'
                     :model='form'
                     :label-col="labelCol"
@@ -20,18 +22,22 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item prop='value2'
+        <a-form-model-item
+prop='value2'
                            label='账户'>
-          <a-input v-model="form.value2"
+          <a-input
+v-model="form.value2"
                    placeholder="手机号/姓名"></a-input>
         </a-form-model-item>
-        <a-form-model-item prop='value3'
+        <a-form-model-item
+prop='value3'
                            label='幸福币'>
           <a-input v-model="form.value3"></a-input>
         </a-form-model-item>
         <a-form-model-item label='备注'>
           <div class="input">
-            <a-input v-model="form.value4"
+            <a-input
+v-model="form.value4"
                      maxlength="20"></a-input>
             <div class="num">
               {{form.value4.length}} /20
@@ -40,7 +46,8 @@
         </a-form-model-item>
         <div class="btns">
           <a-button @click="isShow=false">取消</a-button>
-          <a-button type='primary'
+          <a-button
+type='primary'
                     @click="submit">申请</a-button>
         </div>
       </a-form-model>

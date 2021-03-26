@@ -2,14 +2,16 @@
   <div class="submitAudit">
     <a-card class="card1">
       <stepInfo :current="1"></stepInfo>
-      <a-form-model class="model"
+      <a-form-model
+class="model"
                     ref="form"
                     :model="form"
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label="消息板">
-          <a-select placeholder="请选择"
+          <a-select
+placeholder="请选择"
                     v-model="form.selectValue">
             <a-select-option value="jack">
               Jack
@@ -25,19 +27,24 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="标题"
+        <a-form-model-item
+label="标题"
                            prop="value1">
-          <a-input placeholder="请输入"
+          <a-input
+placeholder="请输入"
                    v-model="form.value1"></a-input>
         </a-form-model-item>
-        <a-form-model-item label="内容"
+        <a-form-model-item
+label="内容"
                            prop="value2">
-          <a-textarea placeholder="请输入"
+          <a-textarea
+placeholder="请输入"
                       :auto-size="{ minRows: 3, maxRows: 5 }"
                       v-model="form.value2" />
         </a-form-model-item>
         <div class="line"></div>
-        <a-form-model-item label="推送用户"
+        <a-form-model-item
+label="推送用户"
                            prop="value3">
           <a-radio-group v-model="form.value3">
             <a-radio :value="1">
@@ -53,13 +60,15 @@
         </a-form-model-item>
         <a-form-model-item>
           <div class="select">
-            <a-select class="select1"
+            <a-select
+class="select1"
                       default-value="jack">
               <a-select-option value="jack">
                 项目
               </a-select-option>
             </a-select>
-            <a-select class="select2"
+            <a-select
+class="select2"
                       default-value="jack">
               <a-select-option value="jack">
                 角色
@@ -68,13 +77,15 @@
           </div>
         </a-form-model-item>
         <a-form-model-item>
-          <a-select class="tagSelect"
+          <a-select
+class="tagSelect"
                     mode="tags"
                     style="width: 100%"
                     :token-separators="[',']"
                     @change="handleChange"
                     @dropdownVisibleChange="openDropDown">
-            <a-select-option v-for="i in 10"
+            <a-select-option
+v-for="i in 10"
                              :key="i.toString(36)">
               <div class="selectItem">用户昵称
                 <span class="mg200">业主</span>
@@ -82,14 +93,17 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <div class="selectPeople"
+        <div
+class="selectPeople"
              v-if="selectPeople"
              :style="{marginTop:marginTop}">已选{{selectPeople}}人</div>
-        <div class="toPush"
+        <div
+class="toPush"
              :style="{marginTop:marginTop1}">
           推送量：预计2000
         </div>
-        <a-form-model-item class="radioGroup"
+        <a-form-model-item
+class="radioGroup"
                            label="计划推送时间"
                            prop="value4">
           <a-radio-group v-model="form.value4">
@@ -102,12 +116,14 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item>
-          <a-date-picker format="YYYY-MM-DD HH:mm:ss"
+          <a-date-picker
+format="YYYY-MM-DD HH:mm:ss"
                          :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
                          class="picker" />
         </a-form-model-item>
         <a-form-model-item class="btn">
-          <a-button type="primary"
+          <a-button
+type="primary"
                     @click="submit">提交审核</a-button>
           <a-button>取消</a-button>
         </a-form-model-item>

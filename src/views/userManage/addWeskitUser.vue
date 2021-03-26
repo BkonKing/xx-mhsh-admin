@@ -1,6 +1,7 @@
 <template>
   <div class="addWeskitUser">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              ok-text="保存"
              cancel-text="关闭"
              @ok="handleOk">
@@ -9,21 +10,24 @@
 
         </div>
       </template>
-      <a-form-model ref="form"
+      <a-form-model
+ref="form"
                     :model='form'
                     :rules='rules'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='头像'>
           <div class="title">建议尺寸200*200;大小不超过2MB</div>
-          <a-upload name="avatar"
+          <a-upload
+name="avatar"
                     list-type="picture-card"
                     class="avatar-uploader"
                     :show-upload-list="false"
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     :before-upload="beforeUpload"
                     @change="handleChange">
-            <img v-if="imageUrl"
+            <img
+v-if="imageUrl"
                  :src="imageUrl"
                  alt="avatar" />
             <div v-else>
@@ -34,7 +38,8 @@
             </div>
           </a-upload>
         </a-form-model-item>
-        <a-form-model-item prop='value'
+        <a-form-model-item
+prop='value'
                            label='昵称'>
           <a-input v-model="form.value"></a-input>
         </a-form-model-item>

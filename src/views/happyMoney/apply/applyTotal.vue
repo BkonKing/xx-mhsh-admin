@@ -1,7 +1,8 @@
 <template>
   <div class="applyTotal">
     <div class="title">
-      <div class="item"
+      <div
+class="item"
            v-for="(item, index) in titleArr"
            :key="index"
            @click="currentIndex=index"
@@ -13,7 +14,8 @@
     <a-card class="card">
       <a-form-model layout="inline">
         <a-form-model-item label='账户类型'>
-          <a-select placeholder="请选择"
+          <a-select
+placeholder="请选择"
                     style="width: 200px">
             <a-select-option value="jack">
               Jack
@@ -41,7 +43,8 @@
     </a-card>
     <a-card class="card">
       <div class="btns">
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="apply">
           <a-icon type="plus" />申请
         </a-button>
@@ -59,7 +62,8 @@
           </a-button>
         </a-dropdown>
       </div>
-      <a-table :pagination='false'
+      <a-table
+:pagination='false'
                class="table"
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                :columns="columns"
@@ -68,17 +72,21 @@
           <a-icon type="picture" />
         </div>
         <div slot="opera">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="check">审核</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="openDetail"
                     v-if="false">查看</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="remove">删除</a-button>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

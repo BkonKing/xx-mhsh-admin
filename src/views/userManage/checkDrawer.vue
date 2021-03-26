@@ -1,19 +1,22 @@
 <template>
   <div class="checkDrawer">
-    <a-drawer placement="right"
+    <a-drawer
+placement="right"
               :closable="false"
               :visible="isShow"
               :after-visible-change="afterVisibleChange"
               @close="onClose"
               width='86%'>
       <template #title>
-        <div class="title"
+        <div
+class="title"
              @click="onClose">
           返回
         </div>
       </template>
       <a-card class="card">
-        <img class="darImg"
+        <img
+class="darImg"
              src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1760725091,1658242212&fm=26&gp=0.jpg"
              alt="">
         <div class="info">
@@ -23,15 +26,18 @@
         </div>
       </a-card>
       <div class="changeTitle">
-        <div class="item"
+        <div
+class="item"
              @click="currentIndex=index"
              :class="{active:currentIndex===index}"
              v-for="(item, index) in titleArr"
              :key="index">{{item}}</div>
       </div>
-      <info ref="info"
+      <info
+ref="info"
             v-if="currentIndex===0"></info>
-      <happyMoney v-else
+      <happyMoney
+v-else
                   ref="happyMoney"></happyMoney>
     </a-drawer>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="setAccount">
     <a-row :gutter="16">
-      <a-col :span='6'>
+      <a-col :span="6">
         <a-card>
           <div class="avatar">
             头像
@@ -18,20 +18,25 @@
             </div>
           </div>
           <div class="btns">
-            <a-button type='primary'
-                      @click="$router.push('/happyMoney/transfer')">转账</a-button>
-            <a-button type='primary'
-                      @click="$router.push('/happyMoney/detailTotal')">明细</a-button>
+            <a-button
+              type="primary"
+              @click="$router.push('/happyMoney/transfer')"
+              >转账</a-button
+            >
+            <a-button
+              type="primary"
+              @click="$router.push('/happyMoney/detailTotal')"
+              >明细</a-button
+            >
           </div>
         </a-card>
       </a-col>
-      <a-col :span='18'>
+      <a-col :span="18">
         <a-card class="panelCard">
           <div class="panel">
             <div class="t1">
               <span class="s1">账户</span>
-              <span>
-                河南省美好生活家园运营中心</span>
+              <span> 河南省美好生活家园运营中心</span>
             </div>
             <div class="t1">
               <span class="s2">手机号</span>
@@ -104,7 +109,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .setAccount {
   .avatar {
     color: #ccc;

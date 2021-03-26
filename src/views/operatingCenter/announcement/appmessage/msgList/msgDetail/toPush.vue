@@ -2,7 +2,8 @@
   <div class="toPush">
     <a-card class="card">
       <stepInfo :current="3"></stepInfo>
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label="标题">标题标题标题</a-form-model-item>
@@ -10,7 +11,8 @@
           短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <a-badge color="#1890ff"
+          <a-badge
+color="#1890ff"
                    text="待推送" />
         </a-form-model-item>
         <a-form-model-item label="消息模板">
@@ -33,7 +35,8 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="">
-          <a-date-picker class="picker"
+          <a-date-picker
+class="picker"
                          format="YYYY-MM-DD HH:mm:ss"
                          :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }" />
         </a-form-model-item>
@@ -44,7 +47,8 @@
         </a-form-model-item>
         <a-form-model-item>
           <div class="btns">
-            <a-button type="primary"
+            <a-button
+type="primary"
                       @click="submit">推送</a-button>
             <a-button @click="cancelPush">取消推送</a-button>
           </div>

@@ -1,13 +1,16 @@
 <template>
   <div class="history">
-    <a-card class="card"
+    <a-card
+class="card"
             ref="card">
-      <a-form-model :model="form"
+      <a-form-model
+:model="form"
                     layout="inline">
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label="推送状态">
-              <a-select style="width: 250px"
+              <a-select
+style="width: 250px"
                         placeholder="请选择">
                 <a-select-option value="1">
                   待推送
@@ -20,31 +23,38 @@
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="用户">
-              <a-input style="width: 250px"
+              <a-input
+style="width: 250px"
                        placeholder="用户ID、昵称、姓名、手机号"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='短信'
+            <a-form-model-item
+label='短信'
                                v-if="cardBol">
-              <a-input style="width: 250px"
+              <a-input
+style="width: 250px"
                        placeholder="标题、内容"></a-input>
             </a-form-model-item>
             <div v-else>
               <a-button type='primary'>查询</a-button>
               <a-button>重置</a-button>
-              <a-button type='link'
+              <a-button
+type='link'
                         @click="open">展开</a-button>
-              <a-icon class="icon"
+              <a-icon
+class="icon"
                       type="down" />
             </div>
           </a-col>
         </a-row>
         <a-row class="row2">
           <a-col :span='8'>
-            <a-form-model-item label='接收状态'
+            <a-form-model-item
+label='接收状态'
                                v-if="cardBol">
-              <a-select style="width: 250px"
+              <a-select
+style="width: 250px"
                         placeholder="请选择">
                 <a-select-option value="1">
                   待推送
@@ -56,9 +66,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='短信类型'
+            <a-form-model-item
+label='短信类型'
                                v-if="cardBol">
-              <a-select style="width: 250px"
+              <a-select
+style="width: 250px"
                         placeholder="请选择">
                 <a-select-option value="1">
                   待推送
@@ -69,30 +81,36 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span='6'
+          <a-col
+:span='6'
                  :offset='2'
                  v-if="cardBol">
             <a-button type='primary'>查询</a-button>
             <a-button>重置</a-button>
-            <a-button type='link'
+            <a-button
+type='link'
                       @click="close">收起</a-button>
-            <a-icon class="icon"
+            <a-icon
+class="icon"
                     type="up" />
           </a-col>
         </a-row>
       </a-form-model>
     </a-card>
     <a-card class="card1">
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
         <div slot="status">
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="待推送" />
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

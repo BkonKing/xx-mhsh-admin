@@ -1,7 +1,8 @@
 <template>
   <div class="msgTemplate">
     <a-card class="card">
-      <a-form-model :model="form"
+      <a-form-model
+:model="form"
                     layout="inline">
         <a-form-model-item label="是否启用">
           <a-select style="width: 200px">
@@ -26,25 +27,30 @@
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="add">新增模板</a-button>
-      <a-table class="table"
+      <a-table
+class="table"
                :columns="columns"
                :data-source="data"
                :pagination='false'>
-        <span slot="name"
+        <span
+slot="name"
               slot-scope="text">{{ text }}</span>
         <div slot="isStart">
           <a-switch default-checked />
         </div>
         <div slot="opera">
           <a-button type="link">编辑</a-button>
-          <a-popconfirm title="你确定要删除吗?"
+          <a-popconfirm
+title="你确定要删除吗?"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="confirm"
                         @cancel="cancel">
-            <a-icon slot="icon"
+            <a-icon
+slot="icon"
                     type="close-circle"
                     style="color: red" />
             <a href="#">删除</a>
@@ -52,7 +58,8 @@
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

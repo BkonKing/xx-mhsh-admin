@@ -1,10 +1,12 @@
 <template>
   <div class="regchargeModel">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="充值"
              ok-text="充值"
              @ok='recharge'>
-      <a-form-model :label-col="labelCol"
+      <a-form-model
+:label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='充值类型'>
           <a-radio-group v-model="recharge_type">
@@ -21,11 +23,13 @@
           <span v-else>{{smsUseInfo.spayment_limit}}元</span>
         </a-form-model-item>
         <a-form-model-item :label="recharge_type===1?'充值条数':'充值额度'">
-          <a-input v-if="recharge_type===1"
+          <a-input
+v-if="recharge_type===1"
                    v-model="count"
                    placeholder="请输入"
                    suffix="0.1/条" />
-          <a-input v-else
+          <a-input
+v-else
                    placeholder="请输入"
                    v-model="rechargeMoney"
                    @input="setPrice"
@@ -33,17 +37,20 @@
                    suffix="3.5%手续费" />
         </a-form-model-item>
         <a-form-model-item label='金额'>
-          <a-input addon-before="￥"
+          <a-input
+addon-before="￥"
                    v-model="price"
                    @input="setRechargeMoney"
                    placeholder="请输入" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <shortNoteModel :payInfo='payInfo'
+    <shortNoteModel
+:payInfo='payInfo'
                     ref="shortNoteModel"
                     :rechargeType="recharge_type"></shortNoteModel>
-    <payChannelModel :payInfo='payInfo'
+    <payChannelModel
+:payInfo='payInfo'
                      ref="payChannelModel"></payChannelModel>
   </div>
 </template>

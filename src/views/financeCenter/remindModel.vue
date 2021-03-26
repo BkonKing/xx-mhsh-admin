@@ -1,59 +1,62 @@
 <template>
-  <a-modal v-model="isShow"
-           @ok='submit'>
+  <a-modal v-model="isShow" @ok="submit">
     <template #title>
-      <div class="title">
-        充值提醒 <span>余额</span>
-      </div>
+      <div class="title">充值提醒 <span>余额</span></div>
     </template>
     <div class="content">
       <div class="left">手机号：</div>
       <div class="right">
-        <div class="item"
-             v-for="(item, index) in list"
-             :key="item.id">
-          <a-input @input="getData(index,$event)"
-                   v-model="item.phone"
-                   placeholder="手机号"
-                   :maxLength='11'
-                   style="width:200px"></a-input>
-          <a-input v-model="item.name"
-                   :disabled="false"
-                   @input="getData(index,$event)"
-                   style="width:200px"
-                   placeholder="姓名"
-                   :maxLength='10'></a-input>
-          <a-icon type="plus"
-                  class="plus"
-                  @click="add"
-                  v-if="list.length !=5" />
-          <a-icon type="close"
-                  class="close"
-                  @click="del(index)"
-                  v-if="list.length>1" />
+        <div class="item" v-for="(item, index) in list" :key="item.id">
+          <a-input
+            @input="getData(index, $event)"
+            v-model="item.phone"
+            placeholder="手机号"
+            :maxLength="11"
+            style="width:200px"
+          ></a-input>
+          <a-input
+            v-model="item.name"
+            :disabled="false"
+            @input="getData(index, $event)"
+            style="width:200px"
+            placeholder="姓名"
+            :maxLength="10"
+          ></a-input>
+          <a-icon
+            type="plus"
+            class="plus"
+            @click="add"
+            v-if="list.length != 5"
+          />
+          <a-icon
+            type="close"
+            class="close"
+            @click="del(index)"
+            v-if="list.length > 1"
+          />
         </div>
-        <div class="box"
-             v-if="userInfoList.length>0">
+        <div class="box" v-if="userInfoList.length > 0">
           <div class="boxtitle">全部</div>
-          <div class="item"
-               v-for="item in userInfoList"
-               :key='item.id'
-               @click="selectUser(item)">
+          <div
+            class="item"
+            v-for="item in userInfoList"
+            :key="item.id"
+            @click="selectUser(item)"
+          >
             <div class="username">
-              {{item.realname}}
+              {{ item.realname }}
             </div>
             <div class="phone">
-              {{item.mobile}}
+              {{ item.mobile }}
             </div>
             <a-tag color="blue">
-              {{item.type_desc}}
+              {{ item.type_desc }}
             </a-tag>
           </div>
         </div>
       </div>
     </div>
   </a-modal>
-
 </template>
 
 <script>
@@ -67,7 +70,8 @@ export default {
       userInfoList: [],
       showBox: false,
       currentIndex: 0,
-      elm: ''
+      elm: '',
+      userData: ''
     }
   },
   watch: {
@@ -76,9 +80,19 @@ export default {
         this.userInfoList = []
         this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
       }
+    },
+    userData () {
+      this.list = this.userData.map(item => {
+        return {
+          id: Math.random() * 999,
+          phone: item.mobile,
+          name: item.realname
+        }
+      })
     }
   },
   methods: {
+
     // 选择用户
     selectUser (item) {
       this.list[this.currentIndex].name = item.realname
@@ -90,7 +104,7 @@ export default {
     // 获取用户信息
     async getData (index, e) {
       this.currentIndex = index
-      // console.log('事件对象', e)
+      console.log('事件对象', e)
       this.elm = e.target
       if (this.list[index].phone.length === 11) {
         const res = await getUserInfo({
@@ -143,12 +157,10 @@ export default {
       this.list.push({ id: Math.random() * 999, name: '', phone: '' })
     }
   }
-
 }
-
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .title {
   font-size: 18px;
   font-weight: 600;

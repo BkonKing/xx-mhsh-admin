@@ -1,46 +1,62 @@
 <template>
   <div class="rechargeSet">
-    <a-card class="card">
+    <a-card class="card" v-if="projectID===1">
       <div class="title">预警</div>
       <div class="content">
         <div class="t1">
-          短信剩余条数小于 <a-input v-model="sremain_amount1"
-                   onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
-                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"></a-input>时，短信提醒指定人
+          短信剩余条数小于
+          <a-input
+            v-model="sremain_amount1"
+            onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+            onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+          ></a-input
+          >时，短信提醒指定人
         </div>
         <div class="t2">
-          支付通道剩余额度小于<a-input onkeyup="this.value=this.value.replace( /\D|^0/g,'')"
-                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-                   v-model="payment_amount1">
-          </a-input>时，短信提醒指定人
+          支付通道剩余额度小于<a-input
+            onkeyup="this.value=this.value.replace( /\D|^0/g,'')"
+            onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+            v-model="payment_amount1"
+          >
+          </a-input
+          >时，短信提醒指定人
         </div>
         <div class="t3">
-          <a-button type='primary'
-                    @click="submit1">提交</a-button>
+          <a-button type="primary" @click="submit1">提交</a-button>
         </div>
       </div>
     </a-card>
-    <a-card class="card">
+    <a-card class="card" v-else>
       <div class="title">预警</div>
       <div class="content">
         <div class="t1">
-          短信剩余条数小于 <a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
-                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-                   v-model="sremain_amount2"></a-input>时，短信提醒指定人
+          短信剩余条数小于
+          <a-input
+            onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+            onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+            v-model="sremain_amount2"
+          ></a-input
+          >时，短信提醒指定人
         </div>
         <div class="t2">
-          支付通道剩余额度小于<a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
-                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-                   v-model="payment_amount2"></a-input>时，短信提醒指定人
+          支付通道剩余额度小于<a-input
+            onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+            onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+            v-model="payment_amount2"
+          ></a-input
+          >时，短信提醒指定人
         </div>
         <div class="t4">
-          项目方支付剩余额度小于 <a-input onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
-                   onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-                   v-model="project_amount"></a-input>时，短信提醒指定人
+          项目方支付剩余额度小于
+          <a-input
+            onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+            onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+            v-model="project_amount"
+          ></a-input
+          >时，短信提醒指定人
         </div>
         <div class="t3">
-          <a-button type='primary'
-                    @click="submit2">提交</a-button>
+          <a-button type="primary" @click="submit2">提交</a-button>
         </div>
       </div>
     </a-card>
@@ -49,24 +65,18 @@
       <div class="content">
         <div class="t1">
           <span>余额：</span>
-          {{balance}}
-          <a-icon class="icon"
-                  type="edit"
-                  @click="remind(1)" />
+          {{ balance }}
+          <a-icon class="icon" type="edit" @click="remind(1)" />
         </div>
         <div class="t2">
           <span>短信：</span>
-          {{sms_list}}
-          <a-icon class="icon"
-                  type="edit"
-                  @click="remind(2)" />
+          {{ sms_list }}
+          <a-icon class="icon" type="edit" @click="remind(2)" />
         </div>
         <div class="t3">
           <span>支付通道：</span>
-          {{channel}}
-          <a-icon class="icon"
-                  type="edit"
-                  @click="remind(3)" />
+          {{ channel }}
+          <a-icon class="icon" type="edit" @click="remind(3)" />
         </div>
       </div>
     </a-card>
@@ -77,6 +87,7 @@
 <script>
 import remindModel from './remindModel'
 import { setWarning, getRemindUser } from '@/api/financeCenter.js'
+import Cookies from 'js-cookie'
 export default {
   components: {
     remindModel
@@ -90,28 +101,44 @@ export default {
       project_amount: 0,
       balance: '',
       channel: '',
-      sms_list: ''
+      sms_list: '',
+      userData: '',
+      projectID: ''
     }
   },
   methods: {
     // 获取充值提醒用户列表
     async getData () {
       const res = await getRemindUser()
-      this.balance = res.data.balance.map(item => {
-        return item.mobile + ' (' + item.realname + ')' + ''
-      }).join('；')
-      this.channel = res.data.channel.map(item => {
-        return item.mobile + ' (' + item.realname + ')' + ''
-      }).join('；')
-      this.sms_list = res.data.sms_list.map(item => {
-        return item.mobile + ' (' + item.realname + ')' + ''
-      }).join('；')
-      // console.log('获取充值提醒用户列表', res)
+      this.balance = res.data.balance
+        .map(item => {
+          return item.mobile + ' (' + item.realname + ')' + ''
+        })
+        .join('；')
+      this.channel = res.data.channel
+        .map(item => {
+          return item.mobile + ' (' + item.realname + ')' + ''
+        })
+        .join('；')
+      this.sms_list = res.data.sms_list
+        .map(item => {
+          return item.mobile + ' (' + item.realname + ')' + ''
+        })
+        .join('；')
+      this.userData = res.data
+      console.log('获取充值提醒用户列表', res)
     },
     // 提醒
     remind (type) {
       this.$refs.remindModel.isShow = true
       this.$refs.remindModel.type = type
+      if (type === 1) {
+        this.$refs.remindModel.userData = this.userData.balance
+      } else if (type === 2) {
+        this.$refs.remindModel.userData = this.userData.sms_list
+      } else {
+        this.$refs.remindModel.userData = this.userData.channel
+      }
     },
     // 预警
     async submit1 () {
@@ -133,11 +160,12 @@ export default {
   },
   created () {
     this.getData()
+    this.projectID = +Cookies.get('project_id')
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .rechargeSet {
   .card {
     margin-top: 20px;

@@ -2,13 +2,15 @@
   <div class="successPush">
     <a-card class="card">
       <stepInfo></stepInfo>
-      <a-form-model :label-col="labelCol"
+      <a-form-model
+:label-col="labelCol"
                     :wrapper-col="wrapperCol"
                     class="form">
         <a-form-model-item label='标题'>标题标题标题</a-form-model-item>
         <a-form-model-item label='内容'>短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</a-form-model-item>
         <a-form-model-item label='状态'>
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="已推送" />
         </a-form-model-item>
         <a-form-model-item label='短信模板'>

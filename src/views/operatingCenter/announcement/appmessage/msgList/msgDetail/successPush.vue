@@ -2,7 +2,8 @@
   <div class="pushInfo">
     <a-card class="card">
       <stepInfo :current='4'></stepInfo>
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label="标题">
@@ -12,7 +13,8 @@
           短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <a-badge color="#00a854"
+          <a-badge
+color="#00a854"
                    text="已推送" />
         </a-form-model-item>
         <a-form-model-item label='消息模板'>模板名称名称 <a-button type='link'>查看</a-button>

@@ -2,7 +2,8 @@
   <div class="cancelPush">
     <a-card class="card">
       <stepInfo></stepInfo>
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='标题'>标题标题标题</a-form-model-item>
@@ -10,7 +11,8 @@
           短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
         </a-form-model-item>
         <a-form-model-item label='状态'>
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="已取消" />
         </a-form-model-item>
         <a-form-model-item label='短信模板'>短信名称名称 <a-button type='link'>查看</a-button>

@@ -1,12 +1,14 @@
 <template>
   <div class="noteList">
     <a-card class='card'>
-      <a-form-model :model='form'
+      <a-form-model
+:model='form'
                     layout="inline">
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label="短信状态">
-              <a-select placeholder="请选择"
+              <a-select
+placeholder="请选择"
                         style="width: 300px">
                 <a-select-option value="1">
                   待提交
@@ -25,7 +27,8 @@
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label="短信模板">
-              <a-select placeholder="请选择"
+              <a-select
+placeholder="请选择"
                         style="width: 300px">
                 <a-select-option value="1">
                   待提交
@@ -44,7 +47,8 @@
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label="搜索">
-              <a-input placeholder="标题、内容"
+              <a-input
+placeholder="标题、内容"
                        style="width: 300px"></a-input>
             </a-form-model-item>
           </a-col>
@@ -54,17 +58,20 @@
     </a-card>
     <a-card class="card1">
       <a-button type="primary">新增短信</a-button>
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'
                class="table">
         <a slot="status">
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="待推送" />
         </a>
         <div slot="opera">
           <a-button type="link">提交</a-button>
-          <a-popconfirm title="你确定要删除吗?"
+          <a-popconfirm
+title="你确定要删除吗?"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="confirm"
@@ -74,7 +81,8 @@
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

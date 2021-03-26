@@ -1,7 +1,8 @@
 <template>
   <div class="transfer">
     <div class="top">
-      <div class="item"
+      <div
+class="item"
            v-for="(item, index) in typeObj"
            :key="index"
            @click="currentIndex=index"
@@ -10,7 +11,8 @@
     <a-card class="card">
       <a-form-model layout="inline">
         <a-form-model-item label='账户类型'>
-          <a-select style="width: 200px"
+          <a-select
+style="width: 200px"
                     placeholder="请选择">
             <a-select-option value="jack">
               Jack
@@ -38,13 +40,15 @@
     </a-card>
     <a-card class="card2">
       <div class="btns">
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="apply">
           <a-icon type="plus" />
           申请
         </a-button>
         <a-dropdown>
-          <a-menu slot="overlay"
+          <a-menu
+slot="overlay"
                   @click="handleMenuClick">
             <a-menu-item key="1">
               批量转账
@@ -58,23 +62,28 @@
           </a-button>
         </a-dropdown>
       </div>
-      <a-table class="table"
+      <a-table
+class="table"
                :pagination='false'
                :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                :columns="columns"
                :data-source="data">
         <div slot="opera">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="opencheckShow">审核</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="openDetail">查看</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     v-if="false"
                     @click="remove">删除</a-button>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

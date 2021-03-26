@@ -1,10 +1,12 @@
 <template>
   <div class="transferDetail">
-    <a-modal class="model"
+    <a-modal
+class="model"
              v-model="isShow"
              title="转账详情"
              :footer='false'>
-      <a-form-model :label-col="labelCol"
+      <a-form-model
+:label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item>
           <div class="title1">申请信息</div>

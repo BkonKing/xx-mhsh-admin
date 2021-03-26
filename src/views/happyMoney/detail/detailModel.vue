@@ -1,9 +1,11 @@
 <template>
   <div class="detailModel">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              :title="title"
              :footer='null'>
-      <div class="income"
+      <div
+class="income"
            v-if="title==='收入分类明细'">
         <p>转账</p>
         <p>+10000</p>
@@ -11,7 +13,8 @@
       </div>
       <div v-else-if="title==='支出分类明细'">
         <a-row>
-          <a-col :span='8'
+          <a-col
+:span='8'
                  :offset='2'>
             <p>转账</p>
             <p>+10000</p>
@@ -29,7 +32,8 @@
       </div>
       <div v-else>
         <a-row>
-          <a-col :span='8'
+          <a-col
+:span='8'
                  :offset='2'>
             <p>购物</p>
             <p>+10000</p>
@@ -48,7 +52,8 @@
         </a-row>
       </div>
       <div class="btn">
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="isShow=false">知道了</a-button>
       </div>
     </a-modal>

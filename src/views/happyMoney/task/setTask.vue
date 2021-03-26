@@ -24,16 +24,19 @@
       </a-form-model>
     </a-card>
     <a-card class="card">
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="add">
         <a-icon type="plus" />添加
       </a-button>
-      <a-table class="table"
+      <a-table
+class="table"
                :columns="columns"
                :data-source="data"
                :pagination='false'>
         <div slot="icon">
-          <img :style="{width:'60px',height:'60px'}"
+          <img
+:style="{width:'60px',height:'60px'}"
                src="https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/exp/w=500/sign=09dc54243ec79f3d8fe1e4308aa3cdbc/0eb30f2442a7d9330874f5a8a84bd11372f00108.jpg"
                alt="">
         </div>
@@ -45,12 +48,14 @@
         </div>
         <div slot="opera">
           <a-button type='link'>修改</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="remove">删除</a-button>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

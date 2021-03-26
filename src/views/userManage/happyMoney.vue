@@ -1,13 +1,15 @@
 <template>
   <div class="happyMoney">
     <a-card class="card">
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
 
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

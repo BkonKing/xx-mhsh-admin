@@ -25,14 +25,16 @@
     </a-card>
     <a-card class="card">
       <div class="btns">
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="add">
           <a-icon type="plus" />
           添加
         </a-button>
         <a-button>任务设置</a-button>
       </div>
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
         <div slot="taskTime">
@@ -48,13 +50,15 @@
         <div slot="opera">
           <div class="btns">
             <a-button type='link'>修改</a-button>
-            <a-button type='link'
+            <a-button
+type='link'
                       @click="remove">删除</a-button>
           </div>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

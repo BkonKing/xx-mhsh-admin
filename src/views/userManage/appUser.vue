@@ -3,11 +3,13 @@
     <a-card>
       <a-row>
         <a-col :span=10></a-col>
-        <a-col class="col"
+        <a-col
+class="col"
                :span=14>
           <a-form-model layout="inline">
             <a-form-model-item>
-              <a-select placeholder="项目"
+              <a-select
+placeholder="项目"
                         style="width: 200px">
                 <a-select-option value="jack">
                   Jack
@@ -24,7 +26,8 @@
               </a-select>
             </a-form-model-item>
             <a-form-model-item>
-              <a-select placeholder="状态"
+              <a-select
+placeholder="状态"
                         style="width: 200px">
                 <a-select-option value="jack">
                   Jack
@@ -40,7 +43,8 @@
                 </a-select-option>
               </a-select>
             </a-form-model-item>
-            <a-form-model-item label='搜索'
+            <a-form-model-item
+label='搜索'
                                :style="{marginLeft:'-56px'}">
               <a-input placeholder='请输入用户昵称、手机号'></a-input>
             </a-form-model-item>
@@ -49,21 +53,25 @@
       </a-row>
     </a-card>
     <a-card class="card">
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
         <div slot="avatar">
-          <img class="img"
+          <img
+class="img"
                src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3851937152,723567732&fm=26&gp=0.jpg"
                alt="">
         </div>
         <div slot="opera">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="check">查看</a-button>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

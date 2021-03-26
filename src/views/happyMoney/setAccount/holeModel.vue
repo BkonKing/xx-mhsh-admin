@@ -1,8 +1,6 @@
 <template>
   <div class="holdModel">
-    <a-modal v-model="isShow"
-             title="项目持有"
-             :footer='null'>
+    <a-modal v-model="isShow" title="项目持有" :footer="null">
       <div class="content">
         <div class="item">
           <div class="txt">新乡美好生活家园</div>
@@ -22,8 +20,7 @@
         </div>
       </div>
       <div class="btn">
-        <a-button type='primary'
-                  @click="isShow=false">知道了</a-button>
+        <a-button type="primary" @click="isShow = false">知道了</a-button>
       </div>
     </a-modal>
   </div>
@@ -39,7 +36,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .content {
   display: flex;
   flex-wrap: wrap;

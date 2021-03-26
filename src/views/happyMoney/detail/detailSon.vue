@@ -1,12 +1,14 @@
 <template>
   <div class="detailSon">
     <a-card class="card">
-      <a-form-model :label-col="labelCol"
+      <a-form-model
+:label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-row>
           <a-col :span='9'>
             <a-form-model-item label='查询时间'>
-              <a-range-picker :show-time="{
+              <a-range-picker
+:show-time="{
         hideDisabledOptions: true,
         defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
       }"
@@ -16,7 +18,8 @@
           </a-col>
           <a-col :span='15'>
             <div class="otherTime">
-              <span v-for="(item, index) in timeArr"
+              <span
+v-for="(item, index) in timeArr"
                     :key="index"
                     @click="currentIndex=index"
                     :class="{active:currentIndex===index}">{{item}}</span>
@@ -26,7 +29,8 @@
         <a-row class="row2">
           <a-col :span='6'>
             <a-form-model-item label='财务类型'>
-              <a-select placeholder="请选择"
+              <a-select
+placeholder="请选择"
                         style="width: 200px">
                 <a-select-option value="jack">
                   Jack
@@ -34,7 +38,8 @@
                 <a-select-option value="lucy">
                   Lucy
                 </a-select-option>
-                <a-select-option value="disabled"
+                <a-select-option
+value="disabled"
                                  disabled>
                   Disabled
                 </a-select-option>
@@ -50,10 +55,12 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='6'></a-col>
-          <a-col :span='1'
+          <a-col
+:span='1'
                  :offset='4'>
             <div class="btn">
-              <a-button icon="download"
+              <a-button
+icon="download"
                         size="default">
                 下载
               </a-button>
@@ -62,7 +69,8 @@
         </a-row>
       </a-form-model>
     </a-card>
-    <a-row class="row3"
+    <a-row
+class="row3"
            :gutter="16">
       <a-col :span="8">
         <a-card>
@@ -112,7 +120,8 @@
     </a-row>
     <a-card class="card2">
       <div class="type">
-        <div class="item"
+        <div
+class="item"
              v-for="(item, index) in tableArr"
              :key="index"
              :class="{active:currIndex===index}"
@@ -120,13 +129,15 @@
           {{item}}
         </div>
       </div>
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
 
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

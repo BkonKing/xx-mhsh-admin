@@ -1,9 +1,11 @@
 <template>
-  <a-modal class="model"
+  <a-modal
+class="model"
            v-model="isShow"
            title="转账审核"
            :footer='false'>
-    <a-form-model :label-col="labelCol"
+    <a-form-model
+:label-col="labelCol"
                   :wrapper-col="wrapperCol">
       <a-form-model-item>
         <div class="title1">申请信息</div>
@@ -21,7 +23,8 @@
       </a-form-model-item>
       <a-form-model-item label='审核说明'>
         <div class="input">
-          <a-textarea v-model="value"
+          <a-textarea
+v-model="value"
                       maxlength="100"
                       :rows="3"
                       :auto-size="{ minRows: 4, maxRows: 4 }">

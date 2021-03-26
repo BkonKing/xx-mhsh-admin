@@ -1,6 +1,7 @@
 <template>
   <div class="addModel">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              @ok="handleOk"
              ok-text="保存"
              cancel-text="关闭">
@@ -9,13 +10,15 @@
           标题
         </div> -->
       </template>
-      <a-form-model :label-col="labelCol"
+      <a-form-model
+:label-col="labelCol"
                     :wrapper-col="wrapperCol"
                     ref="form"
                     :model='form'
                     :rules='rules'>
         <a-form-model-item label='父区域'>
-          <a-select placeholder="作为一级区域"
+          <a-select
+placeholder="作为一级区域"
                     style="width: 276px">
             <a-select-option value="jack">
               Jack
@@ -31,7 +34,8 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item prop='value'
+        <a-form-model-item
+prop='value'
                            label='区域名称'>
           <a-input v-model="form.value"></a-input>
         </a-form-model-item>

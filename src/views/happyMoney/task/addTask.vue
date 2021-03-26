@@ -1,16 +1,20 @@
 <template>
-  <a-modal class="addTask"
+  <a-modal
+class="addTask"
            v-model="isShow"
            title="添加任务/修改任务"
            :footer='null'>
-    <a-form-model ref="form"
+    <a-form-model
+ref="form"
                   :model='form'
                   :rules='rules'
                   :label-col="labelCol"
                   :wrapper-col="wrapperCol">
-      <a-form-model-item prop='value1'
+      <a-form-model-item
+prop='value1'
                          label='选择任务'>
-        <a-select v-model="form.value1"
+        <a-select
+v-model="form.value1"
                   style="width: 390px">
           <a-select-option value="jack">
             Jack
@@ -26,16 +30,19 @@
           </a-select-option>
         </a-select>
       </a-form-model-item>
-      <a-form-model-item prop='value2'
+      <a-form-model-item
+prop='value2'
                          label='任务时间'>
-        <a-range-picker v-model="form.value2"
+        <a-range-picker
+v-model="form.value2"
                         style="width: 390px"
                         :show-time="{
         hideDisabledOptions: true,
         defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],}"
                         format="YYYY-MM-DD HH:mm:ss" />
       </a-form-model-item>
-      <a-form-model-item label='幸福币'
+      <a-form-model-item
+label='幸福币'
                          v-if="false">
 
         <div class="boxitem">
@@ -163,7 +170,8 @@
       </a-form-model-item>
       <div class="btns">
         <a-button @click="isShow=false">取消</a-button>
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="submit">确定</a-button>
       </div>
     </a-form-model>

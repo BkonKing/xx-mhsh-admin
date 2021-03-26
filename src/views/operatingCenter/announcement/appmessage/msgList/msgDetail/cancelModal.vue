@@ -1,20 +1,24 @@
 <template>
   <div class="cancelModal">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="取消推送"
              @ok="handleOk"
              @cancel="isShow=false"
              ok-text="确认"
              cancel-text="取消">
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     ref="form"
                     :rules='rules'
                     :model="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item label="取消说明"
+        <a-form-model-item
+label="取消说明"
                            prop="value">
-          <a-textarea v-model="form.value"
+          <a-textarea
+v-model="form.value"
                       placeholder="请输入"
                       :rows="3" />
         </a-form-model-item>

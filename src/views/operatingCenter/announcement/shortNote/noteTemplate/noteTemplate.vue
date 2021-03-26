@@ -1,7 +1,8 @@
 <template>
   <div class="noteTemplate">
     <a-card class="card">
-      <a-form-model layout="inline"
+      <a-form-model
+layout="inline"
                     :model='form'>
         <a-row>
           <a-col :span='8'>
@@ -30,7 +31,8 @@
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label='搜索'>
-              <a-input style="width: 250px"
+              <a-input
+style="width: 250px"
                        placeholder="标题、内容"></a-input>
             </a-form-model-item>
           </a-col>
@@ -38,9 +40,11 @@
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="add">新增模板</a-button>
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'
                class='table'>
@@ -49,7 +53,8 @@
         </div>
         <div slot="opera">
           <a-button type='link'>编辑</a-button>
-          <a-popconfirm title="你确定要删除吗"
+          <a-popconfirm
+title="你确定要删除吗"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="confirm"
@@ -59,7 +64,8 @@
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

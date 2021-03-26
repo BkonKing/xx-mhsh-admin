@@ -2,12 +2,14 @@
   <div class="msgList">
     <a-card class="card1">
 
-      <a-form-model :model="form"
+      <a-form-model
+:model="form"
                     layout="inline">
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label="消息状态">
-              <a-select class="w150"
+              <a-select
+class="w150"
                         style="width: 120px"
                         v-model="form.selectValue"
                         placeholder="请选择">
@@ -29,7 +31,8 @@
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label="消息模板">
-              <a-select class="w150"
+              <a-select
+class="w150"
                         v-model="form.selectValue"
                         placeholder="请选择">
                 <a-select-option value="jack">
@@ -49,7 +52,8 @@
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label="搜索">
-              <a-input class="w150"
+              <a-input
+class="w150"
                        placeholder="标题、内容"></a-input>
             </a-form-model-item>
           </a-col>
@@ -58,12 +62,14 @@
     </a-card>
     <a-card class="card2">
       <div class="btn">
-        <a-button type="primary"
+        <a-button
+type="primary"
                   @click="$router.push('/operatingCenter/addmsg')">
           新增推送
         </a-button>
       </div>
-      <a-table class="table"
+      <a-table
+class="table"
                :columns="columns"
                :data-source="data"
                :pagination="false">
@@ -71,14 +77,17 @@
           ID
         </span>
         <span slot="status">
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="已提交" />
         </span>
-        <span slot="artTitle"
+        <span
+slot="artTitle"
               slot-scope="artTitle">
           {{artTitle}}
         </span>
-        <span slot="operate"
+        <span
+slot="operate"
               class="operate">
           <a-button type="link">提交</a-button>
           <a-button type="link">删除</a-button>
@@ -86,7 +95,8 @@
         </span>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

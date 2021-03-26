@@ -4,30 +4,45 @@
       <template #content>
         <div class="header">
           <div class="left">
-            <div class="item"
-                 :class="{'active':currentIndex===0}"
-                 @click="currentIndex=0">充值记录</div>
-            <div class="item"
-                 :class="{'active':currentIndex===1}"
-                 @click="currentIndex=1">充值设置</div>
+            <div
+              class="item"
+              :class="{ active: currentIndex === 0 }"
+              @click="currentIndex = 0"
+            >
+              充值记录
+            </div>
+            <div
+              class="item"
+              :class="{ active: currentIndex === 1 }"
+              @click="currentIndex = 1"
+            >
+              充值设置
+            </div>
           </div>
-          <div class="right">
+          <div class="right" v-if="projectID === 1">
             <div class="item">
               <div class="t1">短信剩余</div>
-              <div class="t2">{{smsUseInfo.srmeain_numbers}}</div>
-              <div class="t3">使用{{smsUseInfo.suseremain_numbers}}</div>
+              <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
+              <div class="t3">使用{{ smsUseInfo.suseremain_numbers }}</div>
             </div>
             <div class="line"></div>
             <div class="item">
               <div class="t1">支付通道剩余</div>
-              <div class="t2">{{smsUseInfo.spayment_limit}}</div>
-              <div class="t3">使用{{smsUseInfo.susepayment_limit}}</div>
+              <div class="t2">{{ smsUseInfo.spayment_limit }}</div>
+              <div class="t3">使用{{ smsUseInfo.susepayment_limit }}</div>
+            </div>
+          </div>
+          <div class="right" v-if="projectID!==1">
+            <div class="item">
+              <div class="t1">短信剩余</div>
+              <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
+              <div class="t3">使用{{ smsUseInfo.suseremain_numbers }}</div>
             </div>
           </div>
         </div>
       </template>
     </page-header-wrapper>
-    <rechargeRecord v-if="currentIndex===0"></rechargeRecord>
+    <rechargeRecord v-if="currentIndex === 0"></rechargeRecord>
     <rechargeSet v-else></rechargeSet>
   </div>
 </template>
@@ -36,6 +51,7 @@
 import rechargeRecord from './rechargeRecord'
 import rechargeSet from './rechargeSet'
 import { getSmsUseInfo } from '@/api/financeCenter.js'
+import Cookies from 'js-cookie'
 export default {
   components: {
     rechargeRecord,
@@ -44,7 +60,8 @@ export default {
   data () {
     return {
       currentIndex: 0,
-      smsUseInfo: ''
+      smsUseInfo: '',
+      projectID: ''
     }
   },
   async created () {
@@ -52,11 +69,13 @@ export default {
     this.smsUseInfo = res2.data
     window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
     // console.log('短信使用信息', res2)
+    this.projectID = +Cookies.get('project_id')
+    // console.log('this.projectID', typeof this.projectID)
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .accountRecharge {
   /deep/ .ant-page-header {
     padding-bottom: 0;

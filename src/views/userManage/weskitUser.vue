@@ -1,28 +1,34 @@
 <template>
   <div class="weskitUser">
     <a-card>
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="add">
         <a-icon type="plus" />添加马甲用户
       </a-button>
     </a-card>
     <a-card class="card">
-      <a-table :columns="columns"
+      <a-table
+:columns="columns"
                :data-source="data"
                :pagination='false'>
         <div slot="avatar">
-          <img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2302415327,3566063031&fm=11&gp=0.jpg"
+          <img
+src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2302415327,3566063031&fm=11&gp=0.jpg"
                alt="">
         </div>
         <div slot="opera">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="edit">编辑</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click='remove'>删除</a-button>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

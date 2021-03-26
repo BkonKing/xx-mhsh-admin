@@ -1,25 +1,30 @@
 <template>
   <div class="applyModel">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="发放申请"
              @ok="handleOk"
              @cancel="isShow=false"
              ok-text='申请'>
-      <a-form-model ref="form"
+      <a-form-model
+ref="form"
                     :model='form'
                     :rules='rules'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='账户'>美好生活家园</a-form-model-item>
-        <a-form-model-item prop='value'
+        <a-form-model-item
+prop='value'
                            label='幸福币'>
           <a-input v-model="form.value"></a-input>
         </a-form-model-item>
-        <a-form-model-item label='上传凭证'
+        <a-form-model-item
+label='上传凭证'
                            prop='fileList'>
           <div>最多5张</div>
           <div class="upload">
-            <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            <a-upload
+action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       list-type="picture-card"
                       :file-list="form.fileList"
                       @preview="handlePreview"
@@ -31,10 +36,12 @@
                 </div>
               </div>
             </a-upload>
-            <a-modal :visible="previewVisible"
+            <a-modal
+:visible="previewVisible"
                      :footer="null"
                      @cancel="handleCancel">
-              <img alt="example"
+              <img
+alt="example"
                    style="width: 100%"
                    :src="form.previewImage" />
             </a-modal>
@@ -42,7 +49,8 @@
         </a-form-model-item>
         <a-form-model-item label='备注'>
           <div class="input">
-            <a-input v-model="form.value2"
+            <a-input
+v-model="form.value2"
                      maxlength="20"></a-input>
             <div class="num">
               {{form.value2.length}} /20

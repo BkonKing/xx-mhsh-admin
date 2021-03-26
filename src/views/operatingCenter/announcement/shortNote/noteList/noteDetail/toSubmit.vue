@@ -2,14 +2,16 @@
   <div class="toSubmit">
     <a-card class="card">
       <stepInfo></stepInfo>
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :model='form'
                     ref="form"
                     :rules='rules'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='短信模板'>
-          <a-select placeholder="请选择"
+          <a-select
+placeholder="请选择"
                     style="width: 400px">
             <a-select-option value="1">
               Jack
@@ -22,23 +24,28 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item prop='titleValue'
+        <a-form-model-item
+prop='titleValue'
                            class="item2"
                            label='标题'>
-          <a-input v-model="form.titleValue"
+          <a-input
+v-model="form.titleValue"
                    style="width: 400px"
                    placeholder="请输入"></a-input>
         </a-form-model-item>
-        <a-form-model-item prop='contentValue'
+        <a-form-model-item
+prop='contentValue'
                            class="item2"
                            label='内容'>
-          <a-textarea v-model="form.contentValue"
+          <a-textarea
+v-model="form.contentValue"
                       style="width: 400px"
                       placeholder="请输入"
                       :rows="3" />
         </a-form-model-item>
         <div class="line"></div>
-        <a-form-model-item prop='radioValue'
+        <a-form-model-item
+prop='radioValue'
                            label='推送用户'>
           <a-radio-group v-model="form.radioValue">
             <a-radio :value="1">
@@ -54,7 +61,8 @@
         </a-form-model-item>
         <a-form-model-item class="item2">
           <div class="selects">
-            <a-select class="select"
+            <a-select
+class="select"
                       placeholder="项目">
               <a-select-option value="1">
                 Jack
@@ -66,7 +74,8 @@
                 yiminghe
               </a-select-option>
             </a-select>
-            <a-select class="select"
+            <a-select
+class="select"
                       placeholder="角色">
               <a-select-option value="1">
                 Jack
@@ -81,13 +90,15 @@
           </div>
         </a-form-model-item>
         <a-form-model-item class="item2">
-          <a-select class="tagSelect"
+          <a-select
+class="tagSelect"
                     mode="tags"
                     style="width: 100%"
                     :token-separators="[',']"
                     @change="handleChange"
                     @dropdownVisibleChange="openDropDown">
-            <a-select-option v-for="i in 10"
+            <a-select-option
+v-for="i in 10"
                              :key="i.toString(36)">
               <div class="selectItem">用户昵称
                 <span class="mg200">业主</span>
@@ -95,14 +106,17 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <div class="selectPeople"
+        <div
+class="selectPeople"
              v-if="selectPeople"
              :style="{marginTop:marginTop}">已选{{selectPeople}}人</div>
-        <a-form-model-item class="toPush"
+        <a-form-model-item
+class="toPush"
                            :style="{marginTop:marginTop1}">
           推送量：预计2000
         </a-form-model-item>
-        <a-form-model-item prop='pushTime'
+        <a-form-model-item
+prop='pushTime'
                            label='计划推送时间'>
           <a-radio-group v-model="form.pushTime">
             <a-radio :value="1">
@@ -114,13 +128,15 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item class="item2">
-          <a-date-picker class="picker"
+          <a-date-picker
+class="picker"
                          format="YYYY-MM-DD HH:mm:ss"
                          :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }" />
         </a-form-model-item>
         <a-form-model-item class="item2">
           <div class="btns">
-            <a-button type='primary'
+            <a-button
+type='primary'
                       @click="submit">提交审核</a-button>
             <a-button>取消</a-button>
           </div>

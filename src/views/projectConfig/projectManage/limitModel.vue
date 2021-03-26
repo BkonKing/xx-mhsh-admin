@@ -1,7 +1,9 @@
 <template>
-  <a-modal v-model="isShow"
+  <a-modal
+v-model="isShow"
            title="权限">
-    <a-tree v-model="checkedKeys"
+    <a-tree
+v-model="checkedKeys"
             checkable
             :expanded-keys="expandedKeys"
             :auto-expand-parent="autoExpandParent"

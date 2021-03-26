@@ -3,7 +3,8 @@
     <page-header-wrapper>
       <template #content>
         <div class="tabs">
-          <div class="item"
+          <div
+class="item"
                @click="changeTabs(index)"
                v-for="(item, index) in tabs"
                :key="index"

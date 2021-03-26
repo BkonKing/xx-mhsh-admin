@@ -1,18 +1,21 @@
 <template>
   <div class="projectManage">
-    <a-card ref="card"
+    <a-card
+ref="card"
             class="cardTop">
       <a-form-model layout="inline">
         <a-row>
           <a-col :span='8'>
             <a-form-model-item label='项目'>
-              <a-input style="width:300px"
+              <a-input
+style="width:300px"
                        placeholder="请输入"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
             <a-form-model-item label='是否启用'>
-              <a-select placeholder="请选择"
+              <a-select
+placeholder="请选择"
                         style="width: 300px">
                 <a-select-option value="jack">
                   Jack
@@ -30,9 +33,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span='8'>
-            <a-form-model-item label='地区'
+            <a-form-model-item
+label='地区'
                                v-if="cardBol">
-              <a-select placeholder="请选择"
+              <a-select
+placeholder="请选择"
                         style="width: 300px">
                 <a-select-option value="jack">
                   Jack
@@ -51,14 +56,16 @@
             <div v-else>
               <a-button type='primary'>查询</a-button>
               <a-button>重置</a-button>
-              <a-button type='link'
+              <a-button
+type='link'
                         @click="open">展开
                 <a-icon type="down" />
               </a-button>
             </div>
           </a-col>
         </a-row>
-        <div class="btns"
+        <div
+class="btns"
              v-if="cardBol">
           <a-row>
             <a-col :span='8'></a-col>
@@ -66,7 +73,8 @@
             <a-col :span='8'>
               <a-button type='primary'>查询</a-button>
               <a-button>重置</a-button>
-              <a-button type='link'
+              <a-button
+type='link'
                         @click="close">收起
                 <a-icon type="up" />
               </a-button>
@@ -76,11 +84,13 @@
       </a-form-model>
     </a-card>
     <a-card class="card">
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="$router.push('/operatingCenter/addNote')">
         <a-icon type="plus" />新建
       </a-button>
-      <a-table class='table'
+      <a-table
+class='table'
                :columns="columns"
                :data-source="data"
                :pagination='false'>
@@ -94,7 +104,8 @@
         </span>
         <div slot="note">
           <div>剩余：1000</div>
-          <div class="use"
+          <div
+class="use"
                @click="$router.push('/operatingCenter/shortNote')">使用：100</div>
         </div>
         <span slot="payment">支付额度
@@ -112,13 +123,17 @@
         <div slot="isStart">
           <a-switch default-checked />
         </div>
-        <div slot="opera"
+        <div
+slot="opera"
              class="operabtns">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="openLimit">权限</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="edit">编辑</a-button>
-          <a-popconfirm title="你确定要删除这行内容吗?"
+          <a-popconfirm
+title="你确定要删除这行内容吗?"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="confirm"
@@ -128,7 +143,8 @@
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

@@ -3,7 +3,8 @@
     <a-card class="card1">
       <stepInfo :current='2'></stepInfo>
       <div class="content">
-        <a-form class="form"
+        <a-form
+class="form"
                 :label-col="labelCol"
                 :wrapper-col="wrapperCol">
           <a-form-item label="标题">标题标题标题</a-form-item>
@@ -11,7 +12,8 @@
             短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
           </a-form-item>
           <a-form-item label="状态">
-            <a-badge color="#ffbf00"
+            <a-badge
+color="#ffbf00"
                      text="待审核" />
           </a-form-item>
           <a-form-item label="消息模板">
@@ -31,12 +33,14 @@
           </a-form-item>
           <div class="line"></div>
           <a-form-item label="审核说明">
-            <a-textarea placeholder="请输入"
+            <a-textarea
+placeholder="请输入"
                         :rows="3" />
           </a-form-item>
           <a-form-item>
             <div class="btns">
-              <a-button type="primary"
+              <a-button
+type="primary"
                         @click="submit">通过</a-button>
               <a-button>不通过</a-button>
             </div>

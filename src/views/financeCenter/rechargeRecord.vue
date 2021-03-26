@@ -1,15 +1,15 @@
 <template>
   <div>
-    <a-card class="card"
-            ref="card">
-      <a-form-model :label-col="labelCol"
-                    :wrapper-col="wrapperCol">
+    <a-card class="card" ref="card">
+      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-row>
-          <a-col :span='8'>
-            <a-form-model-item label='充值类型'>
-              <a-select placeholder="请选择"
-                        v-model="recharge_type"
-                        style="width: 300px">
+          <a-col :span="8">
+            <a-form-model-item label="充值类型">
+              <a-select
+                placeholder="请选择"
+                v-model="recharge_type"
+                style="width: 300px"
+              >
                 <a-select-option value="1">
                   短信
                 </a-select-option>
@@ -19,48 +19,54 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span='8'>
-            <a-form-model-item label='项目'>
-              <a-select placeholder="请选择"
-                        v-model="project_id"
-                        style="width: 300px">
-                <a-select-option v-for="(item,index) in projectList"
-                                 :value="item.id"
-                                 :key='index'>
-                  {{item.project_name}}
+          <a-col :span="8">
+            <a-form-model-item label="项目">
+              <a-select
+                placeholder="请选择"
+                v-model="project_id"
+                style="width: 300px"
+              >
+                <a-select-option
+                  v-for="(item, index) in projectList"
+                  :value="item.id"
+                  :key="index"
+                >
+                  {{ item.project_name }}
                 </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span='8'>
-            <a-form-model-item label='支付时间'
-                               v-if="cardBol">
-              <a-range-picker format="YYYY-MM"
-                              locale={locale}
-                              :value="value"
-                              :mode="mode2"
-                              @panelChange="handlePanelChange2"
-                              @change="handleChange" />
+          <a-col :span="8">
+            <a-form-model-item label="支付时间" v-if="cardBol">
+              <a-range-picker
+                format="YYYY-MM"
+                locale="{locale}"
+                :value="value"
+                :mode="mode2"
+                @panelChange="handlePanelChange2"
+                @change="handleChange"
+              />
             </a-form-model-item>
-            <div class="btns"
-                 v-else>
-              <a-button type='primary'
-                        @click="search">查询</a-button>
+            <div class="btns" v-else>
+              <a-button type="primary" @click="search">查询</a-button>
               <a-button @click="reset">重置</a-button>
-              <a-button type='link'
-                        @click="open">展开
+              <a-button
+type="link"
+@click="open"
+                >展开
                 <a-icon type="down" />
               </a-button>
             </div>
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span='8'>
-            <a-form-model-item label='支付方式'
-                               v-if="cardBol">
-              <a-select placeholder="请选择"
-                        v-model="pay_type"
-                        style="width: 300px">
+          <a-col :span="8">
+            <a-form-model-item label="支付方式" v-if="cardBol">
+              <a-select
+                placeholder="请选择"
+                v-model="pay_type"
+                style="width: 300px"
+              >
                 <a-select-option value="1">
                   微信
                 </a-select-option>
@@ -70,52 +76,52 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span='8'></a-col>
-          <a-col :span='8'>
-            <div class="btns"
-                 v-if="cardBol">
-              <a-button type='primary'
-                        @click="search">查询</a-button>
+          <a-col :span="8"></a-col>
+          <a-col :span="8">
+            <div class="btns" v-if="cardBol">
+              <a-button type="primary" @click="search">查询</a-button>
               <a-button @click="reset">重置</a-button>
-              <a-button type='link'
-                        @click="close">收起
+              <a-button
+type="link"
+@click="close"
+                >收起
                 <a-icon type="up" />
               </a-button>
             </div>
-
           </a-col>
         </a-row>
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type='primary'
-                @click="recharge">充值</a-button>
-      <a-table :columns="columns"
-               :data-source="tableData"
-               :pagination='false'
-               class="table"
-               @change="tableChange">
-        <div slot="recharge_type"
-             slot-scope="recharge_type">
-          {{recharge_type==='1'?'短信':'支付通道'}}
+      <a-button type="primary" @click="recharge">充值</a-button>
+      <a-table
+        :columns="columns"
+        :data-source="tableData"
+        :pagination="false"
+        class="table"
+        @change="tableChange"
+      >
+        <div slot="recharge_type" slot-scope="recharge_type">
+          {{ recharge_type === "1" ? "短信" : "支付通道" }}
         </div>
-        <div slot="pay_type"
-             slot-scope="pay_type">
-          <span v-if="pay_type!=='0'">
-            {{pay_type==='1'?'微信':'支付宝'}}
+        <div slot="pay_type" slot-scope="pay_type">
+          <span v-if="pay_type !== '0'">
+            {{ pay_type === "1" ? "微信" : "支付宝" }}
           </span>
         </div>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
-                      show-size-changer
-                      :default-current="pagination.currentPage"
-                      :page-size-options="pagination.sizes"
-                      :total="pagination.total"
-                      :page-size.sync="pagination.pageSize"
-                      :show-total="(total, range) => `共 ${total} 条记录 `"
-                      @change="onChange"
-                      @showSizeChange="sizeChange" />
+        <a-pagination
+          show-quick-jumper
+          show-size-changer
+          :default-current="pagination.currentPage"
+          :page-size-options="pagination.sizes"
+          :total="pagination.total"
+          :page-size.sync="pagination.pageSize"
+          :show-total="(total, range) => `共 ${total} 条记录 `"
+          @change="onChange"
+          @showSizeChange="sizeChange"
+        />
       </div>
     </a-card>
     <rechargeModel ref="rechargeModel"></rechargeModel>
@@ -128,6 +134,7 @@ import { getRechargeList, getProjectList } from '@/api/financeCenter.js'
 import moment from 'moment'
 import locale from 'ant-design-vue/lib/locale-provider/zh_CN'
 import 'moment/locale/zh-cn'
+import Cookies from 'js-cookie'
 moment.locale('zh-cn')
 export default {
   components: {
@@ -159,20 +166,20 @@ export default {
           title: 'ID',
           dataIndex: 'uid',
           key: 'uid',
-          width: 80
+          width: 200
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '项目',
           dataIndex: 'project_name',
           key: 'project_name',
-          width: 100
+          width: 200
         },
         {
           title: '充值类型',
           dataIndex: 'recharge_type',
           key: 'recharge_type',
-          width: 100,
+          width: 200,
           scopedSlots: { customRender: 'recharge_type' }
         },
         {
@@ -223,7 +230,6 @@ export default {
         1: '微信',
         2: '支付宝'
       }
-
     }
   },
   methods: {
@@ -254,6 +260,7 @@ export default {
       })
       // console.log('timeStr', timeStr)
       const str = timeStr.join('~')
+
       const res = await getRechargeList({
         pageindex: this.pagination.currentPage,
         pagesize: this.pagination.pageSize,
@@ -265,7 +272,17 @@ export default {
         sort_type: this.sort_type
       })
       this.tableData = res.data.list
+      if (+Cookies.get('project_id') === 1) {
+        const index = this.columns.findIndex(item => {
+         return item.title === '项目'
+        })
+        // console.log('index', index)
+        if (index !== -1) {
+             this.columns.splice(index, 1)
+        }
+      }
       this.pagination.total = res.data.total
+
       // console.log('充值记录列表', res)
       // console.log('currentPage', this.pagination.currentPage)
     },
@@ -317,7 +334,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .btns {
   margin-left: 190px;
   button {

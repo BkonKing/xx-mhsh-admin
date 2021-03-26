@@ -1,28 +1,35 @@
 <template>
-  <a-modal v-model="isShow"
+  <a-modal
+v-model="isShow"
            title="扫码支付">
     <template #footer>
       <div>
-        <a-button type='primary'
+        <a-button
+type='primary'
                   @click="goPay"
                   v-if="!isPay && pay_type===2 ">去支付</a-button>
-        <a-button type='primary'
+        <a-button
+type='primary'
                   v-else-if="isPay"
                   @click="isShow=false">完成</a-button>
-        <a-button v-else
+        <a-button
+v-else
                   @click="isShow=false">取消</a-button>
       </div>
     </template>
-    <a-form-model :label-col="labelCol"
+    <a-form-model
+:label-col="labelCol"
                   :wrapper-col="wrapperCol">
       <a-form-model-item label='充值类型'>
         短信
       </a-form-model-item>
-      <a-form-model-item label='充值条数'
+      <a-form-model-item
+label='充值条数'
                          v-if="!isPay">{{payInfo.recharge_amount}}条</a-form-model-item>
 
       <a-form-model-item label='支付金额'>
-        <div style="color:#1890FF"
+        <div
+style="color:#1890FF"
              v-if="!isPay">
           <small>￥</small> <span style="fontSize:20px"> {{payInfo.pay_price }}</span>
         </div>
@@ -35,7 +42,8 @@
         </div>
       </a-form-model-item>
       <a-form-model-item label='支付方式'>
-        <a-radio-group v-model="pay_type"
+        <a-radio-group
+v-model="pay_type"
                        v-if="!isPay"
                        @change="onChange">
           <a-radio :value="2">
@@ -45,16 +53,19 @@
             微信
           </a-radio>
         </a-radio-group>
-        <div class="img"
+        <div
+class="img"
              v-if="pay_type===1 && !isPay">
-          <img v-if="!isPay"
+          <img
+v-if="!isPay"
                :src="payMa"
                alt="">
         </div>
         <div v-if="isPay">
           {{pay_type===1?'微信':'支付宝'}}
           <div class="img">
-            <img class="img2"
+            <img
+class="img2"
                  src="@/assets/imgs/pay_success.png"
                  alt="">
             <div class="txt">支付成功</div>

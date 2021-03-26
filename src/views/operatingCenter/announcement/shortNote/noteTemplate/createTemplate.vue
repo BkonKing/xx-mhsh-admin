@@ -1,17 +1,21 @@
 <template>
   <div class="createTemplate">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="新建模板"
              @ok="handleOk"
              @cancel="isShow=false">
-      <a-form-model ref="form"
+      <a-form-model
+ref="form"
                     :model='form'
                     :rules='rules'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item prop='value1'
+        <a-form-model-item
+prop='value1'
                            label='短信类型'>
-          <a-select v-model="form.value1"
+          <a-select
+v-model="form.value1"
                     style="width: 250px">
             <a-select-option value="1">
               开启
@@ -21,20 +25,26 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item prop='value2'
+        <a-form-model-item
+prop='value2'
                            label='短信标题'>
-          <a-input v-model="form.value2"
+          <a-input
+v-model="form.value2"
                    placeholder="请输入"></a-input>
         </a-form-model-item>
-        <a-form-model-item prop='value3'
+        <a-form-model-item
+prop='value3'
                            label='短信内容'>
-          <a-textarea v-model="form.value3"
+          <a-textarea
+v-model="form.value3"
                       placeholder="请输入"
                       :rows="3" />
         </a-form-model-item>
-        <a-form-model-item prop='value4'
+        <a-form-model-item
+prop='value4'
                            label='说明'>
-          <a-textarea v-model="form.value4"
+          <a-textarea
+v-model="form.value4"
                       placeholder="请输入"
                       :rows="3" />
         </a-form-model-item>

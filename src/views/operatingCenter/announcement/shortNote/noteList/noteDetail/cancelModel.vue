@@ -1,17 +1,21 @@
 <template>
   <div class="cancelPush">
-    <a-modal v-model="isShow"
+    <a-modal
+v-model="isShow"
              title="Basic Modal"
              @ok="handleOk"
              @cancel="isShow=false">
-      <a-form-model ref="form"
+      <a-form-model
+ref="form"
                     :model='form'
                     :rules='rules'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item prop='value'
+        <a-form-model-item
+prop='value'
                            label='取消说明'>
-          <a-textarea v-model="form.value"
+          <a-textarea
+v-model="form.value"
                       rows='3'
                       placeholder="请输入"></a-textarea>
         </a-form-model-item>

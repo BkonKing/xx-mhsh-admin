@@ -1,14 +1,17 @@
 <template>
   <div class="history">
-    <a-card ref="card"
+    <a-card
+ref="card"
             class="card">
-      <a-form-model :model='form'
+      <a-form-model
+:model='form'
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-row>
           <a-col :span="8">
             <a-form-model-item label="推送状态">
-              <a-select style="width: 200px"
+              <a-select
+style="width: 200px"
                         placeholder="请选择">
                 <a-select-option value="1">
                   待推送
@@ -28,26 +31,32 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="消息"
+            <a-form-model-item
+label="消息"
                                v-if="cardBol">
               <a-input placeholder="标题、内容"></a-input>
             </a-form-model-item>
-            <div v-else
+            <div
+v-else
                  class="btns">
               <a-button type="primary">查询</a-button>
               <a-button>重置</a-button>
-              <a-button type="link"
+              <a-button
+type="link"
                         @click="open">展开</a-button>
-              <a-icon class="icon"
+              <a-icon
+class="icon"
                       type="down" />
             </div>
           </a-col>
         </a-row>
         <a-row class="row">
           <a-col :span='8'>
-            <a-form-model-item label="消息类型"
+            <a-form-model-item
+label="消息类型"
                                v-if="cardBol">
-              <a-select style="width: 200px"
+              <a-select
+style="width: 200px"
                         placeholder="请选择">
                 <a-select-option value="1">
                   系统消息
@@ -55,15 +64,18 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="6"
+          <a-col
+:span="6"
                  :offset='10'>
             <a-form-model-item v-if="cardBol">
               <div class="btns">
                 <a-button type="primary">查询</a-button>
                 <a-button>重置</a-button>
-                <a-button type="link"
+                <a-button
+type="link"
                           @click="close">收起</a-button>
-                <a-icon class="icon"
+                <a-icon
+class="icon"
                         type="up" />
               </div>
             </a-form-model-item>
@@ -72,25 +84,30 @@
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-table class="table"
+      <a-table
+class="table"
                :columns="columns"
                :data-source="data"
                :pagination="false">
         <div slot="status">
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="成功" />
         </div>
-        <span slot="operate"
+        <span
+slot="operate"
               slot-scope="operate"
               class="operate">
-          <a-button type="link"
+          <a-button
+type="link"
                     v-for="(item, index) in operate"
                     :key="index">{{item}}</a-button>
 
         </span>
       </a-table>
       <div class="pagination">
-        <a-pagination show-quick-jumper
+        <a-pagination
+show-quick-jumper
                       show-size-changer
                       :default-current="pagination.currentPage"
                       :page-size-options="pagination.sizes"

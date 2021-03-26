@@ -1,39 +1,43 @@
 <template>
-  <a-modal v-model="isShow"
-           title="扫码支付">
+  <a-modal v-model="isShow" title="扫码支付">
     <template #footer>
       <div>
-        <a-button type='primary'
-                  @click="goPay"
-                  v-if="!isPay && pay_type===2 ">去支付</a-button>
-        <a-button type='primary'
-                  v-else-if="isPay"
-                  @click="isShow=false">完成</a-button>
-        <a-button v-else
-                  @click="isShow=false">取消</a-button>
+        <a-button
+type="primary"
+@click="goPay"
+v-if="!isPay && pay_type === 2"
+          >去支付</a-button
+        >
+        <a-button
+type="primary"
+v-else-if="isPay"
+@click="isShow = false"
+          >完成</a-button
+        >
+        <a-button v-else @click="isShow = false">取消</a-button>
       </div>
     </template>
-    <a-form-model :label-col="labelCol"
-                  :wrapper-col="wrapperCol">
-      <a-form-model-item label='充值类型'>
+    <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-model-item label="充值类型">
         支付通道(生活缴费支付)
       </a-form-model-item>
-      <a-form-model-item label='充值额度'>{{payInfo.recharge_amount}}元</a-form-model-item>
+      <a-form-model-item
+label="充值额度"
+        >{{ payInfo.recharge_amount }}元</a-form-model-item
+      >
 
-      <a-form-model-item label='支付金额'
-                         v-if="!isPay">
+      <a-form-model-item label="支付金额" v-if="!isPay">
         <div style="color:#1890FF">
-          <small>￥</small> <span style="fontSize:20px">{{payInfo.pay_price}}</span>
+          <small>￥</small>
+          <span style="fontSize:20px">{{ payInfo.pay_price }}</span>
         </div>
       </a-form-model-item>
-      <a-form-model-item label='充值金额'
-                         v-if="isPay">
-        <small>￥</small> <span style="fontSize:20px">{{payInfo.pay_price}}</span>
+      <a-form-model-item label="充值金额" v-if="isPay">
+        <small>￥</small>
+        <span style="fontSize:20px">{{ payInfo.pay_price }}</span>
       </a-form-model-item>
-      <a-form-model-item label='支付方式'>
-        <a-radio-group v-model="pay_type"
-                       @change="onChange"
-                       v-if="!isPay">
+      <a-form-model-item label="支付方式">
+        <a-radio-group v-model="pay_type" @change="onChange" v-if="!isPay">
           <a-radio :value="2">
             支付宝
           </a-radio>
@@ -41,21 +45,20 @@
             微信
           </a-radio>
         </a-radio-group>
-        <img v-if="pay_type===1 && !isPay"
-             :src="payMa"
-             class="payma"
-             alt="">
+        <img
+          v-if="pay_type === 1 && !isPay"
+          :src="payMa"
+          class="payma"
+          alt=""
+        />
         <div v-if="isPay">
-          {{pay_type===1?'微信':'支付宝'}}
+          {{ pay_type === 1 ? "微信" : "支付宝" }}
           <div class="img">
-            <img class="img2"
-                 src="@/assets/imgs/pay_success.png"
-                 alt="">
+            <img class="img2" src="@/assets/imgs/pay_success.png" alt="" />
             <div class="txt">支付成功</div>
           </div>
         </div>
       </a-form-model-item>
-
     </a-form-model>
   </a-modal>
 </template>
@@ -72,7 +75,8 @@ export default {
       pay_type: 2,
       payMa: '',
       isPay: false,
-      timeId: null
+      timeId: null,
+      projectID: ''
     }
   },
   watch: {
@@ -128,10 +132,11 @@ export default {
       }
     }
   }
+
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .payma {
   width: 150px;
   height: 150px;

@@ -1,9 +1,11 @@
 <template>
   <div class="accountInfo">
-    <a-card class="card"
+    <a-card
+class="card"
             style="width:360px">
       <div class="top">
-        <img src="@/assets/imgs/account_logo.png"
+        <img
+src="@/assets/imgs/account_logo.png"
              alt="">
         <h3>
           XX美好生活家园
@@ -13,7 +15,8 @@
         <div class="item">
           <div class="t1">幸福币</div>
           <div class="t2"> <span>{{accountInfo.credits}}</span> </div>
-          <a-button type="link"
+          <a-button
+type="link"
                     @click="$router.push('/happyMoney/transfer')">
             转账
           </a-button>
@@ -26,9 +29,11 @@
             充值
           </a-button>
         </div>
-        <div class="line"
+        <div
+class="line"
              v-if="false"></div>
-        <div class="item"
+        <div
+class="item"
              v-if="false">
           <div class="t1">支付通道</div>
           <div class="t2"><span>10W</span> 元</div>

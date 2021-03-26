@@ -1,25 +1,30 @@
 <template>
   <div class="areaDictionary">
     <a-card>
-      <a-button type='primary'
+      <a-button
+type='primary'
                 @click="add">
         <a-icon type="plus" />
         添加一级区域
       </a-button>
     </a-card>
     <a-card class="card">
-      <a-table :pagination='false'
+      <a-table
+:pagination='false'
                :columns="columns"
                :data-source="data">
         <div slot="isStart">
           <a-switch default-checked />
         </div>
         <div slot="opera">
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="add">添加子区域</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="edit">编辑</a-button>
-          <a-button type='link'
+          <a-button
+type='link'
                     @click="remove">删除</a-button>
         </div>
       </a-table>

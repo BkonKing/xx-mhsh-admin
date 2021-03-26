@@ -2,13 +2,15 @@
   <div class="toCheck">
     <a-card class="card">
       <stepInfo></stepInfo>
-      <a-form-model class="form"
+      <a-form-model
+class="form"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <a-form-model-item label='标题'>标题标题标题</a-form-model-item>
         <a-form-model-item label='内容'>短信内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</a-form-model-item>
         <a-form-model-item label='状态'>
-          <a-badge color="#108ee9"
+          <a-badge
+color="#108ee9"
                    text="待审核" />
         </a-form-model-item>
         <a-form-model-item label='短信模板'>模板名称名称 <a-button type='link'>查看</a-button>
@@ -21,12 +23,14 @@
         <a-form-model-item label='计划推送时间'>
           2017-10-01 12:00:00</a-form-model-item>
         <a-form-model-item label='审核说明'>
-          <a-textarea placeholder="请输入"
+          <a-textarea
+placeholder="请输入"
                       :rows="3" />
         </a-form-model-item>
         <a-form-model-item>
           <div class="btns">
-            <a-button type='primary'
+            <a-button
+type='primary'
                       @click="submit">通过</a-button>
             <a-button>不通过</a-button>
           </div>
