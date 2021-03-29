@@ -20,7 +20,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="项目">
+            <a-form-model-item label="项目" v-if="!projectID">
               <a-select
                 placeholder="请选择"
                 v-model="project_id"
@@ -93,7 +93,7 @@ type="link"
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type="primary" @click="recharge">充值</a-button>
+      <a-button type="primary" @click="recharge"  v-if="projectID">充值</a-button>
       <a-table
         :columns="columns"
         :data-source="tableData"
@@ -125,7 +125,7 @@ type="link"
         />
       </div>
     </a-card>
-    <rechargeModel ref="rechargeModel"></rechargeModel>
+    <rechargeModel ref="rechargeModel" @getData='getData'></rechargeModel>
   </div>
 </template>
 
@@ -230,7 +230,8 @@ export default {
       payType: {
         1: '微信',
         2: '支付宝'
-      }
+      },
+      projectID: ''
     }
   },
   methods: {
@@ -328,6 +329,7 @@ export default {
     this.getData()
     const res = await getProjectList()
     this.projectList = res.data
+    this.projectID = +Cookies.get('project_id') || ''
   }
 }
 </script>

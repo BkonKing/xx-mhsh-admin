@@ -10,12 +10,12 @@ import qs from 'qs'
 const request = axios.create({
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    // Authorization: 'c020053439c0665c42c8e4d7d47845fd2a0b12bd', // 子后台
+    // Authorization: '11e6a9a56578cf14c9fb691670b99cac5b4c6615', // 子后台
     Authorization: '9933c6b8d05b61c6432f1f0a43a00f67bb9c20bc', // 总后台
     Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
-  baseURL: Cookies.get('project_id') ? process.env.VUE_APP_WSOLID_API_BASE_URL : process.env.VUE_APP_API_BASE_URL,
+  baseURL: Cookies.get('project_id') && Cookies.get('project_id') > 0 ? process.env.VUE_APP_WSOLID_API_BASE_URL : process.env.VUE_APP_API_BASE_URL,
   timeout: 6000 // 请求超时时间
 })
 

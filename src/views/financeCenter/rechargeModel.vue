@@ -52,8 +52,9 @@ v-if="recharge_type === 1"
       :payInfo="payInfo"
       ref="shortNoteModel"
       :rechargeType="recharge_type"
+      v-on="$listeners"
     ></shortNoteModel>
-    <payChannelModel :payInfo="payInfo" ref="payChannelModel"></payChannelModel>
+    <payChannelModel v-on="$listeners" :payInfo="payInfo" ref="payChannelModel"></payChannelModel>
   </div>
 </template>
 
