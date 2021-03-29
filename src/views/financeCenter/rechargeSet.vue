@@ -1,6 +1,6 @@
 <template>
   <div class="rechargeSet">
-    <a-card class="card" v-if="projectID===1">
+    <a-card class="card" v-if="projectID">
       <div class="title">预警</div>
       <div class="content">
         <div class="t1">
@@ -162,7 +162,7 @@ export default {
   },
   created () {
     this.getData()
-    this.projectID = +Cookies.get('project_id')
+    this.projectID = +Cookies.get('project_id') || ''
   }
 }
 </script>

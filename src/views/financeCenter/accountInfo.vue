@@ -16,7 +16,7 @@
           <a-button type="link">
             <a
               :href="
-                projectID === 1
+                projectID
                   ? '/xmht/cdeirst/grant/getTransferApplyList'
                   : '/zht/cdeirst/grant/getTransferApplyList'
               "
@@ -34,7 +34,7 @@
           <a-button type="link">
             <a
               :href="
-                projectID === 1
+                projectID
                   ? '/xmht/recharge/recharge/getRechargeList '
                   : '/zht/recharge/recharge/getRechargeList'
               "
@@ -43,8 +43,8 @@
             >
           </a-button>
         </div>
-        <div class="line" v-if="projectID === 1"></div>
-        <div class="item" v-if="projectID === 1">
+        <div class="line" v-if="projectID "></div>
+        <div class="item" v-if="projectID ">
           <div class="t1">支付通道</div>
           <div class="t2">
             <span>{{ accountInfo.spayment_limit }}</span> 元
@@ -52,7 +52,7 @@
           <a-button type="link">
             <a
               :href="
-                projectID === 1
+                projectID
                   ? '/xmht/recharge/recharge/getRechargeList '
                   : '/zht/recharge/recharge/getRechargeList'
               "
@@ -69,10 +69,10 @@
         </div>
         <div class="line"></div>
         <div class="item">
-          <div class="t1">{{ projectID === 1 ? "业主" : "项目" }}</div>
+          <div class="t1">{{ projectID  ? "业主" : "项目" }}</div>
           <div class="t2">
             {{
-              projectID === 1 ? accountInfo.yz_total : accountInfo.project_total
+              projectID  ? accountInfo.yz_total : accountInfo.project_total
             }}
           </div>
         </div>

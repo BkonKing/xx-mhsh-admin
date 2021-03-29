@@ -19,7 +19,7 @@
               充值设置
             </div>
           </div>
-          <div class="right" v-if="projectID === 1">
+          <div class="right" v-if="projectID">
             <div class="item">
               <div class="t1">短信剩余</div>
               <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
@@ -32,7 +32,7 @@
               <div class="t3">使用{{ smsUseInfo.susepayment_limit }}</div>
             </div>
           </div>
-          <div class="right" v-if="projectID!==1">
+          <div class="right" v-if="projectID===''">
             <div class="item">
               <div class="t1">短信剩余</div>
               <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
@@ -69,7 +69,7 @@ export default {
     this.smsUseInfo = res2.data
     window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
     // console.log('短信使用信息', res2)
-    this.projectID = +Cookies.get('project_id')
+    this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', typeof this.projectID)
   }
 }

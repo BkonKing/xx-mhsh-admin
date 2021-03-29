@@ -273,7 +273,7 @@ export default {
         sort_type: this.sort_type
       })
       this.tableData = res.data.list
-      if (+Cookies.get('project_id') === 1) {
+      if (+Cookies.get('project_id')) {
         const index = this.columns.findIndex(item => {
           return item.title === '项目'
         })
