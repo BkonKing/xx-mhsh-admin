@@ -1,14 +1,8 @@
 <template>
   <div class="regchargeModel">
-    <a-modal
-v-model="isShow"
-             title="充值"
-             ok-text="充值"
-             @ok='recharge'>
-      <a-form-model
-:label-col="labelCol"
-                    :wrapper-col="wrapperCol">
-        <a-form-model-item label='充值类型'>
+    <a-modal v-model="isShow" title="充值" ok-text="充值" @ok="recharge">
+      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-model-item label="充值类型">
           <a-radio-group v-model="recharge_type">
             <a-radio :value="1">
               短信
@@ -18,40 +12,48 @@ v-model="isShow"
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label='当前剩余'>
-          <span v-if="recharge_type===1">{{smsUseInfo.srmeain_numbers}}条</span>
-          <span v-else>{{smsUseInfo.spayment_limit}}元</span>
+        <a-form-model-item label="当前剩余">
+          <span
+v-if="recharge_type === 1"
+            >{{ smsUseInfo.srmeain_numbers }}条</span
+          >
+          <span v-else>{{ smsUseInfo.spayment_limit }}元</span>
         </a-form-model-item>
-        <a-form-model-item :label="recharge_type===1?'充值条数':'充值额度'">
+        <a-form-model-item
+          :label="recharge_type === 1 ? '充值条数' : '充值额度'"
+        >
           <a-input
-v-if="recharge_type===1"
-                   v-model="count"
-                   placeholder="请输入"
-                   suffix="0.1/条" />
+            v-if="recharge_type === 1"
+            v-model="count"
+            @input="setPrice"
+            placeholder="请输入"
+            suffix="0.1/条"
+          />
           <a-input
-v-else
-                   placeholder="请输入"
-                   v-model="rechargeMoney"
-                   @input="setPrice"
-                   @blur="ismore100"
-                   suffix="3.5%手续费" />
+            v-else
+            placeholder="请输入"
+            v-model="rechargeMoney"
+            @input="setPrice"
+            @blur="ismore100"
+            suffix="3.5%手续费"
+          />
         </a-form-model-item>
-        <a-form-model-item label='金额'>
+        <a-form-model-item label="金额">
           <a-input
-addon-before="￥"
-                   v-model="price"
-                   @input="setRechargeMoney"
-                   placeholder="请输入" />
+            addon-before="￥"
+            v-model="price"
+            @input="setRechargeMoney"
+            placeholder="请输入"
+          />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
     <shortNoteModel
-:payInfo='payInfo'
-                    ref="shortNoteModel"
-                    :rechargeType="recharge_type"></shortNoteModel>
-    <payChannelModel
-:payInfo='payInfo'
-                     ref="payChannelModel"></payChannelModel>
+      :payInfo="payInfo"
+      ref="shortNoteModel"
+      :rechargeType="recharge_type"
+    ></shortNoteModel>
+    <payChannelModel :payInfo="payInfo" ref="payChannelModel"></payChannelModel>
   </div>
 </template>
 
@@ -59,6 +61,7 @@ addon-before="￥"
 import shortNoteModel from './shortNoteModel.vue'
 import payChannelModel from './payChannelModel'
 import { addRecharge } from '@/api/financeCenter.js'
+// 四舍五入保留2位小数
 function keepTwoDecimalFull (num) {
   var result = parseFloat(num)
   if (isNaN(result)) {
@@ -102,15 +105,7 @@ export default {
       this.count = ''
       this.price = ''
     },
-    count () {
-      this.price = this.count * 0.1
-    },
-    price () {
-      this.count = this.price / 0.1
-    },
-    // rechargeMoney () {
-    //   this.price = this.rechargeMoney * 0.0035
-    // },
+
     isShow (newVal) {
       if (newVal === false) {
         this.recharge_type = 1
@@ -134,10 +129,12 @@ export default {
     setRechargeMoney () {
       // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
       this.rechargeMoney = keepTwoDecimalFull(this.rechargeMoney / 0.0035)
+      this.count = keepTwoDecimalFull(this.price / 0.1)
     },
     // 设置金额
     setPrice () {
       this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
+      this.price = keepTwoDecimalFull(this.count * 0.1)
     },
     // 充值
     async recharge () {
@@ -167,13 +164,13 @@ export default {
     }
   },
   created () {
-    this.smsUseInfo = JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
+    this.smsUseInfo =
+      JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
   }
-
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 /deep/ .ant-input-suffix {
   color: #d9d9d9;
 }
