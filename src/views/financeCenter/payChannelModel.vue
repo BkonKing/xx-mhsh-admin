@@ -98,7 +98,7 @@ export default {
       this.timeId = setInterval(async () => {
         const res2 = await payQuery({
           pay_type: this.pay_type,
-          put_trade_no: res.data.order_num
+          out_trade_no: res.data.order_num
         })
         // console.log('是否支付成功', res2)
         if (res2.is_success === 1) {
@@ -120,7 +120,7 @@ export default {
         this.timeId = setInterval(async () => {
           const res2 = await payQuery({
             pay_type: this.pay_type,
-            put_trade_no: res.data.order_num
+            out_trade_no: res.data.order_num
           })
           // console.log('是否支付成功', res2)
           if (res2.is_success === 1) {

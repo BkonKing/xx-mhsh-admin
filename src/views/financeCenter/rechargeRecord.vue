@@ -99,7 +99,7 @@ type="link"
         :data-source="tableData"
         :pagination="false"
         class="table"
-        rowKey="uid"
+        rowKey="id"
         @change="tableChange"
       >
         <div slot="recharge_type" slot-scope="recharge_type">
