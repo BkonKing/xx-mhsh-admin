@@ -4,7 +4,7 @@
       <div class="top">
         <img src="@/assets/imgs/account_logo.png" alt="" />
         <h3>
-          XX美好生活家园
+          {{accountInfo.nickname}}美好生活家园
         </h3>
       </div>
       <div class="middle">
