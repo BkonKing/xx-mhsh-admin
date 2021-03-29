@@ -1,12 +1,8 @@
 <template>
   <div class="accountInfo">
-    <a-card
-class="card"
-            style="width:360px">
+    <a-card class="card" style="width:360px">
       <div class="top">
-        <img
-src="@/assets/imgs/account_logo.png"
-             alt="">
+        <img src="@/assets/imgs/account_logo.png" alt="" />
         <h3>
           XX美好生活家园
         </h3>
@@ -14,43 +10,71 @@ src="@/assets/imgs/account_logo.png"
       <div class="middle">
         <div class="item">
           <div class="t1">幸福币</div>
-          <div class="t2"> <span>{{accountInfo.credits}}</span> </div>
-          <a-button
-type="link"
-                    @click="$router.push('/happyMoney/transfer')">
-            转账
+          <div class="t2">
+            <span>{{ accountInfo.credits }}</span>
+          </div>
+          <a-button type="link">
+            <a
+              :href="
+                projectID === 1
+                  ? '/xmht/cdeirst/grant/getTransferApplyList'
+                  : '/zht/cdeirst/grant/getTransferApplyList'
+              "
+              target="_parent"
+              >转账</a
+            >
           </a-button>
         </div>
         <div class="line"></div>
         <div class="item">
           <div class="t1">短信</div>
-          <div class="t2"><span>{{accountInfo.sms_total}}</span> 条</div>
+          <div class="t2">
+            <span>{{ accountInfo.sms_total }}</span> 条
+          </div>
           <a-button type="link">
-            充值
+            <a
+              :href="
+                projectID === 1
+                  ? '/xmht/recharge/recharge/getRechargeList '
+                  : '/zht/recharge/recharge/getRechargeList'
+              "
+              target="_parent"
+              >充值</a
+            >
           </a-button>
         </div>
-        <div
-class="line"
-             v-if="false"></div>
-        <div
-class="item"
-             v-if="false">
+        <div class="line" v-if="projectID === 1"></div>
+        <div class="item" v-if="projectID === 1">
           <div class="t1">支付通道</div>
-          <div class="t2"><span>10W</span> 元</div>
+          <div class="t2">
+            <span>{{ accountInfo.spayment_limit }}</span> 元
+          </div>
           <a-button type="link">
-            充值
+            <a
+              :href="
+                projectID === 1
+                  ? '/xmht/recharge/recharge/getRechargeList '
+                  : '/zht/recharge/recharge/getRechargeList'
+              "
+              target="_parent"
+              >充值</a
+            >
           </a-button>
         </div>
       </div>
       <div class="bottom">
         <div class="item">
           <div class="t1">用户</div>
-          <div class="t2">{{accountInfo.user_total}}</div>
+          <div class="t2">{{ accountInfo.user_total }}</div>
         </div>
         <div class="line"></div>
         <div class="item">
-          <div class="t1">{{true?'项目':'业主'}}</div>
-          <div class="t2">{{accountInfo.project_total}}</div>
+          <div class="t1">{{ projectID === 1 ? "业主" : "项目" }}</div>
+          <div class="t2">
+            {{
+              projectID === 1 ? accountInfo.yz_total : accountInfo.project_total
+            }}
+          </div>
         </div>
       </div>
     </a-card>
@@ -59,22 +83,26 @@ class="item"
 
 <script>
 import { getAccountInfo } from '@/api/financeCenter'
+import Cookies from 'js-cookie'
 export default {
   data () {
     return {
-      accountInfo: {}
+      accountInfo: {},
+      projectID: ''
     }
   },
   async created () {
     // 获取账户信息
     const res = await getAccountInfo()
     this.accountInfo = res.data
-    // console.log('账户信息', res)
+    this.projectID = +Cookies.get('project_id') || ''
+    // console.log('this.projectID', this.projectID)
+    console.log('账户信息', res)
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .accountInfo {
   .card {
     .top {
