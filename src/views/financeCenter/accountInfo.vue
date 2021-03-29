@@ -1,84 +1,82 @@
 <template>
-  <div class="accountInfo">
-    <a-card class="card" style="width:360px">
-      <div class="top">
-        <img src="@/assets/imgs/account_logo.png" alt="" />
-        <h3>
-          {{accountInfo.nickname}}美好生活家园
-        </h3>
-      </div>
-      <div class="middle">
-        <div class="item">
-          <div class="t1">幸福币</div>
-          <div class="t2">
-            <span>{{ accountInfo.credits }}</span>
+  <page-header-wrapper>
+    <div class="accountInfo">
+      <a-card class="card" style="width:360px">
+        <div class="top">
+          <img src="@/assets/imgs/account_logo.png" alt="" />
+          <h3>
+            {{accountInfo.nickname}}美好生活家园
+          </h3>
+        </div>
+        <div class="middle">
+          <div class="item">
+            <div class="t1">幸福币</div>
+            <div class="t2">
+              <span>{{ accountInfo.credits }}</span>
+            </div>
+            <a-button type="link">
+              <a
+                :href="
+                  projectID
+                    ? '/xmht/cdeirst/grant/getTransferApplyList'
+                    : '/zht/cdeirst/grant/getTransferApplyList'
+                "
+                target="_parent"
+                >转账</a
+              >
+            </a-button>
           </div>
-          <a-button type="link">
-            <a
-              :href="
-                projectID === 1
-                  ? '/xmht/cdeirst/grant/getTransferApplyList'
-                  : '/zht/cdeirst/grant/getTransferApplyList'
-              "
-              target="_parent"
-              >转账</a
-            >
-          </a-button>
-        </div>
-        <div class="line"></div>
-        <div class="item">
-          <div class="t1">短信</div>
-          <div class="t2">
-            <span>{{ accountInfo.sms_total }}</span> 条
+          <div class="line"></div>
+          <div class="item">
+            <div class="t1">短信</div>
+            <div class="t2">
+              <span>{{ accountInfo.sms_total }}</span> 条
+            </div>
+            <a-button type="link">
+              <a
+                :href="
+                  projectID
+                    ? '/xmht/recharge/recharge/getRechargeList '
+                    : '/zht/recharge/recharge/getRechargeList'
+                "
+                target="_parent"
+                >充值</a
+              >
+            </a-button>
           </div>
-          <a-button type="link">
-            <a
-              :href="
-                projectID === 1
-                  ? '/xmht/recharge/recharge/getRechargeList '
-                  : '/zht/recharge/recharge/getRechargeList'
-              "
-              target="_parent"
-              >充值</a
-            >
-          </a-button>
-        </div>
-        <div class="line" v-if="projectID === 1"></div>
-        <div class="item" v-if="projectID === 1">
-          <div class="t1">支付通道</div>
-          <div class="t2">
-            <span>{{ accountInfo.spayment_limit }}</span> 元
-          </div>
-          <a-button type="link">
-            <a
-              :href="
-                projectID === 1
-                  ? '/xmht/recharge/recharge/getRechargeList '
-                  : '/zht/recharge/recharge/getRechargeList'
-              "
-              target="_parent"
-              >充值</a
-            >
-          </a-button>
-        </div>
-      </div>
-      <div class="bottom">
-        <div class="item">
-          <div class="t1">用户</div>
-          <div class="t2">{{ accountInfo.user_total }}</div>
-        </div>
-        <div class="line"></div>
-        <div class="item">
-          <div class="t1">{{ projectID === 1 ? "业主" : "项目" }}</div>
-          <div class="t2">
-            {{
-              projectID === 1 ? accountInfo.yz_total : accountInfo.project_total
-            }}
+          <div class="line" v-if="projectID"></div>
+          <div class="item" v-if="projectID">
+            <div class="t1">支付通道</div>
+            <div class="t2">
+              <span>{{ accountInfo.spayment_limit }}</span> 元
+            </div>
+            <a-button type="link">
+              <a
+                :href="
+                  projectID
+                    ? '/xmht/recharge/recharge/getRechargeList '
+                    : '/zht/recharge/recharge/getRechargeList'
+                "
+                target="_parent"
+                >充值</a
+              >
+            </a-button>
           </div>
         </div>
-      </div>
-    </a-card>
-  </div>
+        <div class="bottom">
+          <div class="item">
+            <div class="t1">用户</div>
+            <div class="t2">{{ accountInfo.user_total }}</div>
+          </div>
+          <div class="line"></div>
+          <div class="item">
+            <div class="t1">{{ projectID ? '业主':'项目' }}</div>
+            <div class="t2">{{ projectID ? accountInfo.yz_total : accountInfo.project_total }}</div>
+          </div>
+        </div>
+      </a-card>
+    </div>
+  </page-header-wrapper>
 </template>
 
 <script>

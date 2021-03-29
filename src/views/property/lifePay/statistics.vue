@@ -32,7 +32,7 @@
       </div>
     </template>
     <div>
-      <a-row :gutter="24">
+      <a-row v-if="totalData" :gutter="24">
         <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
           <chart-card :loading="loading" title="应缴费" :total="'￥'+totalData.payable_money | NumberFormat">
             <div>
@@ -83,7 +83,7 @@
           </chart-card>
         </a-col>
       </a-row>
-      <a-card class="p-t-0" :bordered="false" :style="{ marginBottom: '24px' }">
+      <a-card v-if="summaryList.length" class="p-t-0" :bordered="false" :style="{ marginBottom: '24px' }">
         <div class="summary-wrapper summary-wrapper-data-link">
           <div class="summary-container">
             <a-tabs class="summary data-link" v-model="lineActive" @change="lineChange">
@@ -129,12 +129,12 @@
       </a-card>
       <a-row :gutter="24" class="row-block">
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card v-if="shoudPayData != ''" :bordered="false" title="应缴费">
-            <a-pie :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
+          <a-card :bordered="false" title="应缴费">
+            <a-pie v-if="shoudPayData != ''" :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
           </a-card>
         </a-col>
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card v-if="alreadyPayData" :bordered="false" title="已缴费">
+          <a-card :bordered="false" title="已缴费">
             <div slot="extra" class="extra-wrapper">
               <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
             </div>
@@ -145,17 +145,17 @@
                 <a-radio-button value="2">线下缴费</a-radio-button>
               </a-radio-group>
             </div>
-            <a-pie :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
+            <a-pie v-if="alreadyPayData" :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
           </a-card>
         </a-col>
       </a-row>
       <a-row :gutter="24" class="row-block">
         <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card v-if="noPayData" :bordered="false" title="未缴费">
+          <a-card :bordered="false" title="未缴费">
             <div slot="extra" class="extra-wrapper">
               <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
             </div>
-            <a-pie :data="noPayData" :pieGuide="noPieGuide"></a-pie>
+            <a-pie v-if="noPayData" :data="noPayData" :pieGuide="noPieGuide"></a-pie>
           </a-card>
         </a-col>
         <a-col :sm="12" :md="12" :xl="12">
@@ -428,10 +428,12 @@ export default {
     getSelectList () {
       getSelectList().then(res => {
         this.monthList = res.month_list
-        this.defultTime = [res.month_list[0].sss_time, res.month_list[0].eee_time]
-        this.startTime = res.month_list[0].sss_time
-        this.endTime = res.month_list[0].eee_time
-        this.monthKey = res.month_list[0].id
+        if (res.month_list.length) {
+          this.defultTime = [res.month_list[0].sss_time, res.month_list[0].eee_time]
+          this.startTime = res.month_list[0].sss_time
+          this.endTime = res.month_list[0].eee_time
+          this.monthKey = res.month_list[0].id
+        }
         this.payList = res.project_genre_list
         this.payType = res.project_genre_list[0].genre_id
         this.getData()
@@ -452,14 +454,16 @@ export default {
     // 各个类型缴费率
     getTabPie () {
       getTabPie(this.params).then(res => {
-        this.summaryList = res.data.map(item => {
-          return {
-            type: item.genre_name,
-            value: item.contributionRate,
-            id: item.genre_id,
-            text: '缴费率'
-          }
-        })
+        if (res.data) {
+          this.summaryList = res.data.map(item => {
+            return {
+              type: item.genre_name,
+              value: item.contributionRate,
+              id: item.genre_id,
+              text: '缴费率'
+            }
+          })
+        }
         this.getLineData()
       })
     },
@@ -498,20 +502,22 @@ export default {
     getShoudPay () {
       getShoudPay(this.params).then(res => {
         let moneyTotal = 0
-        const listArr = res.data.map(item => {
-          moneyTotal += parseFloat(item.money)
-          return {
-            payType: item.genre_name,
-            litres: parseFloat(item.money)
+        if (res.data) {
+          const listArr = res.data.map(item => {
+            moneyTotal += parseFloat(item.money)
+            return {
+              payType: item.genre_name,
+              litres: parseFloat(item.money)
+            }
+          })
+          this.shoudPieGuide = {
+            name: '应缴费',
+            moneyTotal: '￥' + moneyTotal,
+            offsetX: -(('' + moneyTotal).length - 0.5) * 13
           }
-        })
-        this.shoudPieGuide = {
-          name: '应缴费',
-          moneyTotal: '￥' + moneyTotal,
-          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+          console.log('this.shoudPieGuide', (moneyTotal + '').length)
+          this.shoudPayData = this.transformPie(listArr)
         }
-        console.log('this.shoudPieGuide', (moneyTotal + '').length)
-        this.shoudPayData = this.transformPie(listArr)
       })
     },
     // 已缴费筛选
@@ -522,38 +528,42 @@ export default {
     getAlreadyPay () {
       getAlreadyPay(Object.assign({ zf_type: this.alreadyPayType, start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
         let moneyTotal = 0
-        const listArr = res.data.map(item => {
-          moneyTotal += parseFloat(item.money)
-          return {
-            payType: item.genre_name,
-            litres: parseFloat(item.money)
+        if (res.data) {
+          const listArr = res.data.map(item => {
+            moneyTotal += parseFloat(item.money)
+            return {
+              payType: item.genre_name,
+              litres: parseFloat(item.money)
+            }
+          })
+          this.alreadyPieGuide = {
+            name: '已缴费',
+            moneyTotal: '￥' + moneyTotal,
+            offsetX: -(('' + moneyTotal).length - 0.5) * 13
           }
-        })
-        this.alreadyPieGuide = {
-          name: '已缴费',
-          moneyTotal: '￥' + moneyTotal,
-          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+          this.alreadyPayData = this.transformPie(listArr)
         }
-        this.alreadyPayData = this.transformPie(listArr)
       })
     },
     // 未缴费
     getNoPay () {
       getNoPay(Object.assign({ start_time: this.startTime, end_time: this.endTime + ' 23:59:59' }, this.params)).then(res => {
         let moneyTotal = 0
-        const listArr = res.data.map(item => {
-          moneyTotal += parseFloat(item.money)
-          return {
-            payType: item.genre_name,
-            litres: parseFloat(item.money)
+        if (res.data) {
+          const listArr = res.data.map(item => {
+            moneyTotal += parseFloat(item.money)
+            return {
+              payType: item.genre_name,
+              litres: parseFloat(item.money)
+            }
+          })
+          this.noPieGuide = {
+            name: '未缴费',
+            moneyTotal: '￥' + moneyTotal,
+            offsetX: -(('' + moneyTotal).length - 0.5) * 13
           }
-        })
-        this.noPieGuide = {
-          name: '未缴费',
-          moneyTotal: '￥' + moneyTotal,
-          offsetX: -(('' + moneyTotal).length - 0.5) * 13
+          this.noPayData = this.transformPie(listArr)
         }
-        this.noPayData = this.transformPie(listArr)
       })
     },
     // 转换pie数据
