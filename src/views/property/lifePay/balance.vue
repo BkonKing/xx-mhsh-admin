@@ -332,7 +332,7 @@ export default {
     },
     // 下载模板
     downFile () {
-      location.href = 'http://develop.mhshjy.com/library/mb/mb_balance.xlsx'
+      location.href = 'https://test.tosolomo.com/library/mb/mb_balance.xlsx'
     },
     // 导入提交
     importFile () {
