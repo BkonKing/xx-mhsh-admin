@@ -4,9 +4,7 @@
       <a-card class="card" style="width:360px">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
-          <h3>
-            {{accountInfo.nickname}}美好生活家园
-          </h3>
+          <h3>{{ accountInfo.nickname }}美好生活家园</h3>
         </div>
         <div class="middle">
           <div class="item">
@@ -36,7 +34,7 @@
               <a
                 :href="
                   projectID
-                    ? '/xmht/recharge/recharge/getRechargeList '
+                    ? '/xmht/recharge/recharge/getRechargeList'
                     : '/zht/recharge/recharge/getRechargeList'
                 "
                 target="_parent"
@@ -54,7 +52,7 @@
               <a
                 :href="
                   projectID
-                    ? '/xmht/recharge/recharge/getRechargeList '
+                    ? '/xmht/recharge/recharge/getRechargeList'
                     : '/zht/recharge/recharge/getRechargeList'
                 "
                 target="_parent"
@@ -70,8 +68,10 @@
           </div>
           <div class="line"></div>
           <div class="item">
-            <div class="t1">{{ projectID ? '业主':'项目' }}</div>
-            <div class="t2">{{ projectID ? accountInfo.yz_total : accountInfo.project_total }}</div>
+            <div class="t1">{{ projectID ? "业主" : "项目" }}</div>
+            <div class="t2">
+              {{ projectID ? accountInfo.yz_total : accountInfo.project_total }}
+            </div>
           </div>
         </div>
       </a-card>

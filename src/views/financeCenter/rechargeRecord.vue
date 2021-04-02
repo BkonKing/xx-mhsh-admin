@@ -105,6 +105,9 @@ type="link"
         <div slot="recharge_type" slot-scope="recharge_type">
           {{ recharge_type === "1" ? "短信" : "支付通道" }}
         </div>
+        <div slot="payment_money" slot-scope="payment_money">
+            ￥{{payment_money}}
+        </div>
         <div slot="pay_type" slot-scope="pay_type">
           <span v-if="pay_type !== '0'">
             {{ pay_type === "1" ? "微信" : "支付宝" }}
@@ -165,9 +168,9 @@ export default {
       columns: [
         {
           title: 'ID',
-          dataIndex: 'uid',
-          key: 'uid',
-          width: 200
+          dataIndex: 'id',
+          key: 'id',
+          width: 100
           // scopedSlots: { customRender: 'name' }
         },
         {
@@ -180,7 +183,7 @@ export default {
           title: '充值类型',
           dataIndex: 'recharge_type',
           key: 'recharge_type',
-          width: 200,
+          width: 150,
           scopedSlots: { customRender: 'recharge_type' }
         },
         {
@@ -188,14 +191,15 @@ export default {
           dataIndex: 'payment_money',
           key: 'payment_money',
           sorter: true,
-          width: 200
+          width: 200,
+          scopedSlots: { customRender: 'payment_money' }
         },
         {
           title: '充值量',
           dataIndex: 'recharge_amount',
           key: 'recharge_amount',
           sorter: true,
-          width: 200
+          width: 150
         },
         {
           title: '剩余量',
@@ -211,7 +215,7 @@ export default {
           scopedSlots: { customRender: 'pay_type' }
         },
         {
-          title: '支付账号',
+          title: '支付账户',
           dataIndex: 'account',
           key: 'account'
         },
@@ -278,7 +282,7 @@ export default {
         const index = this.columns.findIndex(item => {
           return item.title === '项目'
         })
-        // console.log('index', index)
+
         if (index !== -1) {
           this.columns.splice(index, 1)
         }

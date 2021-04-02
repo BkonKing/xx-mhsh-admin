@@ -11,7 +11,7 @@ const request = axios.create({
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
     // Authorization: '11e6a9a56578cf14c9fb691670b99cac5b4c6615', // 子后台
-    Authorization: '9933c6b8d05b61c6432f1f0a43a00f67bb9c20bc', // 总后台
+    Authorization: '2ad593e6438ab9295afaf276830b7360450db639', // 总后台
     Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
