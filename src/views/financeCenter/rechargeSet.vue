@@ -133,10 +133,13 @@ export default {
       this.$refs.remindModel.isShow = true
       this.$refs.remindModel.type = type
       if (type === 1) {
+        // console.log(this.userData.balance)
         this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.balance))
       } else if (type === 2) {
+        // console.log(this.userData.sms_list)
         this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.sms_list))
       } else {
+        // console.log(this.userData.channel)
         this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.channel))
       }
     },

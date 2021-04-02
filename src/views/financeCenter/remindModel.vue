@@ -81,14 +81,19 @@ export default {
         this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
       }
     },
-    userData () {
-      this.list = this.userData.map(item => {
+    userData (newVal) {
+      console.log('newVal', newVal)
+     if (newVal.length === 0) {
+       this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
+     } else {
+        this.list = this.userData.map(item => {
         return {
           id: Math.random() * 999,
           phone: item.mobile,
           name: item.realname
         }
       })
+     }
     }
   },
   methods: {
@@ -157,6 +162,7 @@ export default {
       this.list.push({ id: Math.random() * 999, name: '', phone: '' })
     }
   }
+
 }
 </script>
 

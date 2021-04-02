@@ -22,7 +22,6 @@ export function getSmsUseInfo () {
   return request({
     url: '/recharge/recharge/getSmsUseInfo',
     method: 'post'
-
   })
 }
 // 添加充值记录
