@@ -23,7 +23,8 @@ const movieApi = {
   submitInvest: '/butler/balance/recharge_balance',
   basisInfo: '/butler/balance/balance_details_json',
   detailList: '/butler/balance/house_pay_log_data',
-  logList: '/butler/balance/house_admin_log_data',
+  logModuleList: 'logs/logs/getModelType',
+  logList: 'logs/logs/getLogList',
   adjustmentInfo: '/butler/balance/adjust_json',
   adjustmentSend: '/butler/balance/adjust_balance',
   payDetail: '/butler/balance/pay_log_details_json'
@@ -236,6 +237,15 @@ export function getBasisInfo (parameter) {
 export function getDetailList (parameter) {
   return request({
     url: movieApi.detailList,
+    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
+    method: 'post',
+    data: parameter
+  })
+}
+// 余额详情页面-操作日志-模块
+export function getLogModuleList (parameter) {
+  return request({
+    url: movieApi.logModuleList,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter

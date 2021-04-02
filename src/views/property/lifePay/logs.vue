@@ -7,17 +7,16 @@
             <a-row :gutter="48">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="模块">
-                  <a-select v-model="queryParam.month_id" placeholder="请选择">
-                    <!-- <a-select-option v-for="item in monthList" :key="item.id" :value="item.id">
-                      {{ item.setmeal_days }}
-                    </a-select-option> -->
-                    <a-select-option value="1">已催缴</a-select-option>
+                  <a-select v-model="queryParam.module_id" placeholder="请选择">
+                    <a-select-option v-for="item in moduleList" :key="item.id" :value="item.id">
+                      {{ item.value }}
+                    </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="操作员">
-                  <a-input v-model="queryParam.house_name" placeholder="姓名" style="width: 100%" />
+                  <a-input v-model="queryParam.opt_user" placeholder="姓名" style="width: 100%" />
                 </a-form-model-item>
               </a-col>
               <template v-if="advanced">
@@ -35,12 +34,12 @@
                 </a-col>
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="操作类型">
-                    <a-input v-model="queryParam.house_name" placeholder="关键字" style="width: 100%" />
+                    <a-input v-model="queryParam.opt_type" placeholder="关键字" style="width: 100%" />
                   </a-form-model-item>
                 </a-col>
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="操作说明">
-                    <a-input v-model="queryParam.house_name" placeholder="关键字" style="width: 100%" />
+                    <a-input v-model="queryParam.opt_desc" placeholder="关键字" style="width: 100%" />
                   </a-form-model-item>
                 </a-col>
               </template>
@@ -73,9 +72,8 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { STable } from '@/components'
-import { getCallpayList } from '@/api/property'
+import { getLogList, getLogModuleList } from '@/api/property'
 const columns = [
   {
     title: 'id',
@@ -83,26 +81,23 @@ const columns = [
   },
   {
     title: '操作时间',
-    dataIndex: 'urge_num'
+    dataIndex: 'ctime'
   },
   {
     title: '模块',
-    dataIndex: 'order_status',
-    scopedSlots: { customRender: 'status' }
+    dataIndex: 'module_type'
   },
   {
     title: '操作员',
-    dataIndex: 'setmeal_days'
+    dataIndex: 'username'
   },
   {
     title: '操作类型',
-    dataIndex: 'house_property_name',
-    scopedSlots: { customRender: 'house' }
+    dataIndex: 'opt_type'
   },
   {
     title: '操作说明',
-    dataIndex: 'genre_name',
-    sorter: true
+    dataIndex: 'content'
   }
 ]
 export default {
@@ -115,27 +110,27 @@ export default {
     return {
       advanced: true, // 高级搜索 展开/关闭
       queryParam: {}, // 查询参数
-      selectedRowKeys: [],
-      selectedRows: [],
-      // tipShow: true,
+      moduleList: [],
       publicTime: ['', '']
     }
   },
   mounted () {
+    this.getLogModuleList()
   },
   created () {
-    console.log(moment())
-    // getCallpayList().then(res => {
-    //   this.productList = res.data
-    // })
   },
   methods: {
+    // 操作日志模块
+    getLogModuleList () {
+      getLogModuleList({ building_id: this.queryParam.building_id }).then(res => {
+        this.moduleList = res.list
+      })
+    },
     // 时间
     getTime (dates, dateStrings) {
       console.log(dates, dateStrings)
       this.publicTime = dates
-      this.queryParam.start_time = dateStrings[0]
-      this.queryParam.end_time = dateStrings[1] + ' 23:59:59'
+      this.queryParam.opt_time = dateStrings[0] + '~' + dateStrings[1]
     },
     // 搜索收起/展开
     toggleAdvanced () {
@@ -157,10 +152,8 @@ export default {
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
         console.log('loadData request parameters:', requestParameters)
-        return getCallpayList(requestParameters)
+        return getLogList(requestParameters)
           .then(res => {
-            this.monthList = res.month_list
-            console.log('res.data', res.data)
             return res
           })
     }
@@ -189,13 +182,5 @@ export default {
 }
 .ant-card {
   margin-bottom: 24px;
-}
-.cztx-modal {
-  .ant-form-item.flex {
-    display: flex;
-    .ant-form-item-control-wrapper {
-      flex-grow: 1;
-    }
-  }
 }
 </style>
