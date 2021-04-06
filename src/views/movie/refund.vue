@@ -400,24 +400,14 @@ export default {
 }
 </script>
 
-<style less lang="less">
+<style scoped lang="less">
 .table-page-search-wrapper {
   /deep/ .ant-form-item-label {
     min-width: 88px;
   }
-  // /deep/ .ant-form-item-control-wrapper {
-  //   width: 264px;
-  // }
   .piker-time {
     width: 100% !important;
   }
-  // .search-bth {
-  //   width: 352px;
-  //   /deep/ .ant-form-item-control {
-  //     width: 352px;
-  //     text-align: right;
-  //   }
-  // }
 }
 .ant-card {
   margin-bottom: 24px;

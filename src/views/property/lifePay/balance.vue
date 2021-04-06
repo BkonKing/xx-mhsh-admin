@@ -91,7 +91,7 @@
       </a-card>
       <a-card>
         <div class="table-operator">
-          <a-button type="default" @click="importModal=true"><a-icon type="upload" />导入文件</a-button>
+          <a-button type="default" @click="importModal=true"><a-icon type="import" />导入文件</a-button>
         </div>
         <s-table
           ref="table"

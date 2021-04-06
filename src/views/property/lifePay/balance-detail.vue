@@ -216,7 +216,7 @@
 <script>
 // import moment from 'moment'
 import { STable } from '@/components'
-import { getBasisInfo, getDetailList, getLogList, getAdjustmentInfo, submitAdjustment, getPayType } from '@/api/property'
+import { getBasisInfo, getDetailList, getBalanceLogsList, getAdjustmentInfo, submitAdjustment, getPayType } from '@/api/property'
 import rechargeMoney from './components/rechargeMoney'
 import detailInfo from './components/detailInfo'
 const columns = [
@@ -450,7 +450,7 @@ export default {
     loadLogTableData (page) {
       const requestParameters = Object.assign({}, { expenses_house_id: this.houseId, search: this.search }, page)
         console.log('loadData request parameters:', requestParameters)
-        return getLogList(requestParameters)
+        return getBalanceLogsList(requestParameters)
           .then(res => {
             return res
           })

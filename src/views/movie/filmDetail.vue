@@ -307,6 +307,3 @@ export default {
   }
 }
 </script>
-
-<style less lang="less">
-</style>
