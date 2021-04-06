@@ -100,3 +100,10 @@ export function payQuery (data) {
     data
   })
 }
+// 获取设置的预警内容
+export function getWarning () {
+  return request({
+    url: '/recharge/recharge/getWarning',
+    method: 'post'
+  })
+}

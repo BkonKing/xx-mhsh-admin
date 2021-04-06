@@ -1,12 +1,12 @@
 <template>
   <div class="rechargeSet">
-    <a-card class="card" v-if="projectID">
+    <a-card class="card" v-if="projectID ">
       <div class="title">预警</div>
-      <div class="content">
+      <div class="content" >
         <div class="t1">
           短信剩余条数小于
           <a-input
-            v-model="sremain_amount1"
+            v-model="sremain_amount"
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
           ></a-input
@@ -16,7 +16,7 @@
           支付通道剩余额度小于<a-input
             onkeyup="this.value=this.value.replace( /\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-            v-model="payment_amount1"
+            v-model="payment_amount"
           >
           </a-input
           >时，短信提醒指定人
@@ -28,13 +28,13 @@
     </a-card>
     <a-card class="card" v-else>
       <div class="title">预警</div>
-      <div class="content">
+      <div class="content" >
         <div class="t1">
           短信剩余条数小于
           <a-input
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-            v-model="sremain_amount2"
+            v-model="sremain_amount"
           ></a-input
           >时，短信提醒指定人
         </div>
@@ -42,7 +42,7 @@
           支付通道剩余额度小于<a-input
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
-            v-model="payment_amount2"
+            v-model="payment_amount"
           ></a-input
           >时，短信提醒指定人
         </div>
@@ -86,7 +86,7 @@
 
 <script>
 import remindModel from './remindModel'
-import { setWarning, getRemindUser } from '@/api/financeCenter.js'
+import { setWarning, getRemindUser, getWarning } from '@/api/financeCenter.js'
 import Cookies from 'js-cookie'
 export default {
   components: {
@@ -94,11 +94,9 @@ export default {
   },
   data () {
     return {
-      sremain_amount1: 200,
-      payment_amount1: 5000,
-      sremain_amount2: 200,
-      payment_amount2: 5000,
-      project_amount: 0,
+      sremain_amount: '',
+      payment_amount: '',
+      project_amount: '',
       balance: '', // 余额
       channel: '', // 支付通道
       sms_list: '', // 短信
@@ -146,8 +144,8 @@ export default {
     // 预警
     async submit1 () {
       await setWarning({
-        sremain_amount: this.sremain_amount1,
-        payment_amount: this.payment_amount1
+        sremain_amount: this.sremain_amount,
+        payment_amount: this.payment_amount
       })
       this.$message.success('提交成功')
       // console.log('预警', res)
@@ -155,17 +153,21 @@ export default {
     // 预警
     async submit2 () {
       await setWarning({
-        sremain_amount: this.sremain_amount1,
-        payment_amount: this.payment_amount1,
+        sremain_amount: this.sremain_amount,
+        payment_amount: this.payment_amount,
         project_amount: this.project_amount
       })
       this.$message.success('提交成功')
       // console.log('预警', res)
     }
   },
-  created () {
+ async created () {
     this.getData()
     this.projectID = +Cookies.get('project_id') || ''
+    const res = await getWarning()
+    this.payment_amount = res.data.payment_amount
+    this.project_amount = res.data.project_amount
+    this.sremain_amount = res.data.sremain_amount
   }
 }
 </script>
