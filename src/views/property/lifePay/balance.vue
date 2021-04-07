@@ -346,6 +346,7 @@ export default {
       data.append('housefile', this.fileUrl)
       importData(data).then(res => {
         this.importModal = false
+        this.$refs.table.refresh(true)
         this.$success({
           okText: '确定',
           title: res.message,
@@ -439,6 +440,9 @@ export default {
   /deep/ .ant-form-item-children {
     display: block;
   }
+  #upload {
+    opacity: 0;
+  }
 }
 .file-box {
   position: absolute;
@@ -451,6 +455,8 @@ export default {
   z-index: 5;
   background-color: #fff;
   margin-bottom: 0;
+  border: 1px solid #d9d9d9;
+  border-radius: 0;
   .file-name {
     width: 65%;color: #ccc;flex-grow: 1;display: flex;align-items: center;padding-left: 10px;
   }

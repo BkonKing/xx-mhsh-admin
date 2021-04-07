@@ -10,8 +10,7 @@ import qs from 'qs'
 const request = axios.create({
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    Authorization: 'f546ce0d37563c5aa3fa76707d7c472b3894af06', // 子后台
-    // Authorization: '2ad593e6438ab9295afaf276830b7360450db639', // 总后台
+    Authorization: Cookies.get('access_token'),
     Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
