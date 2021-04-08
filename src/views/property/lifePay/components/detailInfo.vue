@@ -45,7 +45,7 @@
           <a-descriptions-item v-if="infoData.admin_name" :label="`${billTypeName}操作人`" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
           <a-descriptions-item v-if="infoData.proof" :label="`${billTypeName}凭证`" span="2">
             <div class="pic-list">
-              <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
+              <img v-for="(item, index) in infoData.proof" :key="index" :src="item" @click="showPic(item)" />
             </div>
           </a-descriptions-item>
         </template>
@@ -65,6 +65,15 @@
         </a-descriptions-item>
       </a-descriptions> -->
     </template>
+    <a-modal
+      width="460px"
+      :visible="imgShow"
+      class="cztx-modal"
+      :footer="null"
+      @cancel="imgShow = false"
+    >
+      <div><img width="400px" height="400px" :src="imgUrl" /></div>
+    </a-modal>
   </a-modal>
 </template>
 
@@ -86,7 +95,9 @@ export default {
     return {
       infoData: '',
       orderData: '',
-      billTypeName: '充值'
+      billTypeName: '充值',
+      imgUrl: '',
+      imgShow: false
     }
   },
   methods: {
@@ -99,6 +110,10 @@ export default {
     },
     cancelModal () {
       this.$emit('update:modalShow', false)
+    },
+    showPic (item) {
+      this.imgUrl = item
+      this.imgShow = true
     }
   }
 }

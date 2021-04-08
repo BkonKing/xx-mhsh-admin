@@ -166,7 +166,7 @@
       <a-modal
         :title="`调整余额-${adjustmentInfo.genre_type_name}`"
         :visible="tzyeShow"
-        okText="充值"
+        okText="调整"
         @ok="tzyeSubmit"
         @cancel="tzyeShow = false"
       >
@@ -368,6 +368,8 @@ export default {
     // 充值成功回调
     rechargeCall () {
       this.getData()
+      this.$refs.table.refresh(true)
+      this.$refs.logtable.refresh(true)
     },
     // 日志
     // getLogList () {

@@ -66,7 +66,7 @@
       <a-form-item label="充值凭证">
         <div class="clearfix">
           <a-upload
-            action="/api/upload/uploads/uImages"
+            :action="uploadUrl"
             :data="uploadData"
             list-type="picture-card"
             :file-list="fileList"
@@ -138,13 +138,16 @@ export default {
         field_name: 'file'
       },
       headers: {
-        // Authorization: Cookies.get('access_token'),
-        Authorization: 'fc58d4dcb702624e2be057276f4a79a77f3a1a42',
+        Authorization: Cookies.get('access_token'),
+        // Authorization: 'fc58d4dcb702624e2be057276f4a79a77f3a1a42',
         Projectid: Cookies.get('project_id')
-      }
+      },
+      uploadUrl: ''
     }
   },
   created () {
+    this.uploadUrl = process.env.NODE_ENV === 'production' ? '/nsolid/spi/v1/upload/uploads/uImages' : '/api/upload/uploads/uImages'
+    console.log(222, process.env.NODE_ENV)
     // this.getData()
   },
   methods: {
@@ -154,11 +157,14 @@ export default {
       getInvest(this.params).then(res => {
         this.infoData = res
         for (const key in res.user_data) {
-          this.defaultUser = res.user_data[key]
-          this.userId = key
+          if (key == res.data.uid) {
+            this.defaultUser = res.user_data[key]
+            this.userId = key
+            break
+          }
           // this.queryParam.uid = key
-          break
         }
+        console.log(this.defaultUser, this.userId)
       })
     },
     // 选择余额种类
