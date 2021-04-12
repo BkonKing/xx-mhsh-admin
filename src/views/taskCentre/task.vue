@@ -242,35 +242,82 @@ type="up"
     <a-card class="card2">
       <div class="top">
         <a-button type="primary">新建任务</a-button>
-        <a-button>批量操作 <a-icon type="down"/></a-button>
+        <a-button @click="batchOpera">批量操作 <a-icon type="down"/></a-button>
+      </div>
+      <div class="selected" v-if="selectedRowKeys.length>0">
+       <a-icon class="icon" type="info-circle"  />
+        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项  <span class="span2" @click="clear">清空</span>
       </div>
       <a-table
         class="table"
         :columns="columns"
         :data-source="data"
         :pagination="false"
-        :row-selection="rowSelection"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
-    <template slot="taskSide">
-      <div>
-        <div class="t1">昵称(姓名)</div>
-        <div class="t2">项目名称</div>
-      </div>
-    </template>
+        <template slot="taskSide">
+          <div>
+            <div class="t1">昵称(姓名)</div>
+            <div class="t2">项目名称</div>
+          </div>
+        </template>
+        <div slot="customTitle">
+          接单人数
+          <a-tooltip>
+            <template slot="title">
+              接单人数/需求人数
+            </template>
+            <a-icon type="info-circle" />
+          </a-tooltip>
+        </div>
+        <template #takeOrderNumber>
+          <div>
+            -/10
+          </div>
+        </template>
+        <template #opera>
+          <div class="btns">
+            <a-button type="link">查看</a-button>
+            <a-button type="link">审核</a-button>
+          </div>
+        </template>
       </a-table>
+        <div class="pagination">
+        <a-pagination
+                      show-quick-jumper
+                      show-size-changer
+                      :default-current="pagination.currentPage"
+                      :page-size-options="pagination.sizes"
+                      :total="pagination.total"
+                      :page-size.sync="pagination.pageSize"
+                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
+                      @change="onChange"
+                      @showSizeChange="sizeChange" />
+      </div>
     </a-card>
+    <batchCheck ref="batchCheck"></batchCheck>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+import batchCheck from './batchCheck'
 export default {
+  components: {
+    batchCheck
+  },
   data () {
     return {
+       pagination: {
+        sizes: ['1', '5', '10', '15'], // 页容量
+        currentPage: 1, // 默认页
+        total: 50, // 总数
+        pageSize: 1 // 默认页容量
+      },
       currentIndex: 1,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      options: [
+      options: [ // 城市数据
         {
           value: 'zhejiang',
           label: 'Zhejiang',
@@ -332,13 +379,42 @@ export default {
           title: '任务方',
           dataIndex: 'taskSide',
           key: 'taskSide',
+          width: 150,
           scopedSlots: { customRender: 'taskSide' }
         },
-         {
-          title: '接单人数',
+        {
           dataIndex: 'takeOrderNumber',
           key: 'takeOrderNumber',
+          slots: { title: 'customTitle' },
+          scopedSlots: { customRender: 'takeOrderNumber' },
           width: 150
+        },
+        {
+          title: '投诉',
+          dataIndex: 'complain',
+          key: 'complain',
+          sorter: true,
+          width: 150
+        },
+        {
+          title: '提问',
+          dataIndex: 'ask',
+          key: 'ask',
+          sorter: true,
+          width: 150
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          key: 'createTime',
+          sorter: true,
+          width: 150
+        },
+        {
+          title: '操作',
+          dataIndex: 'opera',
+          key: 'opera',
+          scopedSlots: { customRender: 'opera' }
         }
       ],
       data: [
@@ -348,7 +424,10 @@ export default {
           taskStatus: '待审核',
           type: '任务类型',
           task: '任务标题标题标题',
-          award: '1000'
+          award: '1000',
+          complain: 0,
+          ask: 0,
+          createTime: '2020-11-20  08:50:08'
         },
         {
           id: '000000',
@@ -356,7 +435,10 @@ export default {
           taskStatus: '待审核',
           type: '任务类型',
           task: '任务标题标题标题',
-          award: '1000'
+          award: '1000',
+          complain: 0,
+          ask: 0,
+          createTime: '2020-11-20  08:50:08'
         },
         {
           id: '000000',
@@ -364,30 +446,17 @@ export default {
           taskStatus: '待审核',
           type: '任务类型',
           task: '任务标题标题标题',
-          award: '1000'
+          award: '1000',
+          complain: 0,
+          ask: 0,
+          createTime: '2020-11-20  08:50:08'
         }
-      ]
+      ],
+     selectedRowKeys: [] // 标题复选框数组
     }
   },
   computed: {
-    // 表格复选框选择事件
-    rowSelection () {
-      return {
-        onChange: (selectedRowKeys, selectedRows) => {
-          console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            'selectedRows: ',
-            selectedRows
-          )
-        },
-        getCheckboxProps: record => ({
-          props: {
-            disabled: record.name === 'Disabled User', // Column configuration not to be checked
-            name: record.name
-          }
-        })
-      }
-    }
+
   },
   mounted () {
     // console.log(this.$refs.card.$el.offsetHeight)
@@ -406,6 +475,29 @@ export default {
         this.cardBol = false
       }, 20)
       this.$refs.card.$el.style.height = '300px'
+    },
+    // 页码改变事件
+      onChange (page, size) {
+      console.log('Page: ', page)
+      this.pagination.currentPage = page
+    },
+    // 页容量改变事件
+    sizeChange (current, size) {
+      console.log('size: ', size)
+    },
+    // 清空表格复选框数组
+    clear () {
+      this.selectedRowKeys = []
+    },
+    // 表格复选框选择事件
+     onSelectChange (selectedRowKeys, selectedRows) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys)
+      this.selectedRowKeys = selectedRowKeys
+      console.log('selectedRows', selectedRows)
+    },
+    // 批量操作
+    batchOpera () {
+      this.$refs.batchCheck.isShow = true
     }
   }
 }
@@ -454,6 +546,46 @@ export default {
   }
   .table {
     margin-top: 20px;
+  }
+    .pagination {
+    margin-top: 10px;
+    /deep/ .ant-pagination {
+      padding: 10px;
+    }
+    /deep/ .ant-pagination-total-text {
+      margin-left: 20px;
+      margin-right: 300px;
+    }
+    /deep/ .ant-pagination-item-active {
+      background-color: #1890ff;
+      a {
+        color: white;
+      }
+    }
+  }
+  .selected{
+    margin-top: 10px;
+    width: 100%;
+    height: 40px;
+    padding-left: 15px;
+    line-height: 40px;
+    background-color: rgba(230, 247, 255, 1);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(186, 231, 255, 1);
+    border-radius: 4px;
+    .icon{
+      color:#0E77D1;
+      margin-right: 10px;
+    }
+    .span1{
+      color: #0E77D1;
+    }
+    .span2{
+      cursor: pointer;
+      color: #0E77D1;
+      margin-left: 10px;
+    }
   }
 }
 </style>
