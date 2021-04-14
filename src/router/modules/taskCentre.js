@@ -22,6 +22,15 @@ export default {
       }
     },
     {
+      path: '/taskCentre/askQuestion', // 完整地址
+      name: 'askQuestion',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/askQuestion'),
+      meta: {
+        title: '提问',
+        icon: 'table'
+      }
+    },
+    {
       path: '/taskCentre/task2', // 完整地址
       name: 'task2',
       component: RouteView,
@@ -44,6 +53,15 @@ export default {
           path: '/taskCentre/complete', // 完整地址
           name: 'complete',
           component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/complete'),
+          meta: {
+            title: '任务详情',
+            icon: 'table'
+          }
+        },
+        {
+          path: '/taskCentre/toCheck', // 完整地址
+          name: 'toCheck',
+          component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/toCheck'),
           meta: {
             title: '任务详情',
             icon: 'table'

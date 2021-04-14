@@ -295,7 +295,7 @@ type="up"
                       @showSizeChange="sizeChange" />
       </div>
     </a-card>
-    <batchCheck ref="batchCheck"></batchCheck>
+    <batchCheck ref="batchCheck" :selectedRowKeys='selectedRowKeys'></batchCheck>
   </div>
 </template>
 
@@ -452,7 +452,7 @@ export default {
           createTime: '2020-11-20  08:50:08'
         }
       ],
-     selectedRowKeys: [] // 标题复选框数组
+     selectedRowKeys: [] // 表格复选框数组
     }
   },
   computed: {

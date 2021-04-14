@@ -95,6 +95,7 @@ type="up"
           />
         </div>
       </div>
+      <!-- 预览图片 -->
       <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
         <img alt="example" style="width: 100%" :src="previewImage" />
       </a-modal>
@@ -234,15 +235,24 @@ type="up"
                 <div class="t2">项目名称</div>
               </div>
             </template>
+            <template #complain>
+              <div style="cursor: pointer;" @click="currentIndex =1">
+                0
+              </div>
+            </template>
             <template #appraise>
-              <span style="color:#1890FF;cursor: pointer;" @click="openAppraise">3星</span>
+              <span
+             style="color:#1890FF;cursor: pointer;"
+                @click="openAppraise"
+                >3星</span
+              >
             </template>
             <template #opera>
               <div class="btns">
                 <a-button type="link" @click="check">查看</a-button>
                 <a-button type="link" @click="award">奖励</a-button>
                 <a-popconfirm
-                v-if="false"
+                  v-if="false"
                   title="你确定要淘汰这个用户吗?"
                   ok-text="确定"
                   cancel-text="取消"
@@ -363,10 +373,10 @@ type="up"
         </a-form-model>
       </div>
       <div class="table">
-        <a-table :pagination='false' :columns="columns2" :data-source="data2">
+        <a-table :pagination="false" :columns="columns2" :data-source="data2">
           <a slot="name" slot-scope="text">{{ text }}</a>
         </a-table>
-           <div class="pagination">
+        <div class="pagination">
           <a-pagination
             show-quick-jumper
             show-size-changer
@@ -419,7 +429,7 @@ export default {
           planStatus: '已接单',
           phone: '15000000000',
           award: '2000',
-          complain: '0',
+
           newestPlan: '•接单成功',
           takeOrderTime: '2020-11-20  08:50:08'
         },
@@ -428,7 +438,7 @@ export default {
           planStatus: '已接单',
           phone: '15000000000',
           award: '2000',
-          complain: '0',
+
           newestPlan: '•接单成功',
           takeOrderTime: '2020-11-20  08:50:08'
         },
@@ -437,7 +447,7 @@ export default {
           planStatus: '已接单',
           phone: '15000000000',
           award: '2000',
-          complain: '0',
+
           newestPlan: '•接单成功',
           takeOrderTime: '2020-11-20  08:50:08'
         }
@@ -482,6 +492,7 @@ export default {
           dataIndex: 'complain',
           key: 'complain',
           width: 150,
+          scopedSlots: { customRender: 'complain' },
           sorter: true
         },
         {
@@ -550,13 +561,12 @@ export default {
           title: '操作类型',
           dataIndex: 'operaType',
           key: 'operaType',
-           width: 150
+          width: 150
         },
         {
           title: '操作说明',
           dataIndex: 'operaExplain',
           key: 'operaExplain'
-
         }
       ],
       data2: [
@@ -573,8 +583,8 @@ export default {
           opreaTime: '2020-10-01 12:00:00',
           module: '任务中心/任务',
           opreaPeople: '用户昵称(姓名)',
-         operaType: '延期任务',
-         operaExplain: '延期任务至2021-03-20  00:00'
+          operaType: '延期任务',
+          operaExplain: '延期任务至2021-03-20  00:00'
         },
         {
           id: '1',
@@ -585,7 +595,7 @@ export default {
           operaExplain: '延期任务至2021-03-20  00:00'
         }
       ],
-       pagination2: {
+      pagination2: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
@@ -608,6 +618,7 @@ export default {
     // 打开评价
     openAppraise () {
       this.$refs.appraiseModel.isShow = true
+      this.currentIndex = 2
     },
     // 奖励
     award () {
@@ -617,7 +628,7 @@ export default {
     check () {
       this.$refs.checkModel.isShow = true
     },
-      // 页码改变事件
+    // 页码改变事件
     onChange3 (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -990,22 +1001,22 @@ export default {
   .table {
     padding: 0 30px;
   }
-    .pagination {
-        margin-top: 10px;
-        /deep/ .ant-pagination {
-          padding: 10px;
-        }
-        /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
-        }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
-        }
+  .pagination {
+    margin-top: 10px;
+    /deep/ .ant-pagination {
+      padding: 10px;
+    }
+    /deep/ .ant-pagination-total-text {
+      margin-left: 20px;
+      margin-right: 300px;
+    }
+    /deep/ .ant-pagination-item-active {
+      background-color: #1890ff;
+      a {
+        color: white;
       }
+    }
+  }
 }
 
 /deep/ .ant-modal-body {

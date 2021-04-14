@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="isShow" title="奖励" @ok="handleOk">
+  <a-modal v-model="isShow" title="奖励" >
     <a-form-model
     :model='form'
     :rules="rules"
@@ -10,7 +10,7 @@
     0幸福币
   </a-form-model-item>
   <a-form-model-item label="奖励" prop="value">
-    <a-input v-model="value" placeholder="请输入"  addon-after="币" />
+    <a-input v-model="form.value" placeholder="请输入"  addon-after="币" />
     <div class="txt">还可以奖励2000幸福币</div>
   </a-form-model-item>
     </a-form-model>
