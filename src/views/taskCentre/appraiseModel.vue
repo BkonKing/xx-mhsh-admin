@@ -13,6 +13,7 @@
            label="评价时间"
         >2020-11-20 08:50:08</a-form-model-item
       >
+      <a-form-model-item label="评星">五星</a-form-model-item>
       <a-form-model-item label="标签">标签、 标签、标签</a-form-model-item>
       <a-form-model-item
                  label="补充内容"
@@ -39,7 +40,7 @@
     <div class="info" v-if="showInfo">
       <div class="item">
         <div class="t1">标记评价：</div>
-        <div class="t2">无效</div>
+        <div class="t2" style="color: #F5222D">无效</div>
       </div>
       <div class="item">
         <div class="t1 markMan">标记人：</div>

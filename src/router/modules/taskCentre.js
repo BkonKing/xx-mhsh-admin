@@ -31,6 +31,24 @@ export default {
       }
     },
     {
+      path: '/taskCentre/evaluate', // 完整地址
+      name: 'evaluate',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/evaluate'),
+      meta: {
+        title: '评价',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/taskCentre/complain', // 完整地址
+      name: 'complain',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/complain'),
+      meta: {
+        title: '投诉',
+        icon: 'table'
+      }
+    },
+    {
       path: '/taskCentre/task2', // 完整地址
       name: 'task2',
       component: RouteView,
