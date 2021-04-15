@@ -109,7 +109,7 @@
           </a-form>
         </div>
       </a-card>
-      <a-card :bordered="false" title="充缴明细">
+      <a-card :bordered="false">
         <s-table
           ref="table"
           size="default"

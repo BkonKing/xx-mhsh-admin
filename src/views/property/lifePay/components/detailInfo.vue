@@ -45,34 +45,20 @@
           <a-descriptions-item v-if="infoData.admin_name" :label="`${billTypeName}操作人`" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
           <a-descriptions-item v-if="infoData.proof" :label="`${billTypeName}凭证`" span="2">
             <div class="pic-list">
-              <img v-for="(item, index) in infoData.proof" :key="index" :src="item" @click="showPic(item)" />
+              <img v-for="(item, index) in infoData.proof" :key="index" :src="item" preview="1" />
             </div>
           </a-descriptions-item>
         </template>
       </a-descriptions>
-      <!-- <a-descriptions v-if="infoData.bill_type == 2" :title="`缴费 - ${infoData.genre_type_name}（${infoData.zf_type == 1 ? '线下' : '线上'}）`" :column="2">
-        <a-descriptions-item label="缴费金额">￥<span class="big-bold">{{ infoData.money }}</span></a-descriptions-item>
-        <a-descriptions-item label="账户余额">￥{{ infoData.balance }}</a-descriptions-item>
-        <a-descriptions-item label="缴费单号">{{ infoData.pay_log_id }}</a-descriptions-item>
-        <a-descriptions-item label="超时天数">{{ infoData.over_day }}</a-descriptions-item>
-        <a-descriptions-item label="缴费用户"><a :href="`/xmht/household/member/getMemberList?uid=${infoData.owner_id}`" target="_parent">{{ infoData.user_name }}</a></a-descriptions-item>
-        <a-descriptions-item label="缴费时间">{{ infoData.pay_time }}</a-descriptions-item>
-        <a-descriptions-item label="缴费操作人" span="2">[{{ infoData.admin_name }}]</a-descriptions-item>
-        <a-descriptions-item v-if="infoData.proof" label="缴费凭证" span="2">
-          <div class="pic-list">
-            <img v-for="(item, index) in infoData.proof" :key="index" :src="item" />
-          </div>
-        </a-descriptions-item>
-      </a-descriptions> -->
     </template>
     <a-modal
-      width="460px"
+      width="1200px"
       :visible="imgShow"
       class="cztx-modal"
       :footer="null"
       @cancel="imgShow = false"
     >
-      <div><img width="400px" height="400px" :src="imgUrl" /></div>
+      <div class="img-big"><img :src="imgUrl" /></div>
     </a-modal>
   </a-modal>
 </template>
@@ -106,6 +92,7 @@ export default {
         this.infoData = res.house_data
         this.billTypeName = res.house_data.bill_type == 1 ? '充值' : '缴费'
         this.orderData = res.order_data || ''
+        this.$previewRefresh()
       })
     },
     cancelModal () {
@@ -152,6 +139,7 @@ export default {
       padding: 8px;
       margin: 0 8px 8px 0;
       border-radius: 2px;
+      object-fit: cover;
     }
   }
 }
@@ -164,6 +152,16 @@ export default {
       td:nth-child(2) {
         vertical-align: top;
       }
+    }
+  }
+}
+.cztx-modal {
+  .img-big {
+    text-align: center;
+    max-height: 550px;
+    overflow-y: auto;
+    img {
+      max-width: 100%;
     }
   }
 }
