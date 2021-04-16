@@ -49,6 +49,36 @@ export default {
       }
     },
     {
+      path: '/taskCentre/taskGroup', // 完整地址
+      name: 'taskGroup',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/taskGroup'),
+      meta: {
+        title: '任务群',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/taskCentre/taskGroup2', // 完整地址
+      name: 'taskGroup2',
+      component: RouteView,
+      meta: {
+        title: '任务群',
+        icon: 'table'
+      },
+      redirect: '/taskCentre/groupDetail',
+      children: [
+        {
+          path: '/taskCentre/groupDetail', // 完整地址
+          name: 'groupDetail',
+          component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/groupDetail'),
+          meta: {
+            title: '群详情',
+            icon: 'table'
+          }
+        }
+      ]
+    },
+    {
       path: '/taskCentre/task2', // 完整地址
       name: 'task2',
       component: RouteView,

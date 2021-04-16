@@ -79,8 +79,9 @@ label="可见范围"
             </div>
           </div>
           <div class="imgcon">
-            <div class="img" v-for="item in 3" :key="item" @click="previewImg">
+            <div class="img" v-for="item in 3" :key="item">
               <img
+                preview="0"
                 src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
                 alt=""
               />
@@ -108,7 +109,11 @@ label="可见范围"
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item v-if="form.value1 !==1" label="违规原因" prop="value2">
+        <a-form-model-item
+          v-if="form.value1 !== 1"
+          label="违规原因"
+          prop="value2"
+        >
           <a-select v-model="form.value2" style="width: 379px">
             <a-select-option value="jack">
               Jack
@@ -149,13 +154,19 @@ label="可见范围"
           </a-upload>
         </a-form-model-item>
         <a-form-model-item>
-          <a-button type="primary" class="btn" :disabled="bol" @click="submit">确定</a-button>
+          <a-button
+type="primary"
+class="btn"
+:disabled="bol"
+@click="submit"
+            >确定</a-button
+          >
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+    <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
-    </a-modal>
+    </a-modal> -->
   </div>
 </template>
 
@@ -222,6 +233,9 @@ export default {
       bol: false
     }
   },
+  mounted () {
+    this.$previewRefresh()
+  },
   watch: {
     form: {
       handler () {
@@ -253,17 +267,17 @@ export default {
     },
     handleChange ({ fileList }) {
       this.fileList = fileList
-    },
-    // 预览图片
-    previewImg (e) {
-      console.log(e.target.src)
-      this.previewVisible = true
-      this.previewImage = e.target.src
-    },
-    // 关闭预览图片
-    handleCancel () {
-      this.previewVisible = false
     }
+    // // 预览图片
+    // previewImg (e) {
+    //   console.log(e.target.src)
+    //   this.previewVisible = true
+    //   this.previewImage = e.target.src
+    // },
+    // // 关闭预览图片
+    // handleCancel () {
+    //   this.previewVisible = false
+    // }
   }
 }
 </script>
@@ -370,7 +384,7 @@ export default {
       margin-top: 8px;
       color: #666;
     }
-    .btn{
+    .btn {
       margin-left: 108px;
     }
   }

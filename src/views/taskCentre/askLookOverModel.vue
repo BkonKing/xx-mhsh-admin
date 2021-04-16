@@ -33,8 +33,9 @@
           内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
         </a-form-model-item>
         <div class="imgcon">
-          <div class="img" v-for="item in 3" :key="item" @click="previewImg">
+          <div class="img" v-for="item in 3" :key="item" >
             <img
+            preview="0"
               src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
               alt=""
             />
@@ -42,9 +43,9 @@
         </div>
       </a-form-model>
     </a-modal>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+    <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
-    </a-modal>
+    </a-modal> -->
   </div>
 </template>
 
@@ -59,17 +60,20 @@ export default {
       previewImage: ''
     }
   },
+  mounted () {
+    this.$previewRefresh()
+  },
   methods: {
     // 预览图片
-    previewImg (e) {
-      console.log(e.target.src)
-      this.previewVisible = true
-      this.previewImage = e.target.src
-    },
-    // 关闭预览图片
-    handleCancel () {
-      this.previewVisible = false
-    }
+    // previewImg (e) {
+    //   console.log(e.target.src)
+    //   this.previewVisible = true
+    //   this.previewImage = e.target.src
+    // },
+    // // 关闭预览图片
+    // handleCancel () {
+    //   this.previewVisible = false
+    // }
   }
 }
 </script>

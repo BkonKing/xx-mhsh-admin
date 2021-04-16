@@ -50,7 +50,7 @@ label="完成地点"
                 000000000
                 <img
                   style="marginLeft:10px"
-                  @click="previewImg"
+                  preview="1"
                   src="@/assets/imgs/task_ma.png"
                   alt=""
                 />
@@ -88,17 +88,18 @@ type="up"
         </div>
       </div>
       <div class="imgcon">
-        <div class="img" v-for="item in 3" :key="item" @click="previewImg">
+        <div class="img" v-for="item in 3" :key="item"  >
           <img
+          preview="0"
             src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
             alt=""
           />
         </div>
       </div>
       <!-- 预览图片 -->
-      <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+      <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
         <img alt="example" style="width: 100%" :src="previewImage" />
-      </a-modal>
+      </a-modal> -->
     </a-card>
     <a-card class="card3">
       <a-row>
@@ -302,8 +303,9 @@ type="up"
         </div>
       </div>
       <div class="imgcon">
-        <div class="img" v-for="item in 3" :key="item" @click="previewImg">
+        <div class="img" v-for="item in 3" :key="item" >
           <img
+          preview="2"
             src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
             alt=""
           />
@@ -416,8 +418,8 @@ export default {
       current: 2, // 当前进度条位置
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      previewVisible: false, // 是否预览图片
-      previewImage: '', // 预览图片链接
+      // previewVisible: false, // 是否预览图片
+      // previewImage: '', // 预览图片链接
       btnBol: false,
       titleArr: ['任务进度', '投诉', '评价', '提问'],
       currentIndex: 0,
@@ -604,6 +606,7 @@ export default {
     }
   },
   mounted () {
+    this.$previewRefresh()
     console.log(document.querySelector('.card6 .form').offsetHeight) // 128
     // document.querySelector('.card6 .form').style.height = '74px'
     // document.querySelector('.explain').style.height = '210px'
@@ -711,17 +714,17 @@ export default {
       document.querySelector('.explain').style.webkitBoxOrient = ''
       document.querySelector('.explain').style.webkitLineClamp = ''
       document.querySelector('.explain').style.overflow = ''
-    },
-    // 预览图片
-    previewImg (e) {
-      console.log(e.target.src)
-      this.previewVisible = true
-      this.previewImage = e.target.src
-    },
-    // 关闭预览图片
-    handleCancel () {
-      this.previewVisible = false
     }
+    // // 预览图片
+    // previewImg (e) {
+    //   console.log(e.target.src)
+    //   this.previewVisible = true
+    //   this.previewImage = e.target.src
+    // },
+    // 关闭预览图片
+    // handleCancel () {
+    //   this.previewVisible = false
+    // }
   }
 }
 </script>
