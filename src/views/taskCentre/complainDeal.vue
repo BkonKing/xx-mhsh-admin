@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="isShow" title="处理">
+  <a-modal v-model="isShow" title="处理" @ok='submit'>
     <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="投诉类型">
         投诉类型
@@ -88,7 +88,10 @@ export default {
     }
   },
   methods: {
-
+    // 确定
+    submit () {
+      this.$message.success('处理成功')
+    },
     handleCancel () {
       this.previewVisible = false
     },

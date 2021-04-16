@@ -188,14 +188,14 @@ type="up"
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type="primary">处理</a-button>
-      <div class="selected">
+      <a-button type="primary" @click="batchDeal">处理</a-button>
+      <div class="selected" v-if="selectedRowKeys.length>0">
         <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">2</span> 项
-        <span class="span2">清空</span>
+        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
+        <span class="span2" @click="clear">清空</span>
       </div>
      <div class="table">
-        <a-table :columns="columns" :data-source="data" :pagination='false'>
+        <a-table :columns="columns" :data-source="data" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :pagination='false'>
       <template #complaindContent>
         <div class="complaindContent" style="color:#1890FF">
                  内容内容内容内容内容内容
@@ -215,7 +215,7 @@ type="up"
       </template>
       <template #opera>
         <div class="opera">
-          <a-button type="link">查看</a-button>
+          <a-button type="link" >查看</a-button>
           <a-button type="link" @click="deal">处理</a-button>
         </div>
       </template>
@@ -239,15 +239,18 @@ type="up"
         </div>
     </a-card>
     <complainDeal ref="complainDeal"></complainDeal>
+    <complainBatchDeal ref="complainBatchDeal" :selectedRowKeys='selectedRowKeys'></complainBatchDeal>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import complainDeal from './complainDeal'
+import complainBatchDeal from './complainBatchDeal'
 export default {
   components: {
-    complainDeal
+    complainDeal,
+    complainBatchDeal
   },
   data () {
     return {
@@ -352,13 +355,28 @@ export default {
           key: 'opera',
           scopedSlots: { customRender: 'opera' }
         }
-      ]
+      ],
+       selectedRowKeys: []
     }
   },
   mounted () {
     console.log(this.$refs.card.$el.offsetHeight) // 274
   },
   methods: {
+    // 清空表格复选框
+    clear () {
+      this.selectedRowKeys = []
+    },
+    // 表格复选框改变事件
+     onSelectChange (selectedRowKeys, selectedRows) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys)
+      console.log('selectedRows', selectedRows)
+      this.selectedRowKeys = selectedRowKeys
+    },
+    // 批量处理
+    batchDeal () {
+      this.$refs.complainBatchDeal.isShow = true
+    },
     // 处理
     deal () {
       this.$refs.complainDeal.isShow = true

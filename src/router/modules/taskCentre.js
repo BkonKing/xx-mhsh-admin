@@ -84,6 +84,15 @@ export default {
             title: '任务详情',
             icon: 'table'
           }
+        },
+        {
+          path: '/taskCentre/complainDetail', // 完整地址
+          name: 'complainDetail',
+          component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/complainDetail'),
+          meta: {
+            title: '任务详情',
+            icon: 'table'
+          }
         }
       ]
     }
