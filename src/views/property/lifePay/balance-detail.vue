@@ -55,7 +55,7 @@
                 <span>其他费用余额</span>
                 <p>
                   <span :class="[infoData.data.o_money < 0 ? 'color-red' : '']">￥{{ infoData.data.o_money }}</span>
-                  <template v-if="infoData.data.o_qf_money > 0">（<span class="color-red">-{{ infoData.data.o_qf_money }}</span>）</template>
+                  <template v-if="infoData.data.q_qf_money > 0">（<span class="color-red">-{{ infoData.data.q_qf_money }}</span>）</template>
                 </p>
                 <div>
                   <a @click="tzyeModal(4)">调整</a>
