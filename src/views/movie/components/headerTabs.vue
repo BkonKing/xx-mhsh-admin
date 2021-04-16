@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style less lang="less">
+<style scoped lang="less">
 .header-tabs {
   padding-left: 24px;
   margin: -24px -24px 24px;

@@ -91,7 +91,7 @@
       </a-card>
       <a-card>
         <div class="table-operator">
-          <a-button type="default" @click="importModal=true"><a-icon type="upload" />导入文件</a-button>
+          <a-button type="default" @click="importShow"><a-icon type="import" />导入文件</a-button>
         </div>
         <s-table
           ref="table"
@@ -126,7 +126,7 @@
           </span>
           <span slot="other" slot-scope="text, record">
             <span :class="[record.o_money < 0 ? 'color-red' : '']">{{ record.o_money }}</span>
-            <template v-if="record.o_qf_money > 0">（<span class="color-red">-{{ record.o_qf_money }}</span>）</template>
+            <template v-if="record.q_qf_money > 0">（<span class="color-red">-{{ record.q_qf_money }}</span>）</template>
           </span>
           <span slot="action" slot-scope="text, record">
             <template>
@@ -166,16 +166,6 @@
             <!-- <a href="http://develop.mhshjy.com/library/mb/mb_billEntry.xlsx" type="default"><a-icon type="download" />下载模板</a> -->
           </a-form-model-item>
         </a-form>
-        <!-- <a-form
-          :labelCol="{lg: {span: 5}, sm: {span: 5}}"
-          :wrapperCol="{lg: {span: 18}, sm: {span: 18} }"
-          :form="Importform"
-          @submit="importFile"
-        >
-          <a-form-item label="选择文件">
-            <a-input type="file" />
-          </a-form-item>
-        </a-form> -->
       </a-modal>
     </div>
   </page-header-wrapper>
@@ -334,6 +324,12 @@ export default {
     downFile () {
       location.href = 'https://test.tosolomo.com/library/mb/mb_balance.xlsx'
     },
+    // 显示导入弹窗
+    importShow () {
+      this.fileUrl = ''
+      this.fileSize = 0
+      this.importModal = true
+    },
     // 导入提交
     importFile () {
       console.log(this.fileUrl)
@@ -346,6 +342,7 @@ export default {
       data.append('housefile', this.fileUrl)
       importData(data).then(res => {
         this.importModal = false
+        this.$refs.table.refresh(true)
         this.$success({
           okText: '确定',
           title: res.message,
@@ -439,6 +436,9 @@ export default {
   /deep/ .ant-form-item-children {
     display: block;
   }
+  #upload {
+    opacity: 0;
+  }
 }
 .file-box {
   position: absolute;
@@ -451,6 +451,8 @@ export default {
   z-index: 5;
   background-color: #fff;
   margin-bottom: 0;
+  border: 1px solid #d9d9d9;
+  border-radius: 0;
   .file-name {
     width: 65%;color: #ccc;flex-grow: 1;display: flex;align-items: center;padding-left: 10px;
   }

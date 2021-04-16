@@ -1,6 +1,6 @@
 <template>
   <page-header-wrapper>
-    <template v-slot:content>
+    <template v-if="totalData" v-slot:content>
       <div class="ant-pro-page-header-wrap-detail">
         <div class="ant-pro-page-header-wrap-main">
           <div class="ant-pro-page-header-wrap-row">
@@ -31,192 +31,206 @@
         </div>
       </div>
     </template>
-    <div>
-      <a-row v-if="totalData" :gutter="24">
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="应缴费" :total="'￥'+totalData.payable_money | NumberFormat">
-            <div>
-              <trend :flag="totalData.payable_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
-                <span slot="term">月环比</span>
-                {{ totalData.payable_qoq }}%
-              </trend>
-            </div>
-            <template slot="footer">户数<span>{{ totalData.payable_count }}</span></template>
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="已缴费" :total="'￥' + totalData.paid_money | NumberFormat">
-            <div>
-              <trend :flag="totalData.paid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
-                <span slot="term">月环比</span>
-                {{ totalData.paid_qoq }}%
-              </trend>
-            </div>
-            <template slot="footer">户数<span>{{totalData.paid_count}}</span></template>
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="应缴费" :total="'￥' + totalData.unpaid_money | NumberFormat">
-            <div>
-              <trend :flag="totalData.unpaid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
-                <span slot="term">月环比</span>
-                {{ totalData.unpaid_qoq }}%
-              </trend>
-            </div>
-            <template slot="footer">户数<span>{{ totalData.unpaid_count }}</span></template>
-          </chart-card>
-        </a-col>
-        <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-          <chart-card :loading="loading" title="缴费率" :total="totalData.contributionRate+'%'">
-            <a-tooltip title="缴费率=已缴费户数/应缴费户数" slot="action">
-              <a-icon type="info-circle-o" />
-            </a-tooltip>
-            <div>
-              <mini-progress color="rgb(19, 194, 194)" :target="100" :percentage="totalData.contributionRate" height="8px" />
-            </div>
-            <template slot="footer">
-              <trend :flag="totalData.contributionRate_qoq>0 ? 'up' : 'down'">
-                <span slot="term">月环比</span>
-                {{ totalData.contributionRate_qoq }}%
-              </trend>
-            </template>
-          </chart-card>
-        </a-col>
-      </a-row>
-      <a-card v-if="summaryList.length" class="p-t-0" :bordered="false" :style="{ marginBottom: '24px' }">
-        <div class="summary-wrapper summary-wrapper-data-link">
-          <div class="summary-container">
-            <a-tabs class="summary data-link" v-model="lineActive" @change="lineChange">
-              <a-tab-pane v-for="(item, index) in summaryList" :key="index">
-                <div class="flex" slot="tab">
-                  <div class="summary-item">
-                    <div>{{ item.type }}</div>
-                    <div>{{ item.text }}</div>
-                    <div>{{ item.value }}%</div>
+    <template v-if="isLoading">
+      <div v-if="totalData">
+        <a-row v-if="totalData" :gutter="24">
+          <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+            <chart-card :loading="loading" title="应缴费" :total="'￥'+totalData.payable_money | NumberFormat">
+              <div>
+                <trend :flag="totalData.payable_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                  <span slot="term">月环比</span>
+                  {{ totalData.payable_qoq }}%
+                </trend>
+              </div>
+              <template slot="footer">户数<span>{{ totalData.payable_count }}</span></template>
+            </chart-card>
+          </a-col>
+          <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+            <chart-card :loading="loading" title="已缴费" :total="'￥' + totalData.paid_money | NumberFormat">
+              <div>
+                <trend :flag="totalData.paid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                  <span slot="term">月环比</span>
+                  {{ totalData.paid_qoq }}%
+                </trend>
+              </div>
+              <template slot="footer">户数<span>{{totalData.paid_count}}</span></template>
+            </chart-card>
+          </a-col>
+          <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+            <chart-card :loading="loading" title="应缴费" :total="'￥' + totalData.unpaid_money | NumberFormat">
+              <div>
+                <trend :flag="totalData.unpaid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                  <span slot="term">月环比</span>
+                  {{ totalData.unpaid_qoq }}%
+                </trend>
+              </div>
+              <template slot="footer">户数<span>{{ totalData.unpaid_count }}</span></template>
+            </chart-card>
+          </a-col>
+          <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
+            <chart-card :loading="loading" title="缴费率" :total="totalData.contributionRate+'%'">
+              <a-tooltip title="缴费率=已缴费户数/应缴费户数" slot="action">
+                <a-icon type="info-circle-o" />
+              </a-tooltip>
+              <div>
+                <mini-progress color="rgb(19, 194, 194)" :target="100" :percentage="totalData.contributionRate" height="8px" />
+              </div>
+              <template slot="footer">
+                <trend :flag="totalData.contributionRate_qoq>0 ? 'up' : 'down'">
+                  <span slot="term">月环比</span>
+                  {{ totalData.contributionRate_qoq }}%
+                </trend>
+              </template>
+            </chart-card>
+          </a-col>
+        </a-row>
+        <a-card v-if="summaryList.length" class="p-t-0" :bordered="false" :style="{ marginBottom: '24px' }">
+          <div class="summary-wrapper summary-wrapper-data-link">
+            <div class="summary-container">
+              <a-tabs class="summary data-link" v-model="lineActive" @change="lineChange">
+                <a-tab-pane v-for="(item, index) in summaryList" :key="index">
+                  <div class="flex" slot="tab">
+                    <div class="summary-item">
+                      <div>{{ item.type }}</div>
+                      <div>{{ item.text }}</div>
+                      <div>{{ item.value }}%</div>
+                    </div>
+                    <v-chart
+                    style="padding-top: 16px"
+                      :forceFit="true"
+                      width="90"
+                      height="90"
+                      :data="[item]"
+                      padding="auto"
+                    >
+                      <v-tooltip></v-tooltip>
+                      <v-facet
+                          type="rect"
+                          :fields="['type']"
+                          :padding="0"
+                          :showTitle="false"
+                          :eachView="eachView"
+                        />
+                    </v-chart>
                   </div>
-                  <v-chart
-                  style="padding-top: 16px"
-                    :forceFit="true"
-                    width="90"
-                    height="90"
-                    :data="[item]"
-                    padding="auto"
-                  >
-                    <v-tooltip></v-tooltip>
-                    <v-facet
-                        type="rect"
-                        :fields="['type']"
-                        :padding="0"
-                        :showTitle="false"
-                        :eachView="eachView"
-                      />
-                  </v-chart>
-                </div>
-              </a-tab-pane>
-            </a-tabs>
+                </a-tab-pane>
+              </a-tabs>
+            </div>
           </div>
-        </div>
-        <a-line
-          class="page-line"
-          ref="aline"
-          color="typename"
-          position="name*value"
-          :showLegend="true"
-          :height="300"
-          :data="lineData"
-          :padding="[25, 30, 70]"
-        ></a-line>
-      </a-card>
-      <a-row :gutter="24" class="row-block">
-        <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card :bordered="false" title="应缴费">
-            <a-pie v-if="shoudPayData != ''" :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
-          </a-card>
-        </a-col>
-        <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card :bordered="false" title="已缴费">
-            <div slot="extra" class="extra-wrapper">
-              <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
-            </div>
-            <div class="analysis-salesTypeRadio">
-              <a-radio-group defaultValue="0" v-model="alreadyPayType" @change="payChange">
-                <a-radio-button value="0">全部方式</a-radio-button>
-                <a-radio-button value="1">线上缴费</a-radio-button>
-                <a-radio-button value="2">线下缴费</a-radio-button>
-              </a-radio-group>
-            </div>
-            <a-pie v-if="alreadyPayData" :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
-          </a-card>
-        </a-col>
-      </a-row>
-      <a-row :gutter="24" class="row-block">
-        <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
-          <a-card :bordered="false" title="未缴费">
-            <div slot="extra" class="extra-wrapper">
-              <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
-            </div>
-            <a-pie v-if="noPayData" :data="noPayData" :pieGuide="noPieGuide"></a-pie>
-          </a-card>
-        </a-col>
-        <a-col :sm="12" :md="12" :xl="12">
-          <a-card :loading="loading" :bordered="false" title="未缴费情况" :style="{ height: '100%' }">
-            <a-row :gutter="68">
-              <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
-                <div class="ant-pro-number-info">
-                  <span>
-                    <span>未缴费金额</span>
-                  </span>
-                  <div class="number-info-value">
-                    <span style="font-size: 26px"> ￥{{ noMoney | NumberFormat}}</span>
+          <a-line
+            class="page-line"
+            ref="aline"
+            color="typename"
+            position="name*value"
+            :showLegend="true"
+            :height="300"
+            :data="lineData"
+            :padding="[25, 30, 70]"
+          ></a-line>
+        </a-card>
+        <a-row :gutter="24" class="row-block">
+          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <a-card :bordered="false" title="应缴费">
+              <a-pie v-if="shoudPayData != '' && shoudPayData!='[]'" :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
+              <div v-else><empty></empty></div>
+            </a-card>
+          </a-col>
+          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <a-card :bordered="false" title="已缴费">
+              <div slot="extra" class="extra-wrapper">
+                <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
+              </div>
+              <div class="analysis-salesTypeRadio">
+                <a-radio-group defaultValue="0" v-model="alreadyPayType" @change="payChange">
+                  <a-radio-button value="0">全部方式</a-radio-button>
+                  <a-radio-button value="1">线上缴费</a-radio-button>
+                  <a-radio-button value="2">线下缴费</a-radio-button>
+                </a-radio-group>
+              </div>
+              <a-pie v-if="alreadyPayData && alreadyPayData!='[]'" :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
+              <div v-else><empty></empty></div>
+            </a-card>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24" class="row-block">
+          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+            <a-card :bordered="false" title="未缴费">
+              <div slot="extra" class="extra-wrapper">
+                <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
+              </div>
+              <a-pie v-if="noPayData && noPayData!='[]'" :data="noPayData" :pieGuide="noPieGuide"></a-pie>
+              <div v-else><empty></empty></div>
+            </a-card>
+          </a-col>
+          <a-col :sm="12" :md="12" :xl="12">
+            <a-card :loading="loading" :bordered="false" title="未缴费情况" :style="{ height: '100%' }">
+              <a-row :gutter="68">
+                <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
+                  <div class="ant-pro-number-info">
+                    <span>
+                      <span>未缴费金额</span>
+                    </span>
+                    <div class="number-info-value">
+                      <span style="font-size: 26px"> ￥{{ noMoney | NumberFormat}}</span>
+                    </div>
                   </div>
-                </div>
-              </a-col>
-              <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
-                <div class="ant-pro-number-info">
-                  <span>
-                    <span>未缴费户数</span>
-                  </span>
-                  <div class="number-info-value">
-                    <span style="font-size: 26px"> {{ noCount}}</span>
+                </a-col>
+                <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
+                  <div class="ant-pro-number-info">
+                    <span>
+                      <span>未缴费户数</span>
+                    </span>
+                    <div class="number-info-value">
+                      <span style="font-size: 26px"> {{ noCount}}</span>
+                    </div>
                   </div>
-                </div>
-              </a-col>
-            </a-row>
-            <div class="ant-table-wrapper">
-              <s-table
-                ref="table"
-                size="small"
-                rowKey="expenses_house_id"
-                class="table-box"
-                :columns="columns"
-                :pageInfo="pageInfo"
-                :data="loadTableData"
-              >
-                <span slot="number" slot-scope="text, record, index">
-                  {{ index + 1 }}
-                </span>
-                <span slot="money">欠费金额
-                  <a-popover overlayClassName="popover-toast">
-                    <template slot="content">
-                      所有费用类型的欠费金额总和
-                    </template>
-                    <a-icon type="exclamation-circle" />
-                  </a-popover>
-                </span>
-                <span slot="days">欠费天数
-                  <a-popover overlayClassName="popover-toast">
-                    <template slot="content">
-                      所有费用类型的欠费天数总和
-                    </template>
-                    <a-icon type="exclamation-circle" />
-                  </a-popover>
-                </span>
-              </s-table>
-            </div>
-          </a-card>
-        </a-col>
-      </a-row>
-    </div>
+                </a-col>
+              </a-row>
+              <div class="ant-table-wrapper">
+                <s-table
+                  ref="table"
+                  size="small"
+                  rowKey="expenses_house_id"
+                  class="table-box"
+                  :columns="columns"
+                  :pageInfo="pageInfo"
+                  :data="loadTableData"
+                >
+                  <span slot="number" slot-scope="text, record, index">
+                    {{ index + 1 }}
+                  </span>
+                  <span slot="money">欠费金额
+                    <a-popover overlayClassName="popover-toast">
+                      <template slot="content">
+                        所有费用类型的欠费金额总和
+                      </template>
+                      <a-icon type="exclamation-circle" />
+                    </a-popover>
+                  </span>
+                  <span slot="days">欠费天数
+                    <a-popover overlayClassName="popover-toast">
+                      <template slot="content">
+                        所有费用类型的欠费天数总和
+                      </template>
+                      <a-icon type="exclamation-circle" />
+                    </a-popover>
+                  </span>
+                </s-table>
+              </div>
+            </a-card>
+          </a-col>
+        </a-row>
+      </div>
+      <div v-else>
+        <a-row>
+          <a-col>
+            <a-card>
+              <empty></empty>
+            </a-card>
+          </a-col>
+        </a-row>
+      </div>
+    </template>
     <a-modal
       title="缴费楼栋"
       width="800px"
@@ -260,6 +274,7 @@ import {
 // import { getFilmList } from '@/api/movie'
 import { getSelectList, getHouseList, getTotalData, getTabPie, getLineData, getShoudPay, getAlreadyPay, getNoPay, getNoPaySituation } from '@/api/property'
 import moment from 'moment'
+import empty from './components/empty'
 const columns = [
   {
     title: '排名',
@@ -308,7 +323,8 @@ export default {
     MiniProgress,
     aLine,
     aPie,
-    Trend
+    Trend,
+    empty
   },
   data () {
     this.columns = columns
@@ -391,7 +407,8 @@ export default {
       pageInfo: {
         defaultPageSize: 5,
         pageSizeOptions: ['5', '10', '20', '30']
-      }
+      },
+      isLoading: false
     }
   },
   mounted () {
@@ -449,6 +466,7 @@ export default {
     getTotalData () {
       getTotalData(this.params).then(res => {
         this.totalData = res.tab_data
+        this.isLoading = true
       })
     },
     // 各个类型缴费率
@@ -761,4 +779,5 @@ export default {
     }
   }
 }
+
 </style>

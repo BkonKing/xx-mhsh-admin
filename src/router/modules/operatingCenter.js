@@ -13,6 +13,27 @@ export default {
   redirect: '/operatingCenter/appmessage',
   children: [
     {
+      path: '/operatingCenter/activity', // 完整地址
+      name: 'activity',
+      component: RouteView,
+      meta: {
+        title: '活动管理',
+        icon: 'table'
+      },
+      redirect: '/operatingCenter/activity/integral',
+      children: [
+        {
+          path: '/operatingCenter/activity/integral', // 完整地址
+          name: 'integralActivity',
+          component: () => import(/* webpackChunkName: "life" */ '@/views/operatingCenter/activity/integral'),
+          meta: {
+            title: '积分活动',
+            icon: 'table'
+          }
+        }
+      ]
+    },
+    {
       path: '/operatingCenter/appmessage', // app消息
       name: 'appmessage',
       component: () => import('@/views/operatingCenter/announcement/appmessage/appmessage'),

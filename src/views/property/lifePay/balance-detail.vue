@@ -55,7 +55,7 @@
                 <span>其他费用余额</span>
                 <p>
                   <span :class="[infoData.data.o_money < 0 ? 'color-red' : '']">￥{{ infoData.data.o_money }}</span>
-                  <template v-if="infoData.data.o_qf_money > 0">（<span class="color-red">-{{ infoData.data.o_qf_money }}</span>）</template>
+                  <template v-if="infoData.data.q_qf_money > 0">（<span class="color-red">-{{ infoData.data.q_qf_money }}</span>）</template>
                 </p>
                 <div>
                   <a @click="tzyeModal(4)">调整</a>
@@ -166,7 +166,7 @@
       <a-modal
         :title="`调整余额-${adjustmentInfo.genre_type_name}`"
         :visible="tzyeShow"
-        okText="充值"
+        okText="调整"
         @ok="tzyeSubmit"
         @cancel="tzyeShow = false"
       >
@@ -216,7 +216,7 @@
 <script>
 // import moment from 'moment'
 import { STable } from '@/components'
-import { getBasisInfo, getDetailList, getLogList, getAdjustmentInfo, submitAdjustment, getPayType } from '@/api/property'
+import { getBasisInfo, getDetailList, getBalanceLogsList, getAdjustmentInfo, submitAdjustment, getPayType } from '@/api/property'
 import rechargeMoney from './components/rechargeMoney'
 import detailInfo from './components/detailInfo'
 const columns = [
@@ -368,6 +368,8 @@ export default {
     // 充值成功回调
     rechargeCall () {
       this.getData()
+      this.$refs.table.refresh(true)
+      this.$refs.logtable.refresh(true)
     },
     // 日志
     // getLogList () {
@@ -450,7 +452,7 @@ export default {
     loadLogTableData (page) {
       const requestParameters = Object.assign({}, { expenses_house_id: this.houseId, search: this.search }, page)
         console.log('loadData request parameters:', requestParameters)
-        return getLogList(requestParameters)
+        return getBalanceLogsList(requestParameters)
           .then(res => {
             return res
           })
