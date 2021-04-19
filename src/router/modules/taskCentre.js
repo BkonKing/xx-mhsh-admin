@@ -58,6 +58,15 @@ export default {
       }
     },
     {
+      path: '/taskCentre/setting/basics', // 完整地址
+      name: 'taskGroup',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/setting/basics'),
+      meta: {
+        title: '设置',
+        icon: 'table'
+      }
+    },
+    {
       path: '/taskCentre/taskGroup2', // 完整地址
       name: 'taskGroup2',
       component: RouteView,
