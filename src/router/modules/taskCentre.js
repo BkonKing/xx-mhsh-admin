@@ -58,9 +58,9 @@ export default {
       }
     },
     {
-      path: '/taskCentre/setting/basics', // 完整地址
-      name: 'taskGroup',
-      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/setting/basics'),
+      path: '/taskCentre/setting/setting', // 完整地址
+      name: 'setting',
+      component: () => import(/* webpackChunkName: "life" */ '@/views/taskCentre/setting/setting'),
       meta: {
         title: '设置',
         icon: 'table'
