@@ -4,53 +4,59 @@
       <div class="btn">
         <a-button type="primary" @click="add">新增类型</a-button>
       </div>
-     <div class="table">
-        <a-table :columns="columns" :data-source="data" :pagination='false'>
-        <span
+      <div class="table">
+        <a-table :columns="columns" :data-source="data" :pagination="false">
+          <span
                  slot="sortTitle"
-          >排序
-          <a-tooltip>
-            <template slot="title">
-              此列表及APP端显示顺序
-            </template>
-            <a-icon type="info-circle" style="fontSize:14px;marginLeft:10px" />
-          </a-tooltip>
-        </span>
-        <template #sort>
-          <div class="sort">
-            <a-input style="width:128px"></a-input>
-          </div>
-        </template>
-        <span
-                   slot="isStartTitle"
-          >是否开启
-          <a-tooltip>
-            <template slot="title">
-              开启则展示在APP端并且可选
-            </template>
-            <a-icon type="info-circle" style="fontSize:14px;marginLeft:10px" />
-          </a-tooltip>
-        </span>
-        <template #isStart>
-          <div>
-            <a-switch default-checked />
-          </div>
-        </template>
-        <template #opera>
-          <div class="opera">
-            <a-button type="link">编辑</a-button>
-  <a-popconfirm
-    title="你确定要删除这行内容吗?"
-    ok-text="确定"
-    cancel-text="取消"
-  >
-   <a-icon slot="icon" type="close-circle" style="color: red" />
-    <a href="#">删除</a>
-  </a-popconfirm>
-          </div>
-        </template>
-      </a-table>
-     </div>
+            >排序
+            <a-tooltip>
+              <template slot="title">
+                此列表及APP端显示顺序
+              </template>
+              <a-icon
+                type="info-circle"
+                style="fontSize:14px;marginLeft:10px"
+              />
+            </a-tooltip>
+          </span>
+          <template #sort>
+            <div class="sort">
+              <a-input style="width:128px"></a-input>
+            </div>
+          </template>
+          <span
+                      slot="isStartTitle"
+            >是否开启
+            <a-tooltip>
+              <template slot="title">
+                开启则展示在APP端并且可选
+              </template>
+              <a-icon
+                type="info-circle"
+                style="fontSize:14px;marginLeft:10px"
+              />
+            </a-tooltip>
+          </span>
+          <template #isStart>
+            <div>
+              <a-switch default-checked />
+            </div>
+          </template>
+          <template #opera>
+            <div class="opera">
+              <a-button type="link" @click="edit">编辑</a-button>
+              <a-popconfirm
+                title="你确定要删除这行内容吗?"
+                ok-text="确定"
+                cancel-text="取消"
+              >
+                <a-icon slot="icon" type="close-circle" style="color: red" />
+                <a href="#">删除</a>
+              </a-popconfirm>
+            </div>
+          </template>
+        </a-table>
+      </div>
     </a-card>
     <editModel ref="editModel"></editModel>
   </div>
@@ -156,17 +162,20 @@ export default {
   methods: {
     add () {
       this.$refs.editModel.isShow = true
+    },
+    edit () {
+      this.$refs.editModel.isShow = true
     }
   }
 }
 </script>
 
-<style lang='less' scoped>
-.taskType{
-  .card{
+<style lang="less" scoped>
+.taskType {
+  .card {
     margin-top: 20px;
   }
-  .table{
+  .table {
     margin-top: 20px;
   }
 }

@@ -147,9 +147,9 @@ type="primary"
           </div>
           <div class="btn">
             <a-button
-type="primary"
-:disabled="card4Bol"
-@click="weedOut"
+              type="primary"
+              :disabled="card4Bol"
+              @click="weedOut"
               >提交</a-button
             >
           </div>
@@ -182,9 +182,9 @@ type="primary"
           </div>
           <div class="btn">
             <a-button
-type="primary"
-:disabled="card5Bol"
-@click="giveUp"
+              type="primary"
+              :disabled="card5Bol"
+              @click="giveUp"
               >提交</a-button
             >
           </div>

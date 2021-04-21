@@ -37,6 +37,7 @@
     <basics ref="basics" v-if="currentIndex===1"></basics>
     <complainCheck  v-else-if="currentIndex ===2"></complainCheck>
     <taskType v-else-if="currentIndex ===3"></taskType>
+    <whiteList v-else></whiteList>
   </div>
 </template>
 
@@ -44,15 +45,17 @@
 import basics from './basics'
 import complainCheck from './complainCheck'
 import taskType from './taskType'
+import whiteList from './whiteList'
 export default {
   components: {
     basics,
     complainCheck,
-    taskType
+    taskType,
+    whiteList
   },
   data () {
     return {
-      currentIndex: 3
+      currentIndex: 4
     }
   },
 
