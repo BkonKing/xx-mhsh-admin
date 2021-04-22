@@ -55,7 +55,7 @@ export default {
   },
   data () {
     return {
-      currentIndex: 4
+      currentIndex: 3
     }
   },
 

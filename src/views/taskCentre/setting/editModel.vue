@@ -1,6 +1,6 @@
 <template>
   <div class="editModel">
-    <a-modal v-model="isShow" title="新增/编辑">
+    <a-modal v-model="isShow" title="新增/编辑" @ok="submit">
       <a-form-model
         :model="form"
         :rules="rules"
@@ -8,19 +8,20 @@
         :wrapper-col="wrapperCol"
       >
         <a-form-model-item label="类型名称" prop="value1">
-          <a-input placeholder="请选择" v-model="form.value1"></a-input>
+          <a-input placeholder="请选择" v-model="form.type_name" style="width:320px"></a-input>
         </a-form-model-item>
         <a-form-model-item label="参考价" prop="value2">
           <div class="input">
-            <a-input placeholder="最低价" style="width:148px" v-model="form.value2"></a-input>
+            <a-input placeholder="最低价" style="width:148px" v-model="form.start_price"></a-input>
             <span>~</span>
-            <a-input style="width:148px" placeholder="最高价" v-model="form.value3"></a-input>
+            <a-input style="width:148px" placeholder="最高价" v-model="form.end_price"></a-input>
           </div>
           <div class="txt">任务参考的幸福币价格，含最低最高价</div>
         </a-form-model-item>
         <a-form-model-item label="备注">
           <a-textarea
-          v-model="form.value4"
+
+      v-model="form.remark"
       placeholder="请输入"
       :auto-size="{ minRows: 3, maxRows: 5 }"
     />
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import { toAddTaskType } from '@/api/taskCentre'
 export default {
   data () {
     return {
@@ -38,16 +40,49 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        value1: '',
-        value2: '',
-        value3: '',
-        value4: ''
+        type_name: '', // 类型名称
+        start_price: '', // 起始价
+        end_price: '', // 结束价
+        remark: '', // 备注
+        id: '' // 修改的时候传
       },
       rules: {
-        value1: [{ required: true, message: '必填', trigger: 'change' }],
-        value2: [{ required: true, message: '必填', trigger: 'change' }],
-        value3: [{ required: true, message: '必填', trigger: 'change' }]
+        type_name: [{ required: true, message: '必填', trigger: 'change' }],
+        start_price: [{ required: true, message: '必填', trigger: 'change' }],
+        end_price: [{ required: true, message: '必填', trigger: 'change' }]
+      },
+      mode: 'add'
+    }
+  },
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.form = {
+        type_name: '', // 类型名称
+        start_price: '', // 起始价
+        end_price: '', // 结束价
+        remark: '', // 备注
+        id: ''
       }
+      }
+    }
+  },
+  methods: {
+    // 确定
+   async submit () {
+   if (this.mode === 'add') {
+     const res = await toAddTaskType(this.form)
+   this.$parent.getData()
+   this.$message.success('新增成功')
+   this.isShow = false
+   console.log('新增', res)
+   } else {
+  const res = await toAddTaskType(this.form)
+   this.$parent.getData()
+   this.$message.success('编辑成功')
+   this.isShow = false
+   console.log('编辑', res)
+   }
     }
   }
 }

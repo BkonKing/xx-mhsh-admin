@@ -11,7 +11,7 @@
               <a-switch
                 style="marginLeft:10px"
                 default-checked
-                @change="onChange"
+                @change="onChangeAll"
               />
             </div>
             <div class="t2">
@@ -25,6 +25,7 @@
                 style="marginLeft:10px"
                 default-checked
                 :disabled="disabled"
+                @change="onChangeWhite"
               />
             </div>
             <div class="t2">
@@ -40,7 +41,7 @@
         <div class="top">
           <span>任务交易关闭：任务结束</span>
           <a-input
-            v-model="value1"
+            v-model="task_finish"
             style="width:87px;textAlign: center;"
             step="1"
             min="0"
@@ -51,7 +52,7 @@
         <div class="mid">
           <span>群人数上限：</span>
           <a-input
-            v-model="value2"
+            v-model="group_limit"
             step="1"
             min="0"
             onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
@@ -62,16 +63,16 @@
         <div class="bottom">
           <span>任务处理客服：</span>
           <a-input
-            v-model="value3"
+            v-model="customer_service"
             onkeyup="value=value.replace(/[\u4E00-\u9FA5]|[A-Za-z]/g,'')"
-            style="width:440px"
+            style="width:440px;marginLeft:10px"
           ></a-input>
         </div>
         <div class="btn">
           <a-button
 type="primary"
 :disabled="btnBol"
-@click="submit"
+@click="basicsSubmit"
             >提交</a-button
           >
         </div>
@@ -86,25 +87,25 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
-              v-model="item.phone"
+              v-model="item.tag1"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
-              v-model="item.name"
+              v-model="item.tag2"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
-              v-model="item.remark"
+              v-model="item.sort"
               placeholder="排序"
               style="width:104px"
             ></a-input>
-            <a-icon class="plus" type="plus" @click="add" />
+            <a-icon class="plus" type="plus" @click="addAppraise" />
             <a-icon
               class="close"
               type="close"
-              @click="del(index)"
+              @click="delAppraise(index)"
               v-if="arr.length > 1"
             />
           </div>
@@ -128,28 +129,28 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr2" :key="item.id">
             <a-input
-              v-model="item.phone"
+              v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
-              v-model="item.remark"
+              v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
             ></a-input>
-            <a-icon class="plus" type="plus" @click="add2" />
+            <a-icon class="plus" type="plus" @click="addWeedOut" />
             <a-icon
               class="close"
               type="close"
-              @click="del2(index)"
-              v-if="arr.length > 1"
+              @click="delWeedOut(index)"
+              v-if="arr2.length > 1"
             />
           </div>
           <div class="btn">
             <a-button
-              type="primary"
-              :disabled="card4Bol"
-              @click="weedOut"
+type="primary"
+:disabled="card4Bol"
+@click="weedOut"
               >提交</a-button
             >
           </div>
@@ -163,28 +164,28 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr3" :key="item.id">
             <a-input
-              v-model="item.phone"
+              v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
-              v-model="item.remark"
+              v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
             ></a-input>
-            <a-icon class="plus" type="plus" @click="add3" />
+            <a-icon class="plus" type="plus" @click="addGiveUp" />
             <a-icon
               class="close"
               type="close"
-              @click="del3(index)"
-              v-if="arr.length > 1"
+              @click="delGiveUp(index)"
+              v-if="arr3.length > 1"
             />
           </div>
           <div class="btn">
             <a-button
-              type="primary"
-              :disabled="card5Bol"
-              @click="giveUp"
+type="primary"
+:disabled="card5Bol"
+@click="giveUp"
               >提交</a-button
             >
           </div>
@@ -195,30 +196,39 @@ type="primary"
 </template>
 
 <script>
+import {
+  setFunctionOpen,
+  setSetting,
+  gainGetSet,
+  addSetLabel,
+  gainGetLabel,
+  addSetReason,
+  gainGetReason
+} from '@/api/taskCentre'
 export default {
   data () {
     return {
       disabled: true,
-      value1: 10,
-      value2: 500,
-      value3: '',
+      task_finish: 10, // 任务完成天数
+      group_limit: 500, // 群上线人数
+      customer_service: '', // 客服电话
       btnBol: true,
-      arr: [{ id: Math.random() * 999, name: '', remark: '' }],
-      arr2: [{ id: Math.random() * 999, name: '', remark: '' }],
-      arr3: [{ id: Math.random() * 999, name: '', remark: '' }],
+      arr: [{ id: Math.random() * 999, tag1: '', tag2: '', sort: '' }], // 评价列表数组
+      arr2: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 淘汰原因数组
+      arr3: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 放弃原因数组
       card3Bol: true,
       card4Bol: true,
       card5Bol: true
     }
   },
   watch: {
-    value1 () {
+    task_finish () {
       this.btnBol = false
     },
-    value2 () {
+    group_limit () {
       this.btnBol = false
     },
-    value3 () {
+    customer_service () {
       this.btnBol = false
     },
     arr: {
@@ -245,56 +255,150 @@ export default {
   },
   methods: {
     // 放弃提交
-    giveUp () {
-       this.card5Bol = true
+    async giveUp () {
+      const list = this.arr3.map(item => {
+        return {
+          reason: item.reason,
+          sort: item.order_sort
+        }
+      })
+      const res = await addSetReason({
+        reason_list: list,
+        type: 2
+      })
+      console.log('放弃提交', res)
+      this.card5Bol = true
       this.$message.success('提交成功')
     },
     // 添加
-    add3 () {
-      this.arr3.push({ id: Math.random() * 999, name: '', remark: '' })
+    addGiveUp () {
+      this.arr3.push({ id: Math.random() * 999, reason: '', order_sort: '' })
     },
-    del3 (index) {
+    delGiveUp (index) {
       console.log(index)
       this.arr3.splice(index, 1)
     },
     // 淘汰提交
-    weedOut () {
+    async weedOut () {
+      const list = this.arr2.map(item => {
+        return {
+          reason: item.reason,
+          sort: item.order_sort
+        }
+      })
+      const res = await addSetReason({
+        reason_list: list,
+        type: 1
+      })
+      console.log('淘汰提交', res)
       this.card4Bol = true
       this.$message.success('提交成功')
     },
-    // 添加
-    add2 () {
-      this.arr2.push({ id: Math.random() * 999, name: '', remark: '' })
+    // 添加淘汰
+    addWeedOut () {
+      this.arr2.push({ id: Math.random() * 999, reason: '', order_sort: '' })
     },
-    del2 (index) {
+    delWeedOut (index) {
       console.log(index)
       this.arr2.splice(index, 1)
     },
     // 评价提交
-    appraiseSubmit () {
+    async appraiseSubmit () {
+      const list = this.arr.map(item => {
+        return {
+          tag_name: item.tag1 + '-' + item.tag2,
+          sort: +item.sort
+        }
+      })
+      const res = await addSetLabel({
+        tag_list: list
+      })
+      console.log('评价提交', res)
       this.card3Bol = true
       this.$message.success('提交成功')
     },
-    // 添加
-    add () {
-      this.arr.push({ id: Math.random() * 999, name: '', remark: '' })
+    // 添加评价标签
+    addAppraise () {
+      this.arr.push({ id: Math.random() * 999, tag1: '', tag2: '', sort: '' })
     },
-    del (index) {
+    // 删除评价标签
+    delAppraise (index) {
       console.log(index)
       this.arr.splice(index, 1)
     },
-    // 提交
-    submit () {
+    // 基础设置提交
+    async basicsSubmit () {
+      const res = await setSetting({
+        task_finish: this.task_finish,
+        group_limit: this.group_limit,
+        customer_service: +this.customer_service
+      })
+      console.log('基础设置提交', res)
       this.btnBol = true
       this.$message.success('提交成功')
     },
-    onChange (checked) {
+    // 设置白名单开关
+    async onChangeWhite (checked) {
+      // console.log('onChangeWhite', checked)
+      await setFunctionOpen({
+        whitelistOpen: checked === true ? 1 : 0,
+        type: 2
+      })
+      this.$message.success('设置成功')
+      // console.log('设置白名单开关', res)
+    },
+    // 设置全部用户开关
+    async onChangeAll (checked) {
+      await setFunctionOpen({
+        alluserOpen: checked === true ? 1 : 0,
+        type: 1
+      })
+      this.$message.success('设置成功')
+      //  console.log('设置全部用户开关', res)
       if (checked == false) {
         this.disabled = false
       } else {
         this.disabled = true
       }
     }
+  },
+  async created () {
+    // 获取任务基础信息
+    const res = await gainGetSet()
+    this.customer_service = res.data.customer_service
+    this.group_limit = res.data.group_limit
+    this.task_finish = res.data.task_finish
+    // console.log('获取任务基础信息', res)
+    // 基础-获取评价标签
+    const res2 = await gainGetLabel()
+    this.arr = res2.list.map(item => {
+      const arr = item.tag_name.split('-')
+      return {
+        id: item.id,
+        tag1: arr[0],
+        tag2: arr[1],
+        sort: item.order_sort
+      }
+    })
+    // 获取淘汰原因列表
+    const res3 = await gainGetReason({
+      type: 1
+    })
+    this.arr2 = res3.list.length > 0 ? res3.list : this.arr2
+    console.log('获取淘汰原因列表', res3)
+    // 获取放弃原因列表
+    const res4 = await gainGetReason({
+      type: 2
+    })
+    this.arr3 = res4.list.length > 0 ? res4.list : this.arr3
+    console.log('获取放弃原因列表', res4)
+    this.$nextTick(() => {
+      this.card3Bol = true
+      this.btnBol = true
+      this.card4Bol = true
+      this.card5Bol = true
+    })
+    // console.log('基础-获取评价标签', res2)
   }
 }
 </script>
