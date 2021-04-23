@@ -115,9 +115,12 @@ export default {
     itemTplLegend (value, color, checked, index) {
       const obj = this.data.rows[index]
       if (obj) {
-        const percent = (obj.percent * 100).toFixed(2) + '%'
+        let percent = '0%'
+        if (obj.percent > 0) {
+          percent = (obj.percent * 100).toFixed(2) + '%'
+        }
         checked = checked ? 'checked' : 'unChecked'
-        return '<tr class="g2-legend-list-item item-' + index + ' ' + checked + '" data-value="' + value + '" data-color=' + color + ' >' + '<td style="width:120px;"><i class="g2-legend-marker" style="width:10px;height:10px;display:inline-block;margin-right:10px;background-color:' + color + ';"></i>' + '<span class="g2-legend-text" style="color: #666">' + value + '</span></td>' + '<td style="text-align: right">' + percent + '</td>' + '<td style="text-align: right;color: #666;width:80px">' + obj.litres + '</td>' + '</tr>'
+        return '<tr class="g2-legend-list-item item-' + index + ' ' + checked + '" data-value="' + value + '" data-color=' + color + ' >' + '<td style="width:120px;"><i class="g2-legend-marker" style="width:10px;height:10px;display:inline-block;margin-right:10px;background-color:' + color + ';"></i>' + '<span class="g2-legend-text" style="color: #666">' + value + '</span></td>' + '<td style="text-align: right;width:100px">' + percent + '</td>' + '<td style="text-align: right;color: #666;width:80px">￥' + obj.litres + '</td>' + '</tr>'
       }
     }
   }

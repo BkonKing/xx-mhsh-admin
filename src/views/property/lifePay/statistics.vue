@@ -7,7 +7,7 @@
             <div class="ant-pro-page-header-wrap-content">
               <span class="margin-left-large">账单月份：</span>
               <div>
-                <a-select size="small" :dropdownMatchSelectWidth="false" v-model="monthKey" @change="getData">
+                <a-select size="small" :dropdownMatchSelectWidth="false" v-model="monthKey" @change="getData('month')">
                   <a-select-option v-for="item in monthList" :key="item.id">{{ item.setmeal_days }}</a-select-option>
                   <!-- <a-select-option :key="2">2021-02</a-select-option> -->
                 </a-select>
@@ -37,34 +37,37 @@
           <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
             <chart-card :loading="loading" title="应缴费" :total="'￥'+totalData.payable_money | NumberFormat">
               <div>
-                <trend :flag="totalData.payable_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                <trend v-if="totalData.payable_qoq!='--'" :flag="totalData.payable_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                   <span slot="term">月环比</span>
                   {{ totalData.payable_qoq }}%
                 </trend>
+                <span v-else>月环比 --</span>
               </div>
-              <template slot="footer">户数<span>{{ totalData.payable_count }}</span></template>
+              <template slot="footer">户数 <span>{{ totalData.payable_count }}</span></template>
             </chart-card>
           </a-col>
           <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
             <chart-card :loading="loading" title="已缴费" :total="'￥' + totalData.paid_money | NumberFormat">
               <div>
-                <trend :flag="totalData.paid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                <trend v-if="totalData.paid_qoq!='--'" :flag="totalData.paid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                   <span slot="term">月环比</span>
                   {{ totalData.paid_qoq }}%
                 </trend>
+                <span v-else>月环比 --</span>
               </div>
-              <template slot="footer">户数<span>{{totalData.paid_count}}</span></template>
+              <template slot="footer">户数 <span>{{totalData.paid_count}}</span></template>
             </chart-card>
           </a-col>
           <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
-            <chart-card :loading="loading" title="应缴费" :total="'￥' + totalData.unpaid_money | NumberFormat">
+            <chart-card :loading="loading" title="未缴费" :total="'￥' + totalData.unpaid_money | NumberFormat">
               <div>
-                <trend :flag="totalData.unpaid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
+                <trend v-if="totalData.unpaid_qoq!='--'" :flag="totalData.unpaid_qoq>0 ? 'up' : 'down'" style="margin-right: 16px;">
                   <span slot="term">月环比</span>
                   {{ totalData.unpaid_qoq }}%
                 </trend>
+                <span v-else>月环比 --</span>
               </div>
-              <template slot="footer">户数<span>{{ totalData.unpaid_count }}</span></template>
+              <template slot="footer">户数 <span>{{ totalData.unpaid_count }}</span></template>
             </chart-card>
           </a-col>
           <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
@@ -76,10 +79,11 @@
                 <mini-progress color="rgb(19, 194, 194)" :target="100" :percentage="totalData.contributionRate" height="8px" />
               </div>
               <template slot="footer">
-                <trend :flag="totalData.contributionRate_qoq>0 ? 'up' : 'down'">
+                <trend v-if="totalData.contributionRate_qoq!='--'" :flag="totalData.contributionRate_qoq>0 ? 'up' : 'down'">
                   <span slot="term">月环比</span>
                   {{ totalData.contributionRate_qoq }}%
                 </trend>
+                <span v-else>月环比 --</span>
               </template>
             </chart-card>
           </a-col>
@@ -121,7 +125,7 @@
             class="page-line"
             ref="aline"
             color="typename"
-            position="name*value"
+            position="date*value"
             :showLegend="true"
             :height="300"
             :data="lineData"
@@ -129,13 +133,13 @@
           ></a-line>
         </a-card>
         <a-row :gutter="24" class="row-block">
-          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+          <a-col v-if="shoudShow" :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <a-card :bordered="false" title="应缴费">
               <a-pie v-if="shoudPayData != '' && shoudPayData!='[]'" :data="shoudPayData" :pieGuide="shoudPieGuide"></a-pie>
               <div v-else><empty></empty></div>
             </a-card>
           </a-col>
-          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+          <a-col v-if="alreadyShow" :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <a-card :bordered="false" title="已缴费">
               <div slot="extra" class="extra-wrapper">
                 <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
@@ -153,7 +157,7 @@
           </a-col>
         </a-row>
         <a-row :gutter="24" class="row-block">
-          <a-col :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
+          <a-col v-if="noShow" :sm="12" :md="12" :xl="12" :style="{ marginBottom: '24px' }">
             <a-card :bordered="false" title="未缴费">
               <div slot="extra" class="extra-wrapper">
                 <a-range-picker :value="defultTime" @change="getTime" :ranges="ranges" :style="{width: '256px'}" />
@@ -189,7 +193,7 @@
               <div class="ant-table-wrapper">
                 <s-table
                   ref="table"
-                  size="small"
+                  size="default"
                   rowKey="expenses_house_id"
                   class="table-box"
                   :columns="columns"
@@ -198,6 +202,9 @@
                 >
                   <span slot="number" slot-scope="text, record, index">
                     {{ index + 1 }}
+                  </span>
+                  <span slot="z_money" slot-scope="text">
+                    {{ '￥' + text }}
                   </span>
                   <span slot="money">欠费金额
                     <a-popover overlayClassName="popover-toast">
@@ -235,6 +242,7 @@
       title="缴费楼栋"
       width="800px"
       :visible="jfldShow"
+      :centered="true"
       @ok="getData"
       @cancel="jfldShow = false"
     >
@@ -252,9 +260,20 @@
             全选
           </a-checkbox>
         </div>
-        <a-checkbox-group v-model="checkedList" @change="onChange">
+        <div>
+          <a-checkbox
+            v-for="(item, index) in houseList"
+            :key="index"
+            :indeterminate="indeterminate"
+            :checked="checkedList.includes(item.id)"
+            :value="item.id"
+            @change="onChange(item.id)">{{item.building_name}}
+          </a-checkbox>
+        </div>
+
+        <!-- <a-checkbox-group v-model="checkedList" @change="onChange">
           <a-checkbox v-for="(item, index) in houseList" :key="index" :value="item.id">{{item.building_name}}</a-checkbox>
-        </a-checkbox-group>
+        </a-checkbox-group> -->
         <!-- <a-checkbox-group v-model="checkedList" :options="houseList" @change="onChange" /> -->
       </div>
     </a-modal>
@@ -287,6 +306,7 @@ const columns = [
   {
     dataIndex: 'z_money',
     slots: { title: 'money' },
+    scopedSlots: { customRender: 'z_money' },
     sorter: true
   },
   {
@@ -334,7 +354,8 @@ export default {
       checkAll: false,
 
       params: {},
-      monthKey: '', // 账单月份
+      monthKey: '', // 账单月份id
+      monthVal: '', // 账单月份
       monthList: [], // 月份列表
       payType: 0, // 缴费类型
       payType2: 0, // 缴费类型-折线图
@@ -408,7 +429,10 @@ export default {
         defaultPageSize: 5,
         pageSizeOptions: ['5', '10', '20', '30']
       },
-      isLoading: false
+      isLoading: false,
+      shoudShow: false, // 应缴费
+      alreadyShow: false, // 已缴费
+      noShow: false // 未缴费
     }
   },
   mounted () {
@@ -416,11 +440,28 @@ export default {
   },
   methods: {
     moment,
-    getData () {
+    getData (val) {
+      this.shoudShow = false
+      this.alreadyShow = false
+      this.noShow = false
       this.params = {
         month_id: this.monthKey,
         genre_id: this.payType,
         expenses_house_ids: this.checkedList.join(',')
+      }
+      if (val && val == 'month') {
+        let obj = {}
+        for (let i = 0; i < this.monthList.length; i++) {
+          if (this.monthList[i].id == this.monthKey) {
+            obj = this.monthList[i]
+            break
+          }
+        }
+        console.log(obj)
+        this.monthVal = obj.setmeal_days
+        this.startTime = obj.sss_time
+        this.endTime = obj.eee_time
+        this.defultTime = [obj.sss_time, obj.eee_time]
       }
       this.getTotalData()
       this.getTabPie()
@@ -450,6 +491,7 @@ export default {
           this.startTime = res.month_list[0].sss_time
           this.endTime = res.month_list[0].eee_time
           this.monthKey = res.month_list[0].id
+          this.monthVal = res.month_list[0].setmeal_days
         }
         this.payList = res.project_genre_list
         this.payType = res.project_genre_list[0].genre_id
@@ -460,6 +502,19 @@ export default {
     getHouseList () {
       getHouseList({ building_name: this.searchHouse }).then(res => {
         this.houseList = res.list
+        if (res.list && res.list.length) {
+          let flag = true
+          for (let i = 0; i < res.list.length; i++) {
+            if (this.checkedList.indexOf(res.list[i].id) == -1) {
+              flag = false
+              break
+            }
+          }
+          this.checkAll = flag
+        } else {
+          this.checkAll = false
+        }
+        console.log(this.checkedList)
       })
     },
     // 应缴费、已缴费、未交费、缴费率
@@ -482,7 +537,8 @@ export default {
             }
           })
         }
-        this.getLineData()
+        console.log(3232323, this.summaryList)
+        this.getLineData(this.summaryList[0].id)
       })
     },
     // 支付户数、支付笔数
@@ -492,37 +548,51 @@ export default {
         paramsData.genre_id = id
       }
       getLineData(paramsData).then(res => {
-        const listArr = []
+        let listArr = []
+        const year = this.monthVal.split('-')[0] + '-'
+        console.log(this.monthVal)
         for (const i in res.households_data) {
           const obj = {}
+          obj.date = year + i
           obj.name = i
           obj.value = res.households_data[i]
-          obj.typename = '户数'
+          obj.typename = '支付户数'
           listArr.push(obj)
         }
         for (const i in res.paycount_data) {
           const obj = {}
-          obj.name = i
-          obj.value = res.paycount_data[i]
-          obj.typename = '支付笔数'
-          listArr.push(obj)
+          if (i) {
+            obj.date = year + i
+            obj.name = i
+            obj.value = res.paycount_data[i]
+            obj.typename = '支付笔数'
+            listArr.push(obj)
+          }
+        }
+        console.log(listArr)
+        if (!listArr.length) {
+          listArr = [{
+            date: '',
+            name: '',
+            value: 0,
+            typename: '支付户数'
+          }, {
+            date: '',
+            name: '',
+            value: 0,
+            typename: '支付笔数'
+          }]
         }
         this.lineData = listArr
       })
     },
-    itemTplLegend (value, color, checked, index) {
-      const obj = this.shoudPayData.rows[index]
-      const percent = (obj.percent * 100).toFixed(2) + '%'
-      checked = checked ? 'checked' : 'unChecked'
-      return '<tr class="g2-legend-list-item item-' + index + ' ' + checked + '" data-value="' + value + '" data-color=' + color + ' >' + '<td style="width:120px;"><i class="g2-legend-marker" style="width:10px;height:10px;display:inline-block;margin-right:10px;background-color:' + color + ';"></i>' + '<span class="g2-legend-text" style="color: #666">' + value + '</span></td>' + '<td style="text-align: right">' + percent + '</td>' + '<td style="text-align: right;color: #666;width:80px">' + obj.litres + '</td>' + '</tr>'
-    },
     // 应缴费
     getShoudPay () {
       getShoudPay(this.params).then(res => {
-        let moneyTotal = 0
+        const moneyTotal = res.z_money
         if (res.data) {
           const listArr = res.data.map(item => {
-            moneyTotal += parseFloat(item.money)
+            // moneyTotal += parseFloat(item.money)
             return {
               payType: item.genre_name,
               litres: parseFloat(item.money)
@@ -533,9 +603,11 @@ export default {
             moneyTotal: '￥' + moneyTotal,
             offsetX: -(('' + moneyTotal).length - 0.5) * 13
           }
-          console.log('this.shoudPieGuide', (moneyTotal + '').length)
+          console.log('listArr', listArr)
           this.shoudPayData = this.transformPie(listArr)
+          console.log('this.shoudPieGuide', this.shoudPayData)
         }
+        this.shoudShow = true
       })
     },
     // 已缴费筛选
@@ -561,6 +633,7 @@ export default {
           }
           this.alreadyPayData = this.transformPie(listArr)
         }
+        this.alreadyShow = true
       })
     },
     // 未缴费
@@ -582,6 +655,7 @@ export default {
           }
           this.noPayData = this.transformPie(listArr)
         }
+        this.noShow = true
       })
     },
     // 转换pie数据
@@ -606,21 +680,50 @@ export default {
       this.jfldShow = true
       this.getHouseList()
     },
-    onChange (checkedList) {
-      console.log(checkedList)
-      this.indeterminate = !!checkedList.length && checkedList.length < this.houseList.length
-      this.checkAll = checkedList.length === this.houseList.length
-      console.log(this.checkedList)
+    onChange (id) {
+      // this.houseList[index].is_select = true
+      console.log(this.houseList)
+      if (this.checkedList.includes(id)) {
+        const index = this.checkedList.indexOf(id)
+        this.checkedList.splice(index, 1)
+      } else {
+        this.checkedList.push(id)
+      }
+      this.isAll()
+      // console.log(checkedList)
+      // this.indeterminate = !!checkedList.length && checkedList.length < this.houseList.length
+      // this.checkAll = checkedList.length === this.houseList.length
+      // console.log(this.checkedList)
+    },
+    isAll () {
+      let flag = true
+      if (this.houseList.length) {
+        this.houseList.forEach(item => {
+          if (!this.checkedList.includes(item.id)) {
+            flag = false
+          }
+        })
+        this.checkAll = flag
+      } else {
+        this.checkAll = false
+      }
     },
     onCheckAllChange (e) {
       this.indeterminate = false
       this.checkAll = e.target.checked
       if (e.target.checked) {
-        this.checkedList = this.houseList.map(item => {
-          return item.id
+        this.houseList.forEach(item => {
+          if (!this.checkedList.includes(item.id)) {
+            this.checkedList.push(item.id)
+          }
         })
       } else {
-        this.checkedList = []
+        this.houseList.forEach(item => {
+          const index = this.checkedList.indexOf(item.id)
+          if (index > -1) {
+            this.checkedList.splice(index, 1)
+          }
+        })
       }
       console.log(this.checkedList)
       // Object.assign(this, {
@@ -672,6 +775,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.row-block {
+   td,th {
+    padding: 10px 16px !important;
+  }
+}
 /deep/ .ant-pro-page-header-wrap-content {
   display: flex;
   .ant-select-selection {
@@ -765,6 +873,7 @@ export default {
           line-height: 32px;
           font-size: 28px;
           color: #000;
+          width: 100px;
         }
       }
       /deep/ .ant-tabs-tab {

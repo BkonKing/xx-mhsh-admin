@@ -58,9 +58,10 @@
         <a-select
           :placeholder="defaultUser"
           v-decorator="[
-            'uid'
+            'uid',
+            {initialValue: (defaultUser)+''}
           ]" >
-          <a-select-option v-for="(item, index) in infoData.user_data" :key="index" :value="index">{{ item }}</a-select-option>
+          <a-select-option v-for="(item, index) in infoData.user_data" :key="index" :value="item.uid">{{ item.realname }}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="充值凭证">
@@ -157,9 +158,9 @@ export default {
       getInvest(this.params).then(res => {
         this.infoData = res
         for (const key in res.user_data) {
-          if (key == res.data.uid) {
-            this.defaultUser = res.user_data[key]
-            this.userId = key
+          if (res.user_data[key].uid == res.data.uid) {
+            this.defaultUser = res.user_data[key].uid
+            this.userId = res.data.uid
             break
           }
           // this.queryParam.uid = key
@@ -204,7 +205,11 @@ export default {
           console.log('Received values of form: ', values)
           // Object.assign({}, this.params, values)
           submitInvest(Object.assign({}, this.params, values)).then(res => {
-            this.$message.success(res.message)
+            if (res.code == '201') {
+              this.$message.error(res.message)
+            } else {
+              this.$message.success(res.message)
+            }
             this.$emit('update:modalShow', false)
             this.$emit('rechargeCall')
           })

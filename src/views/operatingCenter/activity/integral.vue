@@ -298,7 +298,9 @@ export default {
           if (this.initOpen && !values.is_open) { //初始开启，点击了关闭
             const nowTime = moment().format("YYYY-MM-DD HH:mm:ss")
             values.is_over = 1
-            values.activity_time = rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss') + '~' + nowTime
+            if (this.activityInfo.status != 3) {
+              values.activity_time = rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss') + '~' + nowTime
+            }
           }
           editActivity(Object.assign({ activity_id: this.activityId }, values)).then(res => {
             this.activityCall(res.message, res.activity_id)

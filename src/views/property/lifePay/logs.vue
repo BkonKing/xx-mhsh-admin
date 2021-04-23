@@ -77,27 +77,33 @@ import { getLogList, getLogModuleList } from '@/api/property'
 const columns = [
   {
     title: 'id',
-    dataIndex: 'id'
+    dataIndex: 'id',
+    width: '6%'
   },
   {
     title: '操作时间',
-    dataIndex: 'ctime'
+    dataIndex: 'ctime',
+    width: '16%'
   },
   {
     title: '模块',
-    dataIndex: 'module_type'
+    dataIndex: 'module_type',
+    width: '16%'
   },
   {
     title: '操作员',
-    dataIndex: 'username'
+    dataIndex: 'username',
+    width: '16%'
   },
   {
     title: '操作类型',
-    dataIndex: 'opt_type'
+    dataIndex: 'opt_type',
+    width: '12%'
   },
   {
     title: '操作说明',
-    dataIndex: 'content'
+    dataIndex: 'content',
+    width: '34%'
   }
 ]
 export default {

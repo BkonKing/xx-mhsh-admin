@@ -20,8 +20,8 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="缴费状态">
                   <a-select v-model="queryParam.order_status" placeholder="请选择">
-                    <a-select-option value="1">已催缴</a-select-option>
-                    <a-select-option value="2">待催缴</a-select-option>
+                    <a-select-option value="1">已缴费</a-select-option>
+                    <a-select-option value="2">待缴费</a-select-option>
                     <a-select-option value="3">超时未缴</a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -39,7 +39,7 @@
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="区域">
                     <div style="display: flex;">
-                      <a-select @change="selectHouse" v-model="queryParam.building_id" placeholder="楼栋" default-value="0" style="margin-right: 15px">
+                      <a-select @change="selectHouse" v-model="queryParam.building_id" placeholder="楼栋" default-value="0" style="margin-right: 8px">
                         <a-select-option v-for="item in houseList" :key="item.id" :value="item.id">
                           {{ item.building_name }}
                         </a-select-option>
@@ -106,7 +106,7 @@
             <a-badge :status="order_status | statusTypeFilter" :text="record.order_status_name"/>
           </span>
           <template slot="moneyUse" slot-scope="text, record">
-            <div class="flex"><span style="min-width: 60px;padding-right: 6px;">{{ '￥' + text }}</span> 使用数:<span :class="record.is_red == 1 ? 'color-red' : ''">{{ record.disparity }}</span></div>
+            <div class="flex"><span style="min-width: 60px;padding-right: 6px;">{{ '￥' + text }}</span> <template v-if="record.genre_id<3">使用:<span :class="record.is_red == 1 ? 'color-red' : ''">{{ record.disparity }}</span></template></div>
           </template>
           <span slot="operation" slot-scope="text, record">
             <template>
@@ -133,6 +133,7 @@ const columns = [
   {
     title: '催缴次数',
     dataIndex: 'urge_num',
+    align: 'center',
     sorter: true
   },
   {
