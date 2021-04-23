@@ -73,33 +73,37 @@ type="up"
     <a-card class="card2">
       <div class="btns">
         <a-button type="primary" @click="add">添加用户</a-button>
-        <a-button @click="importUser"><a-icon type="vertical-align-bottom" />导入用户</a-button>
-        <a-button>批量操作<a-icon type="down"/></a-button>
+        <a-button
+@click="importUser"
+          ><a-icon type="vertical-align-bottom" />导入用户</a-button
+        >
+        <a-button @click="batchDel">批量操作<a-icon type="down"/></a-button>
       </div>
-      <div class="selected" v-if="selectedRowKeys.length>0">
+      <div class="selected" v-if="selectedRowKeys.length > 0">
         <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
+        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
         <a-table
+          rowKey="id"
           :columns="columns"
-          :data-source="data"
+          :data-source="tableData"
           :pagination="false"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange
           }"
         >
-          <template #user>
+          <template slot="owner_name" slot-scope="text, record">
             <div class="user">
-              <div class="t1">用户昵称(姓名)</div>
-              <div class="t2">项目名称</div>
+              <div class="t1">{{ record.owner_name }}</div>
+              <div class="t2">{{ record.project_name }}</div>
             </div>
           </template>
-          <template #opera>
+          <template slot="opera" slot-scope="text, record">
             <div class="opera">
-              <a-button type="link">删除</a-button>
+              <a-button type="link" @click="del(record)">删除</a-button>
             </div>
           </template>
         </a-table>
@@ -113,7 +117,9 @@ type="up"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -129,6 +135,7 @@ type="up"
 <script>
 import adduserModel from '../adduserModel'
 import importFile from '../importFile'
+import { gainGetWhiteListUser, toDelWhiteUser } from '@/api/taskCentre'
 export default {
   components: {
     adduserModel,
@@ -140,40 +147,12 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       cardBol: false,
-      data: [
-        {
-          id: '0000000',
-          phone: '1500000000',
-          remark: '1000',
-          task: '1000',
-          registerTime: '2020-11-20  08:50:08',
-          addPeople: '姓名',
-          addTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '0000000',
-          phone: '1500000000',
-          remark: '1000',
-          task: '1000',
-          registerTime: '2020-11-20  08:50:08',
-          addPeople: '姓名',
-          addTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '0000000',
-          phone: '1500000000',
-          remark: '1000',
-          task: '1000',
-          registerTime: '2020-11-20  08:50:08',
-          addPeople: '姓名',
-          addTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [],
       columns: [
         {
           title: 'ID',
@@ -184,16 +163,16 @@ export default {
         },
         {
           title: '手机号',
-          dataIndex: 'phone',
-          key: 'phone',
+          dataIndex: 'mobile',
+          key: 'mobile',
           width: 150
         },
         {
           title: '用户',
-          dataIndex: 'user',
-          key: 'user',
+          dataIndex: 'owner_name',
+          key: 'owner_name',
           width: 150,
-          scopedSlots: { customRender: 'user' }
+          scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '备注',
@@ -203,28 +182,28 @@ export default {
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
+          dataIndex: 'user_task',
+          key: 'user_task',
           sorter: true,
           width: 100
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime',
-          key: 'registerTime',
+          dataIndex: 'register_time',
+          key: 'register_time',
           sorter: true,
           width: 200
         },
         {
           title: '添加人',
-          dataIndex: 'addPeople',
-          key: 'addPeople',
+          dataIndex: 'admin_realname',
+          key: 'admin_realname',
           width: 100
         },
         {
           title: '添加时间',
-          dataIndex: 'addTime',
-          key: 'addTime',
+          dataIndex: 'ctime',
+          key: 'ctime',
           sorter: true,
           width: 200
         },
@@ -235,13 +214,43 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ],
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      projectList: []
     }
   },
   mounted () {
     console.log(this.$refs.card.$el.offsetHeight) // 146
   },
   methods: {
+    // 批量删除
+    async batchDel () {
+       await toDelWhiteUser({ ids: this.selectedRowKeys })
+       this.$message.success('删除成功')
+      this.getData()
+      // console.log('删除白名单', res)
+    },
+    // 删除
+    async del (record) {
+      const idArr = []
+      idArr.push(record.id)
+      await toDelWhiteUser({ ids: idArr })
+      //  console.log('删除白名单', res)
+      this.$message.success('删除成功')
+      this.getData()
+    },
+    // 获取白名单列表
+    async getData () {
+      const res = await gainGetWhiteListUser({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage
+      })
+      this.tableData = res.list
+      //  this.projectList = res.list.filter(item => {
+      //   return !this.projectList.includes(item)
+      //  })
+      this.pagination.total = res.data.total
+      console.log('获取白名单列表', res)
+    },
     // 导入用户
     importUser () {
       this.$refs.importFile.isShow = true
@@ -263,10 +272,14 @@ export default {
     onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.pageSize = size
+      this.pagination.currentPage = 1
+      this.getData()
     },
     // 展开
     open () {
@@ -280,6 +293,9 @@ export default {
       this.cardBol = true
       this.$refs.card.$el.style.height = '80px'
     }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
@@ -335,14 +351,14 @@ export default {
         }
         /deep/ .ant-pagination-total-text {
           margin-left: 20px;
-          margin-right: 300px;
+          margin-right: 890px;
         }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
-        }
+        // /deep/ .ant-pagination-item-active {
+        //   background-color: #1890ff;
+        //   a {
+        //     color: white;
+        //   }
+        // }
       }
     }
   }

@@ -16,7 +16,12 @@ const taskCentreApi = {
   getComplaintType: '/linli/basicsetting/getComplaintType',
   getTaskTypeList: '/linli/basicsetting/getTaskTypeList',
   addTaskType: '/linli/basicsetting/addTaskType',
-  updateTaskType: '/linli/basicsetting/updateTaskType'
+  updateTaskType: '/linli/basicsetting/updateTaskType',
+  getWhiteListUser: '/linli/basicsetting/getWhiteListUser',
+  addWhiteUser: '/linli/basicsetting/addWhiteUser',
+  delWhiteUser: '/linli/basicsetting/delWhiteUser',
+  importWhiteUser: '/linli/basicsetting/importWhiteUser',
+  groupList: '/linli/taskgroup/groupList'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -155,6 +160,46 @@ export function toAddTaskType (data) {
 export function toUpdateTaskType (data) {
   return request({
     url: taskCentreApi.updateTaskType,
+    method: 'post',
+    data
+  })
+}
+// 白名单-白名单列表
+export function gainGetWhiteListUser (data) {
+  return request({
+    url: taskCentreApi.getWhiteListUser,
+    method: 'post',
+    data
+  })
+}
+// 白名单-添加用户
+export function toAddWhiteUser (data) {
+  return request({
+    url: taskCentreApi.addWhiteUser,
+    method: 'post',
+    data
+  })
+}
+// 白名单-删除用户
+export function toDelWhiteUser (data) {
+  return request({
+    url: taskCentreApi.delWhiteUser,
+    method: 'post',
+    data
+  })
+}
+// 白名单-导入用户
+export function toImportWhiteUser (data) {
+  return request({
+    url: taskCentreApi.importWhiteUser,
+    method: 'post',
+    data
+  })
+}
+// 任务群-任务群列表
+export function getGroupList (data) {
+  return request({
+    url: taskCentreApi.groupList,
     method: 'post',
     data
   })

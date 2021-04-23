@@ -80,14 +80,14 @@ type="up"
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
-        <a-table  :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :columns="columns" :data-source="data" :pagination='false'>
-          <template #groupOwner>
+        <a-table  :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :columns="columns" :data-source="tableData" :pagination='false'>
+          <template #owner_name>
             <div class="groupOwner">
               <div class="t1">用户昵称(姓名)</div>
               <div class="t2">项目</div>
             </div>
           </template>
-          <template #allowJoin>
+          <template #is_open>
             <div>
               <a-switch default-checked />
             </div>
@@ -125,6 +125,7 @@ type="up"
 <script>
 import addGroup from './addGroup'
 import delGroup from './delGroup'
+import { getGroupList } from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -136,37 +137,12 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       cardBol: false,
-      data: [
-        {
-          id: '0000000',
-          taskGroupName: '任务群',
-          member: '100',
-          task: '100',
-          phone: '15000000000',
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '0000000',
-          taskGroupName: '任务群',
-          member: '100',
-          task: '100',
-          phone: '15000000000',
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '0000000',
-          taskGroupName: '任务群',
-          member: '100',
-          task: '100',
-          phone: '15000000000',
-          createTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [],
       columns: [
         {
           title: 'ID',
@@ -177,48 +153,48 @@ export default {
         },
         {
           title: '任务群',
-          dataIndex: 'taskGroupName',
-          key: 'taskGroupName',
+          dataIndex: 'group_name',
+          key: 'group_name',
           width: 100
         },
         {
           title: '成员',
-          dataIndex: 'member',
-          key: 'member',
+          dataIndex: 'group_member',
+          key: 'group_member',
           sorter: true,
           width: 100
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
+          dataIndex: 'group_task',
+          key: 'group_task',
           sorter: true,
           width: 100
         },
         {
           title: '群主',
-          dataIndex: 'groupOwner',
-          key: 'groupOwner',
+          dataIndex: 'owner_name',
+          key: 'owner_name',
           width: 150,
-          scopedSlots: { customRender: 'groupOwner' }
+          scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '手机号',
-          dataIndex: 'phone',
-          key: 'phone',
+          dataIndex: 'group_mobile',
+          key: 'group_mobile',
           width: 150
         },
         {
           title: '允许加入',
-          dataIndex: 'allowJoin',
-          key: 'allowJoin',
+          dataIndex: 'is_open',
+          key: 'is_open',
           width: 100,
-          scopedSlots: { customRender: 'allowJoin' }
+          scopedSlots: { customRender: 'is_open' }
         },
         {
           title: '创建时间',
-          dataIndex: 'createTime',
-          key: 'createTime',
+          dataIndex: 'ctime',
+          key: 'ctime',
           sorter: true,
           width: 200
         },
@@ -236,6 +212,16 @@ export default {
     console.log(this.$refs.card.$el.offsetHeight)
   },
   methods: {
+    // 获取任务群列表
+   async getData () {
+     const res = await getGroupList({
+       pagesize: this.pagination.pageSize,
+       pageindex: this.pagination.currentPage
+     })
+     this.tableData = res.list
+     this.pagination.total = res.data.total
+     console.log('获取任务群列表', res)
+    },
     // 删除群
     deleteGroup () {
       this.$refs.delGroup.isShow = true
@@ -274,6 +260,9 @@ export default {
       this.cardBol = true
       this.$refs.card.$el.style.height = '77px'
     }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>

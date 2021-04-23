@@ -5,9 +5,15 @@
         <a-button type="primary" @click="add">新增类型</a-button>
       </div>
       <div class="table">
-        <a-table :columns="columns" :data-source="taskData" :pagination="false" rowKey="id" @change="handleTableChange">
+        <a-table
+          :columns="columns"
+          :data-source="taskData"
+          :pagination="false"
+          rowKey="id"
+          @change="handleTableChange"
+        >
           <span
-        slot="sortTitle"
+slot="sortTitle"
             >排序
             <a-tooltip>
               <template slot="title">
@@ -24,11 +30,16 @@
               <a-input style="width:128px"></a-input>
             </div>
           </template> -->
-          <div class="order_sort" slot="order_sort" slot-scope="order_sort">
-             <a-input style="width:128px" :value='order_sort'></a-input>
+          <div class="order_sort" slot="order_sort" slot-scope="text, record">
+            <a-input
+              style="width:128px"
+              ref="order_sort"
+              :value="record.order_sort"
+              @blur="changeOrder(record)"
+            ></a-input>
           </div>
           <span
-         slot="is_openTitle"
+slot="is_openTitle"
             >是否开启
             <a-tooltip>
               <template slot="title">
@@ -45,10 +56,13 @@
               <a-switch default-checked />
             </div>
           </template> -->
-          <div slot="is_open" slot-scope="is_open">
-             <a-switch default-checked :checked='is_open===1?true:false' />
+          <div slot="is_open" slot-scope="text, record">
+            <a-switch
+              :default-checked="record.is_open === 1 ? true : false"
+              @change="isOpen(record)"
+            />
           </div>
-          <template slot="opera" slot-scope="text,record">
+          <template slot="opera" slot-scope="text, record">
             <div class="opera">
               <a-button type="link" @click="edit(record)">编辑</a-button>
               <a-popconfirm
@@ -63,7 +77,7 @@
             </div>
           </template>
         </a-table>
-               <div class="pagination">
+        <div class="pagination">
           <a-pagination
             show-quick-jumper
             show-size-changer
@@ -73,7 +87,7 @@
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${total / pagination.pageSize}页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -156,7 +170,7 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ],
-       pagination: {
+      pagination: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
@@ -165,6 +179,33 @@ export default {
     }
   },
   methods: {
+    // 是否开启
+    async isOpen (record) {
+      console.log(record)
+      if (record.is_open === 1) {
+        await toUpdateTaskType({
+          update_field: 'is_open',
+          update_value: 0,
+          id: record.id
+        })
+      } else {
+        await toUpdateTaskType({
+          update_field: 'is_open',
+          update_value: 1,
+          id: record.id
+        })
+      }
+    },
+    // 修改排序
+    async changeOrder (record) {
+      //  console.log(this.$refs.order_sort.$el.value)
+      await toUpdateTaskType({
+        update_field: 'order_sort',
+        update_value: +this.$refs.order_sort.$el.value,
+        id: record.id
+      })
+      this.$message.success('修改成功')
+    },
     // 排序
     handleTableChange (pagination, filters, sorter, { currentDataSource }) {
       console.log('pagination', pagination)
@@ -173,15 +214,15 @@ export default {
       console.log('currentDataSource', currentDataSource)
     },
     // 确定删除
-   async confirm (record) {
-    const res = await toUpdateTaskType({
-      update_field: 'is_del',
-      update_value: +record.start_price,
-      id: record.id
-    })
-    this.getData()
-    console.log('删除', res)
-    this.$message.success('删除成功')
+    async confirm (record) {
+      const res = await toUpdateTaskType({
+        update_field: 'is_del',
+        update_value: +record.start_price,
+        id: record.id
+      })
+      this.getData()
+      console.log('删除', res)
+      this.$message.success('删除成功')
     },
     // 获取任务列表
     async getData () {
@@ -237,22 +278,22 @@ export default {
   }
   .table {
     margin-top: 20px;
-        .pagination {
-        margin-top: 10px;
-        /deep/ .ant-pagination {
-          padding: 10px;
-        }
-        /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
-        }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
-        }
+    .pagination {
+      margin-top: 10px;
+      /deep/ .ant-pagination {
+        padding: 10px;
       }
+      /deep/ .ant-pagination-total-text {
+        margin-left: 20px;
+        margin-right: 890px;
+      }
+      // /deep/ .ant-pagination-item-active {
+      //   background-color: #1890ff;
+      //   a {
+      //     color: white;
+      //   }
+      // }
+    }
   }
 }
 </style>

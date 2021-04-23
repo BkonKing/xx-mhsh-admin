@@ -2,15 +2,18 @@
   <div class="importFile">
     <a-modal v-model="isShow" title="导入文件" @ok="submit">
       <div class="form">
-        <div class="left"><span style="color:red">*</span> 选择文件：</div>
-        <div class="right">
+        <div class="leftForm"><span style="color:red">*</span> 选择文件：</div>
+        <div class="rightForm">
           <label for="filein">
             <div class="fileUpload">
-              <div class="left">0/100MB</div>
+              <div class="left">{{fileUrl.name}}</div>
+              <div class="right">
+              <span>{{fileSize}}/100MB</span>
               <a-icon type="folder-add" class="icon" />
+              </div>
             </div>
           </label>
-          <input id="filein" type="file" v-show="false" />
+          <input id="filein" @change="uploadFile" type="file" v-show="false" />
         </div>
       </div>
 
@@ -22,26 +25,27 @@ class="btn"
     <a-modal class="modal" v-model="isShow2" :closable="false" :footer="null">
       <div class="content">
         <div class="left">
-          <a-icon type="check-circle" style="color: #52c41a;" v-if="false" />
+          <a-icon type="check-circle" style="color: #52c41a;" v-if="uploadFileInfo.failed_count===0" />
           <a-icon type="close-circle" style="color:red" v-else />
         </div>
-        <div class="right" v-if="false">
+        <div class="right" v-if="uploadFileInfo.failed_count===0">
           <div class="t1">导入成功</div>
-          <div class="t2">共5条信息，5条成功</div>
+          <div class="t2">共{{uploadFileInfo.count}}条信息，{{uploadFileInfo.success_count}}条成功</div>
         </div>
         <div class="right" v-else>
           <div class="t1">部分导入失败</div>
-          <div class="t2">共5条信息，2条成功，3条失败</div>
+          <div class="t2">共{{uploadFileInfo.count}}条信息，{{uploadFileInfo.success_count}}条成功，{{uploadFileInfo.sfailed_count}}条失败</div>
         </div>
       </div>
       <div class="btn2">
-        <a-button type="primary">确定</a-button>
+        <a-button type="primary" @click="submit">确定</a-button>
       </div>
     </a-modal>
   </div>
 </template>
 
 <script>
+import { toImportWhiteUser } from '@/api/taskCentre'
 export default {
   data () {
     return {
@@ -49,13 +53,41 @@ export default {
       wrapperCol: { span: 14 },
       form: {},
       isShow: false,
-      isShow2: false
+      isShow2: false,
+      fileSize: 0,
+      fileUrl: '',
+      uploadFileInfo: ''
+    }
+  },
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.fileUrl = ''
+        this.fileSize = 0
+      }
     }
   },
   methods: {
-    submit () {
+    uploadFile (e) {
+      const _this = e.target.files[0]
+      this.fileSize = (_this.size / 1024 / 1024).toFixed(3)
+      this.fileUrl = _this
+    },
+    // 确定
+  async  submit () {
+      if (!this.fileUrl) {
+          this.$message.error('请选择文件')
+          return
+      }
+      const fd = new FormData()
+      fd.append('whitelist_file', this.fileUrl)
+     const res = await toImportWhiteUser(fd)
+     this.uploadFileInfo = res
+    //  console.log('上传文件', res)
       this.isShow2 = true
       this.isShow = false
+      this.$parent.pagination.currentPage = 1
+      this.$parent.getData()
     }
   }
 }
@@ -64,25 +96,43 @@ export default {
 <style lang="less" scoped>
 .form {
   display: flex;
-  .left {
+  .leftForm {
     width: 80px;
   }
-  .right {
+  .rightForm {
     flex: 1;
     .fileUpload {
-      width: 320px;
+      width: 354px;
       height: 32px;
       border: 1px solid rgba(216, 216, 216, 1);
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      .left {
-        color: rgba(0, 0, 0, 0.427450980392157);
+      .left{
+        padding-left: 15px;
+        flex: 1;
+        color: #ccc;
       }
-      .icon {
+      .right{
+        display: flex;
+        align-items: center;
+        text-align: right;
+        span{
+           color: rgba(0, 0, 0, 0.427450980392157);
+        }
+         .icon {
         margin: 0 5px;
         font-size: 22px;
       }
+      }
+      // .left {
+      //   flex: 1;
+      //   text-align: right;
+      //   color: rgba(0, 0, 0, 0.427450980392157);
+      // }
+      // .icon {
+      //   margin: 0 5px;
+      //   font-size: 22px;
+      // }
     }
   }
 }
