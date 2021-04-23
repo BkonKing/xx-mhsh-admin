@@ -103,11 +103,23 @@ export default {
 <style lang="less" scoped>
 .accountInfo {
   .card {
+    width: 362px !important;
+    height: 624px;
+
     .top {
       text-align: center;
+      img {
+        width: 132px;
+        height: 132px;
+      }
       h3 {
-        font-weight: 600;
-        font-size: 24px;
+        font-family: "PingFangSC-Semibold", "PingFang SC Semibold",
+          "PingFang SC";
+        font-weight: 650;
+        font-style: normal;
+        font-size: 20px;
+        color: rgba(0, 0, 0, 0.847058823529412);
+        text-align: center;
       }
     }
     .middle {
@@ -120,15 +132,18 @@ export default {
         flex: 1;
         text-align: center;
         .t1 {
-          color: #969696;
+          font-family: "MicrosoftYaHei", "Microsoft YaHei";
+          font-weight: 400;
+          font-style: normal;
+          color: rgba(0, 0, 0, 0.427450980392157);
+          text-align: center;
         }
         .t2 {
           margin: 10px 0;
-          color: #969696;
           span {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2a2727;
+            font-size: 24px;
+            color: rgba(0, 0, 0, 0.847058823529412);
+            text-align: center;
           }
         }
       }
@@ -141,18 +156,23 @@ export default {
     .bottom {
       display: flex;
       align-items: center;
+      margin-left: 35px;
       margin-top: 50px;
       .item {
-        flex: 1;
+        width: 120px;
         text-align: center;
         .t1 {
-          color: #969696;
+          font-family: "MicrosoftYaHei", "Microsoft YaHei";
+          font-weight: 400;
+          font-style: normal;
+          color: rgba(0, 0, 0, 0.427450980392157);
+          text-align: center;
           margin-bottom: 10px;
         }
         .t2 {
-          font-size: 18px;
-          font-weight: 600;
-          color: #2a2727;
+          font-size: 24px;
+          color: rgba(0, 0, 0, 0.847058823529412);
+          text-align: center;
         }
       }
       .line {

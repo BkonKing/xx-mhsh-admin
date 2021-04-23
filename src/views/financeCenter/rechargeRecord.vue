@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="rechargeRecord">
     <a-card class="card" ref="card">
       <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-row>
@@ -93,7 +93,12 @@ type="link"
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type="primary" @click="recharge"  v-if="projectID">充值</a-button>
+      <a-button
+type="primary"
+@click="recharge"
+v-if="projectID"
+        >充值</a-button
+      >
       <a-table
         :columns="columns"
         :data-source="tableData"
@@ -106,7 +111,7 @@ type="link"
           {{ recharge_type === "1" ? "短信" : "支付通道" }}
         </div>
         <div slot="payment_money" slot-scope="payment_money">
-            ￥{{payment_money}}
+          ￥{{ payment_money }}
         </div>
         <div slot="pay_type" slot-scope="pay_type">
           <span v-if="pay_type !== '0'">
@@ -122,13 +127,13 @@ type="link"
           :page-size-options="pagination.sizes"
           :total="pagination.total"
           :page-size.sync="pagination.pageSize"
-          :show-total="(total, range) => `共 ${total} 条记录 `"
+          :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`"
           @change="onChange"
           @showSizeChange="sizeChange"
         />
       </div>
     </a-card>
-    <rechargeModel ref="rechargeModel" @getData='getData'></rechargeModel>
+    <rechargeModel ref="rechargeModel" @getData="getData"></rechargeModel>
   </div>
 </template>
 
@@ -150,7 +155,7 @@ export default {
       pagination: {
         sizes: ['1', '5', '10', '15'],
         currentPage: 1,
-        total: 50,
+        total: 0,
         pageSize: 10
       },
       labelCol: { span: 4 },
@@ -328,9 +333,11 @@ export default {
   mounted () {
     // console.log(this.$refs.card.$el.offsetHeight)
     this.cardHeight = this.$refs.card.$el.offsetHeight
+    this.close()
   },
   async created () {
     this.getData()
+
     const res = await getProjectList()
     this.projectList = res.data
     this.projectID = +Cookies.get('project_id') || ''
@@ -339,39 +346,42 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.btns {
-  margin-left: 190px;
-  button {
-    margin-right: 10px;
+.rechargeRecord {
+  padding-left: 20px;
+  .btns {
+    margin-left: 190px;
+    button {
+      margin-right: 10px;
+    }
   }
-}
 
-.card {
-  margin-top: 20px;
-  /deep/ .ant-card-body {
-    padding-bottom: 0;
+  .card {
+    margin-top: 20px;
+    /deep/ .ant-card-body {
+      padding-bottom: 0;
+    }
   }
-}
-.card2 {
-  margin-top: 20px;
-  .pagination {
-    margin-top: 10px;
-    /deep/ .ant-pagination {
-      padding: 10px;
-    }
-    /deep/ .ant-pagination-total-text {
-      margin-left: 20px;
-      margin-right: 300px;
-    }
-    /deep/ .ant-pagination-item-active {
-      background-color: #1890ff;
-      a {
-        color: white;
+  .card2 {
+    margin-top: 20px;
+    .pagination {
+      margin-top: 10px;
+      /deep/ .ant-pagination {
+        padding: 10px;
       }
+      /deep/ .ant-pagination-total-text {
+        margin-left: 20px;
+        margin-right: 890px;
+      }
+      // /deep/ .ant-pagination-item-active {
+      //   // background-color: #1890ff;
+      //   // a {
+      //   //   color: white;
+      //   // }
+      // }
     }
   }
-}
-.table {
-  margin-top: 20px;
+  .table {
+    margin-top: 20px;
+  }
 }
 </style>
