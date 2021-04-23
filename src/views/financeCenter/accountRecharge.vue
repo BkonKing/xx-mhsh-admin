@@ -23,20 +23,20 @@
             <div class="item">
               <div class="t1">短信剩余</div>
               <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
-              <div class="t3">使用{{ smsUseInfo.suseremain_numbers }}</div>
+              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.suseremain_numbers }}</div>
             </div>
             <div class="line"></div>
             <div class="item">
               <div class="t1">支付通道剩余</div>
               <div class="t2">{{ smsUseInfo.spayment_limit }}</div>
-              <div class="t3">使用{{ smsUseInfo.susepayment_limit }}</div>
+              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.susepayment_limit }}</div>
             </div>
           </div>
           <div class="right" v-if="projectID===''">
             <div class="item">
               <div class="t1">短信剩余</div>
               <div class="t2">{{ smsUseInfo.srmeain_numbers }}</div>
-              <div class="t3">使用{{ smsUseInfo.suseremain_numbers }}</div>
+              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.suseremain_numbers }}</div>
             </div>
           </div>
         </div>
