@@ -8,21 +8,23 @@
           <a-col :span="8">
             <div class="item">
               <span>群ID：</span>
-              <span>000000</span>
+              <span>{{ baseInfo.id }}</span>
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <span>群名称：</span>
-              <span>名称名称名称</span>
+              <span>{{ baseInfo.group_name }}</span>
               <a-icon type="edit" style="color:#1890ff" @click="editGroup" />
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <span>群主：</span>
-              <span style="color:#1890ff;marginRight:10px">昵称(王小明)</span>
-              <span style="color:#1890ff">1500000000</span>
+              <span style="color:#1890ff;marginRight:10px">{{
+                baseInfo.owner_name
+              }}</span>
+              <span style="color:#1890ff">{{ baseInfo.group_mobile }}</span>
             </div>
           </a-col>
         </a-row>
@@ -30,19 +32,21 @@
           <a-col :span="8">
             <div class="item">
               <span>成员：</span>
-              <span>100人</span>
+              <span>{{ baseInfo.group_member }}人</span>
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <span>允许加入：</span>
-              <a-switch default-checked />
+              <a-switch
+                :default-checked="+baseInfo.is_open === 1 ? true : false"
+              />
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <span>创建时间：</span>
-              <span>2020-11-20 08:50:08</span>
+              <span>{{ baseInfo.ctime }}</span>
             </div>
           </a-col>
         </a-row>
@@ -157,7 +161,11 @@ type="up"
       </div>
       <div class="btns2">
         <a-button type="primary" @click="addUser">添加用户</a-button>
-        <a-button @click="importUser">导入用户 <a-icon type="vertical-align-bottom"/></a-button>
+        <a-button
+@click="importUser"
+          >导入用户 <a-icon
+type="vertical-align-bottom"
+        /></a-button>
         <a-button>批量操作 <a-icon type="down"/></a-button>
         <a-button @click="setGroupOwner">设为群主</a-button>
       </div>
@@ -171,20 +179,20 @@ type="up"
       <div class="table">
         <a-table
           :columns="columns"
-          :data-source="data"
+          :data-source="tableData"
           :pagination="false"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange
           }"
         >
-          <template #user>
+          <template slot="owner_name" slot-scope="text,record">
             <div class="user">
-              <div class="t1">用户昵称(姓名)</div>
-              <div class="t2">项目名称</div>
+              <div class="t1">{{record.owner_name}}</div>
+              <div class="t2">{{record.project_name}}</div>
             </div>
           </template>
-          <template #task>
+          <template #user_task>
             <div
               class="task"
               style="cursor: pointer;"
@@ -202,9 +210,9 @@ type="up"
               2
             </div>
           </template>
-          <template #opera>
+          <template slot="opera" slot-scope="text,record">
             <div class="opera">
-              <a-button type="link" @click="del">删除</a-button>
+              <a-button type="link" @click="del(record)">删除</a-button>
             </div>
           </template>
         </a-table>
@@ -218,7 +226,9 @@ type="up"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -288,11 +298,11 @@ type="up"
           </a-row>
         </a-form-model>
       </div>
-        <div class="table">
-          <a-table :columns="columns2" :data-source="data2" :pagination='false'>
-            <a slot="name" slot-scope="text">{{ text }}</a>
-          </a-table>
-            <div class="pagination">
+      <div class="table">
+        <a-table :columns="columns2" :data-source="data2" :pagination="false">
+          <a slot="name" slot-scope="text">{{ text }}</a>
+        </a-table>
+        <div class="pagination">
           <a-pagination
             show-quick-jumper
             show-size-changer
@@ -308,11 +318,11 @@ type="up"
             @showSizeChange="sizeChange2"
           />
         </div>
-        </div>
+      </div>
     </a-card>
     <addGroup ref="addGroup"></addGroup>
-    <addUserModel ref="addUserModel"></addUserModel>
-    <importFile ref="importFile"></importFile>
+    <addUserModel ref="addUserModel" mode="addGroup" :id="id"></addUserModel>
+    <importFile ref="importFile" :id="id"></importFile>
   </div>
 </template>
 
@@ -321,6 +331,7 @@ import moment from 'moment'
 import addGroup from './addGroup'
 import addUserModel from './adduserModel'
 import importFile from './importFile'
+import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser } from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -333,62 +344,40 @@ export default {
       wrapperCol: { span: 14 },
       card2Bol: false,
       pagination: {
+        // 成员页码
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       pagination2: {
+        // 日志页码
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
         pageSize: 1 // 默认页容量
       },
-      data: [
-        {
-          id: '000000',
-          phone: '1500000000',
-          remark: '备注',
-          joinType: '二维码',
-          registerTime: '2020-11-20  08:50:08',
-          joinTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000',
-          phone: '1500000000',
-          remark: '备注',
-          joinType: '二维码',
-          registerTime: '2020-11-20  08:50:08',
-          joinTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000',
-          phone: '1500000000',
-          remark: '备注',
-          joinType: '二维码',
-          registerTime: '2020-11-20  08:50:08',
-          joinTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [], // 成员列表
       columns: [
+        // 成员列表
         {
           title: '用户ID',
-          dataIndex: 'id',
-          key: 'id',
+          dataIndex: 'uid',
+          key: 'uid',
           width: 100
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '手机号',
-          dataIndex: 'phone',
-          key: 'phone',
+          dataIndex: 'mobile',
+          key: 'mobile',
           width: 150
         },
         {
           title: '用户',
-          dataIndex: 'user',
-          key: 'user',
-          scopedSlots: { customRender: 'user' },
+          dataIndex: 'owner_name',
+          key: 'owner_name',
+          scopedSlots: { customRender: 'owner_name' },
           width: 150
         },
         {
@@ -399,37 +388,37 @@ export default {
         },
         {
           title: '加入方式',
-          dataIndex: 'joinType',
-          key: 'joinType',
+          dataIndex: 'join_ype',
+          key: 'join_ype',
           width: 100
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
+          dataIndex: 'user_task',
+          key: 'user_task',
           sorter: true,
-          scopedSlots: { customRender: 'task' },
+          scopedSlots: { customRender: 'user_task' },
           width: 100
         },
         {
           title: '群',
-          dataIndex: 'group',
-          key: 'group',
+          dataIndex: 'user_group',
+          key: 'user_group',
           sorter: true,
           scopedSlots: { customRender: 'group' },
           width: 100
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime',
-          key: 'registerTime',
+          dataIndex: 'register_time',
+          key: 'register_time',
           sorter: true,
           width: 200
         },
         {
           title: '加入时间',
-          dataIndex: 'joinTime',
-          key: 'joinTime',
+          dataIndex: 'join_time',
+          key: 'join_time',
           sorter: true,
           width: 200
         },
@@ -440,9 +429,10 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ],
-      selectedRowKeys: [],
+      selectedRowKeys: [], // 表格复选框的id数组
       card3Bol: false,
       data2: [
+        // 日志列表
         {
           id: '10',
           operaTime: '2020-10-01 12:00:00',
@@ -469,6 +459,7 @@ export default {
         }
       ],
       columns2: [
+        // 日志列表
         {
           title: 'id',
           dataIndex: 'id',
@@ -498,26 +489,49 @@ export default {
           title: '操作类型',
           dataIndex: 'operaType',
           key: 'operaType',
-           width: 150
+          width: 150
         },
         {
           title: '操作说明',
           dataIndex: 'operaExplain',
           key: 'operaExplain'
         }
-      ]
+      ],
+      id: '', // 群id
+      baseInfo: '' // 群基础信息
     }
   },
   mounted () {
-    console.log(this.$refs.card3.offsetHeight) // 128
+    // console.log(this.$refs.card3.offsetHeight) // 128
   },
   methods: {
+    // 群详情-成员列表
+    async getData () {
+      // 群详情-成员列表
+      const res = await toGetGroupUserList({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage,
+        group_id: this.id
+      })
+      this.tableData = res.list
+      this.pagination.total = res.data.total
+      console.log('获取群成员', res)
+    },
     // 设为群主
     setGroupOwner () {
       this.$message.success('设置群主成功')
     },
-    // 删除
-    del () {
+    // 删除群成员
+     async  del (record) {
+       console.log('record', record)
+      const idArr = []
+      idArr.push(record.uid)
+     const res = await toDelGroupUser({
+       uids: idArr,
+       group_id: this.id
+     })
+     console.log('删除群用户', res)
+     this.getData()
       this.$message.success('删除成功')
     },
     // 导入用户
@@ -528,10 +542,10 @@ export default {
     addUser () {
       this.$refs.addUserModel.isShow = true
     },
-     // 修改群
-     editGroup () {
-       this.$refs.addGroup.isShow = true
-     },
+    // 修改群
+    editGroup () {
+      this.$refs.addGroup.isShow = true
+    },
     // 展开card3
     open2 () {
       setTimeout(() => {
@@ -568,7 +582,7 @@ export default {
     sizeChange (current, size) {
       console.log('size: ', size)
     },
-     // 页码改变事件
+    // 页码改变事件
     onChangePage2 (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -593,6 +607,19 @@ export default {
     onChange (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+    }
+  },
+  async created () {
+    // console.log('id', this.$route.query.id)
+    this.id = this.$route.query.id
+    if (this.id != '') {
+      // 群详情-基础信息
+      const res = await toGetGroupBaseInfo({
+        group_id: this.id
+      })
+      this.baseInfo = res.data
+      console.log('群详情-基础信息', res)
+      this.getData()
     }
   }
 }
@@ -718,7 +745,7 @@ export default {
         }
       }
     }
-    .table{
+    .table {
       padding: 0 32px;
       margin-top: 20px;
       .pagination {

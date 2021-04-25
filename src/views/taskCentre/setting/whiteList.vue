@@ -116,10 +116,7 @@ type="up"
             :total="pagination.total"
             :page-size.sync="pagination.pageSize"
             :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                  total / pagination.pageSize
-                )}页`
+              (total, range) =>`共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -127,8 +124,8 @@ type="up"
         </div>
       </div>
     </a-card>
-    <adduserModel ref="adduserModel"></adduserModel>
-    <importFile ref="importFile"></importFile>
+    <adduserModel ref="adduserModel" mode='whiteUser'></adduserModel>
+    <importFile ref="importFile" mode="whiteUser"></importFile>
   </div>
 </template>
 

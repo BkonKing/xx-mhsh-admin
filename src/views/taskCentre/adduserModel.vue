@@ -7,18 +7,18 @@
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
               v-model="item.mobile"
-              :maxLength='11'
+              :maxLength="11"
               placeholder="手机号"
               style="width:216px"
             ></a-input>
             <a-input
-            :maxLength='10'
+              :maxLength="10"
               v-model="item.nickname"
               placeholder="姓名"
               style="width:104px"
             ></a-input>
             <a-input
-              :maxLength='10'
+              :maxLength="10"
               v-model="item.remark"
               placeholder="备注"
               style="width:104px"
@@ -57,32 +57,58 @@
 </template>
 
 <script>
-import { toAddWhiteUser } from '@/api/taskCentre'
+import { toAddWhiteUser, toAddGroupUser } from '@/api/taskCentre'
 export default {
+  props: ['mode', 'id'],
   data () {
     return {
       isShow: false,
       arr: [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }]
     }
   },
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.arr = [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }]
+      }
+    }
+  },
   methods: {
     // 确定
     async submit () {
-      const list = this.arr.map(item => {
-        return {
-          mobile: item.mobile,
-          nickname: item.nickname,
-          remark: item.remark
-        }
-      })
-      const res = await toAddWhiteUser({
-        user_list: list
-      })
-      console.log('添加白名单', res)
-      this.isShow = false
-      this.$parent.pagination.currentPage = 1
-      this.$parent.getData()
-      this.$message.success('添加成功')
+      if (this.mode === 'whiteUser') {
+        const list = this.arr.map(item => {
+          return {
+            mobile: item.mobile,
+            nickname: item.nickname,
+            remark: item.remark
+          }
+        })
+        await toAddWhiteUser({
+          user_list: list
+        })
+        // console.log('添加白名单', res)
+        this.isShow = false
+        this.$parent.pagination.currentPage = 1
+        this.$parent.getData()
+        this.$message.success('添加成功')
+      } else {
+        const list2 = this.arr.map(item => {
+          return {
+            mobile: item.mobile,
+            nickname: item.nickname,
+            remark: item.remark
+          }
+        })
+        const res2 = await toAddGroupUser({
+          user_list: list2,
+          group_id: this.id
+        })
+         this.isShow = false
+        this.$parent.pagination.currentPage = 1
+        this.$parent.getData()
+        console.log('添加群用户', res2)
+      }
     },
     // 添加
     add () {

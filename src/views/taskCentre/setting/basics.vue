@@ -87,17 +87,17 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
-              v-model="item.tag1"
+              v-model="item.good_tag_name"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
-              v-model="item.tag2"
+              v-model="item.bad_tag_name"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
-              v-model="item.sort"
+              v-model="item.order_sort"
               placeholder="排序"
               style="width:104px"
             ></a-input>
@@ -213,7 +213,14 @@ export default {
       group_limit: 500, // 群上线人数
       customer_service: '', // 客服电话
       btnBol: true,
-      arr: [{ id: Math.random() * 999, tag1: '', tag2: '', sort: '' }], // 评价列表数组
+      arr: [
+        {
+          id: Math.random() * 999,
+          good_tag_name: '',
+          bad_tag_name: '',
+          order_sort: ''
+        }
+      ], // 评价列表数组
       arr2: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 淘汰原因数组
       arr3: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 放弃原因数组
       card3Bol: true,
@@ -270,10 +277,11 @@ export default {
       this.card5Bol = true
       this.$message.success('提交成功')
     },
-    // 添加
+    // 添加 放弃
     addGiveUp () {
       this.arr3.push({ id: Math.random() * 999, reason: '', order_sort: '' })
     },
+    // 删除 放弃
     delGiveUp (index) {
       console.log(index)
       this.arr3.splice(index, 1)
@@ -298,6 +306,7 @@ export default {
     addWeedOut () {
       this.arr2.push({ id: Math.random() * 999, reason: '', order_sort: '' })
     },
+    // 删除淘汰
     delWeedOut (index) {
       console.log(index)
       this.arr2.splice(index, 1)
@@ -306,8 +315,9 @@ export default {
     async appraiseSubmit () {
       const list = this.arr.map(item => {
         return {
-          tag_name: item.tag1 + '-' + item.tag2,
-          sort: +item.sort
+          good_tag_name: item.good_tag_name,
+          bad_tag_name: item.bad_tag_name,
+          sort: +item.order_sort
         }
       })
       const res = await addSetLabel({
@@ -319,7 +329,12 @@ export default {
     },
     // 添加评价标签
     addAppraise () {
-      this.arr.push({ id: Math.random() * 999, tag1: '', tag2: '', sort: '' })
+      this.arr.push({
+        id: Math.random() * 999,
+        good_tag_name: '',
+        bad_tag_name: '',
+        order_sort: ''
+      })
     },
     // 删除评价标签
     delAppraise (index) {
@@ -371,15 +386,8 @@ export default {
     // console.log('获取任务基础信息', res)
     // 基础-获取评价标签
     const res2 = await gainGetLabel()
-    this.arr = res2.list.map(item => {
-      const arr = item.tag_name.split('-')
-      return {
-        id: item.id,
-        tag1: arr[0],
-        tag2: arr[1],
-        sort: item.order_sort
-      }
-    })
+   this.arr = res2.list
+    //  console.log('基础-获取评价标签', res2)
     // 获取淘汰原因列表
     const res3 = await gainGetReason({
       type: 1
@@ -398,7 +406,6 @@ export default {
       this.card4Bol = true
       this.card5Bol = true
     })
-    // console.log('基础-获取评价标签', res2)
   }
 }
 </script>

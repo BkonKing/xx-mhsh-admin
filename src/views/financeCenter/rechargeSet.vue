@@ -47,7 +47,7 @@
           >时，短信提醒指定人
         </div>
         <div class="t4">
-          项目方支付剩余额度小于
+项目方支付通道剩余额度小于
           <a-input
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
@@ -94,9 +94,9 @@ export default {
   },
   data () {
     return {
-      sremain_amount: '',
-      payment_amount: '',
-      project_amount: '',
+      sremain_amount: 200, // 短信剩余条数
+      payment_amount: 5000, // 支付通道剩余额度
+      project_amount: 0, // 项目方支付通道剩余额度
       balance: '', // 余额
       channel: '', // 支付通道
       sms_list: '', // 短信
@@ -221,9 +221,10 @@ export default {
       border-bottom: 1px solid #ebebeb;
       padding-bottom: 20px;
       span {
-        font-size: 12px;
-        color: #9e9797;
-        font-weight: 400;
+    font-family: 'PingFangSC-Regular', 'PingFang SC';
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.427450980392157);
       }
     }
     .content {

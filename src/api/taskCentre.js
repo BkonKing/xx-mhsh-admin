@@ -21,7 +21,15 @@ const taskCentreApi = {
   addWhiteUser: '/linli/basicsetting/addWhiteUser',
   delWhiteUser: '/linli/basicsetting/delWhiteUser',
   importWhiteUser: '/linli/basicsetting/importWhiteUser',
-  groupList: '/linli/taskgroup/groupList'
+  groupList: '/linli/taskgroup/groupList',
+  addGroup: '/linli/taskgroup/addGroup',
+  delGroup: '/linli/taskgroup/delGroup',
+  setAllow: '/linli/taskgroup/setAllow',
+  getGroupBaseInfo: '/linli/taskgroup/getGroupBaseInfo',
+  getGroupUserList: '/linli/taskgroup/getGroupUserList',
+  addGroupUser: '/linli/taskgroup/addGroupUser',
+  delGroupUser: '/linli/taskgroup/delGroupUser',
+  importGroupUser: '/linli/taskgroup/importGroupUser'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -200,6 +208,71 @@ export function toImportWhiteUser (data) {
 export function getGroupList (data) {
   return request({
     url: taskCentreApi.groupList,
+    method: 'post',
+    data
+  })
+}
+// 任务群-添加任务群
+export function toAddGroup (data) {
+  return request({
+    url: taskCentreApi.addGroup,
+    method: 'post',
+    data
+  })
+}
+
+// 任务群-删除任务群
+export function toDelGroup (data) {
+  return request({
+    url: taskCentreApi.delGroup,
+    method: 'post',
+    data
+  })
+}
+// 任务群-开启允许加入
+export function toSetAllow (data) {
+  return request({
+    url: taskCentreApi.setAllow,
+    method: 'post',
+    data
+  })
+}
+// 群详情-基础信息
+export function toGetGroupBaseInfo (data) {
+  return request({
+    url: taskCentreApi.getGroupBaseInfo,
+    method: 'post',
+    data
+  })
+}
+// 群详情-成员列表
+export function toGetGroupUserList (data) {
+  return request({
+    url: taskCentreApi.getGroupUserList,
+    method: 'post',
+    data
+  })
+}
+// 群详情-添加用户
+export function toAddGroupUser (data) {
+  return request({
+    url: taskCentreApi.addGroupUser,
+    method: 'post',
+    data
+  })
+}
+// 群详情-删除用户(单个、批量)
+export function toDelGroupUser (data) {
+  return request({
+    url: taskCentreApi.delGroupUser,
+    method: 'post',
+    data
+  })
+}
+// 群详情-导入用户
+export function toImportGroupUser (data) {
+  return request({
+    url: taskCentreApi.importGroupUser,
     method: 'post',
     data
   })

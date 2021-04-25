@@ -6,12 +6,17 @@
         <a-row>
           <a-col :span="8">
             <a-form-model-item label="任务群">
-              <a-input placeholder="名称、ID" style="width:264px"></a-input>
+              <a-input
+                v-model="task_search"
+                placeholder="名称、ID"
+                style="width:264px"
+              ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="群主">
               <a-input
+                v-model="owner"
                 placeholder="手机号、昵称/ID、备注、所属项目"
                 style="width:264px"
               ></a-input>
@@ -20,12 +25,13 @@
           <a-col :span="8">
             <a-form-model-item label="成员" v-if="!cardBol">
               <a-input
+                v-model="member_search"
                 placeholder="手机号、昵称/ID"
                 style="width:264px"
               ></a-input>
             </a-form-model-item>
             <div class="btns" v-else>
-              <a-button type="primary">查询</a-button>
+              <a-button type="primary" @click="search">查询</a-button>
               <a-button>重置</a-button>
               <a-button
 type="link"
@@ -39,18 +45,16 @@ type="down"
         <a-row v-if="!cardBol">
           <a-col :span="8">
             <a-form-model-item label="允许加入">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
+              <a-select
+                placeholder="请选择"
+                v-model="is_open"
+                style="width: 264px"
+              >
+                <a-select-option value="1">
+                  允许
                 </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
+                <a-select-option value="0">
+                  不允许
                 </a-select-option>
               </a-select>
             </a-form-model-item>
@@ -58,7 +62,7 @@ type="down"
           <a-col :span="8"></a-col>
           <a-col :span="8">
             <div class="btns">
-              <a-button type="primary">查询</a-button>
+              <a-button type="primary" @click="search">查询</a-button>
               <a-button>重置</a-button>
               <a-button
 type="link"
@@ -72,34 +76,52 @@ type="up"
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-button type="primary" style="marginRight:10px" @click="add">新增群</a-button>
-      <a-button>批量操作 <a-icon type="down"/></a-button>
-      <div class="selected" v-if="selectedRowKeys.length>0">
-        <a-icon class="icon" type="info-circle"  />
-        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
+      <a-button
+type="primary"
+style="marginRight:10px"
+@click="add"
+        >新增群</a-button
+      >
+      <a-button @click="batchDel">批量操作 <a-icon type="down"/></a-button>
+      <div class="selected" v-if="selectedRowKeys.length > 0">
+        <a-icon class="icon" type="info-circle" />
+        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
-        <a-table  :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :columns="columns" :data-source="tableData" :pagination='false'>
-          <template #owner_name>
+        <a-table
+          @change="tableChange"
+          rowKey="id"
+          :columns="columns"
+          :data-source="tableData"
+          :pagination="false"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+        >
+          <template slot="owner_name" slot-scope="text, record">
             <div class="groupOwner">
-              <div class="t1">用户昵称(姓名)</div>
-              <div class="t2">项目</div>
+              <div class="t1">{{ record.owner_name }}</div>
+              <div class="t2">{{ record.project_name }}</div>
             </div>
           </template>
-          <template #is_open>
+          <template slot="is_open" slot-scope="text, record">
             <div>
-              <a-switch default-checked />
+              <a-switch
+                :default-checked="record.is_open === 1 ? true : false"
+                @change="isOpen(record)"
+              />
             </div>
           </template>
-          <template #opera>
+          <template slot="opera" slot-scope="text, record">
             <div class="opera">
-              <a-button type='link'>查看</a-button>
-              <a-button type='link' @click="deleteGroup">删除</a-button>
+              <a-button type="link" @click="$router.push('/taskCentre/groupDetail?id='+record.id)">查看</a-button>
+              <a-button type="link" @click="deleteGroup(record)">删除</a-button>
             </div>
           </template>
         </a-table>
-            <div class="pagination">
+        <div class="pagination">
           <a-pagination
             show-quick-jumper
             show-size-changer
@@ -109,7 +131,7 @@ type="up"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -125,7 +147,7 @@ type="up"
 <script>
 import addGroup from './addGroup'
 import delGroup from './delGroup'
-import { getGroupList } from '@/api/taskCentre'
+import { getGroupList, toDelGroup, toSetAllow } from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -133,7 +155,7 @@ export default {
   },
   data () {
     return {
-        pagination: {
+      pagination: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
@@ -142,7 +164,7 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       cardBol: false,
-      tableData: [],
+      tableData: [], // 任务群列表
       columns: [
         {
           title: 'ID',
@@ -198,33 +220,91 @@ export default {
           sorter: true,
           width: 200
         },
-         {
+        {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-           scopedSlots: { customRender: 'opera' }
+          scopedSlots: { customRender: 'opera' }
         }
       ],
-       selectedRowKeys: []
+      selectedRowKeys: [], // 表格复选框的值
+      order_field: '', // 排序字段
+      sort_value: '', // 排序值
+      is_open: undefined, // 是否允许加入
+      task_search: '', // 任务搜索
+      owner: '', // 群主搜索
+      member_search: '' // 成员搜索
     }
   },
   mounted () {
     console.log(this.$refs.card.$el.offsetHeight)
   },
   methods: {
+    // 是否允许加入
+    async isOpen (record) {
+      let res = ''
+      if (record.is_open === 1) {
+        res = await toSetAllow({
+          group_id: record.id,
+          is_open: 0
+        })
+      } else {
+        res = await toSetAllow({
+          group_id: record.id,
+          is_open: 1
+        })
+      }
+      console.log('是否允许加入', res)
+    },
+    // 查询
+    search () {
+      this.pagination.currentPage = 1
+      this.getData()
+    },
+    // 批量删除
+    async batchDel () {
+      const res = await toDelGroup({
+        group_addr: this.selectedRowKeys
+      })
+      console.log('批量删除', res)
+      this.getData()
+      this.$message.success('删除成功')
+    },
+    // 排序
+    tableChange (pagination, filters, sorter) {
+      // console.log('pagination', pagination)
+      // console.log('filters', filters)
+      console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getData()
+      // console.log('currentDataSource', currentDataSource)
+    },
     // 获取任务群列表
-   async getData () {
-     const res = await getGroupList({
-       pagesize: this.pagination.pageSize,
-       pageindex: this.pagination.currentPage
-     })
-     this.tableData = res.list
-     this.pagination.total = res.data.total
-     console.log('获取任务群列表', res)
+    async getData () {
+      const res = await getGroupList({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage,
+        order_field: this.order_field,
+        sort_value: this.sort_value,
+        member_search: this.member_search,
+        owner: this.owner,
+        task_search: this.task_search,
+        is_open: this.is_open
+      })
+      this.tableData = res.list
+      this.pagination.total = res.data.total
+      console.log('获取任务群列表', res)
     },
     // 删除群
-    deleteGroup () {
+    deleteGroup (record) {
+      console.log('record', record)
       this.$refs.delGroup.isShow = true
+      this.$refs.delGroup.id = record.id
     },
     // 新增群
     add () {
@@ -234,19 +314,23 @@ export default {
     clear () {
       this.selectedRowKeys = []
     },
-     onSelectChange (selectedRowKeys, selectedRows) {
+    onSelectChange (selectedRowKeys, arr) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
-      console.log('selectedRows', selectedRows)
+      console.log('arr', arr)
       this.selectedRowKeys = selectedRowKeys
     },
-      // 页码改变事件
-   onChangePage (page, size) {
+    // 页码改变事件
+    onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.currentPage = 1
+      this.pagination.pageSize = size
+      this.getData()
     },
     // 展开
     open () {
@@ -309,7 +393,7 @@ export default {
     }
     .table {
       margin-top: 20px;
-       .pagination {
+      .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
           padding: 10px;

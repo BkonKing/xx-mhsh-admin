@@ -2,13 +2,13 @@
   <div class="rechargeRecord">
     <a-card class="card" ref="card">
       <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col :span="8">
+        <a-row >
+          <a-col :span='8'>
             <a-form-model-item label="充值类型">
               <a-select
                 placeholder="请选择"
                 v-model="recharge_type"
-                style="width: 300px"
+                style="width: 100%"
               >
                 <a-select-option value="1">
                   短信
@@ -19,12 +19,12 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :span='8'>
             <a-form-model-item label="项目" v-if="!projectID">
               <a-select
-                placeholder="请选择"
+                 placeholder="请选择"
                 v-model="project_id"
-                style="width: 300px"
+                style="width: 100%"
               >
                 <a-select-option
                   v-for="(item, index) in projectList"
@@ -36,7 +36,7 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :span='8'>
             <a-form-model-item label="支付时间" v-if="cardBol">
               <a-range-picker
                 format="YYYY-MM"
@@ -60,12 +60,12 @@ type="link"
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="8">
+          <a-col :span='8'>
             <a-form-model-item label="支付方式" v-if="cardBol">
               <a-select
-                placeholder="请选择"
+               placeholder="请选择"
                 v-model="pay_type"
-                style="width: 300px"
+                style="width: 100%"
               >
                 <a-select-option value="1">
                   微信
@@ -76,8 +76,8 @@ type="link"
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8"></a-col>
-          <a-col :span="8">
+          <a-col :span='8'></a-col>
+          <a-col :span='8'>
             <div class="btns" v-if="cardBol">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button @click="reset">重置</a-button>
@@ -161,10 +161,10 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       mode2: ['month', 'month'],
-      recharge_type: '',
+      recharge_type: undefined,
       value: [],
-      pay_type: '',
-      project_id: '',
+      pay_type: undefined,
+      project_id: undefined,
       sort_type: '',
       sort_field: '',
       cardHeight: '',
@@ -307,7 +307,7 @@ export default {
     },
     // 收起
     close () {
-      this.$refs.card.$el.style.height = '75px'
+      this.$refs.card.$el.style.height = '80px'
       this.cardBol = false
     },
     // 页码改变事件
@@ -346,7 +346,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
 .rechargeRecord {
+  min-width: 1500px;
+  overflow: scroll-y;
   padding-left: 20px;
   .btns {
     margin-left: 190px;

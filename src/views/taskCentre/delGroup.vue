@@ -10,20 +10,34 @@
       </div>
       <div class="btns">
         <a-button @click="cancel">取消</a-button>
-        <a-button type="primary">继续</a-button>
+        <a-button type="primary" @click="del">继续</a-button>
       </div>
     </a-modal>
   </div>
 </template>
 
 <script>
+import { toDelGroup } from '@/api/taskCentre'
 export default {
   data () {
     return {
-      isShow: false
+      isShow: false,
+      id: ''
     }
   },
   methods: {
+    // 删除群
+  async  del () {
+      const arr = []
+      arr.push(this.id)
+      const res = await toDelGroup({
+        group_addr: arr
+      })
+      console.log('删除群', res)
+      this.$message.success('删除成功')
+      this.$parent.getData()
+      this.isShow = false
+    },
     cancel () {
       this.isShow = false
     }
