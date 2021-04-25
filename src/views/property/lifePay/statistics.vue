@@ -72,9 +72,12 @@
           </a-col>
           <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
             <chart-card :loading="loading" title="缴费率" :total="totalData.contributionRate+'%'">
-              <a-tooltip title="缴费率=已缴费户数/应缴费户数" slot="action">
-                <a-icon type="info-circle-o" />
-              </a-tooltip>
+              <div slot="action">
+                <a-tooltip placement="topRight" title="缴费率=已缴费户数/应缴费户数" slot="action">
+                <div style="padding-right: 12px;margin-right: -12px"><a-icon type="info-circle-o" /></div>
+
+                </a-tooltip>
+              </div>
               <div>
                 <mini-progress color="rgb(19, 194, 194)" :target="100" :percentage="totalData.contributionRate" height="8px" />
               </div>
@@ -147,8 +150,8 @@
               <div class="analysis-salesTypeRadio">
                 <a-radio-group defaultValue="0" v-model="alreadyPayType" @change="payChange">
                   <a-radio-button value="0">全部方式</a-radio-button>
-                  <a-radio-button value="1">线上缴费</a-radio-button>
-                  <a-radio-button value="2">线下缴费</a-radio-button>
+                  <a-radio-button value="2">线上缴费</a-radio-button>
+                  <a-radio-button value="1">线下缴费</a-radio-button>
                 </a-radio-group>
               </div>
               <a-pie v-if="alreadyPayData && alreadyPayData!='[]'" :data="alreadyPayData" :pieGuide="alreadyPieGuide" :padding="[18, 400, 50, 0]" :height="368"></a-pie>
@@ -544,10 +547,10 @@ export default {
     // 支付户数、支付笔数
     getLineData (id) {
       const paramsData = this.params
-      if (id) {
-        paramsData.genre_id = id
-      }
-      getLineData(paramsData).then(res => {
+      // if (id) {
+      //   paramsData.genre_id = id
+      // }
+      getLineData(Object.assign({}, paramsData, { genre_id: id })).then(res => {
         let listArr = []
         const year = this.monthVal.split('-')[0] + '-'
         console.log(this.monthVal)
@@ -678,6 +681,7 @@ export default {
     // 筛选楼栋
     selectHouse () {
       this.jfldShow = true
+      this.searchHouse = ''
       this.getHouseList()
     },
     onChange (id) {
