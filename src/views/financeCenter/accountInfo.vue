@@ -139,7 +139,7 @@ export default {
           text-align: center;
         }
         .t2 {
-          margin: 10px 0;
+
           span {
             font-size: 24px;
             color: rgba(0, 0, 0, 0.847058823529412);
@@ -167,7 +167,7 @@ export default {
           font-style: normal;
           color: rgba(0, 0, 0, 0.427450980392157);
           text-align: center;
-          margin-bottom: 10px;
+          // margin-bottom: 10px;
         }
         .t2 {
           font-size: 24px;

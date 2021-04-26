@@ -36,10 +36,11 @@
             </div>
           </a-col>
           <a-col :span="8">
+            {{baseInfo.is_open}}
             <div class="item">
               <span>允许加入：</span>
               <a-switch
-                :default-checked="+baseInfo.is_open === 1 ? true : false"
+                v-model="baseInfo.is_open"
 @change="isOpen"
               />
             </div>
@@ -518,6 +519,7 @@ export default {
         group_id: this.id
       })
       this.baseInfo = res.data
+      this.baseInfo.is_open = this.baseInfo.is_open === '1'
       console.log('群详情-基础信息', res)
       this.getData()
     }

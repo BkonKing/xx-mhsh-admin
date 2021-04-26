@@ -5,7 +5,7 @@
                 <a-input v-model="form.group_name" :maxLength='10'  :suffix="form.group_name.length+'/10'" />
         </a-form-model-item>
         <a-form-model-item label="允许加入">
-           <a-switch :default-checked='checked' @change="changeSwitch" />
+           <a-switch v-model="checked" @change="changeSwitch" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -42,7 +42,7 @@ export default {
         if (this.baseInfo != '') {
           console.log(this.baseInfo)
           this.form.group_name = this.baseInfo.group_name
-          this.checked = +this.baseInfo.is_open === 1
+          this.checked = this.baseInfo.is_open
         }
       },
       deeP: true
