@@ -26,10 +26,10 @@
               <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.suseremain_numbers }}</div>
             </div>
             <div class="line"></div>
-            <div class="item">
+            <div class="item item2">
               <div class="t1">支付通道剩余</div>
-              <div class="t2">{{ smsUseInfo.spayment_limit }}</div>
-              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.susepayment_limit }}</div>
+              <div class="t2">{{ smsUseInfo.spayment_limit==='0.00'?'0': smsUseInfo.spayment_limit}}</div>
+              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.spayment_limit==='0.00'?'0': smsUseInfo.spayment_limit }}</div>
             </div>
           </div>
           <div class="right" v-if="projectID===''">
@@ -77,6 +77,8 @@ export default {
 
 <style lang="less" scoped>
 .accountRecharge {
+  min-width: 1500px;
+  overflow: scroll-y;
   /deep/ .ant-page-header {
     padding-bottom: 0;
   }
@@ -109,8 +111,8 @@ export default {
       display: flex;
       align-items: center;
       .item {
-        text-align: right;
-        padding-right: 24px;
+        text-align: center;
+        margin-right: 15px;
         .t1 {
           color: #959494;
         }
@@ -123,8 +125,11 @@ export default {
           color: #959494;
         }
       }
+      .item2{
+        margin-left: 10px;
+      }
       .line {
-        margin: 0 15px;
+        // margin: 0 10px;
         width: 1px;
         height: 36px;
         background-color: #e9e9e9;

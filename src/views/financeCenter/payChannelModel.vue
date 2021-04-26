@@ -38,19 +38,21 @@ label="充值额度"
       </a-form-model-item>
       <a-form-model-item label="支付方式">
         <a-radio-group v-model="pay_type" @change="onChange" v-if="!isPay">
-          <a-radio :value="2">
+          <a-radio :value="2" v-if="false">
             支付宝
           </a-radio>
           <a-radio :value="1">
             微信
           </a-radio>
         </a-radio-group>
-        <img
+        <div>
+          <img
           v-if="pay_type === 1 && !isPay"
           :src="payMa"
           class="payma"
           alt=""
         />
+        </div>
         <div v-if="isPay">
           {{ pay_type === 1 ? "微信" : "支付宝" }}
           <div class="img">
@@ -72,11 +74,11 @@ export default {
       isShow: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      pay_type: 2,
-      payMa: '',
-      isPay: false,
+      pay_type: 2, // 字符类型
+      payMa: '', // 支付二维码
+      isPay: false, // 是否已经支付
       timeId: null,
-      projectID: ''
+      projectID: '' // 项目id
     }
   },
   watch: {
