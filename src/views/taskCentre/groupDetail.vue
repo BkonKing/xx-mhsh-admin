@@ -306,8 +306,8 @@ type="up"
         </div>
       </div>
     </a-card>
-    <addGroup ref="addGroup"></addGroup>
-    <addUserModel ref="addUserModel" mode="addGroup" :id="id"></addUserModel>
+    <addGroup ref="addGroup" mode="edit" :group_id='id' ></addGroup>
+    <addUserModel ref="addUserModel" mode="addGroup" :id="id" ></addUserModel>
     <importFile ref="importFile" :id="id"></importFile>
   </div>
 </template>
@@ -488,7 +488,10 @@ export default {
       setOwnerBol: true,
       order_field: '', // 排序字段
       sort_value: '', // 排序值
-      projectList: [] // 所有项目列表
+      projectList: [], // 所有项目列表
+      join_type: '', // 加入方式
+      user_search: '', // 用户搜索
+      owner: '' // 群主搜索
     }
   },
   mounted () {
@@ -507,6 +510,18 @@ export default {
     }
   },
   methods: {
+    // 获取群基础信息
+   async getGroupBase () {
+       if (this.id != '') {
+      // 群详情-基础信息
+      const res = await toGetGroupBaseInfo({
+        group_id: this.id
+      })
+      this.baseInfo = res.data
+      console.log('群详情-基础信息', res)
+      this.getData()
+    }
+    },
     // 是否允许加入
    async isOpen (checked) {
      const res = await toSetAllow({
@@ -580,6 +595,7 @@ export default {
     // 修改群
     editGroup () {
       this.$refs.addGroup.isShow = true
+      this.$refs.addGroup.baseInfo = JSON.parse(JSON.stringify(this.baseInfo))
     },
     // 展开card3
     open2 () {
@@ -647,15 +663,7 @@ export default {
   async created () {
     // console.log('id', this.$route.query.id)
     this.id = this.$route.query.id
-    if (this.id != '') {
-      // 群详情-基础信息
-      const res = await toGetGroupBaseInfo({
-        group_id: this.id
-      })
-      this.baseInfo = res.data
-      console.log('群详情-基础信息', res)
-      this.getData()
-    }
+    this.getGroupBase()
     // 获取所有项目
     const res2 = await toGetProject()
     this.projectList = res2.data

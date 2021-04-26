@@ -4,7 +4,7 @@
       <a-card class="card" style="width:360px">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
-          <h3>{{ accountInfo.nickname }}美好生活家园</h3>
+          <h3>{{ accountInfo.nickname }}</h3>
         </div>
         <div class="middle">
           <div class="item">
@@ -20,7 +20,7 @@
                     : '/zht/credits/grant/getTransferApplyList'
                 "
                 target="_parent"
-                >转账</a
+                >开通</a
               >
             </a-button>
           </div>
@@ -46,7 +46,7 @@
           <div class="item" v-if="projectID">
             <div class="t1">支付通道</div>
             <div class="t2">
-              <span>{{ accountInfo.spayment_limit }}</span> 元
+              <span>{{ accountInfo.spayment_limit=== '0.00'?'0':accountInfo.spayment_limit}}</span> 元
             </div>
             <a-button type="link">
               <a

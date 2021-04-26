@@ -139,7 +139,7 @@ style="marginRight:10px"
         </div>
       </div>
     </a-card>
-    <addGroup ref="addGroup"></addGroup>
+    <addGroup ref="addGroup" mode="add"></addGroup>
     <delGroup ref="delGroup"></delGroup>
   </div>
 </template>

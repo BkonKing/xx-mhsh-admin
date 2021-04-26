@@ -32,7 +32,8 @@ const taskCentreApi = {
   importGroupUser: '/linli/taskgroup/importGroupUser',
   setGroupOwner: '/linli/taskgroup/setGroupOwner',
   getTaskStatus: '/linli/task/getTaskStatus',
-  getProject: '/linli/common/getProject'
+  getProject: '/linli/common/getProject',
+  updateGroup: '/linli/taskgroup/updateGroup'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -300,5 +301,13 @@ export function toGetProject () {
   return request({
     url: taskCentreApi.getProject,
     method: 'post'
+  })
+}
+// 任务群-根据字段修改值
+export function toUpdateGroup (data) {
+  return request({
+    url: taskCentreApi.updateGroup,
+    method: 'post',
+    data
   })
 }

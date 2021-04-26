@@ -27,7 +27,7 @@ v-if="recharge_type === 1"
             v-model="count"
             @input="setPrice"
             placeholder="请输入"
-            suffix="0.1/条"
+            suffix="0.1元/条"
           />
           <a-input
             v-else
@@ -35,7 +35,7 @@ v-if="recharge_type === 1"
             v-model="rechargeMoney"
             @input="setPrice"
             @blur="ismore100"
-            suffix="3.5%手续费"
+            suffix="3.5‰手续费"
           />
         </a-form-model-item>
         <a-form-model-item label="金额">
@@ -106,7 +106,16 @@ export default {
       this.count = ''
       this.price = ''
     },
-
+    count () {
+      if (this.count === '') {
+        this.price = ''
+      }
+    },
+    rechargeMoney () {
+       if (this.rechargeMoney === '') {
+        this.price = ''
+      }
+    },
     isShow (newVal) {
       if (newVal === false) {
         this.recharge_type = 1
@@ -134,8 +143,12 @@ export default {
     },
     // 设置金额
     setPrice () {
-      this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
-      this.price = keepTwoDecimalFull(this.count * 0.1)
+      if (this.rechargeMoney != '') {
+        this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
+      }
+      if (this.count != '') {
+        this.price = keepTwoDecimalFull(this.count * 0.1)
+      }
     },
     // 充值
     async recharge () {
@@ -180,5 +193,10 @@ export default {
 }
 /deep/ .ant-radio-group {
   white-space: nowrap;
+}
+/deep/ .ant-input-group-addon{
+  padding: 0;
+  width: 31px;
+  height: 32px;
 }
 </style>
