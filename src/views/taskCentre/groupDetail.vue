@@ -1,7 +1,7 @@
 <template>
   <div class="groupDetail">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card">
+    <a-card class="card" v-if="baseInfo !=''">
       <div class="title">基础信息</div>
       <div class="content">
         <a-row>
@@ -40,6 +40,7 @@
               <span>允许加入：</span>
               <a-switch
                 :default-checked="+baseInfo.is_open === 1 ? true : false"
+@change="isOpen"
               />
             </div>
           </a-col>
@@ -58,18 +59,9 @@
           <a-row>
             <a-col :span="8">
               <a-form-model-item label="加入方式">
-                <a-select style="width: 264px">
-                  <a-select-option value="jack">
-                    Jack
-                  </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled" disabled>
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
+                <a-select v-model="join_type" style="width: 264px">
+                  <a-select-option value="1">
+                    后台添加
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -77,6 +69,7 @@
             <a-col :span="8">
               <a-form-model-item label="用户">
                 <a-input
+                v-model="user_search"
                   placeholder="手机号、昵称/ID、备注"
                   style="width:264px"
                 ></a-input>
@@ -85,17 +78,8 @@
             <a-col :span="8">
               <a-form-model-item label="所属项目" v-if="!card2Bol">
                 <a-select style="width: 264px">
-                  <a-select-option value="jack">
-                    Jack
-                  </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled" disabled>
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
+                  <a-select-option :value="item.id" v-for="(item) in projectList" :key='item.id'>
+                    {{item.project_name}}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -167,7 +151,7 @@ type="up"
 type="vertical-align-bottom"
         /></a-button>
         <a-button>批量操作 <a-icon type="down"/></a-button>
-        <a-button @click="setGroupOwner">设为群主</a-button>
+        <a-button @click="setGroupOwner" :disabled="setOwnerBol">设为群主</a-button>
       </div>
       <div style="padding:0 32px">
         <div class="selected" v-if="selectedRowKeys.length > 0">
@@ -178,6 +162,8 @@ type="vertical-align-bottom"
       </div>
       <div class="table">
         <a-table
+        @change="changeGroupMember"
+        rowKey="uid"
           :columns="columns"
           :data-source="tableData"
           :pagination="false"
@@ -331,7 +317,7 @@ import moment from 'moment'
 import addGroup from './addGroup'
 import addUserModel from './adduserModel'
 import importFile from './importFile'
-import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser } from '@/api/taskCentre'
+import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser, toSetGroupOwner, toSetAllow, toGetProject } from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -498,39 +484,88 @@ export default {
         }
       ],
       id: '', // 群id
-      baseInfo: '' // 群基础信息
+      baseInfo: '', // 群基础信息
+      setOwnerBol: true,
+      order_field: '', // 排序字段
+      sort_value: '', // 排序值
+      projectList: [] // 所有项目列表
     }
   },
   mounted () {
     // console.log(this.$refs.card3.offsetHeight) // 128
   },
+  watch: {
+    selectedRowKeys: {
+      handler () {
+        if (this.selectedRowKeys.length === 1) {
+          this.setOwnerBol = false
+        } else {
+          this.setOwnerBol = true
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
+    // 是否允许加入
+   async isOpen (checked) {
+     const res = await toSetAllow({
+       group_id: this.id,
+       is_open: checked === true ? 1 : 0
+     })
+     console.log('是否允许加入', res)
+    },
+    // 群成员列表排序
+    changeGroupMember (pagination, filters, sorter) {
+      console.log('sorter', sorter)
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'desc'
+      } else {
+        this.sort_value = 'asc'
+      }
+      this.order_field = sorter.field
+      this.getData()
+    },
     // 群详情-成员列表
     async getData () {
       // 群详情-成员列表
       const res = await toGetGroupUserList({
         pagesize: this.pagination.pageSize,
         pageindex: this.pagination.currentPage,
-        group_id: this.id
+        group_id: this.id,
+        order_field: this.order_field,
+        sort_value: this.sort_value
       })
       this.tableData = res.list
       this.pagination.total = res.data.total
       console.log('获取群成员', res)
     },
     // 设为群主
-    setGroupOwner () {
+   async setGroupOwner () {
+     if (this.selectedRowKeys[0] === 0) {
+       this.$message.error('该用户无法设置为群主')
+       this.selectedRowKeys = []
+       return
+     }
+ await toSetGroupOwner({
+       uid: this.selectedRowKeys[0],
+       group_id: this.id
+     })
       this.$message.success('设置群主成功')
     },
     // 删除群成员
      async  del (record) {
        console.log('record', record)
+       if (record.uid === 0) {
+         this.$message.error('该用户无法删除')
+         return
+       }
       const idArr = []
       idArr.push(record.uid)
-     const res = await toDelGroupUser({
+    await toDelGroupUser({
        uids: idArr,
        group_id: this.id
      })
-     console.log('删除群用户', res)
      this.getData()
       this.$message.success('删除成功')
     },
@@ -621,6 +656,10 @@ export default {
       console.log('群详情-基础信息', res)
       this.getData()
     }
+    // 获取所有项目
+    const res2 = await toGetProject()
+    this.projectList = res2.data
+    console.log('获取所有项目', res2)
   }
 }
 </script>

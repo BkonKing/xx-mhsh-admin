@@ -32,7 +32,7 @@
             </a-form-model-item>
             <div class="btns" v-else>
               <a-button type="primary" @click="search">查询</a-button>
-              <a-button>重置</a-button>
+              <a-button @click="reset">重置</a-button>
               <a-button
 type="link"
 @click="open"
@@ -63,7 +63,7 @@ type="down"
           <a-col :span="8">
             <div class="btns">
               <a-button type="primary" @click="search">查询</a-button>
-              <a-button>重置</a-button>
+              <a-button @click="reset">重置</a-button>
               <a-button
 type="link"
 @click="close"
@@ -240,6 +240,13 @@ export default {
     console.log(this.$refs.card.$el.offsetHeight)
   },
   methods: {
+    // 重置
+    reset () {
+      this.task_search = ''
+      this.owner = ''
+      this.member_search = ''
+      this.is_open = undefined
+    },
     // 是否允许加入
     async isOpen (record) {
       let res = ''

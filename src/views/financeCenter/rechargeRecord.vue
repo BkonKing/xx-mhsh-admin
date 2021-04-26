@@ -282,6 +282,7 @@ export default {
         sort_field: this.sort_field,
         sort_type: this.sort_type
       })
+      console.log('获取充值记录列表', res)
       this.tableData = res.data.list
       if (+Cookies.get('project_id')) {
         const index = this.columns.findIndex(item => {

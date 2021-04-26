@@ -38,7 +38,7 @@ label="充值额度"
       </a-form-model-item>
       <a-form-model-item label="支付方式">
         <a-radio-group v-model="pay_type" @change="onChange" v-if="!isPay">
-          <a-radio :value="2">
+          <a-radio :value="2" v-if="false">
             支付宝
           </a-radio>
           <a-radio :value="1">

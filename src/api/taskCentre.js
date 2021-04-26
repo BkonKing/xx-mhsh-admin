@@ -29,7 +29,10 @@ const taskCentreApi = {
   getGroupUserList: '/linli/taskgroup/getGroupUserList',
   addGroupUser: '/linli/taskgroup/addGroupUser',
   delGroupUser: '/linli/taskgroup/delGroupUser',
-  importGroupUser: '/linli/taskgroup/importGroupUser'
+  importGroupUser: '/linli/taskgroup/importGroupUser',
+  setGroupOwner: '/linli/taskgroup/setGroupOwner',
+  getTaskStatus: '/linli/task/getTaskStatus',
+  getProject: '/linli/common/getProject'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -275,5 +278,27 @@ export function toImportGroupUser (data) {
     url: taskCentreApi.importGroupUser,
     method: 'post',
     data
+  })
+}
+// 群详情-设置群主
+export function toSetGroupOwner (data) {
+  return request({
+    url: taskCentreApi.setGroupOwner,
+    method: 'post',
+    data
+  })
+}
+// 任务-获取任务状态
+export function toGetTaskStatus () {
+  return request({
+    url: taskCentreApi.getTaskStatus,
+    method: 'post'
+  })
+}
+ // 获取所有项目
+export function toGetProject () {
+  return request({
+    url: taskCentreApi.getProject,
+    method: 'post'
   })
 }

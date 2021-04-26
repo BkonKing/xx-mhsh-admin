@@ -302,6 +302,7 @@ type="up"
 <script>
 import moment from 'moment'
 import batchCheck from './batchCheck'
+import { toGetTaskStatus } from '@/api/taskCentre'
 export default {
   components: {
     batchCheck
@@ -499,6 +500,11 @@ export default {
     batchOpera () {
       this.$refs.batchCheck.isShow = true
     }
+  },
+  async created () {
+    // 任务-获取任务状态
+    const res = await toGetTaskStatus()
+    console.log('任务-获取任务状态', res)
   }
 }
 </script>

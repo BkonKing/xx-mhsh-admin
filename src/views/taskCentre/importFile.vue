@@ -86,7 +86,7 @@ export default {
       const _this = e.target.files[0]
       this.fileSize = (_this.size / 1024 / 1024).toFixed(3)
       this.fileUrl = _this
-      console.log('this.fileUrl', this.fileUrl)
+      // console.log('this.fileUrl', this.fileUrl)
     },
     // 确定
     async submit () {
@@ -100,12 +100,13 @@ export default {
         const res = await toImportWhiteUser(fd)
         this.uploadFileInfo = res
       } else {
+        console.log('this.fileUrl', this.fileUrl)
         fd.append('group_file', this.fileUrl)
-        const res2 = await toImportGroupUser({
-          group_file: fd,
-          group_id: this.id
-        })
-        console.log('上传群成员文件', res2)
+        console.log(fd)
+        fd.append('group_id', this.id)
+        const res2 = await toImportGroupUser(fd)
+        // console.log('上传群成员文件', res2)
+        this.uploadFileInfo = res2
       }
       //  console.log('上传文件', res)
       this.isShow2 = true
