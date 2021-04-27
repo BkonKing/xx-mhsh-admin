@@ -32,7 +32,6 @@
             type="close"
             class="close"
             @click="del(index)"
-            v-if="list.length > 1"
           />
         </div>
         <div class="box" v-if="userInfoList.length > 0">
@@ -149,7 +148,8 @@ export default {
     // 删除记录
     del (index) {
       if (this.list.length === 1) {
-        return
+      this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
+      return
       }
       // console.log(index)
       this.list.splice(index, 1)

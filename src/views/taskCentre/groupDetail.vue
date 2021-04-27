@@ -36,7 +36,6 @@
             </div>
           </a-col>
           <a-col :span="8">
-            {{baseInfo.is_open}}
             <div class="item">
               <span>允许加入：</span>
               <a-switch
@@ -318,7 +317,7 @@ import moment from 'moment'
 import addGroup from './addGroup'
 import addUserModel from './adduserModel'
 import importFile from './importFile'
-import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser, toSetGroupOwner, toSetAllow, toGetProject } from '@/api/taskCentre'
+import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser, toSetGroupOwner, toSetAllow, toGetProject, toGetLog } from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -342,7 +341,7 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       tableData: [], // 成员列表
       columns: [
@@ -511,6 +510,16 @@ export default {
     }
   },
   methods: {
+    // 获取日志列表
+   async getRegister () {
+     const res = await toGetLog({
+       pagesize: this.pagination2.pageSize,
+       pageindex: this.pagination2.currentPage,
+       type: 2,
+       task_id: +this.id
+     })
+     console.log('获取日志列表', res)
+   },
     // 获取群基础信息
    async getGroupBase () {
        if (this.id != '') {
@@ -666,6 +675,7 @@ export default {
     // console.log('id', this.$route.query.id)
     this.id = this.$route.query.id
     this.getGroupBase()
+    this.getRegister()
     // 获取所有项目
     const res2 = await toGetProject()
     this.projectList = res2.data
