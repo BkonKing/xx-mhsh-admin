@@ -1,7 +1,7 @@
 <template>
   <div class="groupDetail">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card" v-if="baseInfo !=''">
+    <a-card class="card" v-if="baseInfo != ''">
       <div class="title">基础信息</div>
       <div class="content">
         <a-row>
@@ -38,10 +38,7 @@
           <a-col :span="8">
             <div class="item">
               <span>允许加入：</span>
-              <a-switch
-                v-model="baseInfo.is_open"
-@change="isOpen"
-              />
+              <a-switch v-model="baseInfo.is_open" @change="isOpen" />
             </div>
           </a-col>
           <a-col :span="8">
@@ -69,7 +66,7 @@
             <a-col :span="8">
               <a-form-model-item label="用户">
                 <a-input
-                v-model="user_search"
+                  v-model="user_search"
                   placeholder="手机号、昵称/ID、备注"
                   style="width:264px"
                 ></a-input>
@@ -77,15 +74,19 @@
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="所属项目" v-if="!card2Bol">
-                <a-select style="width: 264px">
-                  <a-select-option :value="item.id" v-for="(item) in projectList" :key='item.id'>
-                    {{item.project_name}}
+                <a-select v-model="project_id" style="width: 264px">
+                  <a-select-option
+                    :value="item.id"
+                    v-for="item in projectList"
+                    :key="item.id"
+                  >
+                    {{ item.project_name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
               <div class="btns" v-if="card2Bol">
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="resetGroupUserList">重置</a-button>
                 <a-button
 type="link"
 @click="open"
@@ -99,6 +100,7 @@ type="down"
             <a-col :span="8">
               <a-form-model-item label="加入时间">
                 <a-range-picker
+                v-model="joinTime"
                   style="width: 264px"
                   :ranges="{
                     Today: [moment(), moment()],
@@ -112,26 +114,20 @@ type="down"
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="是否注册">
-                <a-select style="width: 264px">
-                  <a-select-option value="jack">
-                    Jack
+                <a-select v-model="is_register" style="width: 264px">
+                  <a-select-option value="0">
+                    未注册
                   </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled" disabled>
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
+                  <a-select-option value="1">
+                    已注册
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
             </a-col>
             <a-col :span="8">
               <div class="btns">
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="resetGroupUserList">重置</a-button>
                 <a-button
 type="link"
 @click="close"
@@ -151,7 +147,11 @@ type="up"
 type="vertical-align-bottom"
         /></a-button>
         <a-button>批量操作 <a-icon type="down"/></a-button>
-        <a-button @click="setGroupOwner" :disabled="setOwnerBol">设为群主</a-button>
+        <a-button
+@click="setGroupOwner"
+:disabled="setOwnerBol"
+          >设为群主</a-button
+        >
       </div>
       <div style="padding:0 32px">
         <div class="selected" v-if="selectedRowKeys.length > 0">
@@ -162,8 +162,8 @@ type="vertical-align-bottom"
       </div>
       <div class="table">
         <a-table
-        @change="changeGroupMember"
-        rowKey="uid"
+          @change="changeGroupMember"
+          rowKey="uid"
           :columns="columns"
           :data-source="tableData"
           :pagination="false"
@@ -172,10 +172,10 @@ type="vertical-align-bottom"
             onChange: onSelectChange
           }"
         >
-          <template slot="owner_name" slot-scope="text,record">
+          <template slot="owner_name" slot-scope="text, record">
             <div class="user">
-              <div class="t1">{{record.owner_name}}</div>
-              <div class="t2">{{record.project_name}}</div>
+              <div class="t1">{{ record.owner_name }}</div>
+              <div class="t2">{{ record.project_name }}</div>
             </div>
           </template>
           <template #user_task>
@@ -196,7 +196,7 @@ type="vertical-align-bottom"
               2
             </div>
           </template>
-          <template slot="opera" slot-scope="text,record">
+          <template slot="opera" slot-scope="text, record">
             <div class="opera">
               <a-button type="link" @click="del(record)">删除</a-button>
             </div>
@@ -229,12 +229,13 @@ type="vertical-align-bottom"
           <a-row>
             <a-col :span="8">
               <a-form-model-item label="操作员">
-                <a-input placeholder="姓名" style="width: 264px"></a-input>
+                <a-input v-model="opt_user" placeholder="姓名" style="width: 264px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="操作时间">
                 <a-range-picker
+                v-model="operaTime"
                   style="width: 264px"
                   :ranges="{
                     Today: [moment(), moment()],
@@ -248,11 +249,11 @@ type="vertical-align-bottom"
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="操作类型" v-if="!card3Bol">
-                <a-input placeholder="关键字" style="width: 264px"></a-input>
+                <a-input v-model="opt_type" placeholder="关键字" style="width: 264px"></a-input>
               </a-form-model-item>
               <div class="btns" v-else>
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
+                <a-button type="primary" @click="search2">查询</a-button>
+                <a-button  @click="resetLog">重置</a-button>
                 <a-button
 type="link"
 @click="open2"
@@ -265,14 +266,14 @@ type="down"
           <a-row v-if="!card3Bol">
             <a-col :span="8">
               <a-form-model-item label="操作说明">
-                <a-input placeholder="关键字" style="width: 264px"></a-input>
+                <a-input v-model="opt_desc" placeholder="关键字" style="width: 264px"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :span="8"></a-col>
             <a-col :span="8">
               <div class="btns">
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
+                <a-button type="primary" @click="searchLog">查询</a-button>
+                <a-button @click="resetLog">重置</a-button>
                 <a-button
 type="link"
 @click="close2"
@@ -285,7 +286,11 @@ type="up"
         </a-form-model>
       </div>
       <div class="table">
-        <a-table :columns="columns2" :data-source="data2" :pagination="false">
+        <a-table
+          :columns="columns2"
+          :data-source="tableData2"
+          :pagination="false"
+        >
           <a slot="name" slot-scope="text">{{ text }}</a>
         </a-table>
         <div class="pagination">
@@ -298,7 +303,9 @@ type="up"
             :page-size.sync="pagination2.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination2.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination2.currentPage}/${Math.ceil(
+                  total / pagination2.pageSize
+                )}页`
             "
             @change="onChangePage2"
             @showSizeChange="sizeChange2"
@@ -306,8 +313,8 @@ type="up"
         </div>
       </div>
     </a-card>
-    <addGroup ref="addGroup" mode="edit" :group_id='id' ></addGroup>
-    <addUserModel ref="addUserModel" mode="addGroup" :id="id" ></addUserModel>
+    <addGroup ref="addGroup" mode="edit" :group_id="id"></addGroup>
+    <addUserModel ref="addUserModel" mode="addGroup" :id="id"></addUserModel>
     <importFile ref="importFile" :id="id"></importFile>
   </div>
 </template>
@@ -317,7 +324,15 @@ import moment from 'moment'
 import addGroup from './addGroup'
 import addUserModel from './adduserModel'
 import importFile from './importFile'
-import { toGetGroupBaseInfo, toGetGroupUserList, toDelGroupUser, toSetGroupOwner, toSetAllow, toGetProject, toGetLog } from '@/api/taskCentre'
+import {
+  toGetGroupBaseInfo,
+  toGetGroupUserList,
+  toDelGroupUser,
+  toSetGroupOwner,
+  toSetAllow,
+  toGetProject,
+  toGetLog
+} from '@/api/taskCentre'
 export default {
   components: {
     addGroup,
@@ -417,33 +432,7 @@ export default {
       ],
       selectedRowKeys: [], // 表格复选框的id数组
       card3Bol: false,
-      data2: [
-        // 日志列表
-        {
-          id: '10',
-          operaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务群',
-          operaPeople: '用户昵称(姓名)',
-          operaType: '加入任务群',
-          operaExplain: '二维码加入群“群名称'
-        },
-        {
-          id: '10',
-          operaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务群',
-          operaPeople: '用户昵称(姓名)',
-          operaType: '加入任务群',
-          operaExplain: '二维码加入群“群名称'
-        },
-        {
-          id: '10',
-          operaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务群',
-          operaPeople: '用户昵称(姓名)',
-          operaType: '加入任务群',
-          operaExplain: '二维码加入群“群名称'
-        }
-      ],
+      tableData2: [], // 日志列表
       columns2: [
         // 日志列表
         {
@@ -455,32 +444,32 @@ export default {
         },
         {
           title: '操作时间',
-          dataIndex: 'operaTime',
-          key: 'operaTime',
-          width: 150
+          dataIndex: 'ctime',
+          key: 'ctime',
+          width: 250
         },
         {
           title: '模块',
-          dataIndex: 'module',
-          key: ' module',
+          dataIndex: 'module_type',
+          key: ' module_type',
           width: 150
         },
         {
           title: '操作员',
-          dataIndex: 'operaPeople',
-          key: 'operaPeople',
+          dataIndex: 'username',
+          key: 'username',
           width: 150
         },
         {
           title: '操作类型',
-          dataIndex: 'operaType',
-          key: 'operaType',
+          dataIndex: 'opt_type',
+          key: 'opt_type',
           width: 150
         },
         {
           title: '操作说明',
-          dataIndex: 'operaExplain',
-          key: 'operaExplain'
+          dataIndex: 'content',
+          key: 'content'
         }
       ],
       id: '', // 群id
@@ -491,7 +480,16 @@ export default {
       projectList: [], // 所有项目列表
       join_type: '', // 加入方式
       user_search: '', // 用户搜索
-      owner: '' // 群主搜索
+      owner: '', // 群主搜索
+      is_register: '', // 是否注册
+      project_id: '', // 所属项目
+      join_time: '', // 加入时间
+      opt_user: '', // 操作员
+      opt_time: '', // 操作时间
+      opt_type: '', // 操作类型
+      opt_desc: '', // 操作内容
+      joinTime: '',
+      operaTime: ''
     }
   },
   mounted () {
@@ -510,36 +508,71 @@ export default {
     }
   },
   methods: {
-    // 获取日志列表
-   async getRegister () {
-     const res = await toGetLog({
-       pagesize: this.pagination2.pageSize,
-       pageindex: this.pagination2.currentPage,
-       type: 2,
-       task_id: +this.id
-     })
-     console.log('获取日志列表', res)
-   },
-    // 获取群基础信息
-   async getGroupBase () {
-       if (this.id != '') {
-      // 群详情-基础信息
-      const res = await toGetGroupBaseInfo({
-        group_id: this.id
-      })
-      this.baseInfo = res.data
-      this.baseInfo.is_open = this.baseInfo.is_open === '1'
-      console.log('群详情-基础信息', res)
+
+    // 重置日志查询
+    resetLog () {
+      this.opt_user = ''
+      this.opt_time = ''
+      this.opt_type = ''
+      this.opt_desc = ''
+      this.operaTime = ''
+    },
+    // 操作日志查询
+    searchLog () {
+      this.pagination2.currentPage = 1
+      this.getRegister()
+    },
+    // 重置成员搜索
+    resetGroupUserList () {
+      this.user_search = ''
+      this.owner = ''
+      this.join_time = ''
+      this.is_register = ''
+      this.join_type = ''
+      this.project_id = ''
+      this.joinTime = ''
+    },
+    // 成员列表查询
+    search () {
+      this.pagination.currentPage = 1
       this.getData()
-    }
+    },
+    // 获取日志列表
+    async getRegister () {
+      const res = await toGetLog({
+        pagesize: this.pagination2.pageSize,
+        pageindex: this.pagination2.currentPage,
+        type: 2,
+        task_id: +this.id,
+        opt_user: this.opt_user,
+        opt_time: this.opt_time,
+        opt_type: this.opt_type,
+        opt_desc: this.opt_desc
+      })
+      this.tableData2 = res.data.list
+      this.pagination2.total = res.data.total
+      console.log('获取日志列表', res)
+    },
+    // 获取群基础信息
+    async getGroupBase () {
+      if (this.id != '') {
+        // 群详情-基础信息
+        const res = await toGetGroupBaseInfo({
+          group_id: this.id
+        })
+        this.baseInfo = res.data
+        this.baseInfo.is_open = this.baseInfo.is_open === '1'
+        console.log('群详情-基础信息', res)
+        this.getData()
+      }
     },
     // 是否允许加入
-   async isOpen (checked) {
-     const res = await toSetAllow({
-       group_id: this.id,
-       is_open: checked === true ? 1 : 0
-     })
-     console.log('是否允许加入', res)
+    async isOpen (checked) {
+      const res = await toSetAllow({
+        group_id: this.id,
+        is_open: checked === true ? 1 : 0
+      })
+      console.log('是否允许加入', res)
     },
     // 群成员列表排序
     changeGroupMember (pagination, filters, sorter) {
@@ -560,39 +593,45 @@ export default {
         pageindex: this.pagination.currentPage,
         group_id: this.id,
         order_field: this.order_field,
-        sort_value: this.sort_value
+        sort_value: this.sort_value,
+        user_search: this.user_search.trim(),
+        owner: this.owner,
+        join_time: this.join_time,
+        is_register: this.is_register,
+        join_type: this.join_type,
+        project_id: this.project_id
       })
       this.tableData = res.list
       this.pagination.total = res.data.total
       console.log('获取群成员', res)
     },
     // 设为群主
-   async setGroupOwner () {
-     if (this.selectedRowKeys[0] === 0) {
-       this.$message.error('该用户无法设置为群主')
-       this.selectedRowKeys = []
-       return
-     }
- await toSetGroupOwner({
-       uid: this.selectedRowKeys[0],
-       group_id: this.id
-     })
+    async setGroupOwner () {
+      if (this.selectedRowKeys[0] === 0) {
+        this.$message.error('该用户无法设置为群主')
+        this.selectedRowKeys = []
+        return
+      }
+      await toSetGroupOwner({
+        uid: this.selectedRowKeys[0],
+        group_id: this.id
+      })
       this.$message.success('设置群主成功')
     },
     // 删除群成员
-     async  del (record) {
-       console.log('record', record)
-       if (record.uid === 0) {
-         this.$message.error('该用户无法删除')
-         return
-       }
+    async del (record) {
+      console.log('record', record)
+      if (record.uid === 0) {
+        this.$message.error('该用户无法删除')
+        return
+      }
       const idArr = []
       idArr.push(record.uid)
-    await toDelGroupUser({
-       uids: idArr,
-       group_id: this.id
-     })
-     this.getData()
+      await toDelGroupUser({
+        uids: idArr,
+        group_id: this.id
+      })
+      this.getData()
       this.$message.success('删除成功')
     },
     // 导入用户
@@ -620,10 +659,11 @@ export default {
       this.card3Bol = true
       this.$refs.card3.style.height = '64px'
     },
-    // 操作时间
+    // 操作日志时间
     onChange2 (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+       this.opt_time = dateStrings[0] + '~' + dateStrings[1]
     },
     // 清空复选框
     clear () {
@@ -639,19 +679,28 @@ export default {
     onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.currentPage = 1
+      this.pagination.pageSize = size
+      this.getData()
     },
-    // 页码改变事件
+    // 日志页码改变事件
     onChangePage2 (page, size) {
       console.log('Page: ', page)
-      this.pagination.currentPage = page
+      this.pagination2.currentPage = page
+      this.pagination2.pageSize = size
+      this.getRegister()
     },
-    // 页容量改变事件
+    // 日志页容量改变事件
     sizeChange2 (current, size) {
-      console.log('size: ', size)
+      console.log('日志页容量改变事件: ', current)
+      this.pagination2.currentPage = 1
+      this.pagination2.pageSize = size
+      this.getRegister()
     },
     // 展开
     open () {
@@ -666,9 +715,12 @@ export default {
       this.$refs.card2.$el.style.height = '80px'
     },
     moment,
+    // 成员列表时间
     onChange (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      this.join_time = dateStrings[0] + '~' + dateStrings[1]
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      console.log('成员列表时间', dateStrings[0] + '~' + dateStrings[1])
     }
   },
   async created () {

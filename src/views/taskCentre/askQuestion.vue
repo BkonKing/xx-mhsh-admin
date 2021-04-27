@@ -5,31 +5,43 @@
         <div class="task-top">
           <div
             class="item"
-            @click="currentIndex = 1"
+            @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            全部
+            全部{{ askQuestionInfo.total }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 2"
+            @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待审核
+            待审核{{
+              askQuestionInfo.reviewed_total === 0
+                ? ""
+                : askQuestionInfo.reviewed_total
+            }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 3"
+            @click="changeTab(3)"
             :class="{ active: currentIndex === 3 }"
           >
-            已通过
+            已通过{{
+              askQuestionInfo.passed_total === 0
+                ? ""
+                : askQuestionInfo.passed_total
+            }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 4"
+            @click="changeTab(4)"
             :class="{ active: currentIndex === 4 }"
           >
-            未通过
+            未通过{{
+              askQuestionInfo.failed_total === 0
+                ? ""
+                : askQuestionInfo.failed_total
+            }}
           </div>
         </div>
       </template>
@@ -39,54 +51,54 @@
         <a-row>
           <a-col :span="8">
             <a-form-model-item label="类型">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
+              <a-select
+                v-model="type"
+                placeholder="请选择"
+                style="width: 264px"
+              >
+                <a-select-option value="1">
+                  提问
                 </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
+                <a-select-option value="2">
+                  回复
                 </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="审核状态">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
+              <a-select
+                v-model="check_type"
+                placeholder="请选择"
+                style="width: 264px"
+              >
+                <a-select-option value="0">
+                  待审核
                 </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
+                <a-select-option value="1">
+                  通过
                 </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
+                <a-select-option value="2">
+                  未通过
                 </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
+                <a-select-option value="3">
+                  无审核
                 </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="有无回复" v-if="!bol">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
+              <a-select
+                v-model="is_reply"
+                placeholder="请选择"
+                style="width: 264px"
+              >
+                <a-select-option value="1">
+                  有
                 </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
+                <a-select-option value="0">
+                  无
                 </a-select-option>
               </a-select>
             </a-form-model-item>
@@ -94,7 +106,7 @@
               <a-button type="primary">
                 查询
               </a-button>
-              <a-button>重置</a-button>
+              <a-button @click="search">重置</a-button>
               <a-button
 type="link"
 @click="open"
@@ -108,6 +120,7 @@ type="down"
           <a-col :span="8">
             <a-form-model-item label="发布用户">
               <a-input
+                v-model="user_search"
                 placeholder="手机号、用户昵称/ID"
                 style="width:264px"
               ></a-input>
@@ -115,30 +128,37 @@ type="down"
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="发布内容">
-              <a-input placeholder="内容、ID" style="width:264px"></a-input>
+              <a-input
+                v-model="content"
+                placeholder="内容、ID"
+                style="width:264px"
+              ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
             <a-form-model-item label="任务">
-              <a-input placeholder="编号、标题" style="width:264px"></a-input>
+              <a-input
+                v-model="task_search"
+                placeholder="编号、标题"
+                style="width:264px"
+              ></a-input>
             </a-form-model-item>
           </a-col>
         </a-row>
         <a-row v-if="!bol">
           <a-col :span="8">
             <a-form-model-item label="所属项目">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
+              <a-select
+                v-model="project_id"
+                placeholder="请选择"
+                style="width: 264px"
+              >
+                <a-select-option
+                  v-for="(item, index) in projectList"
+                  :key="index"
+                  :value="item.id"
+                >
+                  {{ item.project_name }}
                 </a-select-option>
               </a-select>
             </a-form-model-item>
@@ -159,7 +179,7 @@ type="down"
           </a-col>
           <a-col :span="8">
             <div class="btns">
-              <a-button type="primary">
+              <a-button type="primary" @click="search">
                 查询
               </a-button>
               <a-button>重置</a-button>
@@ -176,9 +196,9 @@ type="up"
     </a-card>
     <a-card class="card2">
       <a-button type="primary" @click="batchCheck">审核</a-button>
-      <div class="selected" v-if="selectedRowKeys.length>0">
+      <div class="selected" v-if="selectedRowKeys.length > 0">
         <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
+        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
@@ -189,16 +209,28 @@ type="up"
             onChange: onSelectChange
           }"
           :columns="columns"
-          :data-source="data"
+          :data-source="tableData"
         >
-          <template #issueUser>
-            <div class="issueUser">
-              <div class="t1">昵称</div>
-              <div class="t2">项目名称</div>
+          <template slot="is_check" slot-scope="is_check">
+            <div class="check">
+              <span v-if="is_check === 0">待审核</span>
+              <span v-else-if="is_check === 1">已通过</span>
+              <span v-else>未通过</span>
             </div>
           </template>
-          <template #task>
-            <div style="color:#1890FF">任务标题标题标题标题标题标题标...</div>
+          <template slot="type" slot-scope="type">
+            <div class="type">
+              {{ +type === 1 ? "提问" : "回复" }}
+            </div>
+          </template>
+          <template slot="owner_name" slot-scope="text, record">
+            <div class="issueUser">
+              <div class="t1">{{ record.owner_name }}</div>
+              <div class="t2">{{ record.project_name }}</div>
+            </div>
+          </template>
+          <template slot="task_title" slot-scope="task_title">
+            <div style="color:#1890FF">{{ task_title }}</div>
           </template>
           <template #opera>
             <div>
@@ -217,7 +249,9 @@ type="up"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -227,7 +261,10 @@ type="up"
     </a-card>
     <askCheckModel ref="askCheckModel"></askCheckModel>
     <askLookOverModel ref="askLookOverModel"></askLookOverModel>
-    <askBatchCheck ref="askBatchCheck" :selectedRowKeys='selectedRowKeys'></askBatchCheck>
+    <askBatchCheck
+      ref="askBatchCheck"
+      :selectedRowKeys="selectedRowKeys"
+    ></askBatchCheck>
   </div>
 </template>
 
@@ -236,6 +273,7 @@ import moment from 'moment'
 import askCheckModel from './askCheckModel'
 import askLookOverModel from './askLookOverModel'
 import askBatchCheck from './askBatchCheck'
+import { toGetQuestionList, toGetProject } from '@/api/taskCentre'
 export default {
   components: {
     askCheckModel,
@@ -248,41 +286,13 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       currentIndex: 1,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       bol: false,
-      data: [
-        {
-          id: '000000000',
-          checkTime: '剩余 20:00:00',
-          checkStatus: '待审核',
-          type: '提问',
-          content: '内容内容内容内容内容内容',
-          complain: '0',
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000000',
-          checkTime: '剩余 20:00:00',
-          checkStatus: '待审核',
-          type: '提问',
-          content: '内容内容内容内容内容内容',
-          complain: '0',
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000000',
-          checkTime: '剩余 20:00:00',
-          checkStatus: '待审核',
-          type: '提问',
-          content: '内容内容内容内容内容内容',
-          complain: '0',
-          createTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [], // 提问列表
       columns: [
         {
           title: 'ID',
@@ -298,15 +308,17 @@ export default {
         },
         {
           title: '审核状态',
-          dataIndex: 'checkStatus',
-          key: 'checkStatus',
-          width: 100
+          dataIndex: 'is_check',
+          key: 'is_check',
+          width: 100,
+          scopedSlots: { customRender: 'is_check' }
         },
         {
           title: '类型',
           dataIndex: 'type',
           key: 'type',
-          width: 100
+          width: 100,
+          scopedSlots: { customRender: 'type' }
         },
         {
           title: '内容',
@@ -317,31 +329,30 @@ export default {
         },
         {
           title: '发布用户',
-          dataIndex: 'issueUser',
-          key: 'issueUser',
-          ellipsis: true,
-          scopedSlots: { customRender: 'issueUser' },
-          width: 100
+          dataIndex: 'owner_name',
+          key: 'owner_name',
+          scopedSlots: { customRender: 'owner_name' },
+          width: 200
         },
         {
           title: '投诉',
-          dataIndex: 'complain',
-          key: 'complain',
+          dataIndex: 'complaint_total',
+          key: 'complaint_total',
           sorter: true,
           width: 100
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
+          dataIndex: 'task_title',
+          key: 'task_title',
           // ellipsis: true,
           width: 200,
-          scopedSlots: { customRender: 'task' }
+          scopedSlots: { customRender: 'task_title' }
         },
         {
           title: '创建时间',
-          dataIndex: 'createTime',
-          key: 'createTime',
+          dataIndex: 'ctime',
+          key: 'ctime',
           sorter: true
         },
         {
@@ -351,7 +362,21 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ],
-      selectedRowKeys: [] // Check here to configure the default column
+      selectedRowKeys: [], // 表格复选框数组
+      askQuestionInfo: {}, // 提问列表信息
+      tab_type: '', //	否	int	标签切换值 0待审核 1通过 2未通过
+      type: undefined, //	否	int	类型1提问 2回复
+      check_type: undefined, //	否	int	审核状态 审核状态 0待审核 1通过 2未通过 3无需审核
+      is_reply: undefined, //	否	int	有无回复
+      user_search: '', //	否	string	用户搜索
+      project_id: undefined, //	否	int	项目ID
+      order_field: '', //	否	string	排序字段
+      sort_value: '', //	否	string	排序值
+      status: '', //	否	int	0待审核 1已通过 2未通过
+      content: '', //	否	string	发布内容
+      task_search: '', //	否	string	任务搜索
+      ctime: '', //	否	string	发布时间
+      projectList: [] // 项目列表
     }
   },
   mounted () {
@@ -359,6 +384,48 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+    // 切换标签
+    changeTab (index) {
+      this.currentIndex = index
+      if (index === 1) {
+        this.tab_type = ''
+      } else if (index === 2) {
+        this.tab_type = 0
+      } else if (index === 3) {
+        this.tab_type = 1
+      } else {
+        this.tab_type = 2
+      }
+      this.getData()
+    },
+    // 查询
+    search () {
+      this.pagination.currentPage = 1
+      this.getData()
+    },
+    // 获取提问列表
+    async getData () {
+      const res = await toGetQuestionList({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage,
+        tab_type: this.tab_type,
+        type: this.type,
+        check_type: this.check_type,
+        is_reply: this.is_reply,
+        user_search: this.user_search,
+        project_id: this.project_id,
+        order_field: this.order_field,
+        sort_value: this.sort_value,
+        status: this.status,
+        content: this.content,
+        task_search: this.task_search,
+        ctime: this.ctime
+      })
+      this.askQuestionInfo = res.data || {}
+      this.tableData = res.list
+      this.pagination.total = res.data.total
+      console.log('获取提问列表', res)
+    },
     // 批量审核
     batchCheck () {
       this.$refs.askBatchCheck.isShow = true
@@ -379,10 +446,14 @@ export default {
     onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.currentPage = 1
+      this.pagination.pageSize = size
+      this.getData()
     },
     // 表格复选框 事件
     onSelectChange (selectedRowKeys, selectedRows) {
@@ -405,9 +476,16 @@ export default {
     moment,
     // 时间改变事件
     onChange (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      this.ctime = dateStrings[0] + '~' + dateStrings[1]
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
+  },
+  async created () {
+    this.getData()
+    const res = await toGetProject()
+    this.projectList = res.data
+    console.log('所有项目', res)
   }
 }
 </script>

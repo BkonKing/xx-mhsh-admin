@@ -135,10 +135,10 @@
       </a-form-model>
     </a-card>
     <a-card class="card2">
-      <a-table :columns="columns" :data-source="data" :pagination='false'>
-        <template #task>
+      <a-table :columns="columns" :data-source="tableData" :pagination='false'>
+        <template slot="task_title" slot-scope="task_title">
           <div class="task" style="color:#1890FF">
-            任务标题标题标题标题标题标题标...
+            {{task_title}}
           </div>
         </template>
         <template #appraiseUser>
@@ -177,6 +177,7 @@
 <script>
 import moment from 'moment'
 import appraiseModel from './appraiseModel'
+import { toGetList } from '@/api/taskCentre'
 export default {
   components: {
     appraiseModel
@@ -187,34 +188,12 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       cardBol: false,
-      data: [
-        {
-          id: '00000',
-          rating: '1',
-          tag: '标签、标签',
-          supple: '内容内容内容',
-          appraiseTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '00000',
-          rating: '1',
-          tag: '标签、标签',
-          supple: '内容内容内容',
-          appraiseTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '00000',
-          rating: '1',
-          tag: '标签、标签',
-          supple: '内容内容内容',
-          appraiseTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [], // 评价列表
       columns: [
         {
           title: 'ID',
@@ -224,15 +203,15 @@ export default {
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
+          dataIndex: 'task_title',
+          key: 'task_title',
           width: 150,
-          scopedSlots: { customRender: 'task' }
+          scopedSlots: { customRender: 'task_title' }
         },
         {
           title: '评星',
-          dataIndex: 'rating',
-          key: 'rating',
+          dataIndex: 'evaluate_start',
+          key: 'evaluate_start',
           sorter: true,
            width: 100
         },
@@ -275,6 +254,14 @@ export default {
     console.log(this.$refs.card.$el.offsetHeight) // 218
   },
   methods: {
+    // 获取评价列表
+    async getData () {
+      const res = await toGetList({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage
+      })
+      console.log('获取评价列表', res)
+    },
     // 查看
     lookOver () {
       this.$refs.appraiseModel.isShow = true
@@ -305,6 +292,9 @@ export default {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
