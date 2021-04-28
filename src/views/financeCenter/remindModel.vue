@@ -28,11 +28,7 @@
             @click="add"
             v-if="list.length != 5"
           />
-          <a-icon
-            type="close"
-            class="close"
-            @click="del(index)"
-          />
+          <a-icon type="close" class="close" @click="del(index)" />
         </div>
         <div class="box" v-if="userInfoList.length > 0">
           <div class="boxtitle">全部</div>
@@ -82,21 +78,20 @@ export default {
     },
     userData (newVal) {
       console.log('newVal', newVal)
-     if (newVal.length === 0) {
-       this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
-     } else {
+      if (newVal.length === 0) {
+        this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
+      } else {
         this.list = this.userData.map(item => {
-        return {
-          id: Math.random() * 999,
-          phone: item.mobile,
-          name: item.realname
-        }
-      })
-     }
+          return {
+            id: Math.random() * 999,
+            phone: item.mobile,
+            name: item.realname
+          }
+        })
+      }
     }
   },
   methods: {
-
     // 选择用户
     selectUser (item) {
       this.list[this.currentIndex].name = item.realname
@@ -129,13 +124,18 @@ export default {
     },
     // 设置提醒用户
     async submit () {
-      const arr = this.list.map(item => {
-        return {
-          realname: item.name,
-          mobile: item.phone
+     let arr = this.list.map(item => {
+        if (item.name !== '' && item.phone != '') {
+          return {
+            realname: item.name,
+            mobile: item.phone
+          }
         }
       })
-      // console.log(arr)
+    arr = arr.filter(item => {
+        return item != undefined
+      })
+      console.log(arr)
       await setReminder({
         user_list: arr,
         type: this.type
@@ -148,8 +148,8 @@ export default {
     // 删除记录
     del (index) {
       if (this.list.length === 1) {
-      this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
-      return
+        this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
+        return
       }
       // console.log(index)
       this.list.splice(index, 1)
@@ -162,7 +162,6 @@ export default {
       this.list.push({ id: Math.random() * 999, name: '', phone: '' })
     }
   }
-
 }
 </script>
 

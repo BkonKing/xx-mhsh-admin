@@ -144,7 +144,7 @@ export default {
     // 设置充值金额
     setRechargeMoney () {
       // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
-      this.rechargeMoney = keepTwoDecimalFull(this.rechargeMoney / 0.0035)
+      this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
       this.count = keepTwoDecimalFull(this.price / 0.1)
     },
     // 设置金额
@@ -159,6 +159,10 @@ export default {
     // 充值
     async recharge () {
       if (this.recharge_type === 1) {
+        if (this.count === '' || this.price === '') {
+          this.$message.error('请输入充值条数或者金额')
+          return
+        }
         this.$refs.shortNoteModel.isShow = true
         const res = await addRecharge({
           recharge_type: this.recharge_type,
@@ -170,6 +174,10 @@ export default {
         this.$parent.pagination.currentPage = 1
         // console.log('充值短信', res)
       } else {
+        if (this.rechargeMoney === '' || this.price === '') {
+          this.$message.error('请输入充值额度或者金额')
+          return
+        }
         this.$refs.payChannelModel.isShow = true
         const res = await addRecharge({
           recharge_type: this.recharge_type,

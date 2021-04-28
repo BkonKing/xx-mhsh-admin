@@ -1,96 +1,89 @@
 <template>
   <div class="rechargeRecord">
-    <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row >
-          <a-col :span='8'>
-            <a-form-model-item label="充值类型">
-              <a-select
-                placeholder="请选择"
-                v-model="recharge_type"
-                style="width: 100%"
+    <a-card class="card" ref="card" id="card">
+      <div class="table-page-search-wrapper">
+        <a-form-model layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="充值类型">
+                <a-select placeholder="请选择" v-model="recharge_type">
+                  <a-select-option value="1">
+                    短信
+                  </a-select-option>
+                  <a-select-option value="2">
+                    支付通道
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col v-if="!projectID" :sm="24" :md="6" :lg="8" :xl="8">
+              <a-form-model-item label="项目">
+                <a-select placeholder="请选择" v-model="project_id">
+                  <a-select-option
+                    v-for="(item, index) in projectList"
+                    :value="item.id"
+                    :key="index"
+                  >
+                    {{ item.project_name }}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item
+                class="timeItem"
+                label="支付时间"
+                v-if="cardBol"
               >
-                <a-select-option value="1">
-                  短信
-                </a-select-option>
-                <a-select-option value="2">
-                  支付通道
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span='8'>
-            <a-form-model-item label="项目" v-if="!projectID">
-              <a-select
-                 placeholder="请选择"
-                v-model="project_id"
-                style="width: 100%"
-              >
-                <a-select-option
-                  v-for="(item, index) in projectList"
-                  :value="item.id"
-                  :key="index"
-                >
-                  {{ item.project_name }}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span='8'>
-            <a-form-model-item label="支付时间" v-if="cardBol">
-              <a-range-picker
-                format="YYYY-MM"
-                locale="{locale}"
-                :value="value"
-                :mode="mode2"
-                @panelChange="handlePanelChange2"
-                @change="handleChange"
-              />
-            </a-form-model-item>
-            <div class="btns" v-else>
-              <a-button type="primary" @click="search">查询</a-button>
-              <a-button @click="reset">重置</a-button>
-              <a-button
+                <a-range-picker
+                  style="width:100%"
+                  format="YYYY-MM"
+                  locale="{locale}"
+                  :value="value"
+                  :mode="mode2"
+                  @panelChange="handlePanelChange2"
+                  @change="handleChange"
+                />
+              </a-form-model-item>
+              <div class="btns" v-else>
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
 type="link"
 @click="open"
-                >展开
-                <a-icon type="down" />
-              </a-button>
-            </div>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span='8'>
-            <a-form-model-item label="支付方式" v-if="cardBol">
-              <a-select
-               placeholder="请选择"
-                v-model="pay_type"
-                style="width: 100%"
-              >
-                <a-select-option value="1">
-                  微信
-                </a-select-option>
-                <a-select-option value="2">
-                  支付宝
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span='8'></a-col>
-          <a-col :span='8'>
-            <div class="btns" v-if="cardBol">
-              <a-button type="primary" @click="search">查询</a-button>
-              <a-button @click="reset">重置</a-button>
-              <a-button
+                  >展开
+                  <a-icon type="down" />
+                </a-button>
+              </div>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="支付方式" v-if="cardBol">
+                <a-select placeholder="请选择" v-model="pay_type">
+                  <a-select-option value="1">
+                    微信
+                  </a-select-option>
+                  <a-select-option value="2">
+                    支付宝
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24"></a-col>
+            <a-col :md="24" :sm="24">
+              <div class="btns" v-if="cardBol">
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
 type="link"
 @click="close"
-                >收起
-                <a-icon type="up" />
-              </a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
+                  >收起
+                  <a-icon type="up" />
+                </a-button>
+              </div>
+            </a-col>
+          </a-row>
+        </a-form-model>
+      </div>
     </a-card>
     <a-card class="card2">
       <a-button
@@ -127,7 +120,12 @@ v-if="projectID"
           :page-size-options="pagination.sizes"
           :total="pagination.total"
           :page-size.sync="pagination.pageSize"
-          :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`"
+          :show-total="
+            (total, range) =>
+              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                total / pagination.pageSize
+              )}页`
+          "
           @change="onChange"
           @showSizeChange="sizeChange"
         />
@@ -145,6 +143,7 @@ import locale from 'ant-design-vue/lib/locale-provider/zh_CN'
 import 'moment/locale/zh-cn'
 import Cookies from 'js-cookie'
 moment.locale('zh-cn')
+
 export default {
   components: {
     rechargeModel
@@ -158,8 +157,6 @@ export default {
         total: 0,
         pageSize: 10
       },
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
       mode2: ['month', 'month'],
       recharge_type: undefined,
       value: [],
@@ -175,20 +172,20 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: 230
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '项目',
           dataIndex: 'project_name',
           key: 'project_name',
-          width: 200
+          width: 230
         },
         {
           title: '充值类型',
           dataIndex: 'recharge_type',
           key: 'recharge_type',
-          width: 150,
+          width: 230,
           scopedSlots: { customRender: 'recharge_type' }
         },
         {
@@ -196,7 +193,7 @@ export default {
           dataIndex: 'payment_money',
           key: 'payment_money',
           sorter: true,
-          width: 200,
+          width: 230,
           scopedSlots: { customRender: 'payment_money' }
         },
         {
@@ -204,25 +201,26 @@ export default {
           dataIndex: 'recharge_amount',
           key: 'recharge_amount',
           sorter: true,
-          width: 150
+          width: 230
         },
         {
           title: '剩余量',
           dataIndex: 'surplus_amount',
           key: 'surplus_amount',
-          width: 200
+          width: 230
         },
         {
           title: '支付方式',
           dataIndex: 'pay_type',
           key: 'pay_type',
-          width: 200,
+          width: 230,
           scopedSlots: { customRender: 'pay_type' }
         },
         {
           title: '支付账户',
           dataIndex: 'account',
-          key: 'account'
+          key: 'account',
+          width: 230
         },
         {
           title: '支付时间',
@@ -301,7 +299,7 @@ export default {
     },
     // 展开
     open () {
-      this.$refs.card.$el.style.height = this.cardHeight + 'px'
+      this.$refs.card.$el.style.height = '140px'
       setTimeout(() => {
         this.cardBol = true
       }, 100)
@@ -332,8 +330,15 @@ export default {
     }
   },
   mounted () {
-    // console.log(this.$refs.card.$el.offsetHeight)
-    this.cardHeight = this.$refs.card.$el.offsetHeight
+    // console.log('this.$refs.card.$el.offsetHeight', this.$refs.card.$el.offsetHeight)
+    // this.cardHeight = this.$refs.card.$el.offsetHeight
+    window.onresize = function () {
+      document.getElementById('card').style.height = 'auto'
+      // console.log(
+      //   'this.$refs.card.$el.offsetHeight',
+      //   document.getElementById('card')
+      // )
+    }
     this.close()
   },
   async created () {
@@ -347,13 +352,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .rechargeRecord {
+  .timeItem {
+    /deep/ .ant-col-4 {
+      margin-left: 106px;
+    }
+  }
   min-width: 1500px;
   overflow: scroll-y;
   padding-left: 20px;
   .btns {
-    margin-left: 190px;
+    padding-bottom: 20px;
+    text-align: right;
     button {
       margin-right: 10px;
     }
@@ -373,8 +383,7 @@ export default {
         padding: 10px;
       }
       /deep/ .ant-pagination-total-text {
-        margin-left: 20px;
-        margin-right: 890px;
+        float: left;
       }
       // /deep/ .ant-pagination-item-active {
       //   // background-color: #1890ff;
@@ -387,5 +396,9 @@ export default {
   .table {
     margin-top: 20px;
   }
+}
+/deep/ .ant-pagination {
+  white-space: nowrap;
+  text-align: right;
 }
 </style>

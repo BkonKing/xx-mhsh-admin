@@ -61,7 +61,7 @@
       </div>
     </a-card>
     <a-card class="card2">
-      <div class="title">充值提醒 <span>剩余不足时通知提醒指定手机</span></div>
+      <div class="title">充值提醒 <span>剩余不足时通知指定手机</span></div>
       <div class="content">
         <div class="t1">
           <span>余额：</span>
@@ -215,7 +215,7 @@ export default {
       padding-right: 0;
     }
     .title {
-      padding-left: 30px;
+      padding-left: 20px;
       font-size: 18px;
       font-weight: 700;
       border-bottom: 1px solid #ebebeb;
@@ -228,7 +228,7 @@ export default {
       }
     }
     .content {
-      padding-left: 70px;
+      padding-left: 30px;
       padding-top: 20px;
       .t1 {
         margin-bottom: 20px;
