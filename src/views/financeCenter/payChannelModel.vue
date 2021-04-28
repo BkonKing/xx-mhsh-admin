@@ -74,7 +74,7 @@ export default {
       isShow: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      pay_type: 2, // 字符类型
+      pay_type: 1, // 支付类型
       payMa: '', // 支付二维码
       isPay: false, // 是否已经支付
       timeId: null,
@@ -85,6 +85,7 @@ export default {
     isShow (newVal) {
       if (newVal === false) {
         this.isPay = false
+        this.payMa = ''
       }
     }
   },
@@ -135,6 +136,9 @@ export default {
         // console.log('支付', res)
       }
     }
+  },
+  created () {
+    this.onChange()
   }
 }
 </script>

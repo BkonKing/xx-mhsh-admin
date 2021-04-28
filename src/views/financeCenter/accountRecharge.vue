@@ -77,7 +77,7 @@ export default {
 
 <style lang="less" scoped>
 .accountRecharge {
-  min-width: 1500px;
+  min-width: 1200px;
   overflow: scroll-y;
   /deep/ .ant-page-header {
     padding-bottom: 0;

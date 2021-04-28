@@ -203,6 +203,7 @@ type="up"
       </div>
       <div class="table">
         <a-table
+        rowKey="id"
           :pagination="false"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,

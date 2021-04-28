@@ -132,15 +132,15 @@ const vueConfig = {
         }
       },
       '/apiwsolid': {
-        // target: 'http://develop.mhshjy.com/wsolid/spi/v1',
-        target: 'https://test.tosolomo.com/wsolid/spi/v1',
+        target: 'http://develop.mhshjy.com/wsolid/spi/v1',
+        // target: 'https://test.tosolomo.com/wsolid/spi/v1',
         pathRewrite: {
           '^/apiwsolid': ''
         }
       },
       '/api': {
-        // target: 'http://develop.mhshjy.com/nsolid/spi/v1',
-        target: 'https://test.tosolomo.com/nsolid/spi/v1',
+        target: 'http://develop.mhshjy.com/nsolid/spi/v1',
+        // target: 'https://test.tosolomo.com/nsolid/spi/v1',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

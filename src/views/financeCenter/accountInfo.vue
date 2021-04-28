@@ -4,7 +4,7 @@
       <a-card class="card" style="width:360px">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
-          <h3>{{ accountInfo.nickname }}</h3>
+          <h3>{{ accountInfo.nickname || '美好生活家园' }}</h3>
         </div>
         <div class="middle">
           <div class="item">
@@ -20,7 +20,10 @@
                     : '/zht/credits/grant/getTransferApplyList'
                 "
                 target="_parent"
-                >开通</a
+                >
+                <span v-if="accountInfo.is_open===1">转账</span>
+                <span v-else>开通</span>
+                </a
               >
             </a-button>
           </div>
