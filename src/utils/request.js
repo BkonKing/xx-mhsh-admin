@@ -64,6 +64,9 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
+  if (response.data.code == '401') {
+    top.token_invalid()
+  }
   return response.data
 }, errorHandler)
 

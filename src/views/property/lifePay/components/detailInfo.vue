@@ -9,7 +9,7 @@
     <a-descriptions title="房间" :column="2">
       <a-descriptions-item label="房产" :span="infoData.account_numb || infoData.surface ? 1 : 2">{{ infoData.house_property_name }}</a-descriptions-item>
       <a-descriptions-item v-if="infoData.account_numb || infoData.surface" :label="infoData.genre_type_name"><template v-if="infoData.account_numb">户号{{ infoData.account_numb }}&nbsp;&nbsp;&nbsp;&nbsp;</template><template v-if="infoData.surface">表号{{ infoData.surface }}</template></a-descriptions-item>
-      <a-descriptions-item label="业主"><a v-if="infoData.uid" :href="`/xmht/household/member/getMemberList?uid=${infoData.uid}`" target="_blank">{{ infoData.realname + ' ' + infoData.mobile }}</a><template v-else>{{ infoData.realname + ' ' + infoData.mobile }}</template></a-descriptions-item>
+      <a-descriptions-item label="业主"><a v-if="infoData.uid>0" :href="`/xmht/household/member/getMemberList?uid=${infoData.uid}`" target="_blank">{{ infoData.realname + ' ' + infoData.mobile }}</a><template v-else>{{ infoData.realname + ' ' + infoData.mobile }}</template></a-descriptions-item>
     </a-descriptions>
     <template v-if="params && params.bill_type == 3">
       <a-descriptions title="调整" :column="2">
