@@ -116,6 +116,12 @@ export default {
         this.price = ''
       }
     },
+    price () {
+      if (this.price === '') {
+        this.count = ''
+        this.rechargeMoney = ''
+      }
+    },
     isShow (newVal) {
       if (newVal === false) {
         this.recharge_type = 1

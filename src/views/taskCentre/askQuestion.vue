@@ -211,13 +211,7 @@ type="up"
           :columns="columns"
           :data-source="tableData"
         >
-          <template slot="is_check" slot-scope="is_check">
-            <div class="check">
-              <span v-if="is_check === 0">待审核</span>
-              <span v-else-if="is_check === 1">已通过</span>
-              <span v-else>未通过</span>
-            </div>
-          </template>
+
           <template slot="type" slot-scope="type">
             <div class="type">
               {{ +type === 1 ? "提问" : "回复" }}
@@ -232,10 +226,10 @@ type="up"
           <template slot="task_title" slot-scope="task_title">
             <div style="color:#1890FF">{{ task_title }}</div>
           </template>
-          <template #opera>
+          <template  slot="opera" slot-scope="text,record">
             <div>
-              <a-button type="link" @click="check" v-if="true">审核</a-button>
-              <a-button type="link" @click="lookOver" v-else>查看</a-button>
+              <a-button type="link" @click="check" v-if="record.is_check===0">审核</a-button>
+              <a-button type="link" @click="lookOver(record)" v-else>查看</a-button>
             </div>
           </template>
         </a-table>
@@ -302,16 +296,15 @@ export default {
         },
         {
           title: '审核时间',
-          dataIndex: 'checkTime',
-          key: 'checkTime',
+          dataIndex: 'check_time_desc',
+          key: 'check_time_desc',
           width: 150
         },
         {
           title: '审核状态',
-          dataIndex: 'is_check',
-          key: 'is_check',
-          width: 100,
-          scopedSlots: { customRender: 'is_check' }
+          dataIndex: 'check_status',
+          key: 'check_status',
+          width: 100
         },
         {
           title: '类型',
@@ -412,7 +405,7 @@ export default {
         type: this.type,
         check_type: this.check_type,
         is_reply: this.is_reply,
-        user_search: this.user_search,
+        user_search: this.user_search.trim(),
         project_id: this.project_id,
         order_field: this.order_field,
         sort_value: this.sort_value,
@@ -435,8 +428,9 @@ export default {
       this.selectedRowKeys = []
     },
     // 查看
-    lookOver () {
+    lookOver (record) {
       this.$refs.askLookOverModel.isShow = true
+      this.$refs.askLookOverModel.info = JSON.parse(JSON.stringify(record))
     },
     // 审核
     check () {

@@ -3,40 +3,40 @@
     <a-modal v-model="isShow" title="查看" :footer='null'>
       <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-model-item label="任务标题">
-          <span style="color:#1d92ff">任务标题任务标题任务标题任务标题</span>
+          <span style="color:#1d92ff">{{lookOverInfo.task_title}}</span>
         </a-form-model-item>
         <a-form-model-item label="发布用户">
-          <span style="color:#1d92ff">昵称(姓名) </span>项目名称
+          <span style="color:#1d92ff">{{lookOverInfo.publish_user}} </span>{{lookOverInfo.project_name}}
         </a-form-model-item>
         <a-form-model-item
                   label="创建时间"
-          >2020-11-20 08:50:08</a-form-model-item
+          >{{lookOverInfo.ctime}}</a-form-model-item
         >
         <a-form-model-item label="提问编号">
-          <span style="color:#1d92ff">0000000000</span>
+          <span style="color:#1d92ff">{{lookOverInfo.id}}</span>
         </a-form-model-item>
-        <a-form-model-item label="类型">回复</a-form-model-item>
+        <a-form-model-item label="类型">{{lookOverInfo.type===1?'提问':'回复'}}</a-form-model-item>
         <a-form-model-item label="内容">
-          内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+          {{lookOverInfo.content}}
         </a-form-model-item>
         <div class="line"></div>
         <a-form-model-item label="审核状态">
-          未通过
+          {{lookOverInfo.check_status}}
         </a-form-model-item>
-        <a-form-model-item label="审核人">姓名</a-form-model-item>
+        <a-form-model-item label="审核人">{{lookOverInfo.check_user}}</a-form-model-item>
         <a-form-model-item
                   label="审核时间"
-          >2020-11-20 08:50:08</a-form-model-item
+          >{{lookOverInfo.check_time}}</a-form-model-item
         >
-        <a-form-model-item label="违规原因">原因原因</a-form-model-item>
+        <a-form-model-item label="违规原因">{{lookOverInfo.violation_type}}</a-form-model-item>
         <a-form-model-item label="审核说明">
-          内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+          {{lookOverInfo.check_desc}}
         </a-form-model-item>
         <div class="imgcon">
-          <div class="img" v-for="item in 3" :key="item" >
+          <div class="img" v-for="(item,index) in lookOverInfo.check_image" :key="index" >
             <img
             preview="0"
-              src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+              :src="'http://develop.mhshjy.com/nsolid/spi/v1'+item"
               alt=""
             />
           </div>
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { toViewQuestion } from '@/api/taskCentre'
 export default {
   data () {
     return {
@@ -57,11 +58,29 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       previewVisible: false,
-      previewImage: ''
+      previewImage: '',
+      info: {},
+      lookOverInfo: {}
     }
   },
   mounted () {
     this.$previewRefresh()
+  },
+  watch: {
+    info: {
+     async handler () {
+   // 提问-查看详情
+   const res = await toViewQuestion({
+      type: +this.info.type,
+      id: this.info.id
+   })
+   this.lookOverInfo = res.data
+      },
+      deep: true
+    }
+  },
+  created () {
+
   },
   methods: {
     // 预览图片
