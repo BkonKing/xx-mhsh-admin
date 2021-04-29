@@ -243,7 +243,7 @@ export default {
     // 账单月份
     getBillMonth () {
       getBillMonth().then(res => {
-        this.monthList = res.data.list
+        this.monthList = res.data.list.reverse()
       })
     },
     // 费用类型
@@ -308,12 +308,12 @@ export default {
         delete obj.genre_id
       }
       const requestParameters = Object.assign({}, obj, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getPaymentList(requestParameters)
-          .then(res => {
-            this.dataObj = res.tab_data
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getPaymentList(requestParameters)
+        .then(res => {
+          this.dataObj = res.tab_data
+          return res
+        })
     }
   }
 }

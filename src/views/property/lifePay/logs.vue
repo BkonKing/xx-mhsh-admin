@@ -157,11 +157,11 @@ export default {
 
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getLogList(requestParameters)
-          .then(res => {
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getLogList(requestParameters)
+        .then(res => {
+          return res
+        })
     }
   }
 }

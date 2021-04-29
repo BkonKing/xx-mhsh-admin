@@ -134,7 +134,9 @@
         <template
           slot="hall"
           slot-scope="hall">
-          <span v-for="(item, index) in hall" :key="index">{{item.hall_name}}{{index < hall.length-1 ? ',' : ''}}</span>
+          <span v-for="(item, index) in hall" :key="index">
+            {{ item.hall_name }}{{ hall.length-1 > index ? ',' : '' }}
+          </span>
         </template>
       </a-table>
     </a-card>
@@ -142,7 +144,7 @@
 </template>
 
 <script>
-import { STable } from '@/components'
+// import { STable } from '@/components'
 import { getFilmDetail, getFilmDetail2, getFilmScheduling, getSchedulingDate, getScreensList } from '@/api/movie'
 import { cityOpction } from '@/const/city'
 
@@ -166,7 +168,7 @@ const columns = [
 export default {
   name: 'filmDetail',
   components: {
-    STable
+    // STable
   },
   data () {
     this.columns = columns
@@ -271,27 +273,27 @@ export default {
       // const param = this.form
       // return getRefundList(param)
       // const aa = this.$nextTick(() => {
-        const param = {
-          date: this.weekDateList[this.weekActiveTabKey].year_date,
-          film_no: this.film_code,
-          city_id: this.areaCodeL[1],
-          county_id: this.areaCodeL[2]
-        }
-        const requestParameters = Object.assign(param, this.queryParam)
-        console.log('loadData request parameters:', requestParameters)
-        return getFilmScheduling(requestParameters)
-          .then(res => {
-            // const list = res.data.list
-            // const listArr = []
-            // for (const key in res.data.list) {
-            //   listArr.push(res.data.list[key])
-            // }
-            // res.data.total = 1
-            // res.data.list = listArr[0]
-            // console.log(res)
-            this.tableData = res.data.list
-            console.log('this.tableData', this.tableData)
-          })
+      const param = {
+        date: this.weekDateList[this.weekActiveTabKey].year_date,
+        film_no: this.film_code,
+        city_id: this.areaCodeL[1],
+        county_id: this.areaCodeL[2]
+      }
+      const requestParameters = Object.assign(param, this.queryParam)
+      console.log('loadData request parameters:', requestParameters)
+      return getFilmScheduling(requestParameters)
+        .then(res => {
+          // const list = res.data.list
+          // const listArr = []
+          // for (const key in res.data.list) {
+          //   listArr.push(res.data.list[key])
+          // }
+          // res.data.total = 1
+          // res.data.list = listArr[0]
+          // console.log(res)
+          this.tableData = res.data.list
+          console.log('this.tableData', this.tableData)
+        })
       // })
       // console.log('a', aa)
     }

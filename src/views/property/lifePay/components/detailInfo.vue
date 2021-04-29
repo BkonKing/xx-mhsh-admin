@@ -39,7 +39,7 @@
         <a-descriptions-item :label="`${billTypeName}单号`">{{ infoData.id_no }}</a-descriptions-item>
         <a-descriptions-item v-if="infoData.bill_type == 1" :label="`${billTypeName}状态`">成功</a-descriptions-item>
         <a-descriptions-item v-if="infoData.bill_type == 2" label="超时天数">{{ infoData.over_day || '--' }}</a-descriptions-item>
-        <a-descriptions-item :label="`${billTypeName}用户`"><a v-if="infoData.owner_id" :href="`/xmht/household/member/getMemberList?uid=${infoData.owner_id}`" target="_blank">{{ infoData.user_name }}</a><template v-else>{{ infoData.user_name }}</template></a-descriptions-item>
+        <a-descriptions-item :label="`${billTypeName}用户`"><a v-if="infoData.owner_id > 0" :href="`/xmht/household/member/getMemberList?uid=${infoData.owner_id}`" target="_blank">{{ infoData.user_name }}</a><template v-else>{{ infoData.user_name }}</template></a-descriptions-item>
         <a-descriptions-item :label="`${billTypeName}时间`">{{ infoData.pay_time }}</a-descriptions-item>
         <template v-if="infoData.zf_type == 1">
           <a-descriptions-item v-if="infoData.admin_name" :label="`${billTypeName}操作人`" span="2">{{ infoData.admin_name }}</a-descriptions-item>

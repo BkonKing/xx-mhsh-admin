@@ -219,12 +219,12 @@ export default {
         }
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getFilmList(requestParameters)
-          .then(res => {
-            console.log(res.data)
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getFilmList(requestParameters)
+        .then(res => {
+          console.log(res.data)
+          return res
+        })
     },
     goDetail (id, filmCode) {
       this.$router.push({

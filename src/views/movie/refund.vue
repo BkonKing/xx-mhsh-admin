@@ -307,12 +307,12 @@ export default {
         }
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getRefundList(requestParameters)
-          .then(res => {
-            console.log(res.data)
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getRefundList(requestParameters)
+        .then(res => {
+          console.log(res.data)
+          return res
+        })
     },
     // 充值提醒
     cztxClick () {
@@ -343,13 +343,13 @@ export default {
       }
       sendBatchRefund({ order_id: paramId }).then(res => {
         if (res.success) {
-            this.pltkShow = false
-            this.loadAllData()
-            if (this.selectedRowKeys.length == 1) {
-              this.$message.success(res.message)
-            } else {
-              this.modalSuccess('退款成功', res.message)
-            }
+          this.pltkShow = false
+          this.loadAllData()
+          if (this.selectedRowKeys.length == 1) {
+            this.$message.success(res.message)
+          } else {
+            this.modalSuccess('退款成功', res.message)
+          }
         } else {
           if (res.type == 1) {
             if (this.selectedRowKeys.length == 1) {

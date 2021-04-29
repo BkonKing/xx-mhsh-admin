@@ -443,19 +443,19 @@ export default {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, { expenses_house_id: this.houseId }, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getDetailList(requestParameters)
-          .then(res => {
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getDetailList(requestParameters)
+        .then(res => {
+          return res
+        })
     },
     loadLogTableData (page) {
       const requestParameters = Object.assign({}, { expenses_house_id: this.houseId, search: this.search }, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getBalanceLogsList(requestParameters)
-          .then(res => {
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getBalanceLogsList(requestParameters)
+        .then(res => {
+          return res
+        })
     }
   },
   filters: {

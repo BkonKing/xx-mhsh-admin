@@ -101,6 +101,7 @@
           :columns="columns"
           :data="loadTableData"
         >
+          <template slot="tablekey" slot-scope="text, record, index">{{ indexSize + (index + 1) }}</template>
           <span slot="house" slot-scope="text, record">
             {{ text + '-' + record.unit_name + '-' + record.house_name }}
           </span>
@@ -179,7 +180,7 @@ import rechargeMoney from './components/rechargeMoney'
 const columns = [
   {
     title: '序号',
-    dataIndex: 'id'
+    scopedSlots: { customRender: 'tablekey' }
   },
   {
     title: '房产',
@@ -270,6 +271,7 @@ export default {
       houseList: [], // 楼栋
       unitList: [], // 单元
       helpMessage: '',
+      indexSize: 0,
       validateStatus: 'validating' // 导入文件验证
     }
   },
@@ -360,6 +362,8 @@ export default {
     },
     // 刷新表格数据
     loadTableData (page) {
+      console.log('page', page)
+      this.indexSize = (page.pageindex - 1) * page.pagesize
       if (page.sortOrder) {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
@@ -368,28 +372,28 @@ export default {
       }
       // console.log(this.queryParam, page)
       const requestParameters = Object.assign(this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getBalanceList(requestParameters)
-          .then(res => {
-            if (columns.length == 10) {
-              this.columns = columns
-              if (!this.payStatu[3]) {
-                this.columns.splice(5, 1)
-              }
-              if (!this.payStatu[2]) {
-                this.columns.splice(4, 1)
-              }
-              if (!this.payStatu[1]) {
-                this.columns.splice(3, 1)
-              }
-              if (!this.payStatu[0]) {
-                this.columns.splice(2, 1)
-              }
+      console.log('loadData request parameters:', requestParameters)
+      return getBalanceList(requestParameters)
+        .then(res => {
+          if (columns.length == 10) {
+            this.columns = columns
+            if (!this.payStatu[3]) {
+              this.columns.splice(5, 1)
             }
-            // this.columns.splice(1, 1) // 隐藏第二列
-            this.dataObj = res.tab_data
-            return res
-          })
+            if (!this.payStatu[2]) {
+              this.columns.splice(4, 1)
+            }
+            if (!this.payStatu[1]) {
+              this.columns.splice(3, 1)
+            }
+            if (!this.payStatu[0]) {
+              this.columns.splice(2, 1)
+            }
+          }
+          // this.columns.splice(1, 1) // 隐藏第二列
+          this.dataObj = res.tab_data
+          return res
+        })
     },
     // 充值
     investModal (item) {
