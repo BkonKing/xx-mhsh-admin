@@ -1,7 +1,7 @@
 <template>
   <page-header-wrapper>
     <div class="accountInfo">
-      <a-card class="card" style="width:360px">
+      <a-card class="card" >
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
           <h3>{{ accountInfo.account  }}</h3>
@@ -10,7 +10,7 @@
           <div class="item">
             <div class="t1">幸福币</div>
             <div class="t2">
-              <span>{{ accountInfo.credits }}</span>
+              <dic class="txt">{{ accountInfo.credits }}</dic>
             </div>
             <a-button type="link">
               <a
@@ -31,7 +31,7 @@
           <div class="item">
             <div class="t1">短信</div>
             <div class="t2">
-              <span>{{ accountInfo.sms_total }}</span> 条
+              <div class="txt">{{ accountInfo.sms_total }} <span>条</span></div>
             </div>
             <a-button type="link">
               <a
@@ -49,7 +49,7 @@
           <div class="item" v-if="projectID">
             <div class="t1">支付通道</div>
             <div class="t2">
-              <span>{{ accountInfo.spayment_limit=== '0.00'?'0':accountInfo.spayment_limit}}</span> 元
+              <div class="txt">{{ accountInfo.spayment_limit=== '0.00'?'0':accountInfo.spayment_limit}} <span>元</span></div>
             </div>
             <a-button type="link">
               <a
@@ -106,9 +106,9 @@ export default {
 <style lang="less" scoped>
 .accountInfo {
   .card {
-    width: 362px !important;
+    max-width: 800px;
+    // min-width: 600px;
     height: 624px;
-
     .top {
       text-align: center;
       img {
@@ -132,7 +132,7 @@ export default {
       border-bottom: 2px dashed #e9e9e9;
       padding-bottom: 30px;
       .item {
-        flex: 1;
+        width:33.33333333333%;
         text-align: center;
         .t1 {
           font-family: "MicrosoftYaHei", "Microsoft YaHei";
@@ -143,10 +143,16 @@ export default {
         }
         .t2 {
 
-          span {
+          .txt {
+            white-space: nowrap;
             font-size: 24px;
             color: rgba(0, 0, 0, 0.847058823529412);
             text-align: center;
+            span{
+              font-family: 'MicrosoftYaHei', 'Microsoft YaHei';
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.427450980392157);
+            }
           }
         }
       }
@@ -162,7 +168,7 @@ export default {
       margin-left: 35px;
       margin-top: 50px;
       .item {
-        width: 120px;
+        flex: 1;
         text-align: center;
         .t1 {
           font-family: "MicrosoftYaHei", "Microsoft YaHei";
@@ -173,6 +179,7 @@ export default {
           // margin-bottom: 10px;
         }
         .t2 {
+          white-space: nowrap;
           font-size: 24px;
           color: rgba(0, 0, 0, 0.847058823529412);
           text-align: center;

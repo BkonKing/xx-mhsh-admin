@@ -65,18 +65,24 @@
       <div class="content">
         <div class="t1">
           <span>余额：</span>
-          {{ balance }}
+          <div class="txt">
+            {{ balance }}
           <a-icon class="icon" type="edit" @click="remind(1)" />
+          </div>
         </div>
         <div class="t2">
           <span>短信：</span>
-          {{ sms_list }}
+          <div class="txt">
+            {{ sms_list }}
           <a-icon class="icon" type="edit" @click="remind(2)" />
+          </div>
         </div>
         <div class="t3">
           <span>支付通道：</span>
-          {{ channel }}
+          <div class="txt">
+            {{ channel }}
           <a-icon class="icon" type="edit" @click="remind(3)" />
+          </div>
         </div>
       </div>
     </a-card>
@@ -174,6 +180,7 @@ export default {
 
 <style lang="less" scoped>
 .rechargeSet {
+  padding: 0 20px;
   .card {
     margin-top: 20px;
     /deep/ .ant-card-body {
@@ -228,15 +235,27 @@ export default {
       }
     }
     .content {
-      padding-left: 30px;
+      padding-left: 10px;
       padding-top: 20px;
+
       .t1 {
         margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+
       }
       .t2 {
+        display: flex;
+        align-items: center;
         margin-bottom: 20px;
       }
+      .t3{
+        display: flex;
+        align-items: center;
+      }
       span {
+        width: 80px;
+        text-align: right;
         color: #37313b;
       }
       .icon {

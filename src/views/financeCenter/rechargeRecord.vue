@@ -29,12 +29,8 @@
                 </a-select>
               </a-form-model-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item
-                class="timeItem"
-                label="支付时间"
-                v-if="cardBol"
-              >
+            <a-col :md="8" :sm="24" v-if="cardBol">
+              <a-form-model-item class="timeItem" label="支付时间">
                 <a-range-picker
                   style="width:100%"
                   format="YYYY-MM"
@@ -45,7 +41,9 @@
                   @change="handleChange"
                 />
               </a-form-model-item>
-              <div class="btns" v-else>
+            </a-col>
+            <a-col :md="16" :sm="24" v-else>
+              <div class="btns">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button @click="reset">重置</a-button>
                 <a-button
@@ -172,20 +170,20 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 230
+          width: '11.1111%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '项目',
           dataIndex: 'project_name',
           key: 'project_name',
-          width: 230
+          width: '11.1111%'
         },
         {
           title: '充值类型',
           dataIndex: 'recharge_type',
           key: 'recharge_type',
-          width: 230,
+          width: '11.1111%',
           scopedSlots: { customRender: 'recharge_type' }
         },
         {
@@ -193,7 +191,7 @@ export default {
           dataIndex: 'payment_money',
           key: 'payment_money',
           sorter: true,
-          width: 230,
+          width: '11.1111%',
           scopedSlots: { customRender: 'payment_money' }
         },
         {
@@ -201,32 +199,33 @@ export default {
           dataIndex: 'recharge_amount',
           key: 'recharge_amount',
           sorter: true,
-          width: 230
+          width: '11.1111%'
         },
         {
           title: '剩余量',
           dataIndex: 'surplus_amount',
           key: 'surplus_amount',
-          width: 230
+          width: '11.1111%'
         },
         {
           title: '支付方式',
           dataIndex: 'pay_type',
           key: 'pay_type',
-          width: 230,
+          width: '11.1111%',
           scopedSlots: { customRender: 'pay_type' }
         },
         {
           title: '支付账户',
           dataIndex: 'account',
           key: 'account',
-          width: 230
+          width: '11.1111%'
         },
         {
           title: '支付时间',
           dataIndex: 'pay_time',
           key: 'pay_time',
-          sorter: true
+          sorter: true,
+          width: '11.1111%'
         }
       ],
       projectList: [],
@@ -360,7 +359,7 @@ export default {
   }
   min-width: 1500px;
   overflow: scroll-y;
-  padding-left: 20px;
+  padding: 0 20px;
   .btns {
     padding-bottom: 20px;
     text-align: right;
