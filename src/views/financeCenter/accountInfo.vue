@@ -4,7 +4,7 @@
       <a-card class="card" style="width:360px">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
-          <h3>{{ accountInfo.nickname || '美好生活家园' }}</h3>
+          <h3>{{ accountInfo.account  }}</h3>
         </div>
         <div class="middle">
           <div class="item">

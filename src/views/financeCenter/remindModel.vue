@@ -124,6 +124,7 @@ export default {
     },
     // 设置提醒用户
     async submit () {
+      // console.log(this.list)
      let arr = this.list.map(item => {
         if (item.name !== '' && item.phone != '') {
           return {
@@ -132,6 +133,7 @@ export default {
           }
         }
       })
+      // console.log(arr)
     arr = arr.filter(item => {
         return item != undefined
       })
