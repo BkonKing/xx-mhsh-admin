@@ -212,7 +212,11 @@ type="up"
           :columns="columns"
           :data-source="tableData"
         >
-
+        <template slot="check_time_desc" slot-scope="check_time_desc">
+          <div :style="{color:check_time_desc.is_over===1?'red':''}">
+            {{check_time_desc.check_time_desc}}
+          </div>
+        </template>
           <template slot="type" slot-scope="type">
             <div class="type">
               {{ +type === 1 ? "提问" : "回复" }}
@@ -229,7 +233,7 @@ type="up"
           </template>
           <template  slot="opera" slot-scope="text,record">
             <div>
-              <a-button type="link" @click="check" v-if="record.is_check===0">审核</a-button>
+              <a-button type="link" @click="check(record)" v-if="record.is_check===0">审核</a-button>
               <a-button type="link" @click="lookOver(record)" v-else>查看</a-button>
             </div>
           </template>
@@ -299,7 +303,8 @@ export default {
           title: '审核时间',
           dataIndex: 'check_time_desc',
           key: 'check_time_desc',
-          width: 150
+          width: 150,
+          scopedSlots: { customRender: 'check_time_desc' }
         },
         {
           title: '审核状态',
@@ -434,8 +439,10 @@ export default {
       this.$refs.askLookOverModel.info = JSON.parse(JSON.stringify(record))
     },
     // 审核
-    check () {
+    check (record) {
+      console.log(record)
       this.$refs.askCheckModel.isShow = true
+      this.$refs.askCheckModel.info = JSON.parse(JSON.stringify(record))
     },
     // 页码改变事件
     onChangePage (page, size) {

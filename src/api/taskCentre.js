@@ -37,7 +37,8 @@ const taskCentreApi = {
   getLog: '/linli/taskgroup/getLog',
   getQuestionList: '/linli/question/getQuestionList',
   getList: '/linli/evaluate/getList',
-  viewQuestion: '/linli/question/viewQuestion'
+  viewQuestion: '/linli/question/viewQuestion',
+  checkQuestionReply: '/linli/question/checkQuestionReply'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -343,6 +344,14 @@ export function toGetList (data) {
 export function toViewQuestion (data) {
   return request({
     url: taskCentreApi.viewQuestion,
+    method: 'post',
+    data
+  })
+}
+// 提问-审核问题
+export function toCheckQuestionReply (data) {
+  return request({
+    url: taskCentreApi.checkQuestionReply,
     method: 'post',
     data
   })

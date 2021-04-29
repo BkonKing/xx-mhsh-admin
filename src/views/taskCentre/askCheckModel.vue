@@ -1,70 +1,91 @@
 <template>
- <div class="askCheckModel">
-    <a-modal v-model="isShow" title="审核">
-    <a-form-model :model='form' :rules='rules' :label-col="labelCol" :wrapper-col="wrapperCol">
-      <a-form-model-item label="任务标题">
-        <div style="color:#1890FF;cursor: pointer;" @click="$router.push('/taskCentre/complete')">
-          任务标题任务标题任务标题任务标题任务标题
-        </div>
-      </a-form-model-item>
-      <a-form-model-item label="发布用户">
-        <span style="color:#1890FF;cursor: pointer;" @click="openNewPage">昵称(姓名)</span> 项目名称
-      </a-form-model-item>
-      <a-form-model-item
-            label="创建时间"
-        >2020-11-20 08:50:08</a-form-model-item
+  <div class="askCheckModel">
+    <a-modal v-model="isShow" title="审核" @ok="submit">
+      <a-form-model
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
       >
-      <a-form-model-item label="提问编号">
-        <span style="color:#1890FF;cursor: pointer;" @click="lookOver">000000000</span>
-      </a-form-model-item>
-      <a-form-model-item label="类型">回复</a-form-model-item>
-      <a-form-model-item label="内容">
-        内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
-      </a-form-model-item>
-      <div class="line"></div>
-      <a-form-model-item  label="是否通过" prop="value1">
-        <a-radio-group v-model="form.value1">
-          <a-radio :value="1">
-            通过
-          </a-radio>
-          <a-radio :value="2">
-            不通过
-          </a-radio>
-        </a-radio-group>
-      </a-form-model-item>
-      <a-form-model-item label="审核说明">
-        <a-textarea
-         placeholder="请输入"
-      :auto-size="{ minRows: 3, maxRows: 5 }"
-    />
-      </a-form-model-item>
-      <a-form-model-item label="图片">
-         <a-upload
-      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-      list-type="picture-card"
-      :file-list="fileList"
-      @preview="handlePreview"
-      @change="handleChange"
-    >
-      <div v-if="fileList.length < 10">
-        <a-icon type="plus" />
-        <div class="ant-upload-text">
-          Upload
-        </div>
-      </div>
-    </a-upload>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-      <img alt="example" style="width: 100%" :src="previewImage" />
+        <a-form-model-item label="任务标题">
+          <div
+            style="color:#1890FF;cursor: pointer;"
+            @click="$router.push('/taskCentre/complete')"
+          >
+            {{ lookOverInfo.task_title }}
+          </div>
+        </a-form-model-item>
+        <a-form-model-item label="发布用户">
+          <span style="color:#1890FF;cursor: pointer;" @click="openNewPage">{{
+            lookOverInfo.publish_user
+          }}</span>
+          {{ lookOverInfo.project_name }}
+        </a-form-model-item>
+        <a-form-model-item label="创建时间">{{
+          lookOverInfo.ctime
+        }}</a-form-model-item>
+        <a-form-model-item label="提问编号">
+          <span style="color:#1890FF;cursor: pointer;" @click="lookOver">{{
+            lookOverInfo.id
+          }}</span>
+        </a-form-model-item>
+        <a-form-model-item label="类型">{{
+          lookOverInfo.type === 1 ? "提问" : "回复"
+        }}</a-form-model-item>
+        <a-form-model-item label="内容">
+          {{ lookOverInfo.content }}
+        </a-form-model-item>
+        <div class="line"></div>
+        <a-form-model-item label="是否通过" prop="is_check">
+          <a-radio-group v-model="form.is_check">
+            <a-radio :value="1">
+              通过
+            </a-radio>
+            <a-radio :value="2">
+              不通过
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="审核说明">
+          <a-textarea
+            v-model="form.check_desc"
+            placeholder="请输入"
+            :auto-size="{ minRows: 3, maxRows: 5 }"
+          />
+        </a-form-model-item>
+        <a-form-model-item label="图片">
+          <a-upload
+            :headers="headers"
+            :action="uploadUrl"
+            list-type="picture-card"
+            :file-list="fileList"
+            @preview="handlePreview"
+            @change="handleChange"
+          >
+            <div v-if="fileList.length < 10">
+              <a-icon type="plus" />
+              <div class="ant-upload-text">
+                Upload
+              </div>
+            </div>
+          </a-upload>
+          <a-modal
+            :visible="previewVisible"
+            :footer="null"
+            @cancel="handleCancel"
+          >
+            <img alt="example" style="width: 100%" :src="previewImage" />
+          </a-modal>
+        </a-form-model-item>
+      </a-form-model>
     </a-modal>
-      </a-form-model-item>
-    </a-form-model>
-  </a-modal>
-  <askLookOverModel ref="askLookOverModel"></askLookOverModel>
- </div>
+    <askLookOverModel ref="askLookOverModel"></askLookOverModel>
+  </div>
 </template>
 
 <script>
 import askLookOverModel from './askLookOverModel'
+import { toViewQuestion, toCheckQuestionReply } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -83,47 +104,55 @@ export default {
       wrapperCol: { span: 14 },
       isShow: false,
       form: {
-        value1: 1
+        is_check: 1,
+        check_desc: ''
       },
       rules: {
-        value1: [{ required: true, message: '必填', trigger: 'change' }]
+        is_check: [{ required: true, message: '必填', trigger: 'change' }]
       },
       previewVisible: false,
       previewImage: '',
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-3',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-4',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-5',
-          name: 'image.png',
-          status: 'error'
-        }
-      ]
+      fileList: [],
+      info: {},
+      lookOverInfo: {},
+      violation_type: '', // 违规原因
+      uploadUrl: '' // 上传图片接口
+    }
+  },
+  computed: {
+    headers () {
+      return {
+        Authorization: '76cc5f316b969ac934634501bf493fe18c1abe33'
+      }
+    }
+  },
+  watch: {
+    info: {
+      async handler () {
+        // 提问-查看详情
+        const res = await toViewQuestion({
+          type: +this.info.type,
+          id: this.info.id
+        })
+        this.lookOverInfo = res.data
+      },
+      deep: true
     }
   },
   methods: {
+    // 确定
+    async submit () {
+      const idArr = []
+      idArr.push(this.info.id)
+      const res = await toCheckQuestionReply({
+        ids: idArr,
+        is_check: this.form.is_check,
+        check_desc: this.form.check_desc,
+        check_image: this.fileList,
+        violation_type: this.violation_type
+      })
+      console.log('确定', res)
+    },
     // 查看
     lookOver () {
       this.$refs.askLookOverModel.isShow = true
@@ -144,15 +173,22 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-     // 上传和删除图片时触发
+    // 上传和删除图片时触发
     handleChange ({ fileList }) {
       this.fileList = fileList
+      console.log(this.fileList)
     }
+  },
+  created () {
+    this.uploadUrl =
+      process.env.NODE_ENV === 'production'
+        ? '/nsolid/spi/v1/upload/uploads/uImages'
+        : '/api/upload/uploads/uImages'
   }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 /* you can make up upload button and sample style by using stylesheets */
 .ant-upload-select-picture-card i {
   font-size: 32px;
@@ -163,14 +199,14 @@ export default {
   margin-top: 8px;
   color: #666;
 }
-/deep/ .ant-modal-body{
+/deep/ .ant-modal-body {
   padding: 42px;
 }
-.line{
+.line {
   margin: 10px 0;
   border-bottom: 2px dashed #efefef;
 }
-/deep/ .ant-form-item{
+/deep/ .ant-form-item {
   margin-bottom: 0;
 }
 </style>
