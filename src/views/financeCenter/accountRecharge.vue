@@ -29,7 +29,7 @@
             <div class="item item2">
               <div class="t1">支付通道剩余</div>
               <div class="t2">{{ smsUseInfo.spayment_limit==='0.00'?'0': smsUseInfo.spayment_limit}}</div>
-              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.spayment_limit==='0.00'?'0': smsUseInfo.spayment_limit }}</div>
+              <div class="t3"><span style="marginRight:4px">使用</span>{{ smsUseInfo.susepayment_limit==='0.00'?'0': smsUseInfo.susepayment_limit }}</div>
             </div>
           </div>
           <div class="right" v-if="projectID===''">
@@ -68,7 +68,7 @@ export default {
     const res2 = await getSmsUseInfo()
     this.smsUseInfo = res2.data
     window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
-    // console.log('短信使用信息', res2)
+    console.log('短信使用信息', res2)
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', typeof this.projectID)
   }
@@ -111,18 +111,22 @@ export default {
       display: flex;
       align-items: center;
       .item {
-        text-align: center;
+        text-align: right;
         margin-right: 15px;
         .t1 {
-          color: #959494;
+      color: rgba(0,0,0,.45);
+    font-size: 14px;
         }
         .t2 {
+          color: rgba(0,0,0,.85);
+          font-size: 24px;
+          font-family: -apple-system,BlinkMacSystemFont,segoe ui,Roboto,helvetica neue,Arial,noto sans,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol,noto color emoji;
           margin: 5px 0;
-          font-size: 25px;
-          font-weight: 600;
+          // font-weight: 600;
         }
         .t3 {
-          color: #959494;
+             color: rgba(0,0,0,.45);
+    font-size: 14px;
         }
       }
       .item2{
@@ -137,4 +141,5 @@ export default {
     }
   }
 }
+
 </style>

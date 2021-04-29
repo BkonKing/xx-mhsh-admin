@@ -84,6 +84,9 @@ export default {
       if (newVal === false) {
         this.isPay = false
         this.payMa = ''
+        clearInterval(this.timeId)
+      } else {
+        this.onChange()
       }
     }
   },
@@ -108,7 +111,7 @@ export default {
             this.$listeners.getData()
             clearInterval(this.timeId)
           }
-        }, 1000)
+        }, 2000)
         // console.log('支付', res)
       }
     },
@@ -132,14 +135,15 @@ export default {
           this.$listeners.getData()
           clearInterval(this.timeId)
         }
-      }, 1000)
+      }, 2000)
       window.open(res.data.url)
     }
-  },
-    created () {
-  // console.log('$listeners', this.$listeners)
-  this.onChange()
-    }
+  }
+  //   created () {
+  // // console.log('$listeners', this.$listeners)
+  // this.onChange()
+  //   }
+
 }
 </script>
 

@@ -40,6 +40,7 @@ v-if="recharge_type === 1"
         </a-form-model-item>
         <a-form-model-item label="金额">
           <a-input
+          v-if="bol"
             addon-before="￥"
             v-model="price"
             @input="setRechargeMoney"
@@ -98,7 +99,8 @@ export default {
       price: '', // 金额
       recharge_type: 1, // 是int充值类型 1短信2支付通道
       smsUseInfo: {},
-      payInfo: {}
+      payInfo: {},
+      bol: true // 更新
     }
   },
   watch: {
@@ -141,16 +143,19 @@ export default {
         this.$message.error('充值额度要大于100')
       }
     },
-    // 设置充值金额
+    // 设置充值额度  / 条数
     setRechargeMoney () {
       // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
-      this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
-      this.count = keepTwoDecimalFull(this.price / 0.1)
+      if (this.recharge_type === 2) {
+        this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
+      } else {
+        this.count = keepTwoDecimalFull(this.price / 0.1)
+      }
     },
     // 设置金额
     setPrice () {
       if (this.rechargeMoney != '') {
-        this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
+          this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
       }
       if (this.count != '') {
         this.price = keepTwoDecimalFull(this.count * 0.1)
