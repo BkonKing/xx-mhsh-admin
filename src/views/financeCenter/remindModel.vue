@@ -18,7 +18,6 @@
             v-model="item.name"
             :disabled="false"
             @input="getData(index, $event)"
-            @change="hasMobile(index)"
             style="width:200px"
             placeholder="姓名"
             :maxLength="10"
@@ -94,12 +93,7 @@ export default {
     }
   },
   methods: {
-    // 是否填入手机号
-    hasMobile (index) {
-      if (this.list[index].phone.trim() === '') {
-        this.$message.error('请输入手机号')
-      }
-    },
+
     // 选择用户
     selectUser (item) {
       this.list[this.currentIndex].name = item.realname
@@ -132,6 +126,12 @@ export default {
     },
     // 设置提醒用户
     async submit () {
+     for (let i = 0; i < this.list.length; i++) {
+        if (this.list[i].phone === '') {
+          this.$message.error('请输入手机号')
+          return
+        }
+     }
       // console.log(this.list)
      let arr = this.list.map(item => {
         if (item.phone != '') {
