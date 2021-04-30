@@ -127,13 +127,16 @@ export default {
     }
     .middle {
       margin-top: 60px;
-      display: flex;
-      align-items: center;
+      // display: flex;
+      // align-items: center;
       border-bottom: 2px dashed #e9e9e9;
       padding-bottom: 30px;
+      text-align: center;
       .item {
         padding: 0 30px;
-        flex: 1;
+        // flex: 1;
+        display: inline-block;
+        min-width: 120px;
         text-align: center;
         .t1 {
           font-family: "MicrosoftYaHei", "Microsoft YaHei";
@@ -164,18 +167,23 @@ export default {
         padding-right: 0;
       }
       .line {
+        display: inline-block;
         width: 1px;
         height: 36px;
         background-color: #e9e9e9;
+        margin-bottom: 20px;
       }
     }
     .bottom {
-      display: flex;
-      align-items: center;
+      // display: flex;
+      // align-items: center;
       margin-top: 50px;
       margin-right: 15px;
+      text-align: center;
       .item {
-        flex: 1;
+         display: inline-block;
+        min-width: 120px;
+        // flex: 1;
         text-align: center;
         .t1 {
           font-family: "MicrosoftYaHei", "Microsoft YaHei";
@@ -192,7 +200,14 @@ export default {
           text-align: center;
         }
       }
+      .item:first-child{
+        padding-right: 30px;
+      }
+      .item:last-child{
+        padding-left: 30px;
+      }
       .line {
+        display: inline-block;
         width: 1px;
         height: 36px;
         background-color: #e9e9e9;
