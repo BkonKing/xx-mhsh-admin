@@ -29,7 +29,7 @@
                 </a-select>
               </a-form-model-item>
             </a-col>
-            <a-col :md="8" :sm="24" >
+            <a-col :md="8" :sm="24" v-if="cardBol || projectID" >
               <a-form-model-item class="timeItem" label="支付时间">
                 <a-range-picker
                   style="width:100%"
@@ -67,7 +67,7 @@ type="link"
               </a-form-model-item>
             </a-col>
             <a-col :md="8" :sm="24"></a-col>
-            <a-col :md="24"  :sm="24" v-if="cardBol">
+            <a-col :md="8"  :sm="24" :lg='16' v-if="cardBol">
               <div class="btns" >
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button @click="reset">重置</a-button>
