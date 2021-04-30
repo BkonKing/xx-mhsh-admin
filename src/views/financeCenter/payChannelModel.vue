@@ -79,6 +79,7 @@ export default {
       isPay: false, // 是否已经支付
       timeId: null,
       projectID: '' // 项目id
+
     }
   },
   watch: {
@@ -86,8 +87,6 @@ export default {
       if (newVal === false) {
         this.isPay = false
         this.payMa = ''
-        clearInterval(this.timeId)
-        this.onChange = undefined
       } else {
         this.onChange()
       }
@@ -124,6 +123,7 @@ export default {
           pay_price: +this.payInfo.pay_price,
           pay_type: this.pay_type
         })
+
         this.payMa = res.data.url
         this.timeId = setInterval(async () => {
           const res2 = await payQuery({
@@ -140,10 +140,11 @@ export default {
         // console.log('支付', res)
       }
     }
+  },
+  destroyed () {
+ clearInterval(this.timeId)
+        this.onChange = null
   }
-  // created () {
-  //   this.onChange()
-  // }
 }
 </script>
 

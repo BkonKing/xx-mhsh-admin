@@ -168,13 +168,13 @@ export default {
           this.$message.error('请输入充值条数或者金额')
           return
         }
-        this.$refs.shortNoteModel.isShow = true
-        const res = await addRecharge({
+         const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: this.count,
-          pay_price: this.price
+          pay_price: +this.price
         })
         this.payInfo = res.data
+        this.$refs.shortNoteModel.isShow = true
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1
         // console.log('充值短信', res)
@@ -183,14 +183,15 @@ export default {
           this.$message.error('请输入充值额度或者金额')
           return
         }
-        this.$refs.payChannelModel.isShow = true
-        const res = await addRecharge({
+          const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: +this.rechargeMoney,
           pay_price: +this.price
         })
         // console.log('支付通过', res)
         this.payInfo = res.data
+        this.$refs.payChannelModel.isShow = true
+
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1
       }
