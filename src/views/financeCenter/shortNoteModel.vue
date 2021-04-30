@@ -84,8 +84,6 @@ export default {
       if (newVal === false) {
         this.isPay = false
         this.payMa = ''
-        clearInterval(this.timeId)
-        this.onChange = undefined
       } else {
         this.onChange()
       }
@@ -93,15 +91,16 @@ export default {
   },
   methods: {
     // 微信支付
-    async onChange () {
+     onChange () {
       if (this.pay_type === 1) {
-        const res = await payOrder({
+        payOrder({
           recharge_id: this.payInfo.recharge_id,
           pay_price: +this.payInfo.pay_price,
           pay_type: this.pay_type
-        })
-        this.payMa = res.data.url
-        this.timeId = setInterval(async () => {
+        }).then(res => {
+          this.payMa = res.data.url
+          console.log('微信支付', res.data.url)
+          this.timeId = setInterval(async () => {
           const res2 = await payQuery({
             pay_type: this.pay_type,
             out_trade_no: res.data.order_num + ''
@@ -113,6 +112,8 @@ export default {
             clearInterval(this.timeId)
           }
         }, 2000)
+        })
+
         // console.log('支付', res)
       }
     },
@@ -139,12 +140,11 @@ export default {
       }, 2000)
       window.open(res.data.url)
     }
+  },
+  destroyed () {
+ clearInterval(this.timeId)
+        this.onChange = null
   }
-  //   created () {
-  // // console.log('$listeners', this.$listeners)
-  // this.onChange()
-  //   }
-
 }
 </script>
 
