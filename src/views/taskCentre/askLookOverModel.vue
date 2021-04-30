@@ -36,7 +36,7 @@
           <div class="img" v-for="(item,index) in lookOverInfo.check_image" :key="index" >
             <img
             preview="0"
-              :src="'http://develop.mhshjy.com/nsolid/spi/v1'+item"
+              :src="item"
               alt=""
             />
           </div>

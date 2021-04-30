@@ -47,14 +47,15 @@
       </template>
     </page-header-wrapper>
     <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col :span="8">
+      <div class="table-page-search-wrapper">
+      <a-form-model layout="inline">
+        <a-row :gutter="48">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="类型">
               <a-select
                 v-model="type"
                 placeholder="请选择"
-                style="width: 264px"
+
               >
                 <a-select-option value="1">
                   提问
@@ -65,12 +66,12 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="审核状态">
               <a-select
                 v-model="check_type"
                 placeholder="请选择"
-                style="width: 264px"
+
               >
                 <a-select-option value="0">
                   待审核
@@ -87,12 +88,13 @@
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="有无回复" v-if="!bol">
+          <template v-if="bol">
+                     <a-col :md="8" :sm="24">
+            <a-form-model-item label="有无回复">
               <a-select
                 v-model="is_reply"
                 placeholder="请选择"
-                style="width: 264px"
+
               >
                 <a-select-option value="1">
                   有
@@ -102,56 +104,40 @@
                 </a-select-option>
               </a-select>
             </a-form-model-item>
-            <div class="btns" v-if="bol">
-              <a-button type="primary">
-                查询
-              </a-button>
-              <a-button @click="search">重置</a-button>
-              <a-button
-type="link"
-@click="open"
-                >展开 <a-icon
-type="down"
-              /></a-button>
-            </div>
           </a-col>
-        </a-row>
-        <a-row v-if="!bol">
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="发布用户">
               <a-input
                 v-model="user_search"
                 placeholder="手机号、用户昵称/ID"
-                style="width:264px"
+
               ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="发布内容">
               <a-input
                 v-model="content"
                 placeholder="内容、ID"
-                style="width:264px"
+
               ></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="任务">
               <a-input
                 v-model="task_search"
                 placeholder="编号、标题"
-                style="width:264px"
+
               ></a-input>
             </a-form-model-item>
           </a-col>
-        </a-row>
-        <a-row v-if="!bol">
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="所属项目">
               <a-select
                 v-model="project_id"
                 placeholder="请选择"
-                style="width: 264px"
+
               >
                 <a-select-option
                   v-for="(item, index) in projectList"
@@ -163,10 +149,10 @@ type="down"
               </a-select>
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          <a-col :md="8" :sm="24">
             <a-form-model-item label="创建时间">
               <a-range-picker
-                style="width: 264px"
+                class="piker-time"
                 :ranges="{
                   Today: [moment(), moment()],
                   'This Month': [moment(), moment().endOf('month')]
@@ -177,7 +163,9 @@ type="down"
               />
             </a-form-model-item>
           </a-col>
-          <a-col :span="8">
+          </template>
+
+          <a-col :md="8" :sm="24" v-if="bol">
             <div class="btns">
               <a-button type="primary" @click="search">
                 查询
@@ -191,8 +179,23 @@ type="up"
               /></a-button>
             </div>
           </a-col>
+          <a-col :md="8" :sm="24" v-if="!bol">
+                        <div class="btns" >
+              <a-button type="primary" @click="search">
+                查询
+              </a-button>
+              <a-button >重置</a-button>
+              <a-button
+type="link"
+@click="open"
+                >展开 <a-icon
+type="down"
+              /></a-button>
+            </div>
+          </a-col>
         </a-row>
       </a-form-model>
+      </div>
     </a-card>
     <a-card class="card2">
       <a-button type="primary" @click="batchCheck">审核</a-button>
@@ -288,35 +291,33 @@ export default {
         pageSize: 10 // 默认页容量
       },
       currentIndex: 1,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
-      bol: false,
+      bol: false, // 展开 收起
       tableData: [], // 提问列表
       columns: [
         {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '10%'
         },
         {
           title: '审核时间',
           dataIndex: 'check_time_desc',
           key: 'check_time_desc',
-          width: 150,
+          width: '10%',
           scopedSlots: { customRender: 'check_time_desc' }
         },
         {
           title: '审核状态',
           dataIndex: 'check_status',
           key: 'check_status',
-          width: 100
+          width: '10%'
         },
         {
           title: '类型',
           dataIndex: 'type',
           key: 'type',
-          width: 100,
+          width: '10%',
           scopedSlots: { customRender: 'type' }
         },
         {
@@ -324,40 +325,42 @@ export default {
           dataIndex: 'content',
           key: 'content',
           ellipsis: true,
-          width: 200
+          width: '10%'
         },
         {
           title: '发布用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
           scopedSlots: { customRender: 'owner_name' },
-          width: 200
+          width: '10%'
         },
         {
           title: '投诉',
           dataIndex: 'complaint_total',
           key: 'complaint_total',
           sorter: true,
-          width: 100
+          width: '10%'
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
           // ellipsis: true,
-          width: 200,
+          width: '10%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
           title: '创建时间',
           dataIndex: 'ctime',
           key: 'ctime',
-          sorter: true
+          sorter: true,
+           width: '10%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
+           width: '10%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
@@ -465,15 +468,11 @@ export default {
     },
     // 展开
     open () {
-      setTimeout(() => {
-        this.bol = false
-      }, 100)
-      this.$refs.card.$el.style.height = '218px'
+        this.bol = true
     },
     // 收起
     close () {
-      this.bol = true
-      this.$refs.card.$el.style.height = '88px'
+      this.bol = false
     },
     moment,
     // 时间改变事件
@@ -494,6 +493,7 @@ export default {
 
 <style lang="less" scoped>
 .askQuestion {
+  padding: 0 20px;
   /deep/ .ant-page-header {
     padding-bottom: 0px !important;
   }
@@ -517,9 +517,15 @@ export default {
     }
   }
   .card {
+    /deep/ .ant-form-item-label {
+    min-width: 88px;
+  }
+  .piker-time {
+    width: 100% !important;
+  }
     margin-top: 20px;
     .btns {
-      margin-left: 162px;
+     text-align: right;
       button {
         margin-right: 10px;
       }
@@ -556,18 +562,16 @@ export default {
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
-          padding: 10px;
+          padding-top: 10px;
+          padding-bottom: 20px;
+          text-align: right;
         }
         /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
+          float: left;
+          // margin-left: 20px;
+          // margin-right: 300px;
         }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
-        }
+
       }
     }
   }

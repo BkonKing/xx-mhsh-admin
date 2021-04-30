@@ -55,6 +55,7 @@
         </a-form-model-item>
         <a-form-model-item label="图片">
           <a-upload
+          :data="uploadData"
             :headers="headers"
             :action="uploadUrl"
             list-type="picture-card"
@@ -113,16 +114,20 @@ export default {
       previewVisible: false,
       previewImage: '',
       fileList: [],
-      info: {},
-      lookOverInfo: {},
+      info: {}, // 提问列表信息
+      lookOverInfo: {}, // 审核信息
       violation_type: '', // 违规原因
-      uploadUrl: '' // 上传图片接口
+      uploadUrl: '', // 上传图片接口
+      uploadData: {
+        field_name: 'file'
+      },
+      fileList2: []
     }
   },
   computed: {
     headers () {
       return {
-        Authorization: '76cc5f316b969ac934634501bf493fe18c1abe33'
+        Authorization: '80639a9d9f29d181bdcaa70efd3b4e3117f77ff6'
       }
     }
   },
@@ -148,9 +153,11 @@ export default {
         ids: idArr,
         is_check: this.form.is_check,
         check_desc: this.form.check_desc,
-        check_image: this.fileList,
+        check_image: this.fileList2,
         violation_type: this.violation_type
       })
+      this.$message.success('审核成功')
+      this.$parent.getData()
       console.log('确定', res)
     },
     // 查看
@@ -175,8 +182,19 @@ export default {
     },
     // 上传和删除图片时触发
     handleChange ({ fileList }) {
+      // console.log('上传和删除图片时触发')
       this.fileList = fileList
-      console.log(this.fileList)
+      // console.log(fileList)
+     const arr1 = this.fileList.map(item => {
+        if (item.response) {
+         return item.response.data
+       }
+     })
+     const arr2 = arr1.filter(item => {
+       return item
+     })
+     this.fileList2 = arr2
+     console.log('上传和删除图片时触发', arr2)
     }
   },
   created () {
