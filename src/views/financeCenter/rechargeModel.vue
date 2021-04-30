@@ -99,7 +99,7 @@ export default {
       price: '', // 金额
       recharge_type: 1, // 是int充值类型 1短信2支付通道
       smsUseInfo: {},
-      payInfo: {},
+      payInfo: {}, // 支付信息
       bol: true // 更新
     }
   },
@@ -187,8 +187,9 @@ export default {
         const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: +this.rechargeMoney,
-          pay_price: this.price
+          pay_price: +this.price
         })
+        // console.log('支付通过', res)
         this.payInfo = res.data
         this.$parent.getData()
         this.$parent.pagination.currentPage = 1

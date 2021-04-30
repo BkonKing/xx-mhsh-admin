@@ -1,7 +1,7 @@
 <template>
   <a-modal v-model="isShow" @ok="submit">
     <template #title>
-      <div class="title">充值提醒 <span>余额</span></div>
+      <div class="title">充值提醒 <span>{{title}}</span></div>
     </template>
     <div class="content">
       <div class="left">手机号：</div>
@@ -18,6 +18,7 @@
             v-model="item.name"
             :disabled="false"
             @input="getData(index, $event)"
+            @change="hasMobile(index)"
             style="width:200px"
             placeholder="姓名"
             :maxLength="10"
@@ -61,12 +62,13 @@ export default {
     return {
       isShow: false,
       list: [{ id: Math.random() * 999, name: '', phone: '' }],
-      type: '',
+      type: '', // 提醒类型
       userInfoList: [],
       showBox: false,
       currentIndex: 0,
-      elm: '',
-      userData: ''
+      elm: '', // dom元素
+      userData: '', // 用户数据
+      title: ''// 标题
     }
   },
   watch: {
@@ -77,7 +79,7 @@ export default {
       }
     },
     userData (newVal) {
-      console.log('newVal', newVal)
+      // console.log('newVal', newVal)
       if (newVal.length === 0) {
         this.list = [{ id: Math.random() * 999, name: '', phone: '' }]
       } else {
@@ -92,6 +94,12 @@ export default {
     }
   },
   methods: {
+    // 是否填入手机号
+    hasMobile (index) {
+      if (this.list[index].phone.trim() === '') {
+        this.$message.error('请输入手机号')
+      }
+    },
     // 选择用户
     selectUser (item) {
       this.list[this.currentIndex].name = item.realname
@@ -103,7 +111,7 @@ export default {
     // 获取用户信息
     async getData (index, e) {
       this.currentIndex = index
-      console.log('事件对象', e)
+      // console.log('事件对象', e)
       this.elm = e.target
       if (this.list[index].phone.length === 11) {
         const res = await getUserInfo({
@@ -126,7 +134,7 @@ export default {
     async submit () {
       // console.log(this.list)
      let arr = this.list.map(item => {
-        if (item.name !== '' && item.phone != '') {
+        if (item.phone != '') {
           return {
             realname: item.name,
             mobile: item.phone
@@ -137,7 +145,7 @@ export default {
     arr = arr.filter(item => {
         return item != undefined
       })
-      console.log(arr)
+      // console.log(arr)
       await setReminder({
         user_list: arr,
         type: this.type
