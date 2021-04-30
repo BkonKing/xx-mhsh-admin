@@ -54,7 +54,7 @@ v-if="!isPay"
         </div>
         <div v-if="isPay">
           {{ pay_type === 1 ? "微信" : "支付宝" }}
-          <div class="img">
+          <div class="img" v-if="hasImg">
             <img class="img2" src="@/assets/imgs/pay_success.png" alt="" />
             <div class="txt">支付成功</div>
           </div>
@@ -76,16 +76,18 @@ export default {
       pay_type: 1, // 支付类型
       isPay: false, // 是否支付
       payMa: '', // 支付二维码
-      timeId: null
+      timeId: null,
+      hasImg: false // 是否显示图片
     }
   },
   watch: {
     isShow (newVal) {
       if (newVal === false) {
         this.isPay = false
-        this.payMa = ''
+        this.hasImg = false
       } else {
         this.onChange()
+        this.hasImg = true
       }
     }
   },
@@ -99,6 +101,7 @@ export default {
           pay_type: this.pay_type
         }).then(res => {
           this.payMa = res.data.url
+          this.hasImg = true
           console.log('微信支付', res.data.url)
           this.timeId = setInterval(async () => {
           const res2 = await payQuery({
@@ -144,6 +147,7 @@ export default {
   destroyed () {
  clearInterval(this.timeId)
         this.onChange = null
+        this.payMa = ''
   }
 }
 </script>

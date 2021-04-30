@@ -157,6 +157,12 @@ export default {
           }
         }
       }
+      .item:first-child{
+        padding-left: 0;
+      }
+      .item:last-child{
+        padding-right: 0;
+      }
       .line {
         width: 1px;
         height: 36px;
