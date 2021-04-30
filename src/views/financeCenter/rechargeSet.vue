@@ -1,8 +1,8 @@
 <template>
   <div class="rechargeSet">
-    <a-card class="card" v-if="projectID ">
+    <a-card class="card" v-if="projectID">
       <div class="title">预警</div>
-      <div class="content" >
+      <div class="content">
         <div class="t1">
           短信剩余条数小于
           <a-input
@@ -28,7 +28,7 @@
     </a-card>
     <a-card class="card" v-else>
       <div class="title">预警</div>
-      <div class="content" >
+      <div class="content">
         <div class="t1">
           短信剩余条数小于
           <a-input
@@ -47,7 +47,7 @@
           >时，短信提醒指定人
         </div>
         <div class="t4">
-项目方支付通道剩余额度小于
+          项目方支付通道剩余额度小于
           <a-input
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
@@ -67,21 +67,21 @@
           <span>余额：</span>
           <div class="txt">
             {{ balance }}
-          <a-icon class="icon" type="edit" @click="remind(1)" />
+            <a-icon class="icon" type="edit" @click="remind(1)" />
           </div>
         </div>
         <div class="t2">
           <span>短信：</span>
           <div class="txt">
             {{ sms_list }}
-          <a-icon class="icon" type="edit" @click="remind(2)" />
+            <a-icon class="icon" type="edit" @click="remind(2)" />
           </div>
         </div>
         <div class="t3">
           <span>支付通道：</span>
           <div class="txt">
             {{ channel }}
-          <a-icon class="icon" type="edit" @click="remind(3)" />
+            <a-icon class="icon" type="edit" @click="remind(3)" />
           </div>
         </div>
       </div>
@@ -94,6 +94,7 @@
 import remindModel from './remindModel'
 import { setWarning, getRemindUser, getWarning } from '@/api/financeCenter.js'
 import Cookies from 'js-cookie'
+
 export default {
   components: {
     remindModel
@@ -116,35 +117,56 @@ export default {
       const res = await getRemindUser()
       this.balance = res.data.balance
         .map(item => {
-          return item.mobile + ' (' + item.realname + ')' + ''
+          if (item.realname) {
+            return item.mobile + ' (' + item.realname + ')' + ''
+          } else {
+            return item.mobile
+          }
         })
         .join('；')
       this.channel = res.data.channel
         .map(item => {
-          return item.mobile + ' (' + item.realname + ')' + ''
+          if (item.realname) {
+            return item.mobile + ' (' + item.realname + ')' + ''
+          } else {
+            return item.mobile
+          }
         })
         .join('；')
       this.sms_list = res.data.sms_list
         .map(item => {
-          return item.mobile + ' (' + item.realname + ')' + ''
+          if (item.realname) {
+            return item.mobile + ' (' + item.realname + ')' + ''
+          } else {
+            return item.mobile
+          }
         })
         .join('；')
       this.userData = res.data
-      console.log('获取充值提醒用户列表', res)
+      // console.log('获取充值提醒用户列表', res)
     },
     // 提醒
     remind (type) {
       this.$refs.remindModel.isShow = true
       this.$refs.remindModel.type = type
       if (type === 1) {
+        this.$refs.remindModel.title = '余额'
         // console.log(this.userData.balance)
-        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.balance))
+        this.$refs.remindModel.userData = JSON.parse(
+          JSON.stringify(this.userData.balance)
+        )
       } else if (type === 2) {
+        this.$refs.remindModel.title = '短信'
         // console.log(this.userData.sms_list)
-        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.sms_list))
+        this.$refs.remindModel.userData = JSON.parse(
+          JSON.stringify(this.userData.sms_list)
+        )
       } else {
+        this.$refs.remindModel.title = '支付通道'
         // console.log(this.userData.channel)
-        this.$refs.remindModel.userData = JSON.parse(JSON.stringify(this.userData.channel))
+        this.$refs.remindModel.userData = JSON.parse(
+          JSON.stringify(this.userData.channel)
+        )
       }
     },
     // 预警
@@ -167,7 +189,7 @@ export default {
       // console.log('预警', res)
     }
   },
- async created () {
+  async created () {
     this.getData()
     this.projectID = +Cookies.get('project_id') || ''
     const res = await getWarning()
@@ -228,10 +250,10 @@ export default {
       border-bottom: 1px solid #ebebeb;
       padding-bottom: 20px;
       span {
-    font-family: 'PingFangSC-Regular', 'PingFang SC';
-    font-weight: 400;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.427450980392157);
+        font-family: "PingFangSC-Regular", "PingFang SC";
+        font-weight: 400;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.427450980392157);
       }
     }
     .content {
@@ -242,14 +264,13 @@ export default {
         margin-bottom: 20px;
         display: flex;
         align-items: center;
-
       }
       .t2 {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
       }
-      .t3{
+      .t3 {
         display: flex;
         align-items: center;
       }

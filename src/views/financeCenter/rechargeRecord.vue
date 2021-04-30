@@ -29,7 +29,7 @@
                 </a-select>
               </a-form-model-item>
             </a-col>
-            <a-col :md="8" :sm="24" v-if="cardBol">
+            <a-col :md="8" :sm="24" >
               <a-form-model-item class="timeItem" label="支付时间">
                 <a-range-picker
                   style="width:100%"
@@ -42,7 +42,7 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :md="16" :sm="24" v-else>
+            <!-- <a-col :md="16" :sm="24">
               <div class="btns">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button @click="reset">重置</a-button>
@@ -53,7 +53,7 @@ type="link"
                   <a-icon type="down" />
                 </a-button>
               </div>
-            </a-col>
+            </a-col> -->
             <a-col :md="8" :sm="24">
               <a-form-model-item label="支付方式" v-if="cardBol">
                 <a-select placeholder="请选择" v-model="pay_type">
@@ -67,8 +67,8 @@ type="link"
               </a-form-model-item>
             </a-col>
             <a-col :md="8" :sm="24"></a-col>
-            <a-col :md="24" :sm="24">
-              <div class="btns" v-if="cardBol">
+            <a-col :md="24"  :sm="24" v-if="cardBol">
+              <div class="btns" >
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button @click="reset">重置</a-button>
                 <a-button
@@ -76,6 +76,18 @@ type="link"
 @click="close"
                   >收起
                   <a-icon type="up" />
+                </a-button>
+              </div>
+            </a-col>
+            <a-col :md="8"  :sm="24" v-if="!cardBol">
+                                         <div class="btns" >
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
+type="link"
+@click="open"
+                  >展开
+                  <a-icon type="down" />
                 </a-button>
               </div>
             </a-col>
@@ -279,7 +291,7 @@ export default {
         sort_field: this.sort_field,
         sort_type: this.sort_type
       })
-      console.log('获取充值记录列表', res)
+      // console.log('获取充值记录列表', res)
       this.tableData = res.data.list
       if (+Cookies.get('project_id')) {
         const index = this.columns.findIndex(item => {
@@ -298,14 +310,10 @@ export default {
     },
     // 展开
     open () {
-      this.$refs.card.$el.style.height = '140px'
-      setTimeout(() => {
         this.cardBol = true
-      }, 100)
     },
     // 收起
     close () {
-      this.$refs.card.$el.style.height = '80px'
       this.cardBol = false
     },
     // 页码改变事件
@@ -329,15 +337,16 @@ export default {
     }
   },
   mounted () {
-    // console.log('this.$refs.card.$el.offsetHeight', this.$refs.card.$el.offsetHeight)
     // this.cardHeight = this.$refs.card.$el.offsetHeight
-    window.onresize = function () {
-      document.getElementById('card').style.height = 'auto'
-      // console.log(
-      //   'this.$refs.card.$el.offsetHeight',
-      //   document.getElementById('card')
-      // )
-    }
+    // window.onresize = function () {
+    //   // console.log('this.$refs.card.$el.offsetHeight', this.$refs.card.$el.offsetHeight)
+    //   // console.log('document.getElementById("card").offsetHeight', document.getElementById('card').offsetHeight)
+    //   document.getElementById('card').style.height = 'auto'
+    //   console.log(
+    //     'this.$refs.card.$el.offsetHeight',
+    //     document.getElementById('card').offsetHeight
+    //   )
+    // }
     this.close()
   },
   async created () {
@@ -357,8 +366,6 @@ export default {
       margin-left: 106px;
     }
   }
-  min-width: 1500px;
-  overflow: scroll-y;
   padding: 0 20px;
   .btns {
     padding-bottom: 20px;

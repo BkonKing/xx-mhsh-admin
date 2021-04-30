@@ -85,6 +85,7 @@ export default {
         this.isPay = false
         this.payMa = ''
         clearInterval(this.timeId)
+        this.onChange = undefined
       } else {
         this.onChange()
       }

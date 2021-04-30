@@ -1,7 +1,7 @@
 <template>
   <page-header-wrapper>
     <div class="accountInfo">
-      <a-card class="card" >
+      <a-card class="card"  size="default">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
           <h3>{{ accountInfo.account  }}</h3>
@@ -98,16 +98,16 @@ export default {
     this.accountInfo = res.data
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', this.projectID)
-    console.log('账户信息', res)
+    // console.log('账户信息', res)
   }
 }
 </script>
 
 <style lang="less" scoped>
 .accountInfo {
+
   .card {
-    max-width: 800px;
-    // min-width: 600px;
+    display: inline-block;
     height: 624px;
     .top {
       text-align: center;
@@ -132,7 +132,8 @@ export default {
       border-bottom: 2px dashed #e9e9e9;
       padding-bottom: 30px;
       .item {
-        width:33.33333333333%;
+        padding: 0 30px;
+        flex: 1;
         text-align: center;
         .t1 {
           font-family: "MicrosoftYaHei", "Microsoft YaHei";
@@ -165,8 +166,8 @@ export default {
     .bottom {
       display: flex;
       align-items: center;
-      margin-left: 35px;
       margin-top: 50px;
+      margin-right: 15px;
       .item {
         flex: 1;
         text-align: center;

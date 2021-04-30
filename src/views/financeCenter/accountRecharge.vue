@@ -68,7 +68,7 @@ export default {
     const res2 = await getSmsUseInfo()
     this.smsUseInfo = res2.data
     window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
-    console.log('短信使用信息', res2)
+    // console.log('短信使用信息', res2)
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', typeof this.projectID)
   }
@@ -77,8 +77,7 @@ export default {
 
 <style lang="less" scoped>
 .accountRecharge {
-  min-width: 1200px;
-  overflow: scroll-y;
+
   /deep/ .ant-page-header {
     padding-bottom: 0;
   }
