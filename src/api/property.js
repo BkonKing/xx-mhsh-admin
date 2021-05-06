@@ -46,6 +46,9 @@ export function sendCallPay (parameter) {
     url: movieApi.sendCallPay,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
+    headers: {
+      isLoading: true
+    },
     data: parameter
   })
 }
@@ -221,6 +224,9 @@ export function submitInvest (parameter) {
     url: movieApi.submitInvest,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
+    headers: {
+      isLoading: true
+    },
     data: parameter
   })
 }
@@ -267,6 +273,9 @@ export function submitAdjustment (parameter) {
     url: movieApi.adjustmentSend,
     baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
+    headers: {
+      isLoading: true
+    },
     data: parameter
   })
 }
