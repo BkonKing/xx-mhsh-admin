@@ -28,6 +28,8 @@ v-if="recharge_type === 1"
             @input="setPrice"
             placeholder="请输入"
             suffix="0.1元/条"
+            onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
           />
           <a-input
             v-else
@@ -36,6 +38,7 @@ v-if="recharge_type === 1"
             @input="setPrice"
             @blur="ismore100"
             suffix="3.5‰手续费"
+            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
           />
         </a-form-model-item>
         <a-form-model-item label="金额">
@@ -45,6 +48,7 @@ v-if="recharge_type === 1"
             v-model="price"
             @input="setRechargeMoney"
             placeholder="请输入"
+            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
           />
         </a-form-model-item>
       </a-form-model>
