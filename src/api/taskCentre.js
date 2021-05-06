@@ -38,7 +38,13 @@ const taskCentreApi = {
   getQuestionList: '/linli/question/getQuestionList',
   getList: '/linli/evaluate/getList',
   viewQuestion: '/linli/question/viewQuestion',
-  checkQuestionReply: '/linli/question/checkQuestionReply'
+  checkQuestionReply: '/linli/question/checkQuestionReply',
+  evaluateList: '/linli/evaluate/evaluateList',
+  optEvaluate: '/linli/evaluate/optEvaluate',
+  viewEvaluate: '/linli/evaluate/viewEvaluate',
+  getComplaintList: '/linli/complaint/getList',
+  getCompalintType: '/linli/complaint/getCompalintType',
+  getCommonTaskStatus: '/linli/common/getTaskStatus'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -354,5 +360,50 @@ export function toCheckQuestionReply (data) {
     url: taskCentreApi.checkQuestionReply,
     method: 'post',
     data
+  })
+}
+// 评价-评价标签下拉列表
+export function toEvaluateList () {
+  return request({
+    url: taskCentreApi.evaluateList,
+    method: 'post'
+  })
+}
+ // 评价-标记评价
+export function toOptEvaluate (data) {
+  return request({
+    url: taskCentreApi.optEvaluate,
+    method: 'post',
+    data
+  })
+}
+// 查看评价
+export function toViewEvaluate (data) {
+  return request({
+    url: taskCentreApi.viewEvaluate,
+    method: 'post',
+    data
+  })
+}
+// 投诉-投诉列表
+export function toGetComplaintList (data) {
+  return request({
+    url: taskCentreApi.getComplaintList,
+    method: 'post',
+    data
+  })
+}
+// 投诉-获取投诉类型
+export function toGetCompalintType () {
+  return request({
+    url: taskCentreApi.getCompalintType,
+    method: 'post'
+  })
+}
+// 任务-获取任务状态
+export function toGetCommonTaskStatus () {
+  return request({
+    url: taskCentreApi.getCommonTaskStatus,
+    method: 'post'
   })
 }

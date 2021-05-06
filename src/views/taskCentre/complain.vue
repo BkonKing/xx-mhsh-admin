@@ -28,218 +28,229 @@
       </template>
     </page-header-wrapper>
     <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col :span="8">
-            <a-form-model-item label="处理状态">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled">
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="投诉类型">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled">
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="内容类型" v-if="!cardBol">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled">
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-            <div class="btns" v-else>
-              <a-button type="primary">
-                查询
-              </a-button>
-              <a-button>重置</a-button>
-              <a-button
+      <div class="table-page-search-wrapper">
+        <a-form-model layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="处理状态">
+                <a-select placeholder="请选择" v-model="handle_status">
+                  <a-select-option value="0">
+                    待处理
+                  </a-select-option>
+                  <a-select-option value="1">
+                    已处理
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="投诉类型">
+                <a-select placeholder="请选择" v-model="complaint_type">
+                  <a-select-option
+                    v-for="item in typeList"
+                    :key="item.id"
+                    :value="item.id"
+                  >
+                    {{ item.complaint_type }}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24" v-if="!cardBol">
+              <div class="btns">
+                <a-button type="primary" @click="search">
+                  查询
+                </a-button>
+                <a-button>重置</a-button>
+                <a-button
 type="link"
 @click="open"
-                >展开 <a-icon
+                  >展开 <a-icon
 type="down"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8">
-            <a-form-model-item label="被投诉人">
-              <a-select style="width: 82px;marginRight:10px">
-                <a-select-option value="jack">
-                  任务方
-                </a-select-option>
-                <a-select-option value="lucy">
-                  接单方
-                </a-select-option>
-              </a-select>
-              <a-input
-                placeholder="手机号、用户昵称/ID"
-                style="width: 174px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="投诉人">
-              <a-input
-                placeholder="手机号、用户昵称/ID"
-                style="width: 264px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="投诉描述">
-              <a-input placeholder="关键字" style="width: 264px"></a-input>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8">
-            <a-form-model-item label="任务">
-              <a-input placeholder="编号、标题" style="width: 264px"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="任务状态">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="投诉时间">
-              <a-range-picker
-                style="width: 264px"
-                :ranges="{
-                  Today: [moment(), moment()],
-                  'This Month': [moment(), moment().endOf('month')]
-                }"
-                show-time
-                format="YYYY/MM/DD HH:mm:ss"
-                @change="onChange"
-              />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8"></a-col>
-          <a-col :span="8"></a-col>
-          <a-col :span="8">
-            <div class="btns">
-              <a-button type="primary">
-                查询
-              </a-button>
-              <a-button>重置</a-button>
-              <a-button
+                /></a-button>
+              </div>
+            </a-col>
+            <template v-if="cardBol">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="内容类型">
+                  <a-select placeholder="请选择" v-model="content_type">
+                    <a-select-option value="1">
+                      任务
+                    </a-select-option>
+                    <a-select-option value="2">
+                      提问
+                    </a-select-option>
+                    <a-select-option value="3">
+                      提问回复
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="被投诉人">
+                  <div class="complaintItem">
+                    <a-select
+                      placeholder="请选择"
+                      v-model="user_type"
+                      class="select"
+                    >
+                      <a-select-option value="2">
+                        任务方
+                      </a-select-option>
+                      <a-select-option value="1">
+                        接单方
+                      </a-select-option>
+                    </a-select>
+                    <a-input
+                      v-model="user_search"
+                      class="input"
+                      placeholder="手机号、用户昵称/ID"
+                    ></a-input>
+                  </div>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="投诉人">
+                  <a-input
+                    v-model="complaint_user"
+                    placeholder="手机号、用户昵称/ID"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="投诉描述">
+                  <a-input
+                    v-model="complaint_desc"
+                    placeholder="关键字"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务">
+                  <a-input
+                    v-model="task_search"
+                    placeholder="编号、标题"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务状态">
+                  <a-select placeholder="请选择">
+                    <a-select-option
+                      v-for="(item, index) in TaskStatusList"
+                      :key="index"
+                      :value="item.value"
+                    >
+                      {{ item.text }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="投诉时间">
+                  <a-range-picker
+                    class="piker-time"
+                    :ranges="{
+                      Today: [moment(), moment()],
+                      'This Month': [moment(), moment().endOf('month')]
+                    }"
+                    show-time
+                    format="YYYY/MM/DD HH:mm:ss"
+                    @change="onChange"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24"></a-col>
+              <a-col :md="8" :sm="24"></a-col>
+              <a-col :md="8" :sm="24" v-if="cardBol">
+                <div class="btns">
+                  <a-button type="primary" @click="search">
+                    查询
+                  </a-button>
+                  <a-button>重置</a-button>
+                  <a-button
 type="link"
 @click="close"
-                >收起 <a-icon
+                    >收起 <a-icon
 type="up"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
+                  /></a-button>
+                </div>
+              </a-col>
+            </template>
+          </a-row>
+        </a-form-model>
+      </div>
     </a-card>
     <a-card class="card2">
       <a-button type="primary" @click="batchDeal">处理</a-button>
-      <div class="selected" v-if="selectedRowKeys.length>0">
+      <div class="selected" v-if="selectedRowKeys.length > 0">
         <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
+        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
         <span class="span2" @click="clear">清空</span>
       </div>
-     <div class="table">
-        <a-table :columns="columns" :data-source="data" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :pagination='false'>
-      <template #complaindContent>
-        <div class="complaindContent" style="color:#1890FF">
-                 内容内容内容内容内容内容
-        </div>
-      </template>
-      <template #complaindPeople>
-        <div class="complaindPeople">
-          <div class="t1">昵称</div>
-          <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">项目名称</div>
-        </div>
-      </template>
-      <template #complainMan>
-        <div class="complainMan">
-          <div class="t1">昵称</div>
-          <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">项目名称</div>
-        </div>
-      </template>
-      <template #opera>
-        <div class="opera">
-          <a-button type="link" >查看</a-button>
-          <a-button type="link" @click="deal">处理</a-button>
-        </div>
-      </template>
-      </a-table>
-     </div>
-       <div class="pagination">
-          <a-pagination
-            show-quick-jumper
-            show-size-changer
-            :default-current="pagination.currentPage"
-            :page-size-options="pagination.sizes"
-            :total="pagination.total"
-            :page-size.sync="pagination.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
-            "
-            @change="onChangePage"
-            @showSizeChange="sizeChange"
-          />
-        </div>
+      <div class="table">
+        <a-table
+          :columns="columns"
+          :data-source="tableData"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+          :pagination="false"
+        >
+          <template slot="content" slot-scope="content">
+            <div class="content" style="color:#1890FF">
+              {{ content }}
+            </div>
+          </template>
+          <template slot="complainted_user" slot-scope="text, record">
+            <div class="complaindPeople">
+              <div class="t1">{{ record.complainted_user }}</div>
+              <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
+                {{ record.complainted_project? record.complainted_project:''}}
+              </div>
+            </div>
+          </template>
+          <template slot="complaint_user" slot-scope="text, record">
+            <div class="complainMan">
+              <div class="t1">{{ record.complaint_user }}</div>
+              <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
+                {{ record.complaint_project?record.complaint_project:'' }}
+              </div>
+            </div>
+          </template>
+          <template #opera>
+            <div class="opera">
+              <a-button type="link">查看</a-button>
+              <a-button type="link" @click="deal">处理</a-button>
+            </div>
+          </template>
+        </a-table>
+      </div>
+      <div class="pagination">
+        <a-pagination
+          show-quick-jumper
+          show-size-changer
+          :default-current="pagination.currentPage"
+          :page-size-options="pagination.sizes"
+          :total="pagination.total"
+          :page-size.sync="pagination.pageSize"
+          :show-total="
+            (total, range) =>
+              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                total / pagination.pageSize
+              )}页`
+          "
+          @change="onChangePage"
+          @showSizeChange="sizeChange"
+        />
+      </div>
     </a-card>
     <complainDeal ref="complainDeal"></complainDeal>
-    <complainBatchDeal ref="complainBatchDeal" :selectedRowKeys='selectedRowKeys'></complainBatchDeal>
+    <complainBatchDeal
+      ref="complainBatchDeal"
+      :selectedRowKeys="selectedRowKeys"
+    ></complainBatchDeal>
   </div>
 </template>
 
@@ -247,6 +258,11 @@ type="up"
 import moment from 'moment'
 import complainDeal from './complainDeal'
 import complainBatchDeal from './complainBatchDeal'
+import {
+  toGetComplaintList,
+  toGetCompalintType,
+  toGetCommonTaskStatus
+} from '@/api/taskCentre'
 export default {
   components: {
     complainDeal,
@@ -254,121 +270,130 @@ export default {
   },
   data () {
     return {
-       pagination: {
+      pagination: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       currentIndex: 1,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
       cardBol: false,
-      data: [
-        {
-          id: '00000',
-          dealTime: '剩余 20:00:00',
-          status: '待审核',
-          type: '提问',
-          complainType: '投诉类型',
-          complainTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '00000',
-          dealTime: '剩余 20:00:00',
-          status: '待审核',
-          type: '提问',
-          complainType: '投诉类型',
-          complainTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '00000',
-          dealTime: '剩余 20:00:00',
-          status: '待审核',
-          type: '提问',
-          complainType: '投诉类型',
-          complainTime: '2020-11-20  08:50:08'
-        }
-      ],
+      tableData: [],
       columns: [
         {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '10%'
         },
         {
           title: '处理时间',
-          dataIndex: 'dealTime',
-          key: 'dealTime',
-          width: 150
+          dataIndex: 'handle_desc',
+          key: 'handle_desc',
+          width: '10%'
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          width: 100
+          dataIndex: 'is_handle',
+          key: 'is_handle',
+          width: '10%'
         },
         {
           title: '内容类型',
-          dataIndex: 'type',
-          key: 'type',
-           width: 150
+          dataIndex: 'info_type_desc',
+          key: 'info_type_desc',
+          width: '10%'
         },
         {
           title: '被投诉内容',
-          dataIndex: 'complaindContent',
-          key: 'complaindContent',
-          scopedSlots: { customRender: 'complaindContent' },
-          width: 200
+          dataIndex: 'content',
+          key: 'content',
+          scopedSlots: { customRender: 'content' },
+          width: '10%'
         },
         {
           title: '投诉类型',
-          dataIndex: 'complainType',
-          key: 'complainType',
-          width: 150
+          dataIndex: 'complaint_type',
+          key: 'complaint_type',
+          width: '10%'
         },
         {
           title: '被投诉人',
-          dataIndex: 'complaindPeople',
-          key: 'complaindPeople',
-          scopedSlots: { customRender: 'complaindPeople' },
-          width: 150
+          dataIndex: 'complainted_user',
+          key: 'complainted_user',
+          scopedSlots: { customRender: 'complainted_user' },
+          width: '10%'
         },
         {
           title: '投诉人',
-          dataIndex: 'complainMan',
-          key: 'complainMan',
-          scopedSlots: { customRender: 'complainMan' },
-          width: 150
+          dataIndex: 'complaint_user',
+          key: 'complaint_user',
+          scopedSlots: { customRender: 'complaint_user' },
+          width: '10%'
         },
         {
           title: '投诉时间',
-          dataIndex: 'complainTime',
-          key: 'complainTime',
-          width: 200,
+          dataIndex: 'ctime',
+          key: 'ctime',
+          width: '10%',
           sorter: true
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-          scopedSlots: { customRender: 'opera' }
+          scopedSlots: { customRender: 'opera' },
+          width: '10%'
         }
       ],
-       selectedRowKeys: []
+      selectedRowKeys: [],
+      handle_status: undefined, //	否	int	投诉处理状态 0待处理 1已处理
+      complaint_type: undefined, //	否	int	投诉类型
+      content_type: undefined, //	否	int	1任务 2提问 3提问回复
+      user_type: undefined, //	否	int	1接单方 2任务方
+      user_search: '', //	否	string	用户搜索与user_type联合使用
+      complaint_desc: '', //	否	string	投诉描述
+      complaint_user: '', //	否	string	投诉人
+      task_search: '', //	否	string	任务搜索
+      task_status: '', //	否	int	任务状态搜索
+      complaint_time: '', //	否	string	投诉时间
+      typeList: [], // 投诉类型列表
+      TaskStatusList: [] // 任务状态列表
     }
   },
-  mounted () {
-    console.log(this.$refs.card.$el.offsetHeight) // 274
-  },
+
   methods: {
+    // 搜索
+    search () {
+      this.pagination.currentPage = 1
+      this.getData()
+    },
+    // 获取投诉列表
+    async getData () {
+      const res = await toGetComplaintList({
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage,
+        handle_status: this.handle_status,
+        complaint_type: this.complaint_type,
+        content_type: +this.content_type,
+        user_type: this.user_type,
+        user_search: this.user_search,
+        complaint_desc: this.complaint_desc,
+        complaint_user: this.complaint_user,
+        task_search: this.task_search,
+        task_status: this.task_status,
+        complaint_time: this.complaint_time
+      })
+      this.tableData = res.list
+      this.pagination.total = +res.data.total
+      console.log('获取投诉列表', res)
+    },
     // 清空表格复选框
     clear () {
       this.selectedRowKeys = []
     },
     // 表格复选框改变事件
-     onSelectChange (selectedRowKeys, selectedRows) {
+    onSelectChange (selectedRowKeys, selectedRows) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       console.log('selectedRows', selectedRows)
       this.selectedRowKeys = selectedRowKeys
@@ -381,7 +406,7 @@ export default {
     deal () {
       this.$refs.complainDeal.isShow = true
     },
-      // 页码改变事件
+    // 页码改变事件
     onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -392,21 +417,28 @@ export default {
     },
     // 展开
     open () {
-      setTimeout(() => {
-        this.cardBol = false
-      }, 200)
-      this.$refs.card.$el.style.height = '274px'
+      this.cardBol = true
     },
     // 收起
     close () {
-      this.cardBol = true
-      this.$refs.card.$el.style.height = '75px'
+      this.cardBol = false
     },
     moment,
     onChange (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
+  },
+  async created () {
+    this.getData()
+    // 投诉-获取投诉类型
+    const res = await toGetCompalintType()
+    this.typeList = res.list
+    console.log('获取投诉类型', res)
+    // 任务-获取任务状态
+    const res2 = await toGetCommonTaskStatus()
+    this.TaskStatusList = res2.list
+    console.log('任务-获取任务状态', res2)
   }
 }
 </script>
@@ -437,8 +469,24 @@ export default {
   }
   .card {
     margin-top: 20px;
+    /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
+    .piker-time {
+      width: 100% !important;
+    }
+    .complaintItem {
+      display: flex;
+      .select {
+        max-width: 82px;
+      }
+      .input {
+        flex: 1;
+        margin-left: 10px;
+      }
+    }
     .btns {
-      margin-left: 198px;
+      text-align: right;
       button {
         margin-right: 10px;
       }
@@ -470,25 +518,20 @@ export default {
         margin-left: 10px;
       }
     }
-    .table{
+    .table {
       margin-top: 20px;
     }
-        .pagination {
-        margin-top: 10px;
-        /deep/ .ant-pagination {
-          padding: 10px;
-        }
-        /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
-        }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
-        }
+    .pagination {
+      margin-top: 10px;
+      /deep/ .ant-pagination {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        text-align: right;
       }
+      /deep/ .ant-pagination-total-text {
+        float: left;
+      }
+    }
   }
 }
 </style>

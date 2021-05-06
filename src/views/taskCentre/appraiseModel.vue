@@ -3,62 +3,77 @@
     <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="任务标题">
         <div class="title">
-          任务标题任务标题任务标题任务标题任务标题任务标题
+          {{ info.task_title }}
         </div>
       </a-form-model-item>
       <a-form-model-item label="评价用户">
-        <span style="color:#1890FF;">昵称(姓名) </span>项目名称
+        <span style="color:#1890FF;">
+          {{ info.owner_name }}
+          </span
+        >
+        {{ info.project_name }}
       </a-form-model-item>
-      <a-form-model-item
-           label="评价时间"
-        >2020-11-20 08:50:08</a-form-model-item
-      >
-      <a-form-model-item label="评星">五星</a-form-model-item>
-      <a-form-model-item label="标签">标签、 标签、标签</a-form-model-item>
-      <a-form-model-item
-                 label="补充内容"
-        >补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容补充内容</a-form-model-item
-      >
+      <a-form-model-item label="评价时间">
+        {{ info.ctime }}
+        </a-form-model-item>
+      <a-form-model-item label="评星">
+        {{
+        stars[info.evaluate_stars]
+      }}
+      </a-form-model-item>
+      <a-form-model-item label="标签">
+        {{
+        info.evaluate_tags
+      }}
+      </a-form-model-item>
+      <a-form-model-item label="补充内容">
+        {{
+        info.evaluate_supplement
+      }}
+      </a-form-model-item>
     </a-form-model>
-    <div class="btn" v-if="!bol ">
+    <div class="btn" v-if="!bol && info.is_valid===1">
       <a-button @click="mark">标记为无效评价</a-button>
     </div>
-    <div class="bottom" v-if="bol && !showInfo ">
+    <div class="bottom" v-if="bol && !showInfo && info.is_valid===1">
       <div class="left">标记说明：</div>
       <div class="right">
         <a-textarea
-        style="width:300px"
-          v-model="value"
+          style="width:300px"
+          v-model="label_desc"
           placeholder="请输入"
           :auto-size="{ minRows: 3, maxRows: 5 }"
         />
       </div>
     </div>
-    <div class="btn2" v-if="bol && !showInfo">
+    <div class="btn2" v-if="bol && !showInfo  && info.is_valid===1">
       <a-button type="primary" @click="submit">确定</a-button>
     </div>
-    <div class="info" v-if="showInfo">
+    <div class="info" v-if="showInfo || info.is_valid===0">
       <div class="item">
         <div class="t1">标记评价：</div>
-        <div class="t2" style="color: #F5222D">无效</div>
+        <div class="t2" style="color: #F5222D">
+          无效
+        </div>
       </div>
       <div class="item">
         <div class="t1 markMan">标记人：</div>
-        <div class="t2">姓名</div>
+        <div class="t2">{{info.sing_user}}</div>
       </div>
       <div class="item">
         <div class="t1">标记时间：</div>
-        <div class="t2">2020-11-20  08:50:08</div>
+        <div class="t2">{{info.sign_time}}</div>
       </div>
       <div class="item">
         <div class="t1">标记说明：</div>
-        <div class="t2">内容内容内容内容内容内容内容内容</div>
+        <div class="t2">{{info.sign_desc}}</div>
       </div>
     </div>
   </a-modal>
 </template>
 
 <script>
+import { toOptEvaluate, toViewEvaluate } from '@/api/taskCentre'
 export default {
   data () {
     return {
@@ -67,7 +82,16 @@ export default {
       wrapperCol: { span: 14 },
       bol: false,
       showInfo: false,
-      value: ''
+      label_desc: '', // 标记说明
+      id: '', // 评价id
+      stars: {
+        1: '一星',
+        2: '二星',
+        3: '三星',
+        4: '四星',
+        5: '五星'
+      },
+      info: {} // 评价信息
     }
   },
   watch: {
@@ -76,18 +100,31 @@ export default {
         this.bol = false
         this.showInfo = false
       }
+    },
+    id () {
+      toViewEvaluate({ id: this.id }).then(res => {
+        this.info = res.data
+        console.log('查看评价', res)
+      })
     }
   },
   methods: {
     // 确定
-    submit () {
+    async submit () {
       this.showInfo = true
+      const res = await toOptEvaluate({
+        id: this.info.id,
+        is_valid: 0,
+        label_desc: this.label_desc
+      })
+      console.log('无效评价', res)
     },
     // 标记
     mark () {
       this.bol = true
     }
   }
+
 }
 </script>
 
@@ -98,34 +135,34 @@ export default {
 .btn {
   margin-left: 74px;
 }
-.bottom{
-display: flex;
-margin-left: 10px;
-border-top: 2px dashed #999;
-padding-top: 20px;
-.left{
-  width: 70px;
-}
-.right{
-  flex: 1;
-}
+.bottom {
+  display: flex;
+  margin-left: 10px;
+  border-top: 2px dashed #999;
+  padding-top: 20px;
+  .left {
+    width: 70px;
+  }
+  .right {
+    flex: 1;
+  }
 }
 /deep/ .ant-form-item {
   margin-bottom: 15px;
 }
-.btn2{
+.btn2 {
   margin-left: 80px;
   margin-top: 20px;
 }
-.info{
-  border-top: 2px dashed #999;
-  .item{
+.info {
+  border-top: 2px dashed #e8e8e8;
+  .item {
     display: flex;
     margin: 10px 8px;
-    .markMan{
+    .markMan {
       margin-left: 12px;
     }
-    .t1{
+    .t1 {
       font-weight: 600;
     }
   }

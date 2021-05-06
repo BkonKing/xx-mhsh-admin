@@ -7,7 +7,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-model-item label="评星">
-                <a-select v-model="evaluate_starts">
+                <a-select placeholder="请选择" v-model="evaluate_starts">
                   <a-select-option value="1">
                     一星
                   </a-select-option>
@@ -20,7 +20,7 @@
                   <a-select-option value="4">
                     四星
                   </a-select-option>
-                   <a-select-option value="5">
+                  <a-select-option value="5">
                     五星
                   </a-select-option>
                 </a-select>
@@ -28,18 +28,12 @@
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-model-item label="评价标签">
-                <a-select v-model="evaluate_tag">
-                  <a-select-option value="jack">
-                    Jack
-                  </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled">
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
+                <a-select placeholder="请选择" v-model="evaluate_tag">
+                  <a-select-option
+                    v-for="(item, index) in tagList"
+                    :key="index"
+                  >
+                    {{ item }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -56,38 +50,35 @@
             <template v-if="cardBol">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务">
-                  <a-input v-model="task_search" placeholder="编号、标题"></a-input>
+                  <a-input
+                    v-model="task_search"
+                    placeholder="编号、标题"
+                  ></a-input>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="评价用户">
-               <div  class="evaUser">
-                    <a-select class="select" v-model="user_type">
-                    <a-select-option value="jack">
-                      用户
-                    </a-select-option>
-                    <a-select-option value="lucy">
-                      系统
-                    </a-select-option>
-                  </a-select>
-                  <a-input class="phoneInput" placeholder="手机号、昵称/ID"></a-input>
-               </div>
+                  <div class="evaUser">
+                    <a-select  class="select" v-model="user_type" placeholder="请选择">
+                      <a-select-option value="1">
+                        用户
+                      </a-select-option>
+                      <a-select-option value="2">
+                        系统
+                      </a-select-option>
+                    </a-select>
+                    <a-input
+                      class="phoneInput"
+                      placeholder="手机号、昵称/ID"
+                    ></a-input>
+                  </div>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="所属项目">
-                  <a-select>
-                    <a-select-option value="jack">
-                      Jack
-                    </a-select-option>
-                    <a-select-option value="lucy">
-                      Lucy
-                    </a-select-option>
-                    <a-select-option value="disabled" disabled>
-                      Disabled
-                    </a-select-option>
-                    <a-select-option value="Yiminghe">
-                      yiminghe
+                  <a-select v-model="project_id" placeholder="评价用户">
+                    <a-select-option v-for="(item) in projectList" :key="item.id" value="item.id">
+                      {{item.project_name}}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -95,28 +86,22 @@
               <a-col :md="8" :sm="24" v-if="cardBol">
                 <a-form-model-item>
                   <div class="btns">
-                  <a-button type="primary">查询</a-button>
-                  <a-button>重置</a-button>
-                  <a-button type="link" @click="close">
-                    收起 <a-icon type="up" />
-                  </a-button>
-                </div>
+                    <a-button type="primary" @click="search">查询</a-button>
+                    <a-button>重置</a-button>
+                    <a-button type="link" @click="close">
+                      收起 <a-icon type="up" />
+                    </a-button>
+                  </div>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="是否有效">
-                  <a-select>
-                    <a-select-option value="jack">
-                      Jack
+                  <a-select placeholder="请选择" v-model="is_valid">
+                    <a-select-option value="1">
+                      有效评价
                     </a-select-option>
-                    <a-select-option value="lucy">
-                      Lucy
-                    </a-select-option>
-                    <a-select-option value="disabled" disabled>
-                      Disabled
-                    </a-select-option>
-                    <a-select-option value="Yiminghe">
-                      yiminghe
+                    <a-select-option value="0">
+                      无效评价
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -124,7 +109,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="评价时间">
                   <a-range-picker
-                  class="piker-time"
+                    class="piker-time"
                     :ranges="{
                       Today: [moment(), moment()],
                       'This Month': [moment(), moment().endOf('month')]
@@ -141,7 +126,16 @@
       </div>
     </a-card>
     <a-card class="card2">
-      <a-table :columns="columns" :data-source="tableData" :pagination="false">
+      <a-table
+        rowKey="id"
+        :row-selection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange
+        }"
+        :columns="columns"
+        :data-source="tableData"
+        :pagination="false"
+      >
         <template slot="task_title" slot-scope="task_title">
           <div class="task" style="color:#1890FF">
             {{ task_title }}
@@ -155,9 +149,9 @@
             </div>
           </div>
         </template>
-        <template #opera>
+        <template  slot="opera" slot-scope="text,record">
           <div>
-            <a-button type="link" @click="lookOver">查看</a-button>
+            <a-button type="link" @click="lookOver(record)">查看</a-button>
           </div>
         </template>
       </a-table>
@@ -187,7 +181,7 @@
 <script>
 import moment from 'moment'
 import appraiseModel from './appraiseModel'
-import { toGetList } from '@/api/taskCentre'
+import { toGetList, toEvaluateList, toGetProject } from '@/api/taskCentre'
 export default {
   components: {
     appraiseModel
@@ -258,49 +252,69 @@ export default {
         }
       ],
       evaluate_starts: undefined, //	否	int	评价星星数
-evaluate_tag: undefined, //	否	int	评价标签
-task_search: '', //	否	string	任务搜索
-user_type: undefined, //	否	int	评价用户类型1用户2系统
-user_search: '', //	否	string	用户
-is_valid: undefined, //	否	int	:'',//是否有效 1有效 0无效
-project_id: undefined, //	否	int	评价用户所属项目ID
-ctime: '' //	否	int	评价时间
+      evaluate_tag: undefined, //	否	int	评价标签
+      task_search: '', //	否	string	任务搜索
+      user_type: undefined, //	否	int	评价用户类型1用户2系统
+      user_search: '', //	否	string	用户
+      is_valid: undefined, //	否	int	,//是否有效 1有效 0无效
+      project_id: undefined, //	否	int	评价用户所属项目ID
+      ctime: '', //	否	int	评价时间
+      selectedRowKeys: [],
+      tagList: [], // 标签下拉列表
+      projectList: []
     }
   },
-  mounted () {
-    console.log(this.$refs.card.$el.offsetHeight) // 218
-  },
   methods: {
+    // 表格复选框 事件
+    onSelectChange (selectedRowKeys, selectedRows) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys)
+      console.log('selectedRows', selectedRows)
+      this.selectedRowKeys = selectedRowKeys
+    },
+    search () {
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 获取评价列表
     async getData () {
       const res = await toGetList({
         pagesize: this.pagination.pageSize,
-        pageindex: this.pagination.currentPage
+        pageindex: this.pagination.currentPage,
+        evaluate_starts: this.evaluate_starts,
+        evaluate_tag: this.evaluate_tag,
+        task_search: this.task_search,
+        user_type: this.user_type,
+        user_search: this.user_search,
+        is_valid: this.is_valid,
+        project_id: this.project_id,
+        ctime: this.ctime
       })
       this.tableData = res.list
-      this.pagination.total = res.data.total
+      this.pagination.total = +res.data.total
       console.log('获取评价列表', res)
     },
     // 查看
-    lookOver () {
+    lookOver (record) {
+      console.log('record', record)
+      this.$refs.appraiseModel.id = record.id
       this.$refs.appraiseModel.isShow = true
     },
     // 页码改变事件
     onChangePage (page, size) {
-      console.log('Page: ', page)
+      // console.log('Page: ', page)
       this.pagination.currentPage = page
       this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
-      console.log('size: ', size)
+      // console.log('size: ', size)
       this.pagination.currentPage = 1
       this.pagination.pageSize = size
       this.getData()
     },
     // 展开
     open () {
-        this.cardBol = true
+      this.cardBol = true
     },
     // 收起
     close () {
@@ -312,8 +326,16 @@ ctime: '' //	否	int	评价时间
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
   },
-  created () {
+  async created () {
     this.getData()
+    // 评价-评价标签下拉列表
+    const res = await toEvaluateList()
+    this.tagList = res.list
+    console.log('评价标签列表', res)
+      // 获取所有项目
+    const res2 = await toGetProject()
+    this.projectList = res2.data
+    console.log('获取所有项目', res2)
   }
 }
 </script>
@@ -322,7 +344,7 @@ ctime: '' //	否	int	评价时间
 .evaluate {
   padding: 0 20px;
   .btns {
-   text-align: right;
+    text-align: right;
     button {
       margin-right: 10px;
     }
@@ -333,15 +355,16 @@ ctime: '' //	否	int	评价时间
       min-width: 88px;
     }
     .piker-time {
-    width: 100% !important;
-  }
+      width: 100% !important;
+    }
     /deep/ .ant-card-body {
       padding-bottom: 0;
     }
-    .evaUser{
+    .evaUser {
       display: flex;
-      .select{
+      .select {
         max-width: 82px;
+        // width: 82px !important;
         margin-right: 10px;
       }
       // .phoneInput{
