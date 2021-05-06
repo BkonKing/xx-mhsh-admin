@@ -149,7 +149,7 @@ export default {
       if (this.recharge_type === 2) {
         this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
       } else {
-        this.count = keepTwoDecimalFull(this.price / 0.1)
+        this.count = this.price / 0.1
       }
     },
     // 设置金额
