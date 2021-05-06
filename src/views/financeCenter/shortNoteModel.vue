@@ -85,6 +85,7 @@ export default {
       if (newVal === false) {
         this.isPay = false
         this.hasImg = false
+        clearInterval(this.timeId)
       } else {
         this.onChange()
         this.hasImg = true
