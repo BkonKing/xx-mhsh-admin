@@ -106,7 +106,7 @@ export default {
       position: absolute;
       top: -70px;
       right: 0;
-      z-index: 9999999999;
+      z-index: 99;
       display: flex;
       align-items: center;
       .item {
