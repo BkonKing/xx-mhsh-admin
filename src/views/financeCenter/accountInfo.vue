@@ -4,7 +4,7 @@
       <a-card class="card"  size="default">
         <div class="top">
           <img src="@/assets/imgs/account_logo.png" alt="" />
-          <h3>{{ accountInfo.account  }}</h3>
+          <h3>{{ accountInfo.account }}</h3>
         </div>
         <div class="middle">
           <div class="item">
@@ -98,7 +98,7 @@ export default {
     this.accountInfo = res.data
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', this.projectID)
-    // console.log('账户信息', res)
+    console.log('账户信息', res)
   }
 }
 </script>
