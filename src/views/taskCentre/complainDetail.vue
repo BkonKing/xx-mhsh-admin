@@ -1,22 +1,40 @@
 <template>
   <div class="complainDetail">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card">
+  <div class="complainContent">
+        <a-card class="card">
       <div class="title">流程进度</div>
       <div class="steps">
-        <a-steps progress-dot :current="1">
+        <a-steps progress-dot :current="current">
           <a-step title="投诉时间">
             <template #description>
               <div class="description">
-                <div class="t1">项目名称-操作者姓名</div>
+                <div class="t1">
+                  {{ detailInfo.complainted_project }}-{{
+                    detailInfo.complaint_user
+                  }}
+                </div>
                 <div class="t2">
-                  2021-01-01 00:00
+                  {{ detailInfo.ctime }}
                 </div>
               </div>
             </template>
           </a-step>
-          <a-step title="待处理" description="This is a description." />
-          <a-step title="完成" description="This is a description." />
+          <a-step title="待处理">
+            <template #description>
+              <div class="description">
+                <div class="t1">
+                  {{ detailInfo.complaint_project }}-{{
+                    detailInfo.handle_user
+                  }}
+                </div>
+                <div class="t2">
+                  {{ detailInfo.handle_time }}
+                </div>
+              </div>
+            </template>
+          </a-step>
+          <a-step title="完成" />
         </a-steps>
       </div>
     </a-card>
@@ -27,26 +45,42 @@
           <a-col :span="8">
             <div class="item item1">
               <div class="t1">内容类型：</div>
-              <div class="t2">提问/提问回复/任务</div>
+              <div class="t2">{{ detailInfo.content_type }}</div>
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <div class="t1">内容ID：</div>
-              <div class="t2">00000000</div>
+              <div class="t2">{{ detailInfo.content_id }}</div>
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <div class="t1">被投诉次数：</div>
-              <div class="t2">2</div>
+              <div
+                class="t2"
+                style="color:#1890FF"
+                @click="$router.push('/taskCentre/complain')"
+              >
+                {{ detailInfo.complait_total }}
+              </div>
             </div>
           </a-col>
         </a-row>
         <div class="bottom">
           <div class="t1">被投诉内容：</div>
           <div class="t2">
-            任务标题/提问内容/提问回复内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+            <div
+              class="item"
+              @click="openDetail"
+              v-if="detailInfo.content_type === '任务'"
+              style="color:#1890FF"
+            >
+              {{ detailInfo.content }}
+            </div>
+            <div class="item2" v-else @click="lookOver">
+              {{ detailInfo.content }}
+            </div>
           </div>
         </div>
       </div>
@@ -59,8 +93,8 @@
             <div class="item item1">
               <div class="t1">投诉人：</div>
               <div class="t2">
-                <span style="color:#1890FF">昵称(姓名)</span>
-                项目名称
+                <span style="color:#1890FF">{{detailInfo.complaint_user}}</span>
+                {{detailInfo.complaint_project}}
               </div>
             </div>
           </a-col>
@@ -68,40 +102,40 @@
             <div class="item">
               <div class="t1">被投诉人：</div>
               <div class="t2">
-                <span style="color:#1890FF">昵称(姓名)</span>
-                项目名称
+                <span style="color:#1890FF">{{detailInfo.complainted_user}}</span>
+                {{detailInfo.complaint_project}}
               </div>
             </div>
           </a-col>
           <a-col :span="8">
             <div class="item">
               <div class="t1">投诉时间：</div>
-              <div class="t2">2020-11-20 08:50:08</div>
+              <div class="t2">{{detailInfo.ctime}}</div>
             </div>
           </a-col>
         </a-row>
         <div class="middle">
           <div class="t1">投诉类型：</div>
-          <div class="t2">投诉类型</div>
+          <div class="t2">{{detailInfo.complaint_type}}</div>
         </div>
         <div class="bottom">
           <div class="t1">投诉描述：</div>
           <div class="t2">
-            描述内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+            {{detailInfo.complaint_desc}}
           </div>
         </div>
         <div class="imgs">
-          <div class="item" v-for="item in 3" :key="item">
+          <div class="item" v-for="(item,index) in detailInfo.handle_image" :key="index">
             <img
               preview="0"
-              src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3851937152,723567732&fm=26&gp=0.jpg"
+              :src="item"
               alt=""
             />
           </div>
         </div>
       </div>
     </a-card>
-    <a-card class="card4">
+    <a-card class="card4" v-if="detailInfo.is_handle !=='1'">
       <div class="title">投诉处理</div>
       <div class="form">
         <a-form-model
@@ -187,9 +221,11 @@ style="color: #F5222D;"
       </div>
     </a-card>
   </div>
+  </div>
 </template>
 
 <script>
+import { getComplaintDetail } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -245,13 +281,27 @@ export default {
           name: 'image.png',
           status: 'error'
         }
-      ]
+      ],
+      id: '', // 投诉详情id
+      detailInfo: {}, // 详情信箱
+      current: 0 // 当前步骤条位置
     }
   },
   mounted () {
     this.$previewRefresh()
   },
   methods: {
+    // 查看 提问/回复详情
+    lookOver () {
+      this.$refs.askLookOverModel.isShow = true
+    },
+    // 新窗口打开任务详情
+    openDetail () {
+      const { href } = this.$router.resolve({
+        path: '/taskCentre/complain'
+      })
+      window.open(href, '_blank')
+    },
     // 确定
     submit () {
       this.$message.success('处理成功')
@@ -269,12 +319,24 @@ export default {
     handleChange ({ fileList }) {
       this.fileList = fileList
     }
+  },
+  async created () {
+    this.id = this.$route.query.id
+    if (this.id !== '') {
+      const res = await getComplaintDetail({ id: this.id })
+      this.detailInfo = res.data
+      this.current = +res.data.is_handle === 1 ? 2 : 1
+      console.log('投诉详情', res)
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
 .complainDetail {
+  .complainContent{
+    padding: 0 20px;
+  }
   /deep/ .ant-card-body {
     padding: 0;
   }
@@ -294,6 +356,11 @@ export default {
     }
     .steps {
       padding: 30px;
+      .description {
+        .t1 {
+          white-space: nowrap;
+        }
+      }
     }
   }
   .card2 {
@@ -327,6 +394,13 @@ export default {
         }
         .t2 {
           flex: 1;
+          .item2 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+          }
         }
       }
     }

@@ -27,226 +27,242 @@
         </div>
       </template>
     </page-header-wrapper>
-    <a-card class="card" ref="card">
-      <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="处理状态">
-                <a-select placeholder="请选择" v-model="handle_status">
-                  <a-select-option value="0">
-                    待处理
-                  </a-select-option>
-                  <a-select-option value="1">
-                    已处理
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="投诉类型">
-                <a-select placeholder="请选择" v-model="complaint_type">
-                  <a-select-option
-                    v-for="item in typeList"
-                    :key="item.id"
-                    :value="item.id"
-                  >
-                    {{ item.complaint_type }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="!cardBol">
-              <div class="btns">
-                <a-button type="primary" @click="search">
-                  查询
-                </a-button>
-                <a-button>重置</a-button>
-                <a-button
-type="link"
-@click="open"
-                  >展开 <a-icon
-type="down"
-                /></a-button>
-              </div>
-            </a-col>
-            <template v-if="cardBol">
+    <div class="content">
+      <a-card class="card" ref="card">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="48">
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="内容类型">
-                  <a-select placeholder="请选择" v-model="content_type">
+                <a-form-model-item label="处理状态">
+                  <a-select placeholder="请选择" v-model="handle_status">
+                    <a-select-option value="0">
+                      待处理
+                    </a-select-option>
                     <a-select-option value="1">
-                      任务
-                    </a-select-option>
-                    <a-select-option value="2">
-                      提问
-                    </a-select-option>
-                    <a-select-option value="3">
-                      提问回复
+                      已处理
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="被投诉人">
-                  <div class="complaintItem">
-                    <a-select
-                      placeholder="请选择"
-                      v-model="user_type"
-                      class="select"
-                    >
-                      <a-select-option value="2">
-                        任务方
-                      </a-select-option>
-                      <a-select-option value="1">
-                        接单方
-                      </a-select-option>
-                    </a-select>
-                    <a-input
-                      v-model="user_search"
-                      class="input"
-                      placeholder="手机号、用户昵称/ID"
-                    ></a-input>
-                  </div>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="投诉人">
-                  <a-input
-                    v-model="complaint_user"
-                    placeholder="手机号、用户昵称/ID"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="投诉描述">
-                  <a-input
-                    v-model="complaint_desc"
-                    placeholder="关键字"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务">
-                  <a-input
-                    v-model="task_search"
-                    placeholder="编号、标题"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务状态">
-                  <a-select placeholder="请选择">
+                <a-form-model-item label="投诉类型">
+                  <a-select placeholder="请选择" v-model="complaint_type">
                     <a-select-option
-                      v-for="(item, index) in TaskStatusList"
-                      :key="index"
-                      :value="item.value"
+                      v-for="item in typeList"
+                      :key="item.id"
+                      :value="item.id"
                     >
-                      {{ item.text }}
+                      {{ item.complaint_type }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="投诉时间">
-                  <a-range-picker
-                    class="piker-time"
-                    :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
-                    }"
-                    show-time
-                    format="YYYY/MM/DD HH:mm:ss"
-                    @change="onChange"
-                  />
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24"></a-col>
-              <a-col :md="8" :sm="24"></a-col>
-              <a-col :md="8" :sm="24" v-if="cardBol">
+              <a-col :md="8" :sm="24" v-if="!cardBol">
                 <div class="btns">
                   <a-button type="primary" @click="search">
                     查询
                   </a-button>
-                  <a-button>重置</a-button>
+                  <a-button @click="reset">重置</a-button>
                   <a-button
 type="link"
-@click="close"
-                    >收起 <a-icon
-type="up"
+@click="open"
+                    >展开 <a-icon
+type="down"
                   /></a-button>
                 </div>
               </a-col>
+              <template v-if="cardBol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="内容类型">
+                    <a-select placeholder="请选择" v-model="content_type">
+                      <a-select-option value="1">
+                        任务
+                      </a-select-option>
+                      <a-select-option value="2">
+                        提问
+                      </a-select-option>
+                      <a-select-option value="3">
+                        提问回复
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="被投诉人">
+                    <div class="complaintItem">
+                      <a-select
+                        placeholder="请选择"
+                        v-model="user_type"
+                        class="select"
+                      >
+                        <a-select-option value="2">
+                          任务方
+                        </a-select-option>
+                        <a-select-option value="1">
+                          接单方
+                        </a-select-option>
+                      </a-select>
+                      <a-input
+                        v-model="user_search"
+                        class="input"
+                        placeholder="手机号、用户昵称/ID"
+                      ></a-input>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="投诉人">
+                    <a-input
+                      v-model="complaint_user"
+                      placeholder="手机号、用户昵称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="投诉描述">
+                    <a-input
+                      v-model="complaint_desc"
+                      placeholder="关键字"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务">
+                    <a-input
+                      v-model="task_search"
+                      placeholder="编号、标题"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务状态">
+                    <a-select placeholder="请选择">
+                      <a-select-option
+                        v-for="(item, index) in TaskStatusList"
+                        :key="index"
+                        :value="item.value"
+                      >
+                        {{ item.text }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="投诉时间">
+                    <a-range-picker
+                      v-model="timeTxt"
+                      class="piker-time"
+                      :ranges="{
+                        Today: [moment(), moment()],
+                        'This Month': [moment(), moment().endOf('month')]
+                      }"
+                      show-time
+                      format="YYYY-MM-DD HH:mm:ss"
+                      @change="onChange"
+                    />
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24"></a-col>
+                <a-col :md="8" :sm="24"></a-col>
+                <a-col :md="8" :sm="24" v-if="cardBol">
+                  <div class="btns">
+                    <a-button type="primary" @click="search">
+                      查询
+                    </a-button>
+                    <a-button @click="reset">重置</a-button>
+                    <a-button
+type="link"
+@click="close"
+                      >收起 <a-icon
+type="up"
+                    /></a-button>
+                  </div>
+                </a-col>
+              </template>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <a-button type="primary" @click="batchDeal">处理</a-button>
+        <div class="selected" v-if="selectedRowKeys.length > 0">
+          <a-icon class="icon" type="info-circle" />
+          已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+          <span class="span2" @click="clear">清空</span>
+        </div>
+        <div class="table">
+          <a-table
+          rowKey="id"
+            :columns="columns"
+            :data-source="tableData"
+            :row-selection="{
+              selectedRowKeys: selectedRowKeys,
+              onChange: onSelectChange
+            }"
+            :pagination="false"
+          >
+            <template slot="content" slot-scope="content">
+              <div class="content" style="color:#1890FF">
+                {{ content }}
+              </div>
             </template>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <a-button type="primary" @click="batchDeal">处理</a-button>
-      <div class="selected" v-if="selectedRowKeys.length > 0">
-        <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-        <span class="span2" @click="clear">清空</span>
-      </div>
-      <div class="table">
-        <a-table
-          :columns="columns"
-          :data-source="tableData"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
-          }"
-          :pagination="false"
-        >
-          <template slot="content" slot-scope="content">
-            <div class="content" style="color:#1890FF">
-              {{ content }}
-            </div>
-          </template>
-          <template slot="complainted_user" slot-scope="text, record">
-            <div class="complaindPeople">
-              <div class="t1">{{ record.complainted_user }}</div>
-              <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
-                {{ record.complainted_project? record.complainted_project:''}}
+            <template slot="complainted_user" slot-scope="text, record">
+              <div class="complaindPeople">
+                <div class="t1">{{ record.complainted_user }}</div>
+                <div
+                  class="t2"
+                  style="color: rgba(0, 0, 0, 0.349019607843137);"
+                >
+                  {{
+                    record.complainted_project ? record.complainted_project : ""
+                  }}
+                </div>
               </div>
-            </div>
-          </template>
-          <template slot="complaint_user" slot-scope="text, record">
-            <div class="complainMan">
-              <div class="t1">{{ record.complaint_user }}</div>
-              <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
-                {{ record.complaint_project?record.complaint_project:'' }}
+            </template>
+            <template slot="complaint_user" slot-scope="text, record">
+              <div class="complainMan">
+                <div class="t1">{{ record.complaint_user }}</div>
+                <div
+                  class="t2"
+                  style="color: rgba(0, 0, 0, 0.349019607843137);"
+                >
+                  {{ record.complaint_project ? record.complaint_project : "" }}
+                </div>
               </div>
-            </div>
-          </template>
-          <template #opera>
-            <div class="opera">
-              <a-button type="link">查看</a-button>
-              <a-button type="link" @click="deal">处理</a-button>
-            </div>
-          </template>
-        </a-table>
-      </div>
-      <div class="pagination">
-        <a-pagination
-          show-quick-jumper
-          show-size-changer
-          :default-current="pagination.currentPage"
-          :page-size-options="pagination.sizes"
-          :total="pagination.total"
-          :page-size.sync="pagination.pageSize"
-          :show-total="
-            (total, range) =>
-              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                total / pagination.pageSize
-              )}页`
-          "
-          @change="onChangePage"
-          @showSizeChange="sizeChange"
-        />
-      </div>
-    </a-card>
-    <complainDeal ref="complainDeal"></complainDeal>
+            </template>
+            <template slot="opera" slot-scope="text,record">
+              <div class="opera">
+                <a-button
+                  type="link"
+                  @click="$router.push('/taskCentre/complainDetail?id='+record.id)"
+                  >查看</a-button
+                >
+                <a-button type="link" @click="deal(record)" v-if="record.is_handle==='待处理'">处理</a-button>
+              </div>
+            </template>
+          </a-table>
+        </div>
+        <div class="pagination">
+          <a-pagination
+            show-quick-jumper
+            show-size-changer
+            :default-current="pagination.currentPage"
+            :page-size-options="pagination.sizes"
+            :total="pagination.total"
+            :page-size.sync="pagination.pageSize"
+            :show-total="
+              (total, range) =>
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
+            "
+            @change="onChangePage"
+            @showSizeChange="sizeChange"
+          />
+        </div>
+      </a-card>
+    </div>
+    <complainDeal ref="complainDeal" @getData='getData'></complainDeal>
     <complainBatchDeal
       ref="complainBatchDeal"
       :selectedRowKeys="selectedRowKeys"
@@ -357,12 +373,29 @@ export default {
       task_search: '', //	否	string	任务搜索
       task_status: '', //	否	int	任务状态搜索
       complaint_time: '', //	否	string	投诉时间
+      timeTxt: '',
       typeList: [], // 投诉类型列表
       TaskStatusList: [] // 任务状态列表
     }
   },
 
   methods: {
+    // 重置
+    reset () {
+      this.handle_status = undefined
+      this.complaint_type = undefined
+      this.content_type = undefined
+      this.user_type = undefined
+      this.user_search = ''
+      this.complaint_desc = ''
+      this.complaint_user = ''
+      this.task_search = ''
+      this.task_status = ''
+      this.complaint_time = ''
+      this.timeTxt = ''
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 搜索
     search () {
       this.pagination.currentPage = 1
@@ -375,7 +408,7 @@ export default {
         pageindex: this.pagination.currentPage,
         handle_status: this.handle_status,
         complaint_type: this.complaint_type,
-        content_type: +this.content_type,
+        content_type: this.content_type,
         user_type: this.user_type,
         user_search: this.user_search,
         complaint_desc: this.complaint_desc,
@@ -403,7 +436,9 @@ export default {
       this.$refs.complainBatchDeal.isShow = true
     },
     // 处理
-    deal () {
+    deal (record) {
+      // console.log('record', record)
+      this.$refs.complainDeal.id = record.id
       this.$refs.complainDeal.isShow = true
     },
     // 页码改变事件
@@ -424,9 +459,11 @@ export default {
       this.cardBol = false
     },
     moment,
+    // 时间选择器改变事件
     onChange (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      this.complaint_time = dateStrings[0] + '~' + dateStrings[1]
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
   },
   async created () {
@@ -445,6 +482,9 @@ export default {
 
 <style lang="less" scoped>
 .complain {
+  .content {
+    padding: 0 20px;
+  }
   /deep/ .ant-page-header {
     padding-bottom: 0px !important;
   }

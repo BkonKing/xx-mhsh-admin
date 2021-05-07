@@ -214,6 +214,7 @@ type="down"
           }"
           :columns="columns"
           :data-source="tableData"
+          @change='tableChange'
         >
         <template slot="check_time_desc" slot-scope="check_time_desc">
           <div :style="{color:check_time_desc.is_over===1?'red':''}">
@@ -386,6 +387,17 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+    // 排序
+    tableChange (pagination, filters, sorter, { currentDataSource }) {
+      console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getData()
+    },
     // 切换标签
     changeTab (index) {
       this.currentIndex = index

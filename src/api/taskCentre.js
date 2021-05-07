@@ -44,7 +44,12 @@ const taskCentreApi = {
   viewEvaluate: '/linli/evaluate/viewEvaluate',
   getComplaintList: '/linli/complaint/getList',
   getCompalintType: '/linli/complaint/getCompalintType',
-  getCommonTaskStatus: '/linli/common/getTaskStatus'
+  getCommonTaskStatus: '/linli/common/getTaskStatus',
+  handComplaint: '/linli/complaint/handComplaint',
+  viewComplaint: '/linli/complaint/viewComplaint',
+  complaintDetail: '/linli/complaint/complaintDetail',
+  getTaskList: '/linli/task/getList',
+  getTaskType: '/linli/common/getTaskType'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -300,13 +305,13 @@ export function toSetGroupOwner (data) {
     data
   })
 }
-// 任务-获取任务状态
-export function toGetTaskStatus () {
-  return request({
-    url: taskCentreApi.getTaskStatus,
-    method: 'post'
-  })
-}
+// // 任务-获取任务状态
+// export function toGetTaskStatus () {
+//   return request({
+//     url: taskCentreApi.getTaskStatus,
+//     method: 'post'
+//   })
+// }
  // 获取所有项目
 export function toGetProject () {
   return request({
@@ -404,6 +409,45 @@ export function toGetCompalintType () {
 export function toGetCommonTaskStatus () {
   return request({
     url: taskCentreApi.getCommonTaskStatus,
+    method: 'post'
+  })
+}
+// 投诉-处理投诉
+export function toHandComplaint (data) {
+  return request({
+    url: taskCentreApi.handComplaint,
+    method: 'post',
+    data
+  })
+}
+// 投诉-查看投诉
+export function toViewComplaint (data) {
+  return request({
+    url: taskCentreApi.viewComplaint,
+    method: 'post',
+    data
+  })
+}
+// 投诉-投诉详情
+export function getComplaintDetail (data) {
+  return request({
+    url: taskCentreApi.complaintDetail,
+    method: 'post',
+    data
+  })
+}
+// 任务中心-任务列表
+export function togetTaskList (data) {
+  return request({
+    url: taskCentreApi.getTaskList,
+    method: 'post',
+    data
+  })
+}
+// 任务中心-获取任务类型（下拉）
+export function toGetTaskType () {
+  return request({
+    url: taskCentreApi.getTaskType,
     method: 'post'
   })
 }

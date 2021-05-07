@@ -5,260 +5,237 @@
         <div class="task-top">
           <div
             class="item"
-            @click="currentIndex = 1"
-            :class="{ active: currentIndex === 1 }"
+            @click="currentIndex = ''"
+            :class="{ active: currentIndex === '' }"
           >
-            全部
+            全部{{ tabInfo.total }}
+          </div>
+          <div
+            class="item"
+            @click="currentIndex = 0"
+            :class="{ active: currentIndex === 0 }"
+          >
+            待审核{{ tabInfo.to_be_reviewed }}
           </div>
           <div
             class="item"
             @click="currentIndex = 2"
             :class="{ active: currentIndex === 2 }"
           >
-            待审核
+            待接单{{ tabInfo.order_be_received }}
           </div>
           <div
             class="item"
             @click="currentIndex = 3"
             :class="{ active: currentIndex === 3 }"
           >
-            待接单
+            待交付
           </div>
           <div
             class="item"
             @click="currentIndex = 4"
             :class="{ active: currentIndex === 4 }"
           >
-            待交付
-          </div>
-          <div
-            class="item"
-            @click="currentIndex = 5"
-            :class="{ active: currentIndex === 5 }"
-          >
-            已完成
+            已完成{{ tabInfo.to_completed }}
           </div>
           <div
             class="item"
             @click="currentIndex = 6"
             :class="{ active: currentIndex === 6 }"
           >
-            已终止
+            已终止{{ tabInfo.to_terminated }}
           </div>
           <div
             class="item"
             @click="currentIndex = 7"
             :class="{ active: currentIndex === 7 }"
           >
-            已失效
+            已失效{{ tabInfo.to_invalid }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 8"
-            :class="{ active: currentIndex === 8 }"
+            @click="currentIndex = 5"
+            :class="{ active: currentIndex === 5 }"
           >
-            未通过
+            未通过{{ tabInfo.to_failed }}
           </div>
         </div>
       </template>
     </page-header-wrapper>
     <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col span="8">
-            <a-form-model-item label="任务类型">
-              <a-select placeholder="请选择" style="width: 400px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="任务状态">
-              <a-select placeholder="请选择" style="width: 400px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="任务状态">
-              <a-select placeholder="请选择" style="width: 400px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="8">
-            <a-form-model-item label="任务方">
-              <a-input
-                placeholder="手机号、用户昵称/ID、任务联系电话"
-                style="width: 400px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="接单方">
-              <a-input
-                placeholder="手机号、用户昵称/ID"
-                style="width: 400px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1" v-if="!cardBol">
-            <a-form-model-item label="任务">
-              <a-input
-                placeholder="编号、标题、内容"
-                style="width: 400px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1" v-if="cardBol">
-            <div class="btns">
-              <a-button class="btn1" type="primary">查询</a-button>
-              <a-button>重置</a-button>
-              <a-button
+      <div class="table-page-search-wrapper">
+        <a-form-model layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="任务类型">
+                <a-select v-model="task_type" placeholder="请选择">
+                  <a-select-option v-for="(item, index) in typeList" :key="index" :value="item.id">
+                    {{item.type_name}}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="任务状态">
+                <a-select placeholder="请选择">
+                  <a-select-option v-for="(item, index) in TaskStatusList" :key="index" :value="item.value">
+                    {{item.text}}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24" v-if="cardBol">
+              <a-form-model-item label="进度状态">
+                <a-select placeholder="请选择">
+                  <a-select-option value="jack">
+                    Jack
+                  </a-select-option>
+                  <a-select-option value="lucy">
+                    Lucy
+                  </a-select-option>
+                  <a-select-option value="disabled" disabled>
+                    Disabled
+                  </a-select-option>
+                  <a-select-option value="Yiminghe">
+                    yiminghe
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24" v-if="!cardBol">
+              <div class="btns">
+                <a-button class="btn1" type="primary">查询</a-button>
+                <a-button>重置</a-button>
+                <a-button
 type="link"
 @click="open"
-                >展开 <a-icon type="down" />
-              </a-button>
-            </div>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8">
-            <a-form-model-item label="可见小区">
-              <a-select style="width: 400px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="可见地区">
-              <a-cascader
-                style="width:400px"
-                :changeOnSelect="true"
-                :options="options"
-                placeholder="Please select"
-              />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="可见群">
-              <a-input placeholder="群名称/ID" style="width:400px"></a-input>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8">
-            <a-form-model-item label="所属项目">
-              <a-select style="width: 400px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled" disabled>
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <a-form-model-item label="创建时间">
-              <a-range-picker
-                style="width:400px"
-                :ranges="{
-                  Today: [moment(), moment()],
-                  'This Month': [moment(), moment().endOf('month')]
-                }"
-                show-time
-                format="YYYY/MM/DD HH:mm:ss"
-              />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="7" :offset="1">
-            <div class="btns">
-              <a-button class="btn1" type="primary">查询</a-button>
-              <a-button>重置</a-button>
-              <a-button
+                  >展开 <a-icon type="down" />
+                </a-button>
+              </div>
+            </a-col>
+            <template v-if="cardBol">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务方">
+                  <a-input
+                    placeholder="手机号、用户昵称/ID、任务联系电话"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="接单方">
+                  <a-input placeholder="手机号、用户昵称/ID"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务">
+                  <a-input placeholder="编号、标题、内容"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="可见小区">
+                  <a-select>
+                    <a-select-option value="jack">
+                      Jack
+                    </a-select-option>
+                    <a-select-option value="lucy">
+                      Lucy
+                    </a-select-option>
+                    <a-select-option value="disabled" disabled>
+                      Disabled
+                    </a-select-option>
+                    <a-select-option value="Yiminghe">
+                      yiminghe
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="可见地区">
+                  <a-cascader
+                    :changeOnSelect="true"
+                    :options="options"
+                    placeholder="Please select"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="可见群">
+                  <a-input placeholder="群名称/ID"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="所属项目">
+                  <a-select>
+                    <a-select-option value="jack">
+                      Jack
+                    </a-select-option>
+                    <a-select-option value="lucy">
+                      Lucy
+                    </a-select-option>
+                    <a-select-option value="disabled" disabled>
+                      Disabled
+                    </a-select-option>
+                    <a-select-option value="Yiminghe">
+                      yiminghe
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="创建时间">
+                  <a-range-picker
+                    class="piker-time"
+                    :ranges="{
+                      Today: [moment(), moment()],
+                      'This Month': [moment(), moment().endOf('month')]
+                    }"
+                    show-time
+                    format="YYYY-MM-DD HH:mm:ss"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <div class="btns">
+                  <a-button class="btn1" type="primary">查询</a-button>
+                  <a-button>重置</a-button>
+                  <a-button
 type="link"
 @click="close"
-                >收起 <a-icon
+                    >收起 <a-icon
 type="up"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
+                  /></a-button>
+                </div>
+              </a-col>
+            </template>
+          </a-row>
+        </a-form-model>
+      </div>
     </a-card>
     <a-card class="card2">
       <div class="top">
         <a-button type="primary">新建任务</a-button>
         <a-button @click="batchOpera">批量操作 <a-icon type="down"/></a-button>
       </div>
-      <div class="selected" v-if="selectedRowKeys.length>0">
-       <a-icon class="icon" type="info-circle"  />
-        已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项  <span class="span2" @click="clear">清空</span>
+      <div class="selected" v-if="selectedRowKeys.length > 0">
+        <a-icon class="icon" type="info-circle" />
+        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+        <span class="span2" @click="clear">清空</span>
       </div>
       <a-table
+        rowKey="id"
         class="table"
         :columns="columns"
-        :data-source="data"
+        :data-source="tableData"
         :pagination="false"
-        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :row-selection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange
+        }"
       >
-        <template slot="taskSide">
+        <template slot="task_user" slot-scope="text, record">
           <div>
-            <div class="t1">昵称(姓名)</div>
-            <div class="t2">项目名称</div>
+            <div class="t1">{{ record.task_user }}</div>
+            <div class="t2">{{ record.task_project }}</div>
           </div>
         </template>
         <div slot="customTitle">
@@ -270,10 +247,10 @@ type="up"
             <a-icon type="info-circle" />
           </a-tooltip>
         </div>
-        <template #takeOrderNumber>
-          <div>
-            -/10
-          </div>
+        <template slot="accept_people" slot-scope="text, record">
+          <span> {{ record.accept_people }}</span
+          ><span>/</span>
+          <span>{{ record.need_people }}</span>
         </template>
         <template #opera>
           <div class="btns">
@@ -282,43 +259,51 @@ type="up"
           </div>
         </template>
       </a-table>
-        <div class="pagination">
+      <div class="pagination">
         <a-pagination
-                      show-quick-jumper
-                      show-size-changer
-                      :default-current="pagination.currentPage"
-                      :page-size-options="pagination.sizes"
-                      :total="pagination.total"
-                      :page-size.sync="pagination.pageSize"
-                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
-                      @change="onChange"
-                      @showSizeChange="sizeChange" />
+          show-quick-jumper
+          show-size-changer
+          :default-current="pagination.currentPage"
+          :page-size-options="pagination.sizes"
+          :total="pagination.total"
+          :page-size.sync="pagination.pageSize"
+          :show-total="
+            (total, range) =>
+              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                total / pagination.pageSize
+              )}页`
+          "
+          @change="onChange"
+          @showSizeChange="sizeChange"
+        />
       </div>
     </a-card>
-    <batchCheck ref="batchCheck" :selectedRowKeys='selectedRowKeys'></batchCheck>
+    <batchCheck
+      ref="batchCheck"
+      :selectedRowKeys="selectedRowKeys"
+    ></batchCheck>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import batchCheck from './batchCheck'
-import { toGetTaskStatus } from '@/api/taskCentre'
+import { toGetCommonTaskStatus, togetTaskList, toGetTaskType } from '@/api/taskCentre'
 export default {
   components: {
     batchCheck
   },
   data () {
     return {
-       pagination: {
+      pagination: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
-      currentIndex: 1,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
-      options: [ // 城市数据
+      currentIndex: '',
+      options: [
+        // 城市数据
         {
           value: 'zhejiang',
           label: 'Zhejiang',
@@ -342,143 +327,140 @@ export default {
           title: '任务编号',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '8.333333333%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '审核时间',
-          dataIndex: 'checkTime',
-          key: 'checkTime',
-          width: 150
+          dataIndex: 'check_time_desc',
+          key: 'check_time_desc',
+          width: '8.333333333%'
         },
         {
           title: '任务状态',
-          dataIndex: 'taskStatus',
-          key: 'taskStatus',
-          width: 150
+          dataIndex: 'task_status',
+          key: 'task_status',
+          width: '8.333333333%'
         },
         {
           title: '类型',
-          dataIndex: 'type',
-          key: 'type',
-          width: 150
+          dataIndex: 'task_type',
+          key: 'task_type',
+          width: '8.333333333%'
         },
         {
           title: '任务',
-          dataIndex: 'task',
-          key: 'task',
-          width: 150
+          dataIndex: 'task_title',
+          key: 'task_title',
+          width: '8.333333333%'
         },
         {
           title: '奖励(币)',
-          dataIndex: 'award',
-          key: 'award',
+          dataIndex: 'reward_happiness',
+          key: 'reward_happiness',
           sorter: true,
-          width: 150
+          width: '8.333333333%'
         },
         {
           title: '任务方',
-          dataIndex: 'taskSide',
-          key: 'taskSide',
-          width: 150,
-          scopedSlots: { customRender: 'taskSide' }
+          dataIndex: 'task_user',
+          key: 'task_user',
+          width: '8.333333333%',
+          scopedSlots: { customRender: 'task_user' }
         },
         {
-          dataIndex: 'takeOrderNumber',
-          key: 'takeOrderNumber',
+          dataIndex: 'accept_people',
+          key: 'accept_people',
           slots: { title: 'customTitle' },
-          scopedSlots: { customRender: 'takeOrderNumber' },
-          width: 150
+          scopedSlots: { customRender: 'accept_people' },
+          width: '8.333333333%'
         },
         {
           title: '投诉',
-          dataIndex: 'complain',
-          key: 'complain',
+          dataIndex: 'complaint_total',
+          key: 'complaint_total',
           sorter: true,
-          width: 150
+          width: '8.333333333%'
         },
         {
           title: '提问',
-          dataIndex: 'ask',
-          key: 'ask',
+          dataIndex: 'ask_total',
+          key: 'ask_total',
           sorter: true,
-          width: 150
+          width: '8.333333333%'
         },
         {
           title: '创建时间',
-          dataIndex: 'createTime',
-          key: 'createTime',
+          dataIndex: 'ctime',
+          key: 'ctime',
           sorter: true,
-          width: 150
+          width: '8.333333333%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-          scopedSlots: { customRender: 'opera' }
+          scopedSlots: { customRender: 'opera' },
+          width: '8.333333333%'
         }
       ],
-      data: [
-        {
-          id: '000000',
-          checkTime: '剩余 20:00:00',
-          taskStatus: '待审核',
-          type: '任务类型',
-          task: '任务标题标题标题',
-          award: '1000',
-          complain: 0,
-          ask: 0,
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000',
-          checkTime: '剩余 20:00:00',
-          taskStatus: '待审核',
-          type: '任务类型',
-          task: '任务标题标题标题',
-          award: '1000',
-          complain: 0,
-          ask: 0,
-          createTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '000000',
-          checkTime: '剩余 20:00:00',
-          taskStatus: '待审核',
-          type: '任务类型',
-          task: '任务标题标题标题',
-          award: '1000',
-          complain: 0,
-          ask: 0,
-          createTime: '2020-11-20  08:50:08'
-        }
-      ],
-     selectedRowKeys: [] // 表格复选框数组
+      tableData: [], // 任务列表
+      selectedRowKeys: [], // 表格复选框数组
+      // tab_status: '', //	是	int	tab切换 待审核（0）待接单（2）待交付（3）已完成（4）已终止（6）已失效（7） 未通过（5）
+      pagesize: '', //	是	string	每页显示的条数
+      pageindex: '', //	是	string	页码
+      task_type: '', //	否	int	任务类型
+      task_status: '', //	否	int	任务状态
+      user_project: '', //	否	int	所属项目（任务方）
+      group_search: '', //	否	string	任务群搜索
+      area: '', //	否	string	区域搜索
+      task_search: '', //	否	string	任务搜索
+      progress_status: '', //	否	string	进度状态搜索
+      order_field: '', //	否	string	排序字段 投诉：complaint_total，提问：ask_total，创建时间：ctime
+      sort_value: '', //	否	string	排序值 降序desc 升序asc
+      tabInfo: {}, // tab栏数据
+      typeList: [], // 任务类型列表
+      TaskStatusList: [] // 任务状态列表
     }
   },
-  computed: {
-
-  },
+  computed: {},
   mounted () {
     // console.log(this.$refs.card.$el.offsetHeight)
     // this.$refs.card.$el.style.height = '150px'
   },
   methods: {
+    // 获取任务列表数据
+    async getData () {
+      const res = await togetTaskList({
+        tab_status: this.currentIndex,
+        pagesize: this.pagination.pageSize,
+        pageindex: this.pagination.currentPage,
+        task_type: this.task_type,
+        task_status: this.task_status,
+        user_project: this.user_project,
+        group_search: this.group_search,
+        area: this.area,
+        task_search: this.task_search,
+        progress_status: this.progress_status,
+        order_field: this.order_field,
+        sort_value: this.sort_value
+      })
+      this.tableData = res.list
+      this.pagination.total = res.data.total
+      this.tabInfo = res.data
+      console.log('获取任务列表数据', res)
+    },
     moment,
     // 收起
     close () {
-      this.cardBol = true
-      this.$refs.card.$el.style.height = '150px'
+      this.cardBol = false
     },
     // 展开
     open () {
-      setTimeout(() => {
-        this.cardBol = false
-      }, 20)
-      this.$refs.card.$el.style.height = '300px'
+      this.cardBol = true
     },
     // 页码改变事件
-      onChange (page, size) {
+    onChange (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
     },
@@ -491,7 +473,7 @@ export default {
       this.selectedRowKeys = []
     },
     // 表格复选框选择事件
-     onSelectChange (selectedRowKeys, selectedRows) {
+    onSelectChange (selectedRowKeys, selectedRows) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       this.selectedRowKeys = selectedRowKeys
       console.log('selectedRows', selectedRows)
@@ -502,9 +484,14 @@ export default {
     }
   },
   async created () {
+    this.getData()
     // 任务-获取任务状态
-    const res = await toGetTaskStatus()
+    const res = await toGetCommonTaskStatus()
+    this.TaskStatusList = res.list
     console.log('任务-获取任务状态', res)
+    const res2 = await toGetTaskType()
+    this.typeList = res2.list
+    console.log('任务中心-获取任务类型(下拉)', res2)
   }
 }
 </script>
@@ -533,14 +520,21 @@ export default {
   }
 }
 .btns {
-  .btn1 {
-    margin-left: 150px;
-  }
+  text-align: right;
+  // .btn1 {
+  //   margin-left: 150px;
+  // }
   button {
     margin-right: 10px;
   }
 }
 .card {
+  /deep/ .ant-form-item-label {
+    min-width: 88px;
+  }
+  .piker-time {
+    width: 100% !important;
+  }
   margin-top: 20px;
 }
 .card2 {
@@ -552,8 +546,11 @@ export default {
   }
   .table {
     margin-top: 20px;
+    /deep/ .ant-table-row-cell-break-word {
+      white-space: nowrap !important;
+    }
   }
-    .pagination {
+  .pagination {
     margin-top: 10px;
     /deep/ .ant-pagination {
       padding: 10px;
@@ -569,7 +566,7 @@ export default {
       }
     }
   }
-  .selected{
+  .selected {
     margin-top: 10px;
     width: 100%;
     height: 40px;
@@ -580,16 +577,16 @@ export default {
     border-style: solid;
     border-color: rgba(186, 231, 255, 1);
     border-radius: 4px;
-    .icon{
-      color:#0E77D1;
+    .icon {
+      color: #0e77d1;
       margin-right: 10px;
     }
-    .span1{
-      color: #0E77D1;
+    .span1 {
+      color: #0e77d1;
     }
-    .span2{
+    .span2 {
       cursor: pointer;
-      color: #0E77D1;
+      color: #0e77d1;
       margin-left: 10px;
     }
   }

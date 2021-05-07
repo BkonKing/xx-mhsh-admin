@@ -149,7 +149,7 @@ export default {
     async submit () {
       const idArr = []
       idArr.push(this.info.id)
-      const res = await toCheckQuestionReply({
+       await toCheckQuestionReply({
         ids: idArr,
         is_check: this.form.is_check,
         check_desc: this.form.check_desc,
@@ -158,7 +158,7 @@ export default {
       })
       this.$message.success('审核成功')
       this.$parent.getData()
-      console.log('确定', res)
+      // console.log('确定', res)
     },
     // 查看
     lookOver () {
