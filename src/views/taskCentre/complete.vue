@@ -139,11 +139,12 @@ type="up"
         </div>
       </div>
       <div class="form">
-        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-row>
-            <a-col :span="8">
+        <div class="table-page-search-wrapper">
+        <a-form-model layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
               <a-form-model-item label="进度状态">
-                <a-select style="width: 264px">
+                <a-select >
                   <a-select-option value="jack">
                     Jack
                   </a-select-option>
@@ -159,17 +160,17 @@ type="up"
                 </a-select>
               </a-form-model-item>
             </a-col>
-            <a-col :span="8">
+            <a-col :md="8" :sm="24">
               <a-form-model-item label="接单方">
                 <a-input
-                  style="width: 264px"
+
                   placeholder="手机号、用户昵称/ID"
                 ></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :span="8">
+            <a-col :md="8" :sm="24">
               <a-form-model-item label="所属项目" v-if="!card4Bol">
-                <a-select style="width: 264px">
+                <a-select >
                   <a-select-option value="jack">
                     Jack
                   </a-select-option>
@@ -207,6 +208,7 @@ type="up"
             /></a-button>
           </div>
         </a-form-model>
+        </div>
       </div>
       <div class="content">
         <div class="btns">
@@ -407,6 +409,7 @@ import moment from 'moment'
 import checkModel from './checkModel'
 import awardModel from './awardModel'
 import appraiseModel from './appraiseModel'
+import { getTaskDetail } from '@/api/taskCentre'
 export default {
   components: {
     checkModel,
@@ -602,7 +605,8 @@ export default {
         currentPage: 1, // 默认页
         total: 50, // 总数
         pageSize: 1 // 默认页容量
-      }
+      },
+      id: ''// 任务详情id
     }
   },
   mounted () {
@@ -715,16 +719,14 @@ export default {
       document.querySelector('.explain').style.webkitLineClamp = ''
       document.querySelector('.explain').style.overflow = ''
     }
-    // // 预览图片
-    // previewImg (e) {
-    //   console.log(e.target.src)
-    //   this.previewVisible = true
-    //   this.previewImage = e.target.src
-    // },
-    // 关闭预览图片
-    // handleCancel () {
-    //   this.previewVisible = false
-    // }
+
+  },
+ async created () {
+    this.id = this.$route.query.id
+    if (this.id !== '') {
+      const res = await getTaskDetail({ id: +this.id })
+      console.log('任务详情', res)
+    }
   }
 }
 </script>
@@ -854,9 +856,11 @@ export default {
     }
     .form {
       padding-top: 20px;
+      padding-left:30px ;
+      padding-right:30px ;
       .btns {
         text-align: right;
-        margin-right: 200px;
+
         button {
           margin-right: 10px;
         }

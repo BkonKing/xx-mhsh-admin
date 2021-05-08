@@ -91,6 +91,48 @@ label="可见范围"
       </div>
     </a-card>
     <a-card class="card3">
+      <div class="title">审核信息</div>
+     <div class="content">
+        <div class="form" v-for="item in 3" :key='item'>
+        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-row>
+            <a-col :span="8">
+              <a-form-model-item label="审核状态">未通过</a-form-model-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-model-item label="审核人">姓名</a-form-model-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-model-item
+label="审核时间"
+                >2020-11-20 08:50:08</a-form-model-item
+              >
+            </a-col>
+          </a-row>
+          <div class="cause">
+            <div class="t1">违规原因：</div>
+            <div class="t2">原因原因</div>
+          </div>
+          <div class="reply">
+            <div class="t1">处理回复：</div>
+            <div class="t2">
+              回复内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+            </div>
+          </div>
+          <div class="imgcon">
+            <div class="img" v-for="item in 3" :key="item">
+              <img
+                preview="0"
+                src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+                alt=""
+              />
+            </div>
+          </div>
+        </a-form-model>
+      </div>
+     </div>
+    </a-card>
+    <a-card class="card4">
       <div class="title">审核</div>
       <a-form-model
         class="form"
@@ -268,16 +310,6 @@ export default {
     handleChange ({ fileList }) {
       this.fileList = fileList
     }
-    // // 预览图片
-    // previewImg (e) {
-    //   console.log(e.target.src)
-    //   this.previewVisible = true
-    //   this.previewImage = e.target.src
-    // },
-    // // 关闭预览图片
-    // handleCancel () {
-    //   this.previewVisible = false
-    // }
   }
 }
 </script>
@@ -355,6 +387,66 @@ export default {
     }
   }
   .card3 {
+    margin-top: 20px;
+    /deep/ .ant-card-body {
+      padding: 0;
+    }
+    .title {
+      padding-left: 30px;
+      height: 55px;
+      line-height: 55px;
+      font-family: "PingFangSC-Semibold", "PingFang SC Semibold", "PingFang SC";
+      font-weight: 650;
+      font-style: normal;
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.847058823529412);
+      border-bottom: 1px solid rgba(233, 233, 233, 1);
+    }
+    /deep/ .ant-form-item {
+      margin-bottom: 0;
+    }
+    .content{
+      padding: 0 20px;
+      .form {
+      border-bottom: 1px solid #E8E8E8;
+
+      .cause {
+        display: flex;
+        margin-left: 36px;
+      }
+      .reply {
+        margin-top: 12px;
+        display: flex;
+        margin-left: 36px;
+        .t1 {
+          width: 70px;
+        }
+        .t2 {
+          flex: 1;
+        }
+      }
+      .imgcon {
+        display: flex;
+        padding-bottom: 20px;
+        .img {
+          cursor: pointer;
+          margin-left: 38px;
+          margin-top: 10px;
+          width: 104px;
+          height: 104px;
+          padding: 10px;
+          border: 2px dashed #dedede;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+    }
+  }
+  .card4 {
     margin-top: 20px;
     /deep/ .ant-card-body {
       padding: 0;

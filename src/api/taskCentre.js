@@ -49,7 +49,10 @@ const taskCentreApi = {
   viewComplaint: '/linli/complaint/viewComplaint',
   complaintDetail: '/linli/complaint/complaintDetail',
   getTaskList: '/linli/task/getList',
-  getTaskType: '/linli/common/getTaskType'
+  getTaskType: '/linli/common/getTaskType',
+  getProcessStatus: '/linli/common/getProcessStatus',
+  handTask: '/linli/task/handTask',
+  taskDetail: '/linli/task/taskDetail'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -449,5 +452,28 @@ export function toGetTaskType () {
   return request({
     url: taskCentreApi.getTaskType,
     method: 'post'
+  })
+}
+// 获取进度状态
+export function toGetProcessStatus () {
+  return request({
+    url: taskCentreApi.getProcessStatus,
+    method: 'post'
+  })
+}
+// 任务中心-任务审核
+export function toHandTask (data) {
+  return request({
+    url: taskCentreApi.handTask,
+    method: 'post',
+    data
+  })
+}
+// 任务列表-任务详情页
+export function getTaskDetail (data) {
+  return request({
+    url: taskCentreApi.taskDetail,
+    method: 'post',
+    data
   })
 }
