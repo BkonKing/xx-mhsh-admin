@@ -29,7 +29,7 @@ v-if="recharge_type === 1"
             placeholder="请输入"
             suffix="0.1元/条"
             onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+            onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
           />
           <a-input
             v-else
@@ -38,17 +38,17 @@ onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'
             @input="setPrice"
             @blur="ismore100"
             suffix="3.5‰手续费"
-            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
+          onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
           />
         </a-form-model-item>
         <a-form-model-item label="金额">
           <a-input
-          v-if="bol"
+            v-if="bol"
             addon-before="￥"
             v-model="price"
             @input="setRechargeMoney"
             placeholder="请输入"
-            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
+            onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
           />
         </a-form-model-item>
       </a-form-model>
@@ -59,7 +59,11 @@ onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'
       :rechargeType="recharge_type"
       v-on="$listeners"
     ></shortNoteModel>
-    <payChannelModel v-on="$listeners" :payInfo="payInfo" ref="payChannelModel"></payChannelModel>
+    <payChannelModel
+      v-on="$listeners"
+      :payInfo="payInfo"
+      ref="payChannelModel"
+    ></payChannelModel>
   </div>
 </template>
 
@@ -71,7 +75,7 @@ import { addRecharge } from '@/api/financeCenter.js'
 function keepTwoDecimalFull (num) {
   var result = parseFloat(num)
   if (isNaN(result)) {
-    alert('传递参数错误，请检查！')
+    // alert('传递参数错误，请检查！')
     return false
   }
   result = Math.round(num * 100) / 100
@@ -118,7 +122,7 @@ export default {
       }
     },
     rechargeMoney () {
-       if (this.rechargeMoney === '') {
+      if (this.rechargeMoney === '') {
         this.price = ''
       }
     },
@@ -139,6 +143,7 @@ export default {
   },
 
   methods: {
+
     // 判断充值额度是否大于100
     ismore100 () {
       if (this.rechargeMoney < 100) {
@@ -159,7 +164,7 @@ export default {
     // 设置金额
     setPrice () {
       if (this.rechargeMoney != '') {
-          this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
+        this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
       }
       if (this.count != '') {
         this.price = keepTwoDecimalFull(this.count * 0.1)
@@ -172,7 +177,7 @@ export default {
           this.$message.error('请输入充值条数或者金额')
           return
         }
-         const res = await addRecharge({
+        const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: this.count,
           pay_price: +this.price
@@ -187,7 +192,7 @@ export default {
           this.$message.error('请输入充值额度或者金额')
           return
         }
-          const res = await addRecharge({
+        const res = await addRecharge({
           recharge_type: this.recharge_type,
           recharge_amount: +this.rechargeMoney,
           pay_price: +this.price
@@ -205,6 +210,9 @@ export default {
   created () {
     this.smsUseInfo =
       JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
+  },
+  mounted () {
+
   }
 }
 </script>
@@ -219,7 +227,7 @@ export default {
 /deep/ .ant-radio-group {
   white-space: nowrap;
 }
-/deep/ .ant-input-group-addon{
+/deep/ .ant-input-group-addon {
   padding: 0;
   width: 31px;
   height: 32px;
