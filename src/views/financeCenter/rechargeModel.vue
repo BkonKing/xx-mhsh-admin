@@ -28,8 +28,6 @@ v-if="recharge_type === 1"
             @input="setPrice"
             placeholder="请输入"
             suffix="0.1元/条"
-            onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-            onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
           />
           <a-input
             v-else
@@ -47,7 +45,6 @@ v-if="recharge_type === 1"
             v-model="price"
             @input="setRechargeMoney"
             placeholder="请输入"
-
           />
         </a-form-model-item>
       </a-form-model>
@@ -142,7 +139,6 @@ export default {
   },
 
   methods: {
-
     // 判断充值额度是否大于100
     ismore100 () {
       if (this.rechargeMoney < 100) {
@@ -155,19 +151,34 @@ export default {
     setRechargeMoney (e) {
       // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
       if (this.recharge_type === 2) {
-        this.price = e.target.value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+        this.price = e.target.value.replace(
+          /^\D*(\d*(?:\.\d{0,2})?).*$/g,
+          '$1'
+        )
         this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
       } else {
+         this.price = e.target.value.replace(
+          /^\D*(\d*(?:\.\d{0,2})?).*$/g,
+          '$1'
+        )
         this.count = this.price / 0.1
       }
     },
     // 设置金额
     setPrice (e) {
       if (this.rechargeMoney != '') {
-        this.rechargeMoney = e.target.value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+        this.rechargeMoney = e.target.value.replace(
+          /^\D*(\d*(?:\.\d{0,2})?).*$/g,
+          '$1'
+        )
         this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
       }
       if (this.count != '') {
+        if (e.target.value.length == 1) {
+          this.count = e.target.value.replace(/[^1-9]/g, '')
+        } else {
+          this.count = e.target.value.replace(/\D/g, '')
+        }
         this.price = keepTwoDecimalFull(this.count * 0.1)
       }
     },
@@ -212,9 +223,7 @@ export default {
     this.smsUseInfo =
       JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
   },
-  mounted () {
-
-  }
+  mounted () {}
 }
 </script>
 
