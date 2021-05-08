@@ -76,7 +76,7 @@ function keepTwoDecimalFull (num) {
   var result = parseFloat(num)
   if (isNaN(result)) {
     // alert('传递参数错误，请检查！')
-    return false
+    return
   }
   result = Math.round(num * 100) / 100
   var sX = result.toString()
