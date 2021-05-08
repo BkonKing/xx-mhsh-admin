@@ -38,7 +38,6 @@ v-if="recharge_type === 1"
             @input="setPrice"
             @blur="ismore100"
             suffix="3.5‰手续费"
-          onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
           />
         </a-form-model-item>
         <a-form-model-item label="金额">
@@ -48,7 +47,7 @@ v-if="recharge_type === 1"
             v-model="price"
             @input="setRechargeMoney"
             placeholder="请输入"
-            onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
+
           />
         </a-form-model-item>
       </a-form-model>
@@ -153,17 +152,19 @@ export default {
       }
     },
     // 设置充值额度  / 条数
-    setRechargeMoney () {
+    setRechargeMoney (e) {
       // Number((this.price / 0.0035).toString().match(/^\d+(?:\.\d{0,2})?/))
       if (this.recharge_type === 2) {
+        this.price = e.target.value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
         this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
       } else {
         this.count = this.price / 0.1
       }
     },
     // 设置金额
-    setPrice () {
+    setPrice (e) {
       if (this.rechargeMoney != '') {
+        this.rechargeMoney = e.target.value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
         this.price = keepTwoDecimalFull(this.rechargeMoney * 0.0035)
       }
       if (this.count != '') {
