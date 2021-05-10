@@ -15,7 +15,7 @@
             @click="currentIndex = 0"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核{{ tabInfo.to_be_reviewed }}
+            待审核{{ tabInfo.to_be_check }}
           </div>
           <div
             class="item"
@@ -29,7 +29,7 @@
             @click="currentIndex = 3"
             :class="{ active: currentIndex === 3 }"
           >
-            待交付
+            待交付{{tabInfo.to_be_reviewed}}
           </div>
           <div
             class="item"
@@ -113,7 +113,7 @@ type="primary"
 @click="search"
                   >查询</a-button
                 >
-                <a-button>重置</a-button>
+                <a-button @click="reset">重置</a-button>
                 <a-button
 type="link"
 @click="open"
@@ -125,7 +125,7 @@ type="link"
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务方">
                   <a-input
-                    v-model="user_project"
+                    v-model="task_user_search"
                     placeholder="手机号、用户昵称/ID、任务联系电话"
                   ></a-input>
                 </a-form-model-item>
@@ -184,7 +184,7 @@ type="link"
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="所属项目">
-                  <a-select placeholder="请选择">
+                  <a-select v-model="user_project" placeholder="请选择">
                     <a-select-option
                       v-for="item in projectList"
                       :key="item.id"
@@ -198,6 +198,7 @@ type="link"
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="创建时间">
                   <a-range-picker
+                  v-model="createTime"
                     class="piker-time"
                     :ranges="{
                       Today: [moment(), moment()],
@@ -217,7 +218,7 @@ type="primary"
 @click="search"
                     >查询</a-button
                   >
-                  <a-button>重置</a-button>
+                  <a-button @click="reset">重置</a-button>
                   <a-button
 type="link"
 @click="close"
@@ -251,7 +252,7 @@ type="up"
           selectedRowKeys: selectedRowKeys,
           onChange: onSelectChange
         }"
-        @change='tableChange'
+        @change="tableChange"
       >
         <template slot="task_user" slot-scope="text, record">
           <div>
@@ -273,10 +274,14 @@ type="up"
           ><span>/</span>
           <span>{{ record.need_people }}</span>
         </template>
-        <template slot="opera" slot-scope="text,record">
+        <template slot="opera" slot-scope="text, record">
           <div class="btns">
             <a-button type="link" @click="lookOver(record)">查看</a-button>
-            <a-button type="link" v-if="record.task_status==='待审核'">审核</a-button>
+            <a-button
+type="link"
+v-if="record.task_status === '待审核'"
+              >审核</a-button
+            >
           </div>
         </template>
       </a-table>
@@ -421,7 +426,7 @@ export default {
       pageindex: '', //	是	string	页码
       task_type: undefined, //	否	int	任务类型
       task_status: undefined, //	否	int	任务状态
-      user_project: '', //	否	int	所属项目（任务方）
+      user_project: undefined, //	否	int	所属项目（任务方）
       group_search: '', //	否	string	任务群搜索
       area: [], //	否	string	区域搜索
       task_search: '', //	否	string	任务搜索
@@ -431,6 +436,8 @@ export default {
       accept_search: '', // 接单方
       ctime: '', // 创建时间
       project_id: undefined, // 	可见小区
+      task_user_search: '', // 任务方搜索
+      createTime: '',
       tabInfo: {}, // tab栏数据
       typeList: [], // 任务类型列表
       taskStatusList: [], // 任务状态列表
@@ -440,6 +447,25 @@ export default {
   },
 
   methods: {
+    // 重置
+    reset () {
+      this.task_type = undefined
+      this.task_status = undefined
+      this.user_project = ''
+      this.group_search = ''
+      this.area = []
+      this.task_search = ''
+      this.progress_status = undefined
+      this.order_field = ''
+      this.sort_value = ''
+      this.accept_search = ''
+      this.ctime = ''
+      this.project_id = undefined
+      this.task_user_search = ''
+      this.createTime = ''
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 查看
     lookOver (record) {
       if (record.task_status === '待审核') {
@@ -488,7 +514,8 @@ export default {
         sort_value: this.sort_value,
         accept_search: this.accept_search,
         ctime: this.ctime,
-        project_id: this.project_id
+        project_id: this.project_id,
+        task_user_search: this.task_user_search
       })
       this.tableData = res.list
       this.pagination.total = res.data.total
@@ -538,7 +565,7 @@ export default {
     // 任务-获取任务状态
     const res = await toGetCommonTaskStatus()
     this.taskStatusList = res.list
-    // console.log('任务-获取任务状态', res)
+    console.log('任务-获取任务状态', res)
     const res2 = await toGetTaskType()
     this.typeList = res2.list
     // console.log('任务中心-获取任务类型(下拉)', res2)

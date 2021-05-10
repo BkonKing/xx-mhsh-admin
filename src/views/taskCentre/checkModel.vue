@@ -20,10 +20,24 @@
 </template>
 
 <script>
+import { toGetUserProcess } from '@/api/taskCentre'
+
 export default {
+  props: ['id'],
   data () {
     return {
-      isShow: false
+      isShow: false,
+      uid: ''
+    }
+  },
+  watch: {
+    uid () {
+      toGetUserProcess({
+        uid: this.uid,
+        task_id: +this.id
+      }).then(res => {
+        console.log('任务中心-任务详情页-用户任务流水', res)
+      })
     }
   }
 }

@@ -1,17 +1,114 @@
 <template>
-  <div class="complete">
+  <div class="complete" v-if="taskDetailInfo != ''">
     <page-header-wrapper></page-header-wrapper>
     <a-card class="card1">
       <div class="title">流程进度</div>
-      <div class="steps">
-        <a-steps progress-dot :current="current">
-          <a-step title="创建任务" description="2021-01-01 00:00" />
-          <a-step title="审核通过" description="" />
-          <a-step title="接单" description="" />
-          <a-step title="任务完成" description="" />
+          <div class="steps" v-if="taskDetailInfo.process.process_result===0">
+        <a-steps progress-dot :current="1">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            title="待审核"
+            description=""
+          />
+          <a-step title="待接单" description="" />
+          <a-step title="待完成" description="" />
           <a-step title="完成" description="" />
         </a-steps>
       </div>
+         <div class="steps" v-else-if="taskDetailInfo.process.process_result===1">
+        <a-steps progress-dot :current="2">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+          <a-step title="接单" description="" />
+          <a-step title="待完成" description="" />
+          <a-step title="完成" description="" />
+        </a-steps>
+      </div>
+         <div class="steps" v-else-if="taskDetailInfo.process.process_result===2">
+        <a-steps progress-dot :current="3">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
+          <a-step title="待完成" description="" />
+          <a-step title="完成" description="" />
+        </a-steps>
+      </div>
+          <div class="steps" v-else-if="taskDetailInfo.process.process_result===3">
+        <a-steps progress-dot :current="4">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
+          <a-step title="任务完成" :description="taskDetailInfo.process.complete_time" />
+          <a-step title="完成" description="" />
+        </a-steps>
+      </div>
+        <div class="steps" v-else-if="taskDetailInfo.process.process_result===5">
+        <a-steps progress-dot :current="4">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
+          <a-step title="任务完成(终止)" :description="taskDetailInfo.process.complete_time" />
+          <a-step title="完成" description="" />
+        </a-steps>
+      </div>
+        <div class="steps" v-else-if="taskDetailInfo.process.process_result===4">
+        <a-steps progress-dot :current="4">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+          <a-step title="结束" description="" />
+        </a-steps>
+      </div>
+          <div class="steps" v-else-if="taskDetailInfo.process.process_result===6">
+        <a-steps progress-dot :current="4">
+          <a-step
+            :title="taskDetailInfo.process.create_start"
+            :description="taskDetailInfo.process.create_time"
+          />
+          <a-step
+            :title="taskDetailInfo.process.process_check"
+            :description="taskDetailInfo.process.check_time"
+          />
+           <a-step
+            :title="taskDetailInfo.process.process_finish"
+            :description="taskDetailInfo.process.complete_time"
+          />
+          <a-step title="结束" description="" />
+        </a-steps>
+      </div>
+
     </a-card>
     <a-card class="card2">
       <div class="title">基础信息</div>
@@ -23,31 +120,40 @@
                 标题标题标题标题标题
               </a-form-model-item>
               <a-form-model-item label="任务奖励">
-                10000币（2000币/人）| 已奖励8000币
+                10000币（2000币/人）| 已奖励{{
+                  taskDetailInfo.reward_happiness
+                }}币
               </a-form-model-item>
-              <a-form-model-item label="需要人数">4/5</a-form-model-item>
               <a-form-model-item
-label="完成时间"
-                >2021-03-01 08:50 ~ 2021-03-10 08:50</a-form-model-item
+label="需要人数"
+                >{{ taskDetailInfo.assignment }}/{{
+                  taskDetailInfo.need_people
+                }}</a-form-model-item
               >
+              <a-form-model-item label="完成时间">{{
+                taskDetailInfo.complete_time
+              }}</a-form-model-item>
             </a-col>
             <a-col :span="8">
-              <a-form-model-item label="任务类型">类型</a-form-model-item>
+              <a-form-model-item label="任务类型">{{
+                taskDetailInfo.task_type
+              }}</a-form-model-item>
               <a-form-model-item label="创建者">
-                <span style="color:#1890FF">昵称(姓名) </span>
-                项目名称
+                <span style="color:#1890FF">{{
+                  taskDetailInfo.task_user
+                }}</span>
+                {{ taskDetailInfo.task_project }}
               </a-form-model-item>
               <a-form-model-item label="任务标签">
-                标签 | 标签标签 | 标签
+                {{ taskDetailInfo.task_tag }}
               </a-form-model-item>
-              <a-form-model-item
-label="完成地点"
-                >不限/省市区详细地址</a-form-model-item
-              >
+              <a-form-model-item label="完成地点">{{
+                taskDetailInfo.complete_address
+              }}</a-form-model-item>
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="任务编号">
-                000000000
+                {{ taskDetailInfo.task_number }}
                 <img
                   style="marginLeft:10px"
                   preview="1"
@@ -55,32 +161,35 @@ label="完成地点"
                   alt=""
                 />
               </a-form-model-item>
-              <a-form-model-item label="手机号">1500000000</a-form-model-item>
-              <a-form-model-item label="联系电话">1500000000</a-form-model-item>
-              <a-form-model-item
-label="可见范围"
-                >全部/福建省福州市/新乡美好生活家园/XXX群</a-form-model-item
-              >
+              <a-form-model-item label="手机号">{{
+                taskDetailInfo.mobile
+              }}</a-form-model-item>
+              <a-form-model-item label="联系电话">{{
+                taskDetailInfo.contact_number
+              }}</a-form-model-item>
+              <a-form-model-item label="可见范围">{{
+                taskDetailInfo.visible_range
+              }}</a-form-model-item>
             </a-col>
           </a-row>
         </a-form-model>
         <div class="explain">
           <div class="left">任务说明：</div>
-          <div class="right">
-            内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+          <div class="right" id="taskExplain">
+          {{ taskDetailInfo.task_desc }}
           </div>
         </div>
         <div class="otherBtn">
           <a-button
 type="link"
-v-if="!btnBol"
+v-if="!btnBol && lineNumber>10"
 @click="open"
             >展开 <a-icon
 type="down"
           /></a-button>
           <a-button
 type="link"
-v-else
+v-else-if="btnBol && lineNumber>10"
 @click="close"
             >收起 <a-icon
 type="up"
@@ -88,9 +197,9 @@ type="up"
         </div>
       </div>
       <div class="imgcon">
-        <div class="img" v-for="item in 3" :key="item"  >
+        <div class="img" v-for="item in taskDetailInfo.task_image" :key="item">
           <img
-          preview="0"
+            preview="0"
             src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
             alt=""
           />
@@ -105,24 +214,24 @@ type="up"
       <a-row>
         <a-col :span="8">
           <div class="t1">提问</div>
-          <div class="t2">10个</div>
+          <div class="t2">{{ taskDetailInfo.question_total }}个</div>
           <div class="t3">
-            <span>10个提问</span>
-            <span>2个回复</span>
+            <span>{{ taskDetailInfo.question_total }}个提问</span>
+            <span>{{ taskDetailInfo.reply_total }}个回复</span>
           </div>
         </a-col>
         <a-col :span="8">
           <div class="t1">投诉</div>
-          <div class="t2">7个</div>
+          <div class="t2">{{ taskDetailInfo.complaint_total }}个</div>
           <div class="t3">
-            <span>任务方收到2个</span>
-            <span>投诉接单方5个</span>
+            <span>任务方收到{{ taskDetailInfo.task_party }}个</span>
+            <span>投诉接单方{{ taskDetailInfo.single_party }}个</span>
           </div>
         </a-col>
         <a-col :span="8">
           <div class="t1">评价</div>
-          <div class="t2">4.5星</div>
-          <div class="t3">已评3人</div>
+          <div class="t2">{{ taskDetailInfo.evaluate_total }}星</div>
+          <div class="t3">已评{{ taskDetailInfo.evaluate_user }}人</div>
         </a-col>
       </a-row>
     </a-card>
@@ -140,81 +249,74 @@ type="up"
       </div>
       <div class="form">
         <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="进度状态">
-                <a-select >
-                  <a-select-option value="jack">
-                    Jack
-                  </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled">
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="接单方">
-                <a-input
-
-                  placeholder="手机号、用户昵称/ID"
-                ></a-input>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="所属项目" v-if="!card4Bol">
-                <a-select >
-                  <a-select-option value="jack">
-                    Jack
-                  </a-select-option>
-                  <a-select-option value="lucy">
-                    Lucy
-                  </a-select-option>
-                  <a-select-option value="disabled">
-                    Disabled
-                  </a-select-option>
-                  <a-select-option value="Yiminghe">
-                    yiminghe
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-              <div class="btns" v-else>
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
-                <a-button
+          <a-form-model layout="inline">
+            <a-row :gutter="48">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="进度状态">
+                  <a-select placeholder="请选择" v-model="status">
+                    <a-select-option
+                      v-for="(item, index) in processStatusList"
+                      :key="index"
+                      :value="item.value"
+                    >
+                      {{ item.text }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="接单方">
+                  <a-input
+                    v-model="user_search"
+                    placeholder="手机号、用户昵称/ID"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="所属项目" v-if="!card4Bol">
+                  <a-select placeholder="请选择" v-model="project_id">
+                    <a-select-option
+                      v-for="(item, index) in projectList"
+                      :key="index"
+                      :value="item.id"
+                    >
+                      {{ item.project_name }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+                <div class="btns" v-else>
+                  <a-button type="primary" @click="search1">查询</a-button>
+                  <a-button @click="reset1">重置</a-button>
+                  <a-button
 type="link"
 @click="open2"
-                  >展开 <a-icon
+                    >展开 <a-icon
 type="down"
-                /></a-button>
-              </div>
-            </a-col>
-          </a-row>
-          <div class="btns" v-if="!card4Bol">
-            <a-button type="primary">查询</a-button>
-            <a-button>重置</a-button>
-            <a-button
+                  /></a-button>
+                </div>
+              </a-col>
+            </a-row>
+            <div class="btns" v-if="!card4Bol">
+              <a-button type="primary" @click="search1">查询</a-button>
+              <a-button @click="reset1">重置</a-button>
+              <a-button
 type="link"
 @click="close2"
-              >收起 <a-icon
+                >收起 <a-icon
 type="up"
-            /></a-button>
-          </div>
-        </a-form-model>
+              /></a-button>
+            </div>
+          </a-form-model>
         </div>
       </div>
       <div class="content">
-        <div class="btns">
-          <a-button>下架任务</a-button>
-          <a-button>终止任务</a-button>
-          <a-button>停止接单</a-button>
+        <div class="btns" v-if="buttonStatus != ''">
+          <a-button v-if="buttonStatus.button_shelf === 1">下架任务</a-button>
+          <a-button
+v-if="buttonStatus.button_termination === 1"
+            >终止任务</a-button
+          >
+          <a-button v-if="buttonStatus.button_stop === 1">停止接单</a-button>
           <a-button>批量操作 <a-icon type="down"/></a-button>
         </div>
         <div class="selected" v-if="selectedRowKeys.length > 0">
@@ -224,38 +326,58 @@ type="up"
         </div>
         <div class="table">
           <a-table
+            rowKey="id"
             :row-selection="{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange
             }"
             :columns="columns"
-            :data-source="data"
+            :data-source="taskSpeedList"
             :pagination="false"
+            @change="tableChange1"
           >
-            <template #takeOrderSide>
+            <template slot="progress_desc" slot-scope="progress_desc">
+              <div :style="{ color: progress_desc === '暂停中' ? 'red' : '' }">
+                {{ progress_desc }}
+              </div>
+            </template>
+            <template slot="user" slot-scope="text, record">
               <div class="takeOrderSide">
-                <div class="t1">昵称(姓名)</div>
-                <div class="t2">项目名称</div>
+                <div class="t1">{{ record.user }}</div>
+                <div class="t2">{{ record.project }}</div>
               </div>
             </template>
-            <template #complain>
-              <div style="cursor: pointer;" @click="currentIndex =1">
-                0
+            <template slot="complaint_total" slot-scope="complaint_total">
+              <div style="cursor: pointer;" @click="currentIndex = 1">
+                {{ complaint_total }}
               </div>
             </template>
-            <template #appraise>
+            <template slot="evaluate" slot-scope="text, record">
               <span
-             style="color:#1890FF;cursor: pointer;"
-                @click="openAppraise"
-                >3星</span
+style="color:#1890FF;cursor: pointer;"
+@click="openAppraise"
+                >{{ record.evaluate }}星</span
               >
             </template>
-            <template #opera>
+            <template slot="progress_content" slot-scope="text, record">
+              <div class="progress_content">
+                <div class="t1">{{ record.progress_title }}</div>
+                <div class="t2">
+                  {{ record.progress_content }}
+                </div>
+              </div>
+            </template>
+            <template slot="opera" slot-scope="text, record">
               <div class="btns">
-                <a-button type="link" @click="check">查看</a-button>
-                <a-button type="link" @click="award">奖励</a-button>
+                <a-button type="link" @click="check(record.id)">查看</a-button>
+                <a-button
+                  type="link"
+                  @click="award"
+                  v-if="record.progress_desc != '暂停中'"
+                  >奖励</a-button
+                >
                 <a-popconfirm
-                  v-if="false"
+                  v-else
                   title="你确定要淘汰这个用户吗?"
                   ok-text="确定"
                   cancel-text="取消"
@@ -278,7 +400,9 @@ type="up"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChange"
             @showSizeChange="sizeChange"
@@ -305,9 +429,9 @@ type="up"
         </div>
       </div>
       <div class="imgcon">
-        <div class="img" v-for="item in 3" :key="item" >
+        <div class="img" v-for="item in 3" :key="item">
           <img
-          preview="2"
+            preview="2"
             src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
             alt=""
           />
@@ -398,7 +522,7 @@ type="up"
         </div>
       </div>
     </a-card>
-    <checkModel ref="checkModel"></checkModel>
+    <checkModel :id="id" ref="checkModel"></checkModel>
     <awardModel ref="awardModel"></awardModel>
     <appraiseModel ref="appraiseModel"></appraiseModel>
   </div>
@@ -409,7 +533,14 @@ import moment from 'moment'
 import checkModel from './checkModel'
 import awardModel from './awardModel'
 import appraiseModel from './appraiseModel'
-import { getTaskDetail } from '@/api/taskCentre'
+import $ from 'jquery'
+import {
+  getTaskDetail,
+  toGetTaskSpeed,
+  toGetProcessStatus,
+  toGetProject,
+  toGetButtonStatus
+} from '@/api/taskCentre'
 export default {
   components: {
     checkModel,
@@ -423,117 +554,91 @@ export default {
       wrapperCol: { span: 14 },
       // previewVisible: false, // 是否预览图片
       // previewImage: '', // 预览图片链接
-      btnBol: false,
+      btnBol: false, // 控制任务说明行数显示
       titleArr: ['任务进度', '投诉', '评价', '提问'],
       currentIndex: 0,
       card4Bol: false,
-      data: [
-        // 表格一数据
-        {
-          id: '11223344',
-          planStatus: '已接单',
-          phone: '15000000000',
-          award: '2000',
-
-          newestPlan: '•接单成功',
-          takeOrderTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '11223344',
-          planStatus: '已接单',
-          phone: '15000000000',
-          award: '2000',
-
-          newestPlan: '•接单成功',
-          takeOrderTime: '2020-11-20  08:50:08'
-        },
-        {
-          id: '11223344',
-          planStatus: '已接单',
-          phone: '15000000000',
-          award: '2000',
-
-          newestPlan: '•接单成功',
-          takeOrderTime: '2020-11-20  08:50:08'
-        }
-      ],
+      taskSpeedList: [], // 任务流水列表
       columns: [
         // 表格一数据
         {
           title: '进度ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '10%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '进度状态',
-          dataIndex: 'planStatus',
-          key: 'planStatus',
-          width: 150
+          dataIndex: 'progress_desc',
+          key: 'progress_desc',
+          scopedSlots: { customRender: 'progress_desc' },
+          width: '10%'
         },
         {
           title: '接单方',
-          dataIndex: 'takeOrderSide',
-          key: 'takeOrderSide',
-          scopedSlots: { customRender: 'takeOrderSide' },
-          width: 150
+          dataIndex: 'user',
+          key: 'user',
+          scopedSlots: { customRender: 'user' },
+          width: '10%'
         },
         {
           title: '手机号',
-          dataIndex: 'phone',
-          key: 'phone',
-          width: 150
+          dataIndex: 'mobile',
+          key: 'mobile',
+          width: '10%'
         },
         {
           title: '奖励(币)',
-          dataIndex: 'award',
-          key: 'award',
-          width: 150,
+          dataIndex: 'reward_happiness',
+          key: 'reward_happiness',
+          width: '10%',
           sorter: true
         },
         {
           title: '投诉',
-          dataIndex: 'complain',
-          key: 'complain',
-          width: 150,
-          scopedSlots: { customRender: 'complain' },
-          sorter: true
+          dataIndex: 'complaint_total',
+          key: 'complaint_total',
+          width: '10%',
+          scopedSlots: { customRender: 'complaint_total' }
         },
         {
           title: '评价',
-          dataIndex: 'appraise ',
-          key: 'appraise ',
-          width: 150,
+          dataIndex: 'evaluate ',
+          key: 'evaluate ',
+          width: '10%',
           sorter: true,
-          scopedSlots: { customRender: 'appraise' }
+          scopedSlots: { customRender: 'evaluate' }
         },
         {
           title: '最新进度',
-          dataIndex: 'newestPlan',
-          key: 'newestPlan',
-          width: 150
+          dataIndex: 'progress_content',
+          key: 'progress_content',
+          width: '10%',
+          scopedSlots: { customRender: 'progress_content' }
         },
         {
           title: '接单时间',
-          dataIndex: 'takeOrderTime',
-          key: 'takeOrderTime',
-          width: 200,
+          dataIndex: 'ctime',
+          key: 'ctime',
+          width: '10%',
           sorter: true
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
+          width: '10%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
       selectedRowKeys: [], // 表格复选框数组
       pagination: {
+        // 任务流水列表页码
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       card6Bol: false,
       columns2: [
@@ -606,22 +711,76 @@ export default {
         total: 50, // 总数
         pageSize: 1 // 默认页容量
       },
-      id: ''// 任务详情id
+      id: '', // 任务详情id
+      taskDetailInfo: '', // 任务详情信息
+      order_field: '', //	否	string	排序的字段 评价evaluate 接单时间ctime 奖励幸福币reward_happiness
+      sort_value: '', //	否	string	排序的值
+      status: undefined, //	否	int	任务状态
+      user_search: '', //	否	string	接单方搜索
+      project_id: undefined, //	否	int	所属项目
+      processStatusList: [], // 状态列表
+      projectList: [], // 项目列表
+      buttonStatus: '', // 按钮状态
+      lineNumber: '' // 任务说明行数
     }
   },
   mounted () {
     this.$previewRefresh()
-    console.log(document.querySelector('.card6 .form').offsetHeight) // 128
+
+    // console.log(document.querySelector('.card6 .form').offsetHeight) // 128
     // document.querySelector('.card6 .form').style.height = '74px'
     // document.querySelector('.explain').style.height = '210px'
     // document.querySelector('.explain').style.overflow = 'hidden'
+
     // 设置文本超出隐藏
-    document.querySelector('.explain').style.display = '-webkit-box'
-    document.querySelector('.explain').style.webkitBoxOrient = 'vertical'
-    document.querySelector('.explain').style.webkitLineClamp = '10'
-    document.querySelector('.explain').style.overflow = 'hidden'
+    document.querySelector('#taskExplain').style.display = '-webkit-box'
+    document.querySelector('#taskExplain').style.webkitBoxOrient = 'vertical'
+    document.querySelector('#taskExplain').style.webkitLineClamp = '10'
+    document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
+    // 任务流水排序
+    tableChange1 (pagination, filters, sorter, { currentDataSource }) {
+      // console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getTaskSpeedData()
+    },
+    // 任务流水重置
+    reset1 () {
+      this.order_field = ''
+      this.sort_value = ''
+      this.status = undefined
+      this.user_search = ''
+      this.project_id = undefined
+      this.pagination.currentPage = 1
+      this.getTaskSpeedData()
+    },
+    // 任务流水搜索
+    search1 () {
+      this.pagination.currentPage = 1
+      this.getTaskSpeedData()
+    },
+    // 获取任务流水列表
+    async getTaskSpeedData () {
+      const res = await toGetTaskSpeed({
+        task_id: +this.id,
+        pageindex: this.pagination.currentPage,
+        pagesize: this.pagination.pageSize,
+        order_field: this.order_field,
+        sort_value: this.sort_value,
+        status: this.status,
+        user_search: this.user_search,
+        project_id: this.project_id
+      })
+      this.taskSpeedList = res.list
+      this.pagination.total = res.data.total
+      // console.log('获取任务流水列表', res)
+    },
     // 打开评价
     openAppraise () {
       this.$refs.appraiseModel.isShow = true
@@ -632,12 +791,13 @@ export default {
       this.$refs.awardModel.isShow = true
     },
     // 查看
-    check () {
+    check (uid) {
+      this.$refs.checkModel.uid = uid
       this.$refs.checkModel.isShow = true
     },
     // 页码改变事件
     onChange3 (page, size) {
-      console.log('Page: ', page)
+      // console.log('Page: ', page)
       this.pagination.currentPage = page
     },
     // 页容量改变事件
@@ -664,14 +824,18 @@ export default {
     clear () {
       this.selectedRowKeys = []
     },
-    // 页码改变事件
+    // 任务流水页码改变事件
     onChange (page, size) {
-      console.log('Page: ', page)
+      // console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getTaskSpeedData()
     },
-    // 页容量改变事件
+    // 任务流水页容量改变事件
     sizeChange (current, size) {
-      console.log('size: ', size)
+      // console.log('size: ', size)
+      this.pagination.currentPage = 1
+      this.pagination.pageSize = size
+      this.getTaskSpeedData()
     },
     // 确定
     confirm (e) {
@@ -703,30 +867,52 @@ export default {
     selectCard4Title (index) {
       this.currentIndex = index
     },
-    // 收起
+    // 任务说明收起
     close () {
       this.btnBol = false
-      document.querySelector('.explain').style.display = '-webkit-box'
-      document.querySelector('.explain').style.webkitBoxOrient = 'vertical'
-      document.querySelector('.explain').style.webkitLineClamp = '10'
-      document.querySelector('.explain').style.overflow = 'hidden'
+      document.querySelector('#taskExplain').style.display = '-webkit-box'
+      document.querySelector('#taskExplain').style.webkitBoxOrient = 'vertical'
+      document.querySelector('#taskExplain').style.webkitLineClamp = '10'
+      document.querySelector('#taskExplain').style.overflow = 'hidden'
     },
-    // 展开
+    // 任务说明展开
     open () {
       this.btnBol = true
-      document.querySelector('.explain').style.display = ''
-      document.querySelector('.explain').style.webkitBoxOrient = ''
-      document.querySelector('.explain').style.webkitLineClamp = ''
-      document.querySelector('.explain').style.overflow = ''
+      document.querySelector('#taskExplain').style.display = ''
+      document.querySelector('#taskExplain').style.webkitBoxOrient = ''
+      document.querySelector('#taskExplain').style.webkitLineClamp = ''
+      document.querySelector('#taskExplain').style.overflow = ''
     }
-
   },
- async created () {
+  async created () {
     this.id = this.$route.query.id
+    this.getTaskSpeedData()
     if (this.id !== '') {
-      const res = await getTaskDetail({ id: +this.id })
-      console.log('任务详情', res)
+      getTaskDetail({ id: +this.id }).then(res => {
+        this.taskDetailInfo = res.data
+        console.log('任务详情', res)
+        this.$nextTick(() => {
+          this.lineNumber = Math.round(
+            $('#taskExplain').height() /
+              parseFloat($('#taskExplain').css('line-height'))
+          )
+           this.close()
+           this.close2()
+        })
+      })
+
+      const res4 = await toGetButtonStatus({
+        id: +this.id
+      })
+      this.buttonStatus = res4.data
+      // console.log('任务详情-按钮状态控制', res4)
     }
+    const res2 = await toGetProcessStatus()
+    this.processStatusList = res2.list
+    // console.log('获取任务进度', res2)
+    const res3 = await toGetProject()
+    this.projectList = res3.data
+    // console.log('获取所有项目', res3)
   }
 }
 </script>
@@ -737,6 +923,7 @@ export default {
     padding: 0;
   }
   .card1 {
+    margin-top: 20px;
     .title {
       padding-left: 30px;
       height: 55px;
@@ -777,6 +964,7 @@ export default {
       }
       .right {
         flex: 1;
+        line-height: 20px;
         // display: -webkit-box;
         // -webkit-box-orient: vertical;
         // -webkit-line-clamp: 10;
@@ -856,8 +1044,8 @@ export default {
     }
     .form {
       padding-top: 20px;
-      padding-left:30px ;
-      padding-right:30px ;
+      padding-left: 30px;
+      padding-right: 30px;
       .btns {
         text-align: right;
 
@@ -906,21 +1094,23 @@ export default {
             color: rgba(0, 0, 0, 0.349019607843137);
           }
         }
+        .progress_content {
+          .t1 {
+            white-space: nowrap;
+          }
+        }
       }
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
-          padding: 10px;
+          padding-top: 10px;
+          padding-bottom: 20px;
+          text-align: right;
         }
         /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
-        }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
+          float: left;
+          // margin-left: 20px;
+          // margin-right: 300px;
         }
       }
     }

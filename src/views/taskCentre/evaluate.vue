@@ -267,8 +267,8 @@ export default {
   methods: {
     // 表格复选框 事件
     onSelectChange (selectedRowKeys, selectedRows) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys)
-      console.log('selectedRows', selectedRows)
+      // console.log('selectedRowKeys changed: ', selectedRowKeys)
+      // console.log('selectedRows', selectedRows)
       this.selectedRowKeys = selectedRowKeys
     },
     search () {
@@ -291,7 +291,7 @@ export default {
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
-      console.log('获取评价列表', res)
+      // console.log('获取评价列表', res)
     },
     // 查看
     lookOver (record) {
@@ -322,8 +322,9 @@ export default {
     },
     moment,
     onChange (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+      this.ctime = dateStrings[0] + '~' + dateStrings[1]
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     }
   },
   async created () {
@@ -331,11 +332,11 @@ export default {
     // 评价-评价标签下拉列表
     const res = await toEvaluateList()
     this.tagList = res.list
-    console.log('评价标签列表', res)
+    // console.log('评价标签列表', res)
       // 获取所有项目
     const res2 = await toGetProject()
     this.projectList = res2.data
-    console.log('获取所有项目', res2)
+    // console.log('获取所有项目', res2)
   }
 }
 </script>
