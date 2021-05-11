@@ -1,46 +1,103 @@
 <template>
-  <a-modal v-model="isShow" title="奖励" >
+  <a-modal v-model="isShow" title="奖励" @ok="submit">
+    <div class="selected" v-if="selectedRowKeys.length > 0">
+      <a-icon class="icon" type="info-circle" />
+      <span class="span1">已选择{{ selectedRowKeys.length }}项</span>
+    </div>
     <a-form-model
-    :model='form'
-    :rules="rules"
+      :model="form"
+      :rules="rules"
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-  <a-form-model-item label='已奖励'>
-    0幸福币
-  </a-form-model-item>
-  <a-form-model-item label="奖励" prop="value">
-    <a-input v-model="form.value" placeholder="请输入"  addon-after="币" />
-    <div class="txt">还可以奖励2000幸福币</div>
-  </a-form-model-item>
+      <a-form-model-item label="已奖励">
+        {{taskDetailInfo.reward_happiness}}幸福币
+      </a-form-model-item>
+      <a-form-model-item label="奖励" prop="credits">
+        <a-input v-model="form.credits" placeholder="请输入" addon-after="币" />
+        <div class="txt">还可以奖励{{taskDetailInfo.happy_reward-taskDetailInfo.reward_happiness}}幸福币</div>
+      </a-form-model-item>
     </a-form-model>
   </a-modal>
 </template>
 
 <script>
+import { toReward } from '@/api/taskCentre'
 export default {
+  props: ['id', 'selectedRowKeys', 'taskDetailInfo'],
   data () {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       isShow: false,
       form: {
-        value: ''
+        credits: ''
       },
+      uid: '',
       rules: {
-        value: [{ required: true, message: '必填', trigger: 'change' }]
+        credits: [{ required: true, message: '必填', trigger: 'change' }]
+      }
+    }
+  },
+  methods: {
+    // 确定
+    async submit () {
+      if (this.uid != '') {
+        const arr = []
+        arr.push(this.uid)
+         await toReward({
+          task_id: +this.id,
+          credits: +this.form.credits,
+          uids: arr
+        })
+        this.$parent.getTaskSpeedData()
+        this.isShow = false
+      } else {
+        // console.log('this.selectedRowKeys', this.selectedRowKeys)
+        await toReward({
+          task_id: +this.id,
+          credits: +this.form.credits,
+          uids: this.selectedRowKeys
+        })
+        this.isShow = false
+        this.$parent.selectedRowKeys = []
+        this.$parent.getTaskSpeedData()
       }
     }
   }
 }
 </script>
 
-<style lang='less' scoped>
-.txt{
-  font-family: 'MicrosoftYaHei', 'Microsoft YaHei';
-    font-weight: 400;
-    font-style: normal;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.447058823529412);
+<style lang="less" scoped>
+.txt {
+  font-family: "MicrosoftYaHei", "Microsoft YaHei";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.447058823529412);
+}
+.selected {
+  margin-top: 10px;
+  width: 100%;
+  height: 40px;
+  padding-left: 15px;
+  line-height: 40px;
+  background-color: rgba(230, 247, 255, 1);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(186, 231, 255, 1);
+  border-radius: 4px;
+  .icon {
+    color: #0e77d1;
+    margin-right: 10px;
+  }
+  .span1 {
+    color: #0e77d1;
+  }
+  .span2 {
+    cursor: pointer;
+    color: #0e77d1;
+    margin-left: 10px;
+  }
 }
 </style>

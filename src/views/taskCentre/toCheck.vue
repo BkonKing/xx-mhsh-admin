@@ -5,7 +5,7 @@
       <div class="title">流程进度</div>
       <div class="steps">
         <a-steps progress-dot :current="1">
-          <a-step title="创建任务" description="2021-01-01 00:00" />
+          <a-step title="创建任务" :description="taskDetailInfo.process.create_time" />
           <a-step title="待审核" description="" />
           <a-step title="待接单" description="" />
           <a-step title="待完成" description="" />
@@ -21,52 +21,51 @@
             <a-col :span="8">
               <a-form-model-item
 label="任务标题"
-                >标题标题标题</a-form-model-item
+                >{{taskDetailInfo.task_title}}</a-form-model-item
               >
               <a-form-model-item
 label="任务奖励"
-                >10000币（2000币/人）| 已奖励8000币</a-form-model-item
+                >{{taskDetailInfo.happy_reward}}币（{{taskDetailInfo.every_reward}}币/人）| 已奖励{{taskDetailInfo.reward_happiness}}币</a-form-model-item
               >
-              <a-form-model-item label="需要人数">4/5</a-form-model-item>
+              <a-form-model-item label="需要人数">{{taskDetailInfo.assignment}}/{{taskDetailInfo.need_people}}</a-form-model-item>
               <a-form-model-item
 label="完成时间"
-                >2021-03-01 08:50 ~ 2021-03-10 08:50</a-form-model-item
+                >{{taskDetailInfo.complete_time}}</a-form-model-item
               >
             </a-col>
             <a-col :span="8">
-              <a-form-model-item label="任务类型">类型</a-form-model-item>
+              <a-form-model-item label="任务类型">{{taskDetailInfo.task_type}}</a-form-model-item>
               <a-form-model-item label="创建者">
-                <span style="color:#1890FF">昵称(姓名) </span>
-                项目名称</a-form-model-item
+                <span style="color:#1890FF">{{taskDetailInfo.task_user}} </span>
+                {{taskDetailInfo.task_project}}</a-form-model-item
               >
               <a-form-model-item label="任务标签">
-                标签 | 标签标签 | 标签
+                {{taskDetailInfo.task_tag}}
               </a-form-model-item>
               <a-form-model-item
 label="完成地点"
-                >不限/省市区详细地址</a-form-model-item
+                >{{taskDetailInfo.complete_address}}</a-form-model-item
               >
             </a-col>
             <a-col :span="8">
               <a-form-model-item
 label="任务编号"
-                >0000000
+                >{{taskDetailInfo.task_number}}
                 <img
                   style="marginLeft:10px"
-                  @click="previewImg"
                   src="@/assets/imgs/task_ma.png"
                   alt=""
                 />
               </a-form-model-item>
               <a-form-model-item label="手机号">
-                15000000000
+               {{taskDetailInfo.mobile}}
               </a-form-model-item>
               <a-form-model-item label="联系电话">
-                150000000
+                {{taskDetailInfo.contact_number}}
               </a-form-model-item>
               <a-form-model-item
 label="可见范围"
-                >全部/福建省福州市/新乡美好生活家园/XXX群</a-form-model-item
+                >{{taskDetailInfo.visible_range}}</a-form-model-item
               >
             </a-col>
           </a-row>
@@ -75,11 +74,11 @@ label="可见范围"
           <div class="explain">
             <div class="left">任务说明：</div>
             <div class="right">
-              内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+                {{ taskDetailInfo.task_desc }}
             </div>
           </div>
           <div class="imgcon">
-            <div class="img" v-for="item in 3" :key="item">
+            <div class="img" v-for="item in taskDetailInfo.task_image" :key="item">
               <img
                 preview="0"
                 src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
@@ -90,33 +89,33 @@ label="可见范围"
         </div>
       </div>
     </a-card>
-    <a-card class="card3">
+    <a-card class="card3" v-if="taskDetailInfo.check_list.length>0">
       <div class="title">审核信息</div>
      <div class="content">
-        <div class="form" v-for="item in 3" :key='item'>
+        <div class="form" v-for="(item,index) in taskDetailInfo.check_list" :key='index'>
         <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-row>
             <a-col :span="8">
-              <a-form-model-item label="审核状态">未通过</a-form-model-item>
+              <a-form-model-item label="审核状态">{{item.chek_status}}</a-form-model-item>
             </a-col>
             <a-col :span="8">
-              <a-form-model-item label="审核人">姓名</a-form-model-item>
+              <a-form-model-item label="审核人">{{item.check_user}}</a-form-model-item>
             </a-col>
             <a-col :span="8">
               <a-form-model-item
 label="审核时间"
-                >2020-11-20 08:50:08</a-form-model-item
+                >{{item.check_time}}</a-form-model-item
               >
             </a-col>
           </a-row>
           <div class="cause">
             <div class="t1">违规原因：</div>
-            <div class="t2">原因原因</div>
+            <div class="t2">{{item.check_reason}}</div>
           </div>
           <div class="reply">
             <div class="t1">处理回复：</div>
             <div class="t2">
-              回复内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+              {{item.check_desc}}
             </div>
           </div>
           <div class="imgcon">
@@ -141,8 +140,8 @@ label="审核时间"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="是否通过" prop="value1">
-          <a-radio-group v-model="form.value1">
+        <a-form-model-item label="是否通过" prop="is_check">
+          <a-radio-group v-model="form.is_check">
             <a-radio :value="1">
               通过
             </a-radio>
@@ -152,36 +151,30 @@ label="审核时间"
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item
-          v-if="form.value1 !== 1"
+          v-if="form.is_check !== 1"
           label="违规原因"
-          prop="value2"
+          prop="violation_type"
         >
-          <a-select v-model="form.value2" style="width: 379px">
-            <a-select-option value="jack">
-              Jack
-            </a-select-option>
-            <a-select-option value="lucy">
-              Lucy
-            </a-select-option>
-            <a-select-option value="disabled" disabled>
-              Disabled
-            </a-select-option>
-            <a-select-option value="Yiminghe">
-              yiminghe
+          <a-select v-model="form.violation_type" placeholder="请选择" style="width: 379px">
+            <a-select-option v-for="(item, index) in reasonList" :key="index" :value="item.id">
+              {{item.violation}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="审核说明">
           <a-textarea
+
             style="width: 440px"
-            v-model="form.value3"
+            v-model="form.check_desc"
             placeholder="请输入"
             :auto-size="{ minRows: 3, maxRows: 5 }"
           />
         </a-form-model-item>
         <a-form-model-item label="图片">
           <a-upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :data="uploadData"
+            :headers="headers"
+            :action="uploadUrl"
             list-type="picture-card"
             :file-list="fileList"
             @preview="handlePreview"
@@ -213,6 +206,7 @@ class="btn"
 </template>
 
 <script>
+import { getTaskDetail, toViolationReason, toHandTask } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -229,50 +223,31 @@ export default {
       previewVisible: false,
       previewImage: '',
       form: {
-        value1: 1,
-        value2: '',
-        value3: ''
+        is_check: 1,
+        violation_type: undefined,
+        check_desc: ''
       },
       rules: {
-        value1: [{ required: true, message: '必填', trigger: 'change' }],
-        value2: [{ required: true, message: '必填', trigger: 'change' }]
+        is_check: [{ required: true, message: '必填', trigger: 'change' }],
+        violation_type: [{ required: true, message: '必填', trigger: 'change' }]
       },
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-3',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-4',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-5',
-          name: 'image.png',
-          status: 'error'
-        }
-      ],
-      bol: false
+      fileList: [],
+      bol: false,
+      id: '', // 任务id
+      taskDetailInfo: '', // 任务详情
+      uploadUrl: '', // 上传图片接口
+      uploadData: {
+        field_name: 'file'
+      },
+      fileList2: [], // 处理图片
+      reasonList: []// 违规原因列表
+    }
+  },
+    computed: {
+    headers () {
+      return {
+        Authorization: 'd824dfb99af3ffb4aed5860b323ba6a9c19c3fed'
+      }
     }
   },
   mounted () {
@@ -281,9 +256,9 @@ export default {
   watch: {
     form: {
       handler () {
-        if (this.form.value1 == 2 && this.form.value2 === '') {
+        if (this.form.is_check == 2 && this.form.violation_type === '') {
           this.bol = true
-        } else if (this.form.value1 === 1) {
+        } else if (this.form.is_check === 1) {
           this.bol = false
         } else {
           this.bol = false
@@ -294,7 +269,17 @@ export default {
   },
   methods: {
     // 确定
-    submit () {
+   async submit () {
+     const arr = []
+     arr.push(this.id)
+     const res = await toHandTask({
+       ids: arr,
+       is_check: this.form.is_check,
+       check_desc: this.form.check_desc,
+       check_image: this.fileList2,
+       violation_type: this.form.violation_type
+     })
+    console.log('审核', res)
       this.$message.success('提交成功')
     },
     // handleCancel () {
@@ -307,9 +292,38 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
+    // 上传和删除图片时触发
     handleChange ({ fileList }) {
+      // console.log('上传和删除图片时触发')
       this.fileList = fileList
+      console.log(fileList)
+      const arr1 = this.fileList.map(item => {
+        if (item.response) {
+          return item.response.data
+        }
+      })
+      const arr2 = arr1.filter(item => {
+        return item
+      })
+      this.fileList2 = arr2
+      console.log('上传和删除图片时触发', arr2)
     }
+  },
+   async created () {
+    this.id = this.$route.query.id
+    if (this.id != '') {
+      getTaskDetail({ id: +this.id }).then(res => {
+        this.taskDetailInfo = res.data
+        console.log('任务详情', res)
+      })
+    }
+    const res = await toViolationReason({ type: 1 })
+    this.reasonList = res.list
+    console.log('获取违规原因', res)
+    this.uploadUrl =
+        process.env.NODE_ENV === 'production'
+          ? '/nsolid/spi/v1/upload/uploads/uImages'
+          : '/api/upload/uploads/uImages'
   }
 }
 </script>
@@ -333,7 +347,7 @@ export default {
       border-bottom: 1px solid rgba(233, 233, 233, 1);
     }
     .steps {
-      padding: 20px 0;
+      padding: 20px;
     }
   }
   .card2 {

@@ -5,64 +5,65 @@
         <div class="task-top">
           <div
             class="item"
-            @click="currentIndex = ''"
+            @click="changeTab('')"
             :class="{ active: currentIndex === '' }"
           >
             全部{{ tabInfo.total }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 0"
+            @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
             待审核{{ tabInfo.to_be_check }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 2"
-            :class="{ active: currentIndex === 2 }"
+            @click="changeTab(1)"
+            :class="{ active: currentIndex === 1 }"
           >
             待接单{{ tabInfo.order_be_received }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 3"
-            :class="{ active: currentIndex === 3 }"
+            @click="changeTab(2)"
+            :class="{ active: currentIndex === 2 }"
           >
             待交付{{tabInfo.to_be_reviewed}}
           </div>
           <div
             class="item"
-            @click="currentIndex = 4"
-            :class="{ active: currentIndex === 4 }"
+            @click="changeTab(3)"
+            :class="{ active: currentIndex === 3 }"
           >
             已完成{{ tabInfo.to_completed }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 6"
-            :class="{ active: currentIndex === 6 }"
+            @click="changeTab(5)"
+            :class="{ active: currentIndex === 5 }"
           >
             已终止{{ tabInfo.to_terminated }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 7"
-            :class="{ active: currentIndex === 7 }"
+            @click="changeTab(6)"
+            :class="{ active: currentIndex === 6 }"
           >
             已失效{{ tabInfo.to_invalid }}
           </div>
           <div
             class="item"
-            @click="currentIndex = 5"
-            :class="{ active: currentIndex === 5 }"
+            @click="changeTab(4)"
+            :class="{ active: currentIndex === 4 }"
           >
             未通过{{ tabInfo.to_failed }}
           </div>
         </div>
       </template>
     </page-header-wrapper>
-    <a-card class="card" ref="card">
+  <div class="bodyContent">
+      <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
         <a-form-model layout="inline">
           <a-row :gutter="48">
@@ -280,6 +281,7 @@ type="up"
             <a-button
 type="link"
 v-if="record.task_status === '待审核'"
+@click="$router.push('/taskCentre/toCheck?id='+record.id)"
               >审核</a-button
             >
           </div>
@@ -304,6 +306,7 @@ v-if="record.task_status === '待审核'"
         />
       </div>
     </a-card>
+  </div>
     <batchCheck
       ref="batchCheck"
       :selectedRowKeys="selectedRowKeys"
@@ -447,6 +450,11 @@ export default {
   },
 
   methods: {
+    // 切换tab栏
+    changeTab (type) {
+      this.currentIndex = type
+      this.getData()
+    },
     // 重置
     reset () {
       this.task_type = undefined
@@ -601,6 +609,9 @@ export default {
     color: #1890ff;
     border-bottom: 2px solid #1890ff;
   }
+}
+.bodyContent{
+  padding: 0 20px;
 }
 .btns {
   text-align: right;

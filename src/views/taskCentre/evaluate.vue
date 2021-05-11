@@ -32,6 +32,7 @@
                   <a-select-option
                     v-for="(item, index) in tagList"
                     :key="index"
+                    :value="item"
                   >
                     {{ item }}
                   </a-select-option>
@@ -40,8 +41,8 @@
             </a-col>
             <a-col :md="8" :sm="24" v-if="!cardBol">
               <div class="btns">
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="reset">重置</a-button>
                 <a-button type="link" @click="open">
                   展开 <a-icon type="down" />
                 </a-button>
@@ -59,7 +60,11 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="评价用户">
                   <div class="evaUser">
-                    <a-select  class="select" v-model="user_type" placeholder="请选择">
+                    <a-select
+                      class="select"
+                      v-model="user_type"
+                      placeholder="请选择"
+                    >
                       <a-select-option value="1">
                         用户
                       </a-select-option>
@@ -68,6 +73,7 @@
                       </a-select-option>
                     </a-select>
                     <a-input
+                    v-model="user_search"
                       class="phoneInput"
                       placeholder="手机号、昵称/ID"
                     ></a-input>
@@ -77,8 +83,12 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="所属项目">
                   <a-select v-model="project_id" placeholder="评价用户">
-                    <a-select-option v-for="(item) in projectList" :key="item.id" value="item.id">
-                      {{item.project_name}}
+                    <a-select-option
+                      v-for="item in projectList"
+                      :key="item.id"
+                      value="item.id"
+                    >
+                      {{ item.project_name }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -87,7 +97,7 @@
                 <a-form-model-item>
                   <div class="btns">
                     <a-button type="primary" @click="search">查询</a-button>
-                    <a-button>重置</a-button>
+                    <a-button @click="reset">重置</a-button>
                     <a-button type="link" @click="close">
                       收起 <a-icon type="up" />
                     </a-button>
@@ -109,6 +119,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="评价时间">
                   <a-range-picker
+                    v-model="evaluateTime"
                     class="piker-time"
                     :ranges="{
                       Today: [moment(), moment()],
@@ -149,7 +160,7 @@
             </div>
           </div>
         </template>
-        <template  slot="opera" slot-scope="text,record">
+        <template slot="opera" slot-scope="text, record">
           <div>
             <a-button type="link" @click="lookOver(record)">查看</a-button>
           </div>
@@ -261,10 +272,24 @@ export default {
       ctime: '', //	否	int	评价时间
       selectedRowKeys: [],
       tagList: [], // 标签下拉列表
-      projectList: []
+      projectList: [],
+      evaluateTime: ''
     }
   },
   methods: {
+    reset () {
+      this.evaluate_starts = undefined
+      this.evaluate_tag = undefined
+      this.task_search = ''
+      this.user_type = undefined
+      this.user_search = ''
+      this.is_valid = undefined
+      this.project_id = undefined
+      this.ctime = ''
+      this.evaluateTime = ''
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 表格复选框 事件
     onSelectChange (selectedRowKeys, selectedRows) {
       // console.log('selectedRowKeys changed: ', selectedRowKeys)
@@ -291,7 +316,7 @@ export default {
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
-      // console.log('获取评价列表', res)
+      console.log('获取评价列表', res)
     },
     // 查看
     lookOver (record) {
@@ -333,7 +358,7 @@ export default {
     const res = await toEvaluateList()
     this.tagList = res.list
     // console.log('评价标签列表', res)
-      // 获取所有项目
+    // 获取所有项目
     const res2 = await toGetProject()
     this.projectList = res2.data
     // console.log('获取所有项目', res2)

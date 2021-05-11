@@ -32,10 +32,10 @@
       }}
       </a-form-model-item>
     </a-form-model>
-    <div class="btn" v-if="!bol && info.is_valid===1">
+    <div class="btn" v-if="!bol && info.is_valid_desc !=='无效评价'">
       <a-button @click="mark">标记为无效评价</a-button>
     </div>
-    <div class="bottom" v-if="bol && !showInfo && info.is_valid===1">
+    <div class="bottom" v-if="bol && !showInfo && info.is_valid_desc !=='无效评价'">
       <div class="left">标记说明：</div>
       <div class="right">
         <a-textarea
@@ -46,10 +46,10 @@
         />
       </div>
     </div>
-    <div class="btn2" v-if="bol && !showInfo  && info.is_valid===1">
+    <div class="btn2" v-if="bol && !showInfo  && info.is_valid_desc !=='无效评价'">
       <a-button type="primary" @click="submit">确定</a-button>
     </div>
-    <div class="info" v-if="showInfo || info.is_valid===0">
+    <div class="info" v-if="showInfo || info.is_valid_desc==='无效评价'">
       <div class="item">
         <div class="t1">标记评价：</div>
         <div class="t2" style="color: #F5222D">
@@ -99,25 +99,30 @@ export default {
       if (newVal === false) {
         this.bol = false
         this.showInfo = false
+        this.info = {}
       }
     },
     id () {
+      this.getEvaluate()
+    }
+  },
+  methods: {
+    getEvaluate () {
       toViewEvaluate({ id: this.id }).then(res => {
         this.info = res.data
         console.log('查看评价', res)
       })
-    }
-  },
-  methods: {
+    },
     // 确定
     async submit () {
       this.showInfo = true
-      const res = await toOptEvaluate({
-        id: this.info.id,
+      await toOptEvaluate({
+        id: this.id,
         is_valid: 0,
         label_desc: this.label_desc
       })
-      console.log('无效评价', res)
+      this.getEvaluate()
+      this.$message.success('处理成功')
     },
     // 标记
     mark () {

@@ -55,7 +55,11 @@ const taskCentreApi = {
   taskDetail: '/linli/task/taskDetail',
   getTaskSpeed: '/linli/task/getTaskSpeed',
   getButtonStatus: '/linli/task/getButtonStatus',
-  getUserProcess: '/linli/task/getUserProcess'
+  getUserProcess: '/linli/task/getUserProcess',
+  reward: '/linli/task/reward',
+  taskCode: '/linli/task/taskCode',
+  optTask: '/linli/task/optTask',
+  violationReason: '/linli/common/violationReason'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -496,10 +500,42 @@ export function toGetButtonStatus (data) {
     data
   })
 }
-
+// 任务中心-任务详情页-用户任务流水
 export function toGetUserProcess (data) {
   return request({
     url: taskCentreApi.getUserProcess,
+    method: 'post',
+    data
+  })
+}
+// 任务详情-奖励幸福币
+export function toReward (data) {
+  return request({
+    url: taskCentreApi.reward,
+    method: 'post',
+    data
+  })
+}
+// 任务详情-生成任务二维码
+export function toTaskCode (data) {
+  return request({
+    url: taskCentreApi.taskCode,
+    method: 'post',
+    data
+  })
+}
+// 任务详情-任务操作
+export function toOptTask (data) {
+  return request({
+    url: taskCentreApi.optTask,
+    method: 'post',
+    data
+  })
+}
+// 获取违规原因
+export function toViolationReason (data) {
+  return request({
+    url: taskCentreApi.violationReason,
     method: 'post',
     data
   })

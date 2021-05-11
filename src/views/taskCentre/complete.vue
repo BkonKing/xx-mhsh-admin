@@ -3,22 +3,22 @@
     <page-header-wrapper></page-header-wrapper>
     <a-card class="card1">
       <div class="title">流程进度</div>
-          <div class="steps" v-if="taskDetailInfo.process.process_result===0">
+      <div class="steps" v-if="taskDetailInfo.process.process_result === 0">
         <a-steps progress-dot :current="1">
           <a-step
             :title="taskDetailInfo.process.create_start"
             :description="taskDetailInfo.process.create_time"
           />
-          <a-step
-            title="待审核"
-            description=""
-          />
+          <a-step title="待审核" description="" />
           <a-step title="待接单" description="" />
           <a-step title="待完成" description="" />
           <a-step title="完成" description="" />
         </a-steps>
       </div>
-         <div class="steps" v-else-if="taskDetailInfo.process.process_result===1">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 1"
+      >
         <a-steps progress-dot :current="2">
           <a-step
             :title="taskDetailInfo.process.create_start"
@@ -33,7 +33,10 @@
           <a-step title="完成" description="" />
         </a-steps>
       </div>
-         <div class="steps" v-else-if="taskDetailInfo.process.process_result===2">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 2"
+      >
         <a-steps progress-dot :current="3">
           <a-step
             :title="taskDetailInfo.process.create_start"
@@ -43,12 +46,18 @@
             :title="taskDetailInfo.process.process_check"
             :description="taskDetailInfo.process.check_time"
           />
-          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
+          <a-step
+            title="接单"
+            :description="taskDetailInfo.process.receive_time"
+          />
           <a-step title="待完成" description="" />
           <a-step title="完成" description="" />
         </a-steps>
       </div>
-          <div class="steps" v-else-if="taskDetailInfo.process.process_result===3">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 3"
+      >
         <a-steps progress-dot :current="4">
           <a-step
             :title="taskDetailInfo.process.create_start"
@@ -58,12 +67,21 @@
             :title="taskDetailInfo.process.process_check"
             :description="taskDetailInfo.process.check_time"
           />
-          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
-          <a-step title="任务完成" :description="taskDetailInfo.process.complete_time" />
+          <a-step
+            title="接单"
+            :description="taskDetailInfo.process.process_accept"
+          />
+          <a-step
+            title="任务完成"
+            :description="taskDetailInfo.process.complete_time"
+          />
           <a-step title="完成" description="" />
         </a-steps>
       </div>
-        <div class="steps" v-else-if="taskDetailInfo.process.process_result===5">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 5"
+      >
         <a-steps progress-dot :current="4">
           <a-step
             :title="taskDetailInfo.process.create_start"
@@ -73,25 +91,37 @@
             :title="taskDetailInfo.process.process_check"
             :description="taskDetailInfo.process.check_time"
           />
-          <a-step title="接单" :description="taskDetailInfo.process.process_accept" />
-          <a-step title="任务完成(终止)" :description="taskDetailInfo.process.complete_time" />
+          <a-step
+            title="接单"
+            :description="taskDetailInfo.process.receive_time"
+          />
+          <a-step
+            title="任务完成(终止)"
+            :description="taskDetailInfo.process.complete_time"
+          />
           <a-step title="完成" description="" />
         </a-steps>
       </div>
-        <div class="steps" v-else-if="taskDetailInfo.process.process_result===4">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 4"
+      >
         <a-steps progress-dot :current="4">
           <a-step
             :title="taskDetailInfo.process.create_start"
             :description="taskDetailInfo.process.create_time"
           />
           <a-step
-            :title="taskDetailInfo.process.process_check"
+            :title="taskDetailInfo.process.process_finish"
             :description="taskDetailInfo.process.check_time"
           />
           <a-step title="结束" description="" />
         </a-steps>
       </div>
-          <div class="steps" v-else-if="taskDetailInfo.process.process_result===6">
+      <div
+        class="steps"
+        v-else-if="taskDetailInfo.process.process_result === 6"
+      >
         <a-steps progress-dot :current="4">
           <a-step
             :title="taskDetailInfo.process.create_start"
@@ -101,14 +131,13 @@
             :title="taskDetailInfo.process.process_check"
             :description="taskDetailInfo.process.check_time"
           />
-           <a-step
+          <a-step
             :title="taskDetailInfo.process.process_finish"
             :description="taskDetailInfo.process.complete_time"
           />
           <a-step title="结束" description="" />
         </a-steps>
       </div>
-
     </a-card>
     <a-card class="card2">
       <div class="title">基础信息</div>
@@ -117,12 +146,12 @@
           <a-row>
             <a-col :span="8">
               <a-form-model-item label="任务标题">
-                标题标题标题标题标题
+                {{ taskDetailInfo.task_title }}
               </a-form-model-item>
               <a-form-model-item label="任务奖励">
-                10000币（2000币/人）| 已奖励{{
-                  taskDetailInfo.reward_happiness
-                }}币
+                {{ taskDetailInfo.happy_reward }}币（{{
+                  taskDetailInfo.every_reward
+                }}币/人）| 已奖励{{ taskDetailInfo.reward_happiness }}币
               </a-form-model-item>
               <a-form-model-item
 label="需要人数"
@@ -155,9 +184,9 @@ label="需要人数"
               <a-form-model-item label="任务编号">
                 {{ taskDetailInfo.task_number }}
                 <img
-                  style="marginLeft:10px"
+                  style="marginLeft:10px;width:20px;height:20;"
                   preview="1"
-                  src="@/assets/imgs/task_ma.png"
+                  :src="taskMa"
                   alt=""
                 />
               </a-form-model-item>
@@ -176,21 +205,21 @@ label="需要人数"
         <div class="explain">
           <div class="left">任务说明：</div>
           <div class="right" id="taskExplain">
-          {{ taskDetailInfo.task_desc }}
+            {{ taskDetailInfo.task_desc }}
           </div>
         </div>
         <div class="otherBtn">
           <a-button
 type="link"
-v-if="!btnBol && lineNumber>10"
+v-if="!btnBol && lineNumber > 10"
 @click="open"
             >展开 <a-icon
 type="down"
           /></a-button>
           <a-button
-type="link"
-v-else-if="btnBol && lineNumber>10"
-@click="close"
+            type="link"
+            v-else-if="btnBol && lineNumber > 10"
+            @click="close"
             >收起 <a-icon
 type="up"
           /></a-button>
@@ -311,13 +340,22 @@ type="up"
       </div>
       <div class="content">
         <div class="btns" v-if="buttonStatus != ''">
-          <a-button v-if="buttonStatus.button_shelf === 1">下架任务</a-button>
           <a-button
-v-if="buttonStatus.button_termination === 1"
+v-if="buttonStatus.button_shelf === 1"
+@click="soldOut(1)"
+            >下架任务</a-button
+          >
+          <a-button
+            v-if="buttonStatus.button_termination === 1"
+            @click="terminate(2)"
             >终止任务</a-button
           >
-          <a-button v-if="buttonStatus.button_stop === 1">停止接单</a-button>
-          <a-button>批量操作 <a-icon type="down"/></a-button>
+          <a-button
+v-if="buttonStatus.button_stop === 1"
+@click="stop(3)"
+            >停止接单</a-button
+          >
+          <a-button @click="award">批量操作 <a-icon type="down"/></a-button>
         </div>
         <div class="selected" v-if="selectedRowKeys.length > 0">
           <a-icon class="icon" type="info-circle" />
@@ -326,7 +364,7 @@ v-if="buttonStatus.button_termination === 1"
         </div>
         <div class="table">
           <a-table
-            rowKey="id"
+            rowKey="uid"
             :row-selection="{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange
@@ -354,8 +392,8 @@ v-if="buttonStatus.button_termination === 1"
             </template>
             <template slot="evaluate" slot-scope="text, record">
               <span
-style="color:#1890FF;cursor: pointer;"
-@click="openAppraise"
+                style="color:#1890FF;cursor: pointer;"
+                @click="openAppraise(record.id)"
                 >{{ record.evaluate }}星</span
               >
             </template>
@@ -369,10 +407,10 @@ style="color:#1890FF;cursor: pointer;"
             </template>
             <template slot="opera" slot-scope="text, record">
               <div class="btns">
-                <a-button type="link" @click="check(record.id)">查看</a-button>
+                <a-button type="link" @click="check(record.uid)">查看</a-button>
                 <a-button
                   type="link"
-                  @click="award"
+                  @click="award(record.uid)"
                   v-if="record.progress_desc != '暂停中'"
                   >奖励</a-button
                 >
@@ -414,18 +452,19 @@ style="color:#1890FF;cursor: pointer;"
       <div class="title">
         审核信息
       </div>
-      <div class="c1">
+    <div class="card5Item" v-for="(item, index) in taskDetailInfo.check_list" :key="index">
+            <div class="c1">
         <div class="t1">
-          审核通过：未通过
+          审核通过：{{item.check_status}}
         </div>
-        <div class="t2">审核人：姓名</div>
-        <div class="t3">审核时间：2020-11-20 08:50:08</div>
+        <div class="t2">审核人：{{item.check_user}}</div>
+        <div class="t3">审核时间：{{item.check_time}}</div>
       </div>
-      <div class="c2">违规原因：原因原因</div>
+      <div class="c2">违规原因：{{item.check_reason}}</div>
       <div class="c3">
         <div class="t1">处理回复：</div>
         <div class="t2">
-          回复内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
+          {{item.check_desc}}
         </div>
       </div>
       <div class="imgcon">
@@ -437,71 +476,82 @@ style="color:#1890FF;cursor: pointer;"
           />
         </div>
       </div>
+    </div>
     </a-card>
     <a-card class="card6">
       <div class="title">操作日志</div>
-      <div class="form">
-        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-row>
-            <a-col :span="8">
-              <a-form-model-item label="操作员">
-                <a-input placeholder="姓名" style="width:264px"></a-input>
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-model-item label="操作时间">
-                <a-range-picker
-                  style="width:264px"
-                  :ranges="{
-                    Today: [moment(), moment()],
-                    'This Month': [moment(), moment().endOf('month')]
-                  }"
-                  show-time
-                  format="YYYY/MM/DD HH:mm:ss"
-                  @change="onChange2"
-                />
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-model-item label="操作类型" v-if="!card6Bol">
-                <a-input placeholder="关键字" style="width:264px"></a-input>
-              </a-form-model-item>
-              <div class="btns" v-else>
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
-                <a-button
+      <div class="table-page-search-wrapper">
+        <div class="form">
+          <a-form-model layout="inline">
+            <a-row :gutter="48">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="操作员">
+                  <a-input v-model="opt_user" placeholder="姓名"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="操作时间">
+                  <a-range-picker
+                    v-model="logTime"
+                    class="piker-time"
+                    :ranges="{
+                      Today: [moment(), moment()],
+                      'This Month': [moment(), moment().endOf('month')]
+                    }"
+                    show-time
+                    format="YYYY/MM/DD HH:mm:ss"
+                    @change="onChange2"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24" v-if="!card6Bol">
+                <div class="btns">
+                  <a-button type="primary" @click="logSearch">查询</a-button>
+                  <a-button @click="logReset">重置</a-button>
+                  <a-button
 type="link"
 @click="open3"
-                  >展开 <a-icon
+                    >展开 <a-icon
 type="down"
-                /></a-button>
-              </div>
-            </a-col>
-          </a-row>
-          <a-row v-if="!card6Bol">
-            <a-col :span="8">
-              <a-form-model-item label="操作说明">
-                <a-input placeholder="关键字" style="width:264px"></a-input>
-              </a-form-model-item>
-            </a-col>
-            <a-col :span="8"></a-col>
-            <a-col :span="8">
-              <div class="btns">
-                <a-button type="primary">查询</a-button>
-                <a-button>重置</a-button>
-                <a-button
+                  /></a-button>
+                </div>
+              </a-col>
+              <template v-if="card6Bol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="操作类型">
+                    <a-input v-model="opt_type" placeholder="关键字"></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="操作说明">
+                    <a-input v-model="opt_desc" placeholder="关键字"></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24"></a-col>
+                <a-col :md="8" :sm="24">
+                  <div class="btns">
+                    <a-button type="primary" @click="logSearch">查询</a-button>
+                    <a-button @click="logReset">重置</a-button>
+                    <a-button
 type="link"
 @click="close3"
-                  >收起 <a-icon
+                      >收起 <a-icon
 type="up"
-                /></a-button>
-              </div>
-            </a-col>
-          </a-row>
-        </a-form-model>
+                    /></a-button>
+                  </div>
+                </a-col>
+              </template>
+            </a-row>
+          </a-form-model>
+        </div>
       </div>
       <div class="table">
-        <a-table :pagination="false" :columns="columns2" :data-source="data2">
+        <a-table
+          rowKey="id"
+          :pagination="false"
+          :columns="columns2"
+          :data-source="logData"
+        >
           <a slot="name" slot-scope="text">{{ text }}</a>
         </a-table>
         <div class="pagination">
@@ -514,7 +564,9 @@ type="up"
             :page-size.sync="pagination2.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination2.currentPage}/80页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChange3"
             @showSizeChange="sizeChange3"
@@ -523,7 +575,12 @@ type="up"
       </div>
     </a-card>
     <checkModel :id="id" ref="checkModel"></checkModel>
-    <awardModel ref="awardModel"></awardModel>
+    <awardModel
+      :selectedRowKeys="selectedRowKeys"
+      :taskDetailInfo="taskDetailInfo"
+      :id="id"
+      ref="awardModel"
+    ></awardModel>
     <appraiseModel ref="appraiseModel"></appraiseModel>
   </div>
 </template>
@@ -539,7 +596,10 @@ import {
   toGetTaskSpeed,
   toGetProcessStatus,
   toGetProject,
-  toGetButtonStatus
+  toGetButtonStatus,
+  toTaskCode,
+  toOptTask,
+  toGetLog
 } from '@/api/taskCentre'
 export default {
   components: {
@@ -646,70 +706,46 @@ export default {
           title: 'id',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '16.666666%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '操作时间',
-          dataIndex: 'opreaTime',
-          key: 'opreaTime',
-          width: 200
+          dataIndex: 'ctime',
+          key: 'ctime',
+          width: '16.666666%'
         },
         {
           title: '模块',
-          dataIndex: 'module',
-          key: 'module',
-          width: 150
+          dataIndex: 'module_type',
+          key: 'module_type',
+          width: '16.666666%'
         },
         {
           title: '操作员',
-          dataIndex: 'opreaPeople',
-          key: 'opreaPeople',
-          width: 200
+          dataIndex: 'username',
+          key: 'username',
+          width: '16.666666%'
         },
         {
           title: '操作类型',
-          dataIndex: 'operaType',
-          key: 'operaType',
-          width: 150
+          dataIndex: 'opt_type',
+          key: 'opt_type',
+          width: '16.666666%'
         },
         {
           title: '操作说明',
-          dataIndex: 'operaExplain',
-          key: 'operaExplain'
+          dataIndex: 'content',
+          key: 'content',
+          width: '16.666666%'
         }
       ],
-      data2: [
-        {
-          id: '1',
-          opreaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务',
-          opreaPeople: '用户昵称(姓名)',
-          operaType: '延期任务',
-          operaExplain: '延期任务至2021-03-20  00:00'
-        },
-        {
-          id: '1',
-          opreaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务',
-          opreaPeople: '用户昵称(姓名)',
-          operaType: '延期任务',
-          operaExplain: '延期任务至2021-03-20  00:00'
-        },
-        {
-          id: '1',
-          opreaTime: '2020-10-01 12:00:00',
-          module: '任务中心/任务',
-          opreaPeople: '用户昵称(姓名)',
-          operaType: '延期任务',
-          operaExplain: '延期任务至2021-03-20  00:00'
-        }
-      ],
+      logData: [],
       pagination2: {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
+        pageSize: 10 // 默认页容量
       },
       id: '', // 任务详情id
       taskDetailInfo: '', // 任务详情信息
@@ -721,7 +757,13 @@ export default {
       processStatusList: [], // 状态列表
       projectList: [], // 项目列表
       buttonStatus: '', // 按钮状态
-      lineNumber: '' // 任务说明行数
+      lineNumber: '', // 任务说明行数
+      taskMa: '',
+      opt_user: '', //	否	string	操作员
+      opt_time: '', //	否	string	操作时间
+      opt_type: '', //	否	string	操作类型
+      opt_desc: '', //	否	string	操作描述
+      logTime: []
     }
   },
   mounted () {
@@ -739,6 +781,60 @@ export default {
     document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
+    // 日志重置
+    logReset () {
+      this.opt_user = ''
+      this.opt_time = ''
+      this.opt_type = ''
+      this.opt_desc = ''
+      this.logTime = ''
+      this.getTaskLog()
+    },
+    // 日志搜索
+    logSearch () {
+      this.pagination2.currentPage = 1
+      this.getTaskLog()
+    },
+    // 获取任务日志列表
+    async getTaskLog () {
+      const res = await toGetLog({
+        pagesize: this.pagination2.pageSize,
+        pageindex: this.pagination2.currentPage,
+        type: 1,
+        task_id: +this.id,
+        opt_user: this.opt_user,
+        opt_time: this.opt_time,
+        opt_type: this.opt_type,
+        opt_desc: this.opt_desc
+      })
+      this.logData = res.data.list
+      this.pagination2.total = res.data.total
+      // console.log('任务日志', res)
+    },
+    // 下架任务
+    async soldOut (type) {
+      const res = await toOptTask({
+        task_id: +this.id,
+        opt_type: type
+      })
+      console.log('下架任务', res)
+    },
+    // 终止任务
+    async terminate (type) {
+      const res = await toOptTask({
+        task_id: +this.id,
+        opt_type: type
+      })
+      console.log('终止任务', res)
+    },
+    // 停止接单
+    async stop (type) {
+      const res = await toOptTask({
+        task_id: +this.id,
+        opt_type: type
+      })
+      console.log('停止接单', res)
+    },
     // 任务流水排序
     tableChange1 (pagination, filters, sorter, { currentDataSource }) {
       // console.log('sorter', sorter)
@@ -782,12 +878,16 @@ export default {
       // console.log('获取任务流水列表', res)
     },
     // 打开评价
-    openAppraise () {
+    openAppraise (id) {
       this.$refs.appraiseModel.isShow = true
+      this.$refs.appraiseModel.id = id
       this.currentIndex = 2
     },
     // 奖励
-    award () {
+    award (uid) {
+      if (typeof uid === 'number') {
+        this.$refs.awardModel.uid = uid
+      }
       this.$refs.awardModel.isShow = true
     },
     // 查看
@@ -795,30 +895,33 @@ export default {
       this.$refs.checkModel.uid = uid
       this.$refs.checkModel.isShow = true
     },
-    // 页码改变事件
+    // 日志操作页码改变事件
     onChange3 (page, size) {
       // console.log('Page: ', page)
-      this.pagination.currentPage = page
+      this.pagination2.currentPage = page
+      this.getTaskLog()
     },
-    // 页容量改变事件
+    // 日志操作页容量改变事件
     sizeChange3 (current, size) {
       console.log('size: ', size)
+      this.pagination2.currentPage = 1
+      this.pagination2.pageSize = size
+      this.getTaskLog()
     },
     // 展开3
     open3 () {
-      this.card6Bol = false
-      document.querySelector('.card6 .form').style.height = '128px'
+      this.card6Bol = true
     },
     // 收起3
     close3 () {
-      this.card6Bol = true
-      document.querySelector('.card6 .form').style.height = '74px'
+      this.card6Bol = false
     },
     moment,
     // 操作时间改变
     onChange2 (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+       this.opt_time = dateStrings[0] + '~' + dateStrings[1]
+      // console.log('From: ', dates[0], ', to: ', dates[1])
+      // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     },
     // 清空表格复选框数组
     clear () {
@@ -847,7 +950,7 @@ export default {
       console.log(e)
       this.$message.error('Click on No')
     },
-    // 表格复选框选择事件
+    // 用户流水表格复选框选择事件
     onSelectChange (selectedRowKeys, selectedRows) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       console.log('selectedRows', selectedRows)
@@ -896,8 +999,8 @@ export default {
             $('#taskExplain').height() /
               parseFloat($('#taskExplain').css('line-height'))
           )
-           this.close()
-           this.close2()
+          this.close()
+          this.close2()
         })
       })
 
@@ -906,12 +1009,19 @@ export default {
       })
       this.buttonStatus = res4.data
       // console.log('任务详情-按钮状态控制', res4)
+      const res5 = await toTaskCode({
+        task_id: this.id
+      })
+      this.taskMa = res5.data.img_url
+      // console.log('任务二维码', res5)
+      this.getTaskLog()
     }
     const res2 = await toGetProcessStatus()
     this.processStatusList = res2.list
     // console.log('获取任务进度', res2)
     const res3 = await toGetProject()
     this.projectList = res3.data
+
     // console.log('获取所有项目', res3)
   }
 }
@@ -1186,10 +1296,17 @@ export default {
     color: rgba(0, 0, 0, 0.847058823529412);
     border-bottom: 1px solid rgba(233, 233, 233, 1);
   }
+  /deep/ .ant-form-item-label {
+    min-width: 88px;
+  }
+  .piker-time {
+    width: 100% !important;
+  }
   .form {
+    padding: 0 20px;
     margin-top: 20px;
     .btns {
-      margin-left: 162px;
+      text-align: right;
       button {
         margin-right: 10px;
       }
@@ -1201,17 +1318,14 @@ export default {
   .pagination {
     margin-top: 10px;
     /deep/ .ant-pagination {
-      padding: 10px;
+      padding-top: 10px;
+      padding-bottom: 20px;
+      text-align: right;
     }
     /deep/ .ant-pagination-total-text {
-      margin-left: 20px;
-      margin-right: 300px;
-    }
-    /deep/ .ant-pagination-item-active {
-      background-color: #1890ff;
-      a {
-        color: white;
-      }
+      float: left;
+      // margin-left: 20px;
+      // margin-right: 300px;
     }
   }
 }
