@@ -46,6 +46,25 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
+              <a-form-model-item
+        v-if="form.is_check !== 1"
+        label="违规原因"
+        prop="violation_type"
+      >
+        <a-select
+          v-model="form.violation_type"
+          placeholder="请选择"
+          style="width: 379px"
+        >
+          <a-select-option
+            v-for="(item, index) in reasonList"
+            :key="index"
+            :value="item.id"
+          >
+            {{ item.violation }}
+          </a-select-option>
+        </a-select>
+      </a-form-model-item>
         <a-form-model-item label="审核说明">
           <a-textarea
             v-model="form.check_desc"
@@ -86,7 +105,7 @@
 
 <script>
 import askLookOverModel from './askLookOverModel'
-import { toViewQuestion, toCheckQuestionReply } from '@/api/taskCentre'
+import { toViewQuestion, toCheckQuestionReply, toViolationReason } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -106,10 +125,12 @@ export default {
       isShow: false,
       form: {
         is_check: 1,
-        check_desc: ''
+        check_desc: '',
+        violation_type: ''
       },
       rules: {
-        is_check: [{ required: true, message: '必填', trigger: 'change' }]
+        is_check: [{ required: true, message: '必填', trigger: 'change' }],
+        violation_type: [{ required: true, message: '必填', trigger: 'change' }]
       },
       previewVisible: false,
       previewImage: '',
@@ -127,7 +148,7 @@ export default {
   computed: {
     headers () {
       return {
-        Authorization: '80639a9d9f29d181bdcaa70efd3b4e3117f77ff6'
+        Authorization: '53d79c31961cdb2d995e6fdec25eed7d4115cecb'
       }
     }
   },
@@ -154,10 +175,11 @@ export default {
         is_check: this.form.is_check,
         check_desc: this.form.check_desc,
         check_image: this.fileList2,
-        violation_type: this.violation_type
+        violation_type: this.form.violation_type
       })
       this.$message.success('审核成功')
       this.$parent.getData()
+      this.isShow = false
       // console.log('确定', res)
     },
     // 查看
@@ -197,7 +219,10 @@ export default {
      console.log('上传和删除图片时触发', arr2)
     }
   },
-  created () {
+ async created () {
+    const res = await toViolationReason({ type: 2 })
+    this.reasonList = res.list
+     console.log('获取违规原因', res)
     this.uploadUrl =
       process.env.NODE_ENV === 'production'
         ? '/nsolid/spi/v1/upload/uploads/uImages'

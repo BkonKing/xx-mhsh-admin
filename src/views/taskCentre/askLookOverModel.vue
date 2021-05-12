@@ -28,14 +28,14 @@
                   label="审核时间"
           >{{lookOverInfo.check_time}}</a-form-model-item
         >
-        <a-form-model-item label="违规原因">{{lookOverInfo.violation_type}}</a-form-model-item>
+        <a-form-model-item label="违规原因" v-if="+lookOverInfo.is_check===2">{{lookOverInfo.violation_reason}}</a-form-model-item>
         <a-form-model-item label="审核说明">
           {{lookOverInfo.check_desc}}
         </a-form-model-item>
         <div class="imgcon">
           <div class="img" v-for="(item,index) in lookOverInfo.check_image" :key="index" >
             <img
-            preview="0"
+              preview="0"
               :src="item"
               alt=""
             />
@@ -64,7 +64,7 @@ export default {
     }
   },
   mounted () {
-    this.$previewRefresh()
+
   },
   watch: {
     info: {
@@ -74,7 +74,9 @@ export default {
       type: +this.info.type,
       id: this.info.id
    })
+   console.log('提问-查看详情', res)
    this.lookOverInfo = res.data
+   this.$previewRefresh()
       },
       deep: true
     }
@@ -83,16 +85,7 @@ export default {
 
   },
   methods: {
-    // 预览图片
-    // previewImg (e) {
-    //   console.log(e.target.src)
-    //   this.previewVisible = true
-    //   this.previewImage = e.target.src
-    // },
-    // // 关闭预览图片
-    // handleCancel () {
-    //   this.previewVisible = false
-    // }
+
   }
 }
 </script>

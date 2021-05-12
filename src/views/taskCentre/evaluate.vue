@@ -1,7 +1,8 @@
 <template>
   <div class="evaluate">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card" ref="card">
+<div class="cardContent">
+      <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
         <a-form-model layout="inline">
           <a-row :gutter="48">
@@ -152,11 +153,11 @@
             {{ task_title }}
           </div>
         </template>
-        <template #appraiseUser>
+        <template slot="owner_name" slot-scope="text,record" >
           <div class="appraiseUser">
-            <div class="t1">昵称</div>
+            <div class="t1">{{record.owner_name}}</div>
             <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
-              项目名称
+              {{record.project_name}}
             </div>
           </div>
         </template>
@@ -185,6 +186,7 @@
         />
       </div>
     </a-card>
+</div>
     <appraiseModel ref="appraiseModel"></appraiseModel>
   </div>
 </template>
@@ -273,7 +275,7 @@ export default {
       selectedRowKeys: [],
       tagList: [], // 标签下拉列表
       projectList: [],
-      evaluateTime: ''
+      evaluateTime: []
     }
   },
   methods: {
@@ -286,7 +288,7 @@ export default {
       this.is_valid = undefined
       this.project_id = undefined
       this.ctime = ''
-      this.evaluateTime = ''
+      this.evaluateTime = []
       this.pagination.currentPage = 1
       this.getData()
     },
@@ -368,7 +370,9 @@ export default {
 
 <style lang="less" scoped>
 .evaluate {
-  padding: 0 20px;
+  .cardContent{
+    padding: 0 20px;
+  }
   .btns {
     text-align: right;
     button {

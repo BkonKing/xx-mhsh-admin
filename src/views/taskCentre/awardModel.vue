@@ -10,7 +10,7 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-model-item label="已奖励">
+      <a-form-model-item label="已奖励" v-if="selectedRowKeys.length===0">
         {{taskDetailInfo.reward_happiness}}幸福币
       </a-form-model-item>
       <a-form-model-item label="奖励" prop="credits">
@@ -39,29 +39,50 @@ export default {
       }
     }
   },
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.form.credits = ''
+      }
+    }
+  },
   methods: {
     // 确定
     async submit () {
+      if (this.form.credits.trim() === '') {
+        return
+      }
       if (this.uid != '') {
         const arr = []
         arr.push(this.uid)
-         await toReward({
+      const res = await toReward({
           task_id: +this.id,
           credits: +this.form.credits,
           uids: arr
         })
-        this.$parent.getTaskSpeedData()
+        if (+res.code === 201) {
+        this.$message.error(res.message)
         this.isShow = false
+        } else if (+res.code === 200) {
+          this.$parent.getTaskSpeedData()
+          this.isShow = false
+        }
       } else {
         // console.log('this.selectedRowKeys', this.selectedRowKeys)
-        await toReward({
+        const res = await toReward({
           task_id: +this.id,
           credits: +this.form.credits,
           uids: this.selectedRowKeys
         })
+        if (+res.code === 201) {
+        this.$message.error(res.message)
         this.isShow = false
+        } else if (+res.code === 200) {
         this.$parent.selectedRowKeys = []
         this.$parent.getTaskSpeedData()
+        this.$message.success('处理成功')
+        this.isShow = false
+        }
       }
     }
   }
@@ -78,6 +99,7 @@ export default {
 }
 .selected {
   margin-top: 10px;
+  margin-bottom: 10px;
   width: 100%;
   height: 40px;
   padding-left: 15px;

@@ -8,56 +8,56 @@
             @click="changeTab('')"
             :class="{ active: currentIndex === '' }"
           >
-            全部{{ tabInfo.total }}
+            全部{{ tabInfo.total!==0?tabInfo.total:'' }}
           </div>
           <div
             class="item"
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核{{ tabInfo.to_be_check }}
+            待审核{{ tabInfo.to_be_check!==0?tabInfo.to_be_check:''  }}
           </div>
           <div
             class="item"
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            待接单{{ tabInfo.order_be_received }}
+            待接单{{ tabInfo.order_be_received!==0?tabInfo.order_be_received:'' }}
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待交付{{tabInfo.to_be_reviewed}}
+            待交付{{tabInfo.to_be_delivered!==0?tabInfo.to_be_delivered:''}}
           </div>
           <div
             class="item"
             @click="changeTab(3)"
             :class="{ active: currentIndex === 3 }"
           >
-            已完成{{ tabInfo.to_completed }}
+            已完成{{ tabInfo.to_completed !==0?tabInfo.to_completed:''}}
           </div>
           <div
             class="item"
             @click="changeTab(5)"
             :class="{ active: currentIndex === 5 }"
           >
-            已终止{{ tabInfo.to_terminated }}
+            已终止{{ tabInfo.to_terminated !==0?tabInfo.to_terminated:''}}
           </div>
           <div
             class="item"
             @click="changeTab(6)"
             :class="{ active: currentIndex === 6 }"
           >
-            已失效{{ tabInfo.to_invalid }}
+            已失效{{ tabInfo.to_invalid !==0?tabInfo.to_invalid:''}}
           </div>
           <div
             class="item"
             @click="changeTab(4)"
             :class="{ active: currentIndex === 4 }"
           >
-            未通过{{ tabInfo.to_failed }}
+            未通过{{ tabInfo.to_failed!==0?tabInfo.to_failed:'' }}
           </div>
         </div>
       </template>
@@ -288,10 +288,11 @@ v-if="record.task_status === '待审核'"
         </template>
       </a-table>
       <div class="pagination">
+
         <a-pagination
+        v-model="pagination.currentPage"
           show-quick-jumper
           show-size-changer
-          :default-current="pagination.currentPage"
           :page-size-options="pagination.sizes"
           :total="pagination.total"
           :page-size.sync="pagination.pageSize"
@@ -440,7 +441,7 @@ export default {
       ctime: '', // 创建时间
       project_id: undefined, // 	可见小区
       task_user_search: '', // 任务方搜索
-      createTime: '',
+      createTime: [],
       tabInfo: {}, // tab栏数据
       typeList: [], // 任务类型列表
       taskStatusList: [], // 任务状态列表
@@ -470,17 +471,17 @@ export default {
       this.ctime = ''
       this.project_id = undefined
       this.task_user_search = ''
-      this.createTime = ''
+      this.createTime = []
       this.pagination.currentPage = 1
       this.getData()
     },
     // 查看
     lookOver (record) {
-      if (record.task_status === '待审核') {
-        this.$router.push('/taskCentre/toCheck?id=' + record.id)
-      } else {
+      // if (record.task_status === '待审核') {
+      //   this.$router.push('/taskCentre/toCheck?id=' + record.id)
+      // } else {
         this.$router.push('/taskCentre/complete?id=' + record.id)
-      }
+      // }
     },
     tableChange (pagination, filters, sorter, { currentDataSource }) {
       // console.log('sorter', sorter)
@@ -564,7 +565,9 @@ export default {
     },
     // 批量操作
     batchOpera () {
-      this.$refs.batchCheck.isShow = true
+      if (this.selectedRowKeys.length > 0) {
+        this.$refs.batchCheck.isShow = true
+      }
     }
   },
   async created () {

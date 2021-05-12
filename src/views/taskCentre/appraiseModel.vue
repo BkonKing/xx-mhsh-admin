@@ -103,6 +103,7 @@ export default {
       }
     },
     id () {
+    console.log('idid', this.id)
       this.getEvaluate()
     }
   },

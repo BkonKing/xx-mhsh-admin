@@ -5,24 +5,24 @@
         <div class="task-top">
           <div
             class="item"
-            @click="currentIndex = 1"
+            @click="changeTab('')"
+            :class="{ active: currentIndex === '' }"
+          >
+            全部{{pagination.total !==0 ?pagination.total:''}}
+          </div>
+          <div
+            class="item"
+            @click="changeTab(0)"
+            :class="{ active: currentIndex === 0 }"
+          >
+            待处理{{complaintInfo.pending_total!==0?complaintInfo.pending_total:''}}
+          </div>
+          <div
+            class="item"
+            @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            全部
-          </div>
-          <div
-            class="item"
-            @click="currentIndex = 2"
-            :class="{ active: currentIndex === 2 }"
-          >
-            待处理
-          </div>
-          <div
-            class="item"
-            @click="currentIndex = 3"
-            :class="{ active: currentIndex === 3 }"
-          >
-            已处理
+            已处理{{complaintInfo.processed_total!==0?complaintInfo.processed_total:''}}
           </div>
         </div>
       </template>
@@ -136,7 +136,7 @@ type="down"
                 </a-col>
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="任务状态">
-                    <a-select placeholder="请选择">
+                    <a-select v-model="task_status" placeholder="请选择">
                       <a-select-option
                         v-for="(item, index) in TaskStatusList"
                         :key="index"
@@ -244,9 +244,9 @@ type="up"
         </div>
         <div class="pagination">
           <a-pagination
+          v-model="pagination.currentPage"
             show-quick-jumper
             show-size-changer
-            :default-current="pagination.currentPage"
             :page-size-options="pagination.sizes"
             :total="pagination.total"
             :page-size.sync="pagination.pageSize"
@@ -292,7 +292,7 @@ export default {
         total: 50, // 总数
         pageSize: 10 // 默认页容量
       },
-      currentIndex: 1,
+      currentIndex: '',
       cardBol: false,
       tableData: [],
       columns: [
@@ -371,15 +371,23 @@ export default {
       complaint_desc: '', //	否	string	投诉描述
       complaint_user: '', //	否	string	投诉人
       task_search: '', //	否	string	任务搜索
-      task_status: '', //	否	int	任务状态搜索
+      task_status: undefined, //	否	int	任务状态搜索
       complaint_time: '', //	否	string	投诉时间
-      timeTxt: '',
+      timeTxt: [],
       typeList: [], // 投诉类型列表
-      TaskStatusList: [] // 任务状态列表
+      TaskStatusList: [], // 任务状态列表
+      complaintInfo: ''
     }
   },
 
   methods: {
+    // 切换tab
+    changeTab (type) {
+      this.currentIndex = type
+      this.handle_status = type
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 重置
     reset () {
       this.handle_status = undefined
@@ -392,7 +400,7 @@ export default {
       this.task_search = ''
       this.task_status = ''
       this.complaint_time = ''
-      this.timeTxt = ''
+      this.timeTxt = []
       this.pagination.currentPage = 1
       this.getData()
     },
@@ -419,6 +427,7 @@ export default {
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
+      this.complaintInfo = res.data
       console.log('获取投诉列表', res)
     },
     // 清空表格复选框

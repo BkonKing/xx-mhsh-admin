@@ -20,9 +20,28 @@
           </a-radio>
         </a-radio-group>
       </a-form-model-item>
+      <a-form-model-item
+        v-if="form.is_check !== 1"
+        label="违规原因"
+        prop="violation_type"
+      >
+        <a-select
+          v-model="form.violation_type"
+          placeholder="请选择"
+          style="width: 379px"
+        >
+          <a-select-option
+            v-for="(item, index) in reasonList"
+            :key="index"
+            :value="item.id"
+          >
+            {{ item.violation }}
+          </a-select-option>
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item label="审核说明">
         <a-textarea
-          v-model="form.value2"
+          v-model="form.check_desc"
           placeholder="请输入"
           :auto-size="{ minRows: 3, maxRows: 5 }"
         />
@@ -59,7 +78,7 @@
 </template>
 
 <script>
-import { toHandTask } from '@/api/taskCentre'
+import { toHandTask, toViolationReason } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -76,7 +95,8 @@ export default {
       wrapperCol: { span: 14 },
       form: {
         is_check: 1,
-        check_desc: ''
+        check_desc: '',
+        violation_type: undefined
       },
       rules: {
         is_check: [{ required: true, message: '必填', trigger: 'change' }]
@@ -89,30 +109,33 @@ export default {
       uploadData: {
         field_name: 'file'
       },
-      fileList2: [] // 处理图片
+      fileList2: [], // 处理图片
+      reasonList: [] // 违规原因列表
     }
   },
   computed: {
     headers () {
       return {
-        Authorization: '0e38dc560a7e0a3e2f2abad364a6e6c350744026'
+        Authorization: '86a68cd71147f817c92d1b70e8d8234fcd6b5dc1'
       }
     }
   },
   methods: {
     // 批量审核
     async submit () {
-      const res = await toHandTask({
+      await toHandTask({
         ids: this.selectedRowKeys,
         is_check: this.form.is_check,
         check_desc: this.check_desc,
-        check_image: this.fileList2
+        check_image: this.fileList2,
+        violation_type: this.form.violation_type
       })
       this.$message.success('处理成功')
       this.$parent.pagination.currentPage = 1
+      this.$parent.selectedRowKeys = []
       this.$parent.getData()
       this.isShow = false
-      console.log('批量审核', res)
+      // console.log('批量审核', res)
     },
     // 关闭大图弹窗
     handleCancel () {
@@ -145,12 +168,14 @@ export default {
       console.log('上传和删除图片时触发', arr2)
     }
   },
-   created () {
-      this.uploadUrl =
-        process.env.NODE_ENV === 'production'
-          ? '/nsolid/spi/v1/upload/uploads/uImages'
-          : '/api/upload/uploads/uImages'
-    }
+  async created () {
+    const res = await toViolationReason({ type: 1 })
+    this.reasonList = res.list
+    this.uploadUrl =
+      process.env.NODE_ENV === 'production'
+        ? '/nsolid/spi/v1/upload/uploads/uImages'
+        : '/api/upload/uploads/uImages'
+  }
 }
 </script>
 

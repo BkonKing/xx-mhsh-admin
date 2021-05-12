@@ -3,15 +3,19 @@
     <a-steps progress-dot :current="userprocessList.length-1" direction="vertical">
       <a-step
       v-for="(item, index) in userprocessList"
-:key="index"
+        :key="index"
         :title="item.ctime"
-        :description="item.content"
-      />
-
+      >
+      <template #description>
+        <div class="description">
+          <div class="t1">{{item.progress_title}}</div>
+          <div class="t2">{{item.content}}</div>
+        </div>
+      </template>
+      </a-step>
     </a-steps>
   </a-modal>
 </template>
-
 <script>
 import { toGetUserProcess } from '@/api/taskCentre'
 

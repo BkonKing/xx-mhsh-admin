@@ -59,7 +59,8 @@ const taskCentreApi = {
   reward: '/linli/task/reward',
   taskCode: '/linli/task/taskCode',
   optTask: '/linli/task/optTask',
-  violationReason: '/linli/common/violationReason'
+  violationReason: '/linli/common/violationReason',
+  eliminate: '/linli/task/eliminate'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -536,6 +537,14 @@ export function toOptTask (data) {
 export function toViolationReason (data) {
   return request({
     url: taskCentreApi.violationReason,
+    method: 'post',
+    data
+  })
+}
+// 任务详情-淘汰用户
+export function toEliminate (data) {
+  return request({
+    url: taskCentreApi.eliminate,
     method: 'post',
     data
   })

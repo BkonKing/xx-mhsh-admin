@@ -48,153 +48,132 @@
     </page-header-wrapper>
     <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
-      <a-form-model layout="inline">
-        <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="类型">
-              <a-select
-                v-model="type"
-                placeholder="请选择"
+        <a-form-model layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="类型">
+                <a-select v-model="type" placeholder="请选择">
+                  <a-select-option value="1">
+                    提问
+                  </a-select-option>
+                  <a-select-option value="2">
+                    回复
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="审核状态">
+                <a-select v-model="check_type" placeholder="请选择">
+                  <a-select-option value="0">
+                    待审核
+                  </a-select-option>
+                  <a-select-option value="1">
+                    通过
+                  </a-select-option>
+                  <a-select-option value="2">
+                    未通过
+                  </a-select-option>
+                  <a-select-option value="3">
+                    无审核
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <template v-if="bol">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="有无回复">
+                  <a-select v-model="is_reply" placeholder="请选择">
+                    <a-select-option value="1">
+                      有
+                    </a-select-option>
+                    <a-select-option value="0">
+                      无
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="发布用户">
+                  <a-input
+                    v-model="user_search"
+                    placeholder="手机号、用户昵称/ID"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="发布内容">
+                  <a-input v-model="content" placeholder="内容、ID"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务">
+                  <a-input
+                    v-model="task_search"
+                    placeholder="编号、标题"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="所属项目">
+                  <a-select v-model="project_id" placeholder="请选择">
+                    <a-select-option
+                      v-for="(item, index) in projectList"
+                      :key="index"
+                      :value="item.id"
+                    >
+                      {{ item.project_name }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="创建时间">
+                  <a-range-picker
+                  v-model="createTime"
+                    class="piker-time"
+                    :ranges="{
+                      Today: [moment(), moment()],
+                      'This Month': [moment(), moment().endOf('month')]
+                    }"
+                    show-time
+                    format="YYYY-MM-DD HH:mm:ss"
+                    @change="onChange"
+                  />
+                </a-form-model-item>
+              </a-col>
+            </template>
 
-              >
-                <a-select-option value="1">
-                  提问
-                </a-select-option>
-                <a-select-option value="2">
-                  回复
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="审核状态">
-              <a-select
-                v-model="check_type"
-                placeholder="请选择"
-
-              >
-                <a-select-option value="0">
-                  待审核
-                </a-select-option>
-                <a-select-option value="1">
-                  通过
-                </a-select-option>
-                <a-select-option value="2">
-                  未通过
-                </a-select-option>
-                <a-select-option value="3">
-                  无审核
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <template v-if="bol">
-                     <a-col :md="8" :sm="24">
-            <a-form-model-item label="有无回复">
-              <a-select
-                v-model="is_reply"
-                placeholder="请选择"
-
-              >
-                <a-select-option value="1">
-                  有
-                </a-select-option>
-                <a-select-option value="0">
-                  无
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="发布用户">
-              <a-input
-                v-model="user_search"
-                placeholder="手机号、用户昵称/ID"
-
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="发布内容">
-              <a-input
-                v-model="content"
-                placeholder="内容、ID"
-
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="任务">
-              <a-input
-                v-model="task_search"
-                placeholder="编号、标题"
-
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="所属项目">
-              <a-select
-                v-model="project_id"
-                placeholder="请选择"
-
-              >
-                <a-select-option
-                  v-for="(item, index) in projectList"
-                  :key="index"
-                  :value="item.id"
-                >
-                  {{ item.project_name }}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-model-item label="创建时间">
-              <a-range-picker
-                class="piker-time"
-                :ranges="{
-                  Today: [moment(), moment()],
-                  'This Month': [moment(), moment().endOf('month')]
-                }"
-                show-time
-                format="YYYY-MM-DD HH:mm:ss"
-                @change="onChange"
-              />
-            </a-form-model-item>
-          </a-col>
-          </template>
-
-          <a-col :md="8" :sm="24" v-if="bol">
-            <div class="btns">
-              <a-button type="primary" @click="search">
-                查询
-              </a-button>
-              <a-button>重置</a-button>
-              <a-button
+            <a-col :md="8" :sm="24" v-if="bol">
+              <div class="btns">
+                <a-button type="primary" @click="search">
+                  查询
+                </a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
 type="link"
 @click="close"
-                >收起 <a-icon
+                  >收起 <a-icon
 type="up"
-              /></a-button>
-            </div>
-          </a-col>
-          <a-col :md="8" :sm="24" v-if="!bol">
-                        <div class="btns" >
-              <a-button type="primary" @click="search">
-                查询
-              </a-button>
-              <a-button >重置</a-button>
-              <a-button
+                /></a-button>
+              </div>
+            </a-col>
+            <a-col :md="8" :sm="24" v-if="!bol">
+              <div class="btns">
+                <a-button type="primary" @click="search">
+                  查询
+                </a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
 type="link"
 @click="open"
-                >展开 <a-icon
+                  >展开 <a-icon
 type="down"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
+                /></a-button>
+              </div>
+            </a-col>
+          </a-row>
+        </a-form-model>
       </div>
     </a-card>
     <a-card class="card2">
@@ -206,7 +185,7 @@ type="down"
       </div>
       <div class="table">
         <a-table
-        rowKey="id"
+          rowKey="id"
           :pagination="false"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
@@ -214,13 +193,13 @@ type="down"
           }"
           :columns="columns"
           :data-source="tableData"
-          @change='tableChange'
+          @change="tableChange"
         >
-        <template slot="check_time_desc" slot-scope="check_time_desc">
-          <div :style="{color:check_time_desc.is_over===1?'red':''}">
-            {{check_time_desc.check_time_desc}}
-          </div>
-        </template>
+          <template slot="check_time_desc" slot-scope="check_time_desc">
+            <div :style="{ color: check_time_desc.is_over === 1 ? 'red' : '' }">
+              {{ check_time_desc.check_time_desc }}
+            </div>
+          </template>
           <template slot="type" slot-scope="type">
             <div class="type">
               {{ +type === 1 ? "提问" : "回复" }}
@@ -235,18 +214,28 @@ type="down"
           <template slot="task_title" slot-scope="task_title">
             <div style="color:#1890FF">{{ task_title }}</div>
           </template>
-          <template  slot="opera" slot-scope="text,record">
+          <template slot="opera" slot-scope="text, record">
             <div>
-              <a-button type="link" @click="check(record)" v-if="record.is_check===0">审核</a-button>
-              <a-button type="link" @click="lookOver(record)" v-else>查看</a-button>
+              <a-button
+                type="link"
+                @click="check(record)"
+                v-if="record.is_check === 0"
+                >审核</a-button
+              >
+              <a-button
+type="link"
+@click="lookOver(record)"
+v-else
+                >查看</a-button
+              >
             </div>
           </template>
         </a-table>
         <div class="pagination">
           <a-pagination
+            v-model="pagination.currentPage"
             show-quick-jumper
             show-size-changer
-            :default-current="pagination.currentPage"
             :page-size-options="pagination.sizes"
             :total="pagination.total"
             :page-size.sync="pagination.pageSize"
@@ -355,13 +344,13 @@ export default {
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-           width: '10%'
+          width: '10%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-           width: '10%',
+          width: '10%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
@@ -379,7 +368,8 @@ export default {
       content: '', //	否	string	发布内容
       task_search: '', //	否	string	任务搜索
       ctime: '', //	否	string	发布时间
-      projectList: [] // 项目列表
+      projectList: [], // 项目列表
+      createTime: []
     }
   },
   mounted () {
@@ -387,6 +377,24 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+    // 重置
+    reset () {
+      this.tab_type = ''
+      this.type = undefined
+      this.check_type = undefined
+      this.is_reply = undefined
+      this.user_search = ''
+      this.project_id = undefined
+      this.order_field = ''
+      this.sort_value = ''
+      this.status = ''
+      this.content = ''
+      this.task_search = ''
+      this.ctime = ''
+      this.createTime = []
+      this.pagination.currentPage = 1
+      this.getData()
+    },
     // 排序
     tableChange (pagination, filters, sorter, { currentDataSource }) {
       console.log('sorter', sorter)
@@ -442,6 +450,9 @@ export default {
     },
     // 批量审核
     batchCheck () {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
       this.$refs.askBatchCheck.isShow = true
     },
     // 清空
@@ -480,7 +491,7 @@ export default {
     },
     // 展开
     open () {
-        this.bol = true
+      this.bol = true
     },
     // 收起
     close () {
@@ -530,14 +541,14 @@ export default {
   }
   .card {
     /deep/ .ant-form-item-label {
-    min-width: 88px;
-  }
-  .piker-time {
-    width: 100% !important;
-  }
+      min-width: 88px;
+    }
+    .piker-time {
+      width: 100% !important;
+    }
     margin-top: 20px;
     .btns {
-     text-align: right;
+      text-align: right;
       button {
         margin-right: 10px;
       }
@@ -583,7 +594,6 @@ export default {
           // margin-left: 20px;
           // margin-right: 300px;
         }
-
       }
     }
   }

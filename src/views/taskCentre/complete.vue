@@ -1,7 +1,8 @@
 <template>
   <div class="complete" v-if="taskDetailInfo != ''">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card1">
+<div class="cardContent">
+      <a-card class="card1">
       <div class="title">流程进度</div>
       <div class="steps" v-if="taskDetailInfo.process.process_result === 0">
         <a-steps progress-dot :current="1">
@@ -355,7 +356,18 @@ v-if="buttonStatus.button_stop === 1"
 @click="stop(3)"
             >停止接单</a-button
           >
-          <a-button @click="award">批量操作 <a-icon type="down"/></a-button>
+          <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
+            <a-dropdown>
+      <a-menu slot="overlay" @click="handleMenuClick">
+        <a-menu-item key="1">
+          淘汰
+        </a-menu-item>
+        <a-menu-item key="2">
+          强制奖励
+        </a-menu-item>
+      </a-menu>
+      <a-button> 批量操作 <a-icon type="down" /> </a-button>
+    </a-dropdown>
         </div>
         <div class="selected" v-if="selectedRowKeys.length > 0">
           <a-icon class="icon" type="info-circle" />
@@ -393,7 +405,7 @@ v-if="buttonStatus.button_stop === 1"
             <template slot="evaluate" slot-scope="text, record">
               <span
                 style="color:#1890FF;cursor: pointer;"
-                @click="openAppraise(record.id)"
+                @click="openAppraise(record.evaluate_id)"
                 >{{ record.evaluate }}星</span
               >
             </template>
@@ -411,28 +423,29 @@ v-if="buttonStatus.button_stop === 1"
                 <a-button
                   type="link"
                   @click="award(record.uid)"
-                  v-if="record.progress_desc != '暂停中'"
+                  v-if="record.button===1"
                   >奖励</a-button
                 >
                 <a-popconfirm
-                  v-else
+                  v-if="record.button===2"
                   title="你确定要淘汰这个用户吗?"
                   ok-text="确定"
                   cancel-text="取消"
-                  @confirm="confirm"
+                  @confirm="confirm(record.uid)"
                   @cancel="cancel"
                 >
-                  <a href="#">淘汰</a>
+                  <a-button type="link">淘汰</a-button>
                 </a-popconfirm>
               </div>
             </template>
           </a-table>
         </div>
         <div class="pagination">
+          <!-- :default-current="pagination.currentPage" -->
           <a-pagination
+          v-model="pagination.currentPage"
             show-quick-jumper
             show-size-changer
-            :default-current="pagination.currentPage"
             :page-size-options="pagination.sizes"
             :total="pagination.total"
             :page-size.sync="pagination.pageSize"
@@ -448,7 +461,7 @@ v-if="buttonStatus.button_stop === 1"
         </div>
       </div>
     </a-card>
-    <a-card class="card5">
+    <a-card class="card5" v-if="taskDetailInfo.check_list.length>0">
       <div class="title">
         审核信息
       </div>
@@ -460,7 +473,7 @@ v-if="buttonStatus.button_stop === 1"
         <div class="t2">审核人：{{item.check_user}}</div>
         <div class="t3">审核时间：{{item.check_time}}</div>
       </div>
-      <div class="c2">违规原因：{{item.check_reason}}</div>
+      <div class="c2" v-if="taskDetailInfo.task_status===4">违规原因：{{item.check_reason}}</div>
       <div class="c3">
         <div class="t1">处理回复：</div>
         <div class="t2">
@@ -468,10 +481,10 @@ v-if="buttonStatus.button_stop === 1"
         </div>
       </div>
       <div class="imgcon">
-        <div class="img" v-for="item in 3" :key="item">
+        <div class="img" v-for="item in item.check_image" :key="item">
           <img
             preview="2"
-            src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+            :src="item"
             alt=""
           />
         </div>
@@ -556,9 +569,9 @@ type="up"
         </a-table>
         <div class="pagination">
           <a-pagination
+          v-model="pagination2.currentPage"
             show-quick-jumper
             show-size-changer
-            :default-current="pagination2.currentPage"
             :page-size-options="pagination2.sizes"
             :total="pagination2.total"
             :page-size.sync="pagination2.pageSize"
@@ -574,6 +587,7 @@ type="up"
         </div>
       </div>
     </a-card>
+</div>
     <checkModel :id="id" ref="checkModel"></checkModel>
     <awardModel
       :selectedRowKeys="selectedRowKeys"
@@ -581,7 +595,8 @@ type="up"
       :id="id"
       ref="awardModel"
     ></awardModel>
-    <appraiseModel ref="appraiseModel"></appraiseModel>
+    <appraiseModel ref="appraiseModel" ></appraiseModel>
+    <weedOutModel ref="weedOutModel" :selectedRowKeys="selectedRowKeys" :id="id"></weedOutModel>
   </div>
 </template>
 
@@ -590,6 +605,7 @@ import moment from 'moment'
 import checkModel from './checkModel'
 import awardModel from './awardModel'
 import appraiseModel from './appraiseModel'
+import weedOutModel from './weedOutModel'
 import $ from 'jquery'
 import {
   getTaskDetail,
@@ -599,13 +615,15 @@ import {
   toGetButtonStatus,
   toTaskCode,
   toOptTask,
-  toGetLog
+  toGetLog,
+  toEliminate
 } from '@/api/taskCentre'
 export default {
   components: {
     checkModel,
     awardModel,
-    appraiseModel
+    appraiseModel,
+    weedOutModel
   },
   data () {
     return {
@@ -768,12 +786,6 @@ export default {
   },
   mounted () {
     this.$previewRefresh()
-
-    // console.log(document.querySelector('.card6 .form').offsetHeight) // 128
-    // document.querySelector('.card6 .form').style.height = '74px'
-    // document.querySelector('.explain').style.height = '210px'
-    // document.querySelector('.explain').style.overflow = 'hidden'
-
     // 设置文本超出隐藏
     document.querySelector('#taskExplain').style.display = '-webkit-box'
     document.querySelector('#taskExplain').style.webkitBoxOrient = 'vertical'
@@ -781,6 +793,18 @@ export default {
     document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
+    // 批量淘汰 / 奖励
+    handleMenuClick (e) {
+      if (this.selectedRowKeys.length == 0) {
+        return
+      }
+      // console.log(e.key)
+      if (+e.key === 1) {
+        this.$refs.weedOutModel.isShow = true
+      } else {
+          this.$refs.awardModel.isShow = true
+      }
+    },
     // 日志重置
     logReset () {
       this.opt_user = ''
@@ -887,6 +911,7 @@ export default {
     award (uid) {
       if (typeof uid === 'number') {
         this.$refs.awardModel.uid = uid
+        this.selectedRowKeys = []
       }
       this.$refs.awardModel.isShow = true
     },
@@ -940,12 +965,18 @@ export default {
       this.pagination.pageSize = size
       this.getTaskSpeedData()
     },
-    // 确定
-    confirm (e) {
-      console.log(e)
-      this.$message.success('Click on Yes')
+    // 淘汰 确定
+    async confirm (uid) {
+      const arr = []
+      arr.push(uid)
+      await toEliminate({
+        ids: arr,
+        task_id: this.id
+      })
+      this.getTaskLog()
+      this.$message.success('处理成功')
     },
-    // 取消
+    // 淘汰 取消
     cancel (e) {
       console.log(e)
       this.$message.error('Click on No')
@@ -1031,6 +1062,9 @@ export default {
 .complete {
   /deep/ .ant-card-body {
     padding: 0;
+  }
+  .cardContent{
+    padding: 0 20px;
   }
   .card1 {
     margin-top: 20px;
