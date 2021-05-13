@@ -1,6 +1,6 @@
 <template>
   <div class="complainBatchDeal">
-    <a-modal v-model="isShow" title="批量处理">
+    <a-modal v-model="isShow" title="批量处理" @ok='submit'>
       <div class="selected" v-if="selectedRowKeys.length>0">
         <a-icon class="icon" type="info-circle" />
         已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
@@ -11,16 +11,18 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="处理回复" prop="value">
+        <a-form-model-item label="处理回复" prop="handle_reply">
           <a-textarea
-            v-model="form.value"
+            v-model="form.handle_reply"
             placeholder="请输入"
             :auto-size="{ minRows: 3, maxRows: 5 }"
           />
         </a-form-model-item>
         <a-form-model-item label="图片">
           <a-upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :data="uploadData"
+          :headers="headers"
+          :action="uploadUrl"
             list-type="picture-card"
             :file-list="fileList"
             @preview="handlePreview"
@@ -47,6 +49,7 @@
 </template>
 
 <script>
+import { toHandComplaint } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -63,47 +66,48 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        value: ''
+        handle_reply: ''
       },
       rules: {
-        value: [{ required: true, message: '必填', trigger: 'change' }]
+        handle_reply: [{ required: true, message: '必填', trigger: 'change' }]
       },
        previewVisible: false,
       previewImage: '',
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-3',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-4',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-5',
-          name: 'image.png',
-          status: 'error'
-        }
-      ]
+      fileList: [],
+       uploadUrl: '', // 上传图片接口
+      uploadData: {
+        field_name: 'file'
+      },
+      fileList2: [] // 处理图片
+    }
+  },
+  computed: {
+    headers () {
+      return {
+        Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
+      }
+    }
+  },
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.form.handle_reply = ''
+      }
     }
   },
   methods: {
+    // 批量处理
+   async submit () {
+      await toHandComplaint({
+       ids: this.selectedRowKeys,
+       is_handle: 1,
+       handle_reply: this.form.handle_reply,
+       handle_image: this.fileList2
+     })
+     this.$parent.getData()
+     this.$message.success('处理成功')
+     this.isShow = false
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -114,9 +118,28 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
+      // 上传和删除图片时触发
     handleChange ({ fileList }) {
+      // console.log('上传和删除图片时触发')
       this.fileList = fileList
+      console.log(fileList)
+      const arr1 = this.fileList.map(item => {
+        if (item.response) {
+          return item.response.data
+        }
+      })
+      const arr2 = arr1.filter(item => {
+        return item
+      })
+      this.fileList2 = arr2
+      console.log('上传和删除图片时触发', arr2)
     }
+  },
+  created () {
+  this.uploadUrl =
+      process.env.NODE_ENV === 'production'
+        ? '/nsolid/spi/v1/upload/uploads/uImages'
+        : '/api/upload/uploads/uImages'
   }
 }
 </script>

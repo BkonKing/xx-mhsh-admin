@@ -442,6 +442,9 @@ export default {
     },
     // 批量处理
     batchDeal () {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
       this.$refs.complainBatchDeal.isShow = true
     },
     // 处理

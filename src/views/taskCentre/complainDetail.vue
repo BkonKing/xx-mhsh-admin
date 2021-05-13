@@ -1,231 +1,237 @@
 <template>
   <div class="complainDetail">
     <page-header-wrapper></page-header-wrapper>
-  <div class="complainContent">
-        <a-card class="card">
-      <div class="title">流程进度</div>
-      <div class="steps">
-        <a-steps progress-dot :current="current">
-          <a-step title="投诉时间">
-            <template #description>
-              <div class="description">
-                <div class="t1">
-                  {{ detailInfo.complainted_project }}-{{
-                    detailInfo.complaint_user
-                  }}
+    <div class="complainContent">
+      <a-card class="card">
+        <div class="title">流程进度</div>
+        <div class="steps">
+          <a-steps progress-dot :current="current">
+            <a-step title="投诉时间">
+              <template #description>
+                <div class="description">
+                  <div class="t1">
+                    {{ detailInfo.complainted_project }}-{{
+                      detailInfo.complaint_user
+                    }}
+                  </div>
+                  <div class="t2">
+                    {{ detailInfo.ctime }}
+                  </div>
                 </div>
-                <div class="t2">
-                  {{ detailInfo.ctime }}
+              </template>
+            </a-step>
+            <a-step title="待处理">
+              <template #description>
+                <div class="description">
+                  <div class="t1">
+                    {{ detailInfo.complaint_project }}-{{
+                      detailInfo.handle_user
+                    }}
+                  </div>
+                  <div class="t2">
+                    {{ detailInfo.handle_time }}
+                  </div>
+                </div>
+              </template>
+            </a-step>
+            <a-step title="完成" />
+          </a-steps>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <div class="title">被投诉内容</div>
+        <div class="content">
+          <a-row>
+            <a-col :span="8">
+              <div class="item item1">
+                <div class="t1">内容类型：</div>
+                <div class="t2">{{ detailInfo.content_type }}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">内容ID：</div>
+                <div class="t2">{{ detailInfo.content_id }}</div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">被投诉次数：</div>
+                <div
+                  class="t2"
+                  style="color:#1890FF"
+                  @click="$router.push('/taskCentre/complain')"
+                >
+                  {{ detailInfo.complait_total }}
                 </div>
               </div>
-            </template>
-          </a-step>
-          <a-step title="待处理">
-            <template #description>
-              <div class="description">
-                <div class="t1">
-                  {{ detailInfo.complaint_project }}-{{
-                    detailInfo.handle_user
-                  }}
-                </div>
-                <div class="t2">
-                  {{ detailInfo.handle_time }}
-                </div>
-              </div>
-            </template>
-          </a-step>
-          <a-step title="完成" />
-        </a-steps>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <div class="title">被投诉内容</div>
-      <div class="content">
-        <a-row>
-          <a-col :span="8">
-            <div class="item item1">
-              <div class="t1">内容类型：</div>
-              <div class="t2">{{ detailInfo.content_type }}</div>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">内容ID：</div>
-              <div class="t2">{{ detailInfo.content_id }}</div>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">被投诉次数：</div>
+            </a-col>
+          </a-row>
+          <div class="bottom">
+            <div class="t1">被投诉内容：</div>
+            <div class="t2">
               <div
-                class="t2"
+                class="item"
+                @click="openDetail"
+                v-if="detailInfo.content_type === '任务'"
                 style="color:#1890FF"
-                @click="$router.push('/taskCentre/complain')"
               >
-                {{ detailInfo.complait_total }}
+                {{ detailInfo.content }}
+              </div>
+              <div class="item2" v-else @click="lookOver">
+                {{ detailInfo.content }}
               </div>
             </div>
-          </a-col>
-        </a-row>
-        <div class="bottom">
-          <div class="t1">被投诉内容：</div>
-          <div class="t2">
+          </div>
+        </div>
+      </a-card>
+      <a-card class="card3">
+        <div class="title">投诉信息</div>
+        <div class="content">
+          <a-row>
+            <a-col :span="8">
+              <div class="item item1">
+                <div class="t1">投诉人：</div>
+                <div class="t2">
+                  <span style="color:#1890FF">{{
+                    detailInfo.complaint_user
+                  }}</span>
+                  {{ detailInfo.complaint_project }}
+                </div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">被投诉人：</div>
+                <div class="t2">
+                  <span style="color:#1890FF">{{
+                    detailInfo.complainted_user
+                  }}</span>
+                  {{ detailInfo.complaint_project }}
+                </div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">投诉时间：</div>
+                <div class="t2">{{ detailInfo.ctime }}</div>
+              </div>
+            </a-col>
+          </a-row>
+          <div class="middle">
+            <div class="t1">投诉类型：</div>
+            <div class="t2">{{ detailInfo.complaint_type }}</div>
+          </div>
+          <div class="bottom">
+            <div class="t1">投诉描述：</div>
+            <div class="t2">
+              {{ detailInfo.complaint_desc }}
+            </div>
+          </div>
+          <div class="imgs">
             <div
               class="item"
-              @click="openDetail"
-              v-if="detailInfo.content_type === '任务'"
-              style="color:#1890FF"
+              v-for="(item, index) in detailInfo.handle_image"
+              :key="index"
             >
-              {{ detailInfo.content }}
-            </div>
-            <div class="item2" v-else @click="lookOver">
-              {{ detailInfo.content }}
+              <img preview="0" :src="item" alt="" />
             </div>
           </div>
         </div>
-      </div>
-    </a-card>
-    <a-card class="card3">
-      <div class="title">投诉信息</div>
-      <div class="content">
-        <a-row>
-          <a-col :span="8">
-            <div class="item item1">
-              <div class="t1">投诉人：</div>
-              <div class="t2">
-                <span style="color:#1890FF">{{detailInfo.complaint_user}}</span>
-                {{detailInfo.complaint_project}}
+      </a-card>
+      <a-card class="card4" v-if="detailInfo.is_handle !== '1'">
+        <div class="title">投诉处理</div>
+        <div class="form">
+          <a-form-model
+            :model="form"
+            :rules="rules"
+            :label-col="labelCol"
+            :wrapper-col="wrapperCol"
+          >
+            <a-form-model-item label="处理回复" prop="handle_reply">
+              <a-textarea
+                v-model="form.handle_reply"
+                placeholder="请输入"
+                :auto-size="{ minRows: 3, maxRows: 5 }"
+              />
+            </a-form-model-item>
+            <a-form-model-item label="图片">
+              <a-upload
+                :data="uploadData"
+                :headers="headers"
+                :action="uploadUrl"
+                list-type="picture-card"
+                :file-list="fileList"
+                @preview="handlePreview"
+                @change="handleChange"
+              >
+                <div v-if="fileList.length < 8">
+                  <a-icon type="plus" />
+                  <div class="ant-upload-text">
+                    Upload
+                  </div>
+                </div>
+              </a-upload>
+              <a-modal
+                :visible="previewVisible"
+                :footer="null"
+                @cancel="handleCancel"
+              >
+                <img alt="example" style="width: 100%" :src="previewImage" />
+              </a-modal>
+            </a-form-model-item>
+          </a-form-model>
+          <div class="btn">
+            <a-button type="primary" @click="submit">确定</a-button>
+          </div>
+        </div>
+      </a-card>
+      <a-card class="card5" v-if="detailInfo.is_handle === '1'">
+        <div class="title">投诉处理</div>
+        <div class="top">
+          <a-row>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">处理时间：</div>
+                <div class="t2">
+                 {{detailInfo.handle_time}}（<span
+style="color: #F5222D;"
+                    >{{detailInfo.over_content}}</span
+                  >）
+                </div>
               </div>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">被投诉人：</div>
-              <div class="t2">
-                <span style="color:#1890FF">{{detailInfo.complainted_user}}</span>
-                {{detailInfo.complaint_project}}
+            </a-col>
+            <a-col :span="8">
+              <div class="item">
+                <div class="t1">处理人：</div>
+                <div class="t2">{{detailInfo.handle_user}}</div>
               </div>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">投诉时间：</div>
-              <div class="t2">{{detailInfo.ctime}}</div>
-            </div>
-          </a-col>
-        </a-row>
-        <div class="middle">
-          <div class="t1">投诉类型：</div>
-          <div class="t2">{{detailInfo.complaint_type}}</div>
+            </a-col>
+            <a-col :span="8"></a-col>
+          </a-row>
+        </div>
+        <div class="mid">
+          <div class="t1">处理回复：</div>
+          <div class="t2">
+            {{detailInfo.handle_content}}
+          </div>
         </div>
         <div class="bottom">
-          <div class="t1">投诉描述：</div>
-          <div class="t2">
-            {{detailInfo.complaint_desc}}
-          </div>
-        </div>
-        <div class="imgs">
           <div class="item" v-for="(item,index) in detailInfo.handle_image" :key="index">
             <img
-              preview="0"
+              preview="1"
               :src="item"
               alt=""
             />
           </div>
         </div>
-      </div>
-    </a-card>
-    <a-card class="card4" v-if="detailInfo.is_handle !=='1'">
-      <div class="title">投诉处理</div>
-      <div class="form">
-        <a-form-model
-          :model="form"
-          :rules="rules"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-        >
-          <a-form-model-item label="处理回复" prop="value">
-            <a-textarea
-              v-model="form.value"
-              placeholder="请输入"
-              :auto-size="{ minRows: 3, maxRows: 5 }"
-            />
-          </a-form-model-item>
-          <a-form-model-item label="图片">
-            <a-upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              list-type="picture-card"
-              :file-list="fileList"
-              @preview="handlePreview"
-              @change="handleChange"
-            >
-              <div v-if="fileList.length < 8">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">
-                  Upload
-                </div>
-              </div>
-            </a-upload>
-            <a-modal
-              :visible="previewVisible"
-              :footer="null"
-              @cancel="handleCancel"
-            >
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
-          </a-form-model-item>
-        </a-form-model>
-        <div class="btn">
-          <a-button type="primary" @click="submit">确定</a-button>
-        </div>
-      </div>
-    </a-card>
-    <a-card class="card5" v-if="false">
-      <div class="title">投诉处理</div>
-      <div class="top">
-        <a-row>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">处理时间：</div>
-              <div class="t2">
-                2020-11-20 08:50:08（<span
-style="color: #F5222D;"
-                  >超时 20:00:00</span
-                >）
-              </div>
-            </div>
-          </a-col>
-          <a-col :span="8">
-            <div class="item">
-              <div class="t1">处理人：</div>
-              <div class="t2">姓名</div>
-            </div>
-          </a-col>
-          <a-col :span="8"></a-col>
-        </a-row>
-      </div>
-      <div class="mid">
-        <div class="t1">处理回复：</div>
-        <div class="t2">
-          回复内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容
-        </div>
-      </div>
-      <div class="bottom">
-        <div class="item" v-for="item in 3" :key="item">
-          <img
-            preview="1"
-            src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3851937152,723567732&fm=26&gp=0.jpg"
-            alt=""
-          />
-        </div>
-      </div>
-    </a-card>
-  </div>
+      </a-card>
+    </div>
   </div>
 </template>
 
 <script>
-import { getComplaintDetail } from '@/api/taskCentre'
+import { getComplaintDetail, toHandComplaint } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -240,57 +246,42 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       form: {
-        value: ''
+        handle_reply: ''
       },
       rules: {
-        value: [{ required: true, message: '必填', trigger: 'change' }]
+        handle_reply: [{ required: true, message: '必填', trigger: 'change' }]
       },
       previewVisible: false,
       previewImage: '',
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-2',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-3',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-4',
-          name: 'image.png',
-          status: 'done',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          uid: '-5',
-          name: 'image.png',
-          status: 'error'
-        }
-      ],
+      fileList: [],
       id: '', // 投诉详情id
       detailInfo: {}, // 详情信箱
-      current: 0 // 当前步骤条位置
+      current: 0, // 当前步骤条位置
+      uploadUrl: '', // 上传图片接口
+      uploadData: {
+        field_name: 'file'
+      },
+      fileList2: [] // 处理图片
     }
   },
   mounted () {
-    this.$previewRefresh()
+    // this.$previewRefresh()
+  },
+  computed: {
+    headers () {
+      return {
+        Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
+      }
+    }
   },
   methods: {
+    async getDetailInfo () {
+      const res = await getComplaintDetail({ id: this.id })
+      this.detailInfo = res.data
+      this.current = +res.data.is_handle === 1 ? 2 : 1
+      this.$previewRefresh()
+      console.log('投诉详情', res)
+    },
     // 查看 提问/回复详情
     lookOver () {
       this.$refs.askLookOverModel.isShow = true
@@ -303,8 +294,17 @@ export default {
       window.open(href, '_blank')
     },
     // 确定
-    submit () {
+    async submit () {
+      const idArr = []
+      idArr.push(this.id)
+      await toHandComplaint({
+        ids: idArr,
+        is_handle: 0,
+        handle_reply: this.form.handle_reply,
+        handle_image: this.fileList2
+      })
       this.$message.success('处理成功')
+      this.getDetailInfo()
     },
     handleCancel () {
       this.previewVisible = false
@@ -316,17 +316,31 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
+    // 上传和删除图片时触发
     handleChange ({ fileList }) {
+      // console.log('上传和删除图片时触发')
       this.fileList = fileList
+      console.log(fileList)
+      const arr1 = this.fileList.map(item => {
+        if (item.response) {
+          return item.response.data
+        }
+      })
+      const arr2 = arr1.filter(item => {
+        return item
+      })
+      this.fileList2 = arr2
+      console.log('上传和删除图片时触发', arr2)
     }
   },
   async created () {
+    this.uploadUrl =
+      process.env.NODE_ENV === 'production'
+        ? '/nsolid/spi/v1/upload/uploads/uImages'
+        : '/api/upload/uploads/uImages'
     this.id = this.$route.query.id
     if (this.id !== '') {
-      const res = await getComplaintDetail({ id: this.id })
-      this.detailInfo = res.data
-      this.current = +res.data.is_handle === 1 ? 2 : 1
-      console.log('投诉详情', res)
+      this.getDetailInfo()
     }
   }
 }
@@ -334,7 +348,7 @@ export default {
 
 <style lang="less" scoped>
 .complainDetail {
-  .complainContent{
+  .complainContent {
     padding: 0 20px;
   }
   /deep/ .ant-card-body {

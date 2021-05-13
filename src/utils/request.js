@@ -11,7 +11,7 @@ const request = axios.create({
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
     // Authorization: Cookies.get('access_token'),
-    Authorization: '53d79c31961cdb2d995e6fdec25eed7d4115cecb', // admin
+    Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb', // admin
     // Authorization: '42946e3cad60b4fdd93be68f353bef1730f9860a', // 总后台
     // Authorization: 'f087e58820b47c7eb97d468f6a9e0902f6933851', // 项目后台  子
     Projectid: Cookies.get('project_id')

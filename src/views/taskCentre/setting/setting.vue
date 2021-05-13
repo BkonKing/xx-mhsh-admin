@@ -34,10 +34,12 @@
         </div>
       </template>
     </page-header-wrapper>
-    <basics ref="basics" v-if="currentIndex===1"></basics>
+    <div class="content">
+      <basics ref="basics" v-if="currentIndex===1"></basics>
     <complainCheck  v-else-if="currentIndex ===2"></complainCheck>
     <taskType v-else-if="currentIndex ===3"></taskType>
     <whiteList v-else></whiteList>
+    </div>
   </div>
 </template>
 
@@ -86,6 +88,9 @@ export default {
       color: #1890ff;
       border-bottom: 2px solid #1890ff;
     }
+  }
+  .content{
+    padding: 0 20px;
   }
 }
 </style>

@@ -76,7 +76,7 @@ export default {
   computed: {
     headers () {
       return {
-        Authorization: 'ebc4da31ba09849c5ba9ea4c6edfcf921cd48dd4'
+        Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
       }
     }
   },

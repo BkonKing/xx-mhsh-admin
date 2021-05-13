@@ -1,144 +1,163 @@
 <template>
   <div class="taskGroup">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col :span="8">
-            <a-form-model-item label="任务群">
-              <a-input
-                v-model="task_search"
-                placeholder="名称、ID"
-                style="width:264px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="群主">
-              <a-input
-                v-model="owner"
-                placeholder="手机号、昵称/ID、备注、所属项目"
-                style="width:264px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="成员" v-if="!cardBol">
-              <a-input
-                v-model="member_search"
-                placeholder="手机号、昵称/ID"
-                style="width:264px"
-              ></a-input>
-            </a-form-model-item>
-            <div class="btns" v-else>
-              <a-button type="primary" @click="search">查询</a-button>
-              <a-button @click="reset">重置</a-button>
-              <a-button
+    <div class="cardContent">
+      <a-card class="card" ref="card">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="48">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="任务群">
+                  <a-input
+                    v-model="task_search"
+                    placeholder="名称、ID"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="群主">
+                  <a-input
+                    v-model="owner"
+                    placeholder="手机号、昵称/ID、备注、所属项目"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24" v-if="!cardBol">
+                <div class="btns">
+                  <a-button type="primary" @click="search">查询</a-button>
+                  <a-button @click="reset">重置</a-button>
+                  <a-button
 type="link"
 @click="open"
-                >展开 <a-icon
+                    >展开 <a-icon
 type="down"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-        <a-row v-if="!cardBol">
-          <a-col :span="8">
-            <a-form-model-item label="允许加入">
-              <a-select
-                placeholder="请选择"
-                v-model="is_open"
-                style="width: 264px"
-              >
-                <a-select-option value="1">
-                  允许
-                </a-select-option>
-                <a-select-option value="0">
-                  不允许
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8"></a-col>
-          <a-col :span="8">
-            <div class="btns">
-              <a-button type="primary" @click="search">查询</a-button>
-              <a-button @click="reset">重置</a-button>
-              <a-button
+                  /></a-button>
+                </div>
+              </a-col>
+              <template v-if="cardBol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="成员">
+                    <a-input
+                      v-model="member_search"
+                      placeholder="手机号、昵称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="允许加入">
+                    <a-select placeholder="请选择" v-model="is_open">
+                      <a-select-option value="1">
+                        允许
+                      </a-select-option>
+                      <a-select-option value="0">
+                        不允许
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24"></a-col>
+                <a-col :md="8" :sm="24">
+                  <div class="btns">
+                    <a-button type="primary" @click="search">查询</a-button>
+                    <a-button @click="reset">重置</a-button>
+                    <a-button
 type="link"
 @click="close"
-                >收起 <a-icon
+                      >收起 <a-icon
 type="up"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </a-card>
-    <a-card class="card2">
-      <a-button
+                    /></a-button>
+                  </div>
+                </a-col>
+              </template>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <a-button
 type="primary"
 style="marginRight:10px"
 @click="add"
-        >新增群</a-button
-      >
-      <a-button @click="batchDel">批量操作 <a-icon type="down"/></a-button>
-      <div class="selected" v-if="selectedRowKeys.length > 0">
-        <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-        <span class="span2" @click="clear">清空</span>
-      </div>
-      <div class="table">
-        <a-table
-          @change="tableChange"
-          rowKey="id"
-          :columns="columns"
-          :data-source="tableData"
-          :pagination="false"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
-          }"
+          >新增群</a-button
         >
-          <template slot="owner_name" slot-scope="text, record">
-            <div class="groupOwner">
-              <div class="t1">{{ record.owner_name }}</div>
-              <div class="t2">{{ record.project_name }}</div>
-            </div>
-          </template>
-          <template slot="is_open" slot-scope="text, record">
-            <div>
-              <a-switch
-                :default-checked="record.is_open === 1 ? true : false"
-                @change="isOpen(record)"
-              />
-            </div>
-          </template>
-          <template slot="opera" slot-scope="text, record">
-            <div class="opera">
-              <a-button type="link" @click="$router.push('/taskCentre/groupDetail?id='+record.id)">查看</a-button>
-              <a-button type="link" @click="deleteGroup(record)">删除</a-button>
-            </div>
-          </template>
-        </a-table>
-        <div class="pagination">
-          <a-pagination
-            show-quick-jumper
-            show-size-changer
-            :default-current="pagination.currentPage"
-            :page-size-options="pagination.sizes"
-            :total="pagination.total"
-            :page-size.sync="pagination.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
-            "
-            @change="onChangePage"
-            @showSizeChange="sizeChange"
-          />
+        <!-- <a-button @click="batchDel">批量操作 <a-icon type="down"/></a-button> -->
+        <a-dropdown>
+          <a-menu slot="overlay" @click="handleMenuClick">
+            <a-menu-item key="1">
+              批量删除
+            </a-menu-item>
+          </a-menu>
+          <a-button> 批量操作 <a-icon type="down" /> </a-button>
+        </a-dropdown>
+        <div class="selected" v-if="selectedRowKeys.length > 0">
+          <a-icon class="icon" type="info-circle" />
+          已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+          <span class="span2" @click="clear">清空</span>
         </div>
-      </div>
-    </a-card>
+        <div class="table">
+          <a-table
+            @change="tableChange"
+            rowKey="id"
+            :columns="columns"
+            :data-source="tableData"
+            :pagination="false"
+            :row-selection="{
+              selectedRowKeys: selectedRowKeys,
+              onChange: onSelectChange
+            }"
+          >
+            <template slot="owner_name" slot-scope="text, record">
+              <div class="groupOwner">
+                <div class="t1">{{ record.owner_name }}</div>
+                <div class="t2">{{ record.project_name }}</div>
+              </div>
+            </template>
+            <template slot="is_open" slot-scope="text, record">
+              <div>
+                <a-switch
+                  :default-checked="record.is_open === 1 ? true : false"
+                  @change="isOpen(record)"
+                />
+              </div>
+            </template>
+            <template slot="opera" slot-scope="text, record">
+              <div class="opera">
+                <a-button
+                  type="link"
+                  @click="
+                    $router.push('/taskCentre/groupDetail?id=' + record.id)
+                  "
+                  >查看</a-button
+                >
+                <a-button
+type="link"
+@click="deleteGroup(record)"
+                  >删除</a-button
+                >
+              </div>
+            </template>
+          </a-table>
+          <div class="pagination">
+            <a-pagination
+              v-model="pagination.currentPage"
+              show-quick-jumper
+              show-size-changer
+              :page-size-options="pagination.sizes"
+              :total="pagination.total"
+              :page-size.sync="pagination.pageSize"
+              :show-total="
+                (total, range) =>
+                  `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                    total / pagination.pageSize
+                  )}页`
+              "
+              @change="onChangePage"
+              @showSizeChange="sizeChange"
+            />
+          </div>
+        </div>
+      </a-card>
+    </div>
     <addGroup ref="addGroup" mode="add"></addGroup>
     <delGroup ref="delGroup"></delGroup>
   </div>
@@ -170,47 +189,47 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '11.1111111111%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '任务群',
           dataIndex: 'group_name',
           key: 'group_name',
-          width: 100
+          width: '11.1111111111%'
         },
         {
           title: '成员',
           dataIndex: 'group_member',
           key: 'group_member',
           sorter: true,
-          width: 100
+          width: '11.1111111111%'
         },
         {
           title: '任务',
           dataIndex: 'group_task',
           key: 'group_task',
           sorter: true,
-          width: 100
+          width: '11.1111111111%'
         },
         {
           title: '群主',
           dataIndex: 'owner_name',
           key: 'owner_name',
-          width: 150,
+          width: '11.1111111111%',
           scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '手机号',
           dataIndex: 'group_mobile',
           key: 'group_mobile',
-          width: 150
+          width: '11.1111111111%'
         },
         {
           title: '允许加入',
           dataIndex: 'is_open',
           key: 'is_open',
-          width: 100,
+          width: '11.1111111111%',
           scopedSlots: { customRender: 'is_open' }
         },
         {
@@ -218,13 +237,14 @@ export default {
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: 200
+          width: '11.1111111111%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-          scopedSlots: { customRender: 'opera' }
+          scopedSlots: { customRender: 'opera' },
+          width: '11.1111111111%'
         }
       ],
       selectedRowKeys: [], // 表格复选框的值
@@ -246,6 +266,8 @@ export default {
       this.owner = ''
       this.member_search = ''
       this.is_open = undefined
+      this.pagination.currentPage = 1
+      this.getData()
     },
     // 是否允许加入
     async isOpen (record) {
@@ -268,14 +290,19 @@ export default {
       this.pagination.currentPage = 1
       this.getData()
     },
-    // 批量删除
-    async batchDel () {
-      const res = await toDelGroup({
-        group_addr: this.selectedRowKeys
-      })
-      console.log('批量删除', res)
-      this.getData()
-      this.$message.success('删除成功')
+    // 批量操作
+    async handleMenuClick (e) {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
+      if (+e.key === 1) {
+        const res = await toDelGroup({
+          group_addr: this.selectedRowKeys
+        })
+        console.log('批量删除', res)
+        this.getData()
+        this.$message.success('删除成功')
+      }
     },
     // 排序
     tableChange (pagination, filters, sorter) {
@@ -341,15 +368,11 @@ export default {
     },
     // 展开
     open () {
-      setTimeout(() => {
-        this.cardBol = false
-      }, 200)
-      this.$refs.card.$el.style.height = '154px'
+      this.cardBol = true
     },
     // 收起
     close () {
-      this.cardBol = true
-      this.$refs.card.$el.style.height = '77px'
+      this.cardBol = false
     }
   },
   created () {
@@ -360,10 +383,19 @@ export default {
 
 <style lang="less" scoped>
 .taskGroup {
+  .cardContent {
+    padding: 0 20px;
+  }
   .card {
+    /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
+    // .piker-time {
+    //   width: 100% !important;
+    // }
     margin-top: 20px;
     .btns {
-      margin-left: 168px;
+      text-align: right;
       button {
         margin-right: 10px;
       }
@@ -403,17 +435,12 @@ export default {
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
-          padding: 10px;
+          padding-top: 10px;
+          padding-bottom: 20px;
+          text-align: right;
         }
         /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 300px;
-        }
-        /deep/ .ant-pagination-item-active {
-          background-color: #1890ff;
-          a {
-            color: white;
-          }
+          float: left;
         }
       }
     }

@@ -146,11 +146,13 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
+            :maxLength='30'
               v-model="item.complaint_type"
               placeholder="类型"
               style="width:302px"
             ></a-input>
             <a-input
+            :maxLength='30'
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
@@ -183,11 +185,13 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr2" :key="item.id">
             <a-input
+            :maxLength='30'
               v-model="item.complaint_type"
               placeholder="类型"
               style="width:302px"
             ></a-input>
             <a-input
+            :maxLength='30'
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"

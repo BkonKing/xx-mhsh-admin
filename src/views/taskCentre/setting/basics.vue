@@ -63,6 +63,7 @@
         <div class="bottom">
           <span>任务处理客服：</span>
           <a-input
+          :maxLength='11'
             v-model="customer_service"
             onkeyup="value=value.replace(/[\u4E00-\u9FA5]|[A-Za-z]/g,'')"
             style="width:440px;marginLeft:10px"
@@ -90,24 +91,22 @@ type="primary"
               v-model="item.good_tag_name"
               placeholder="标签"
               style="width:160px"
+              :maxLength='20'
             ></a-input>
             <a-input
+            :maxLength='20'
               v-model="item.bad_tag_name"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
+            :maxLength='20'
               v-model="item.order_sort"
               placeholder="排序"
               style="width:104px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addAppraise" />
-            <a-icon
-              class="close"
-              type="close"
-              @click="delAppraise(index)"
-              v-if="arr.length > 1"
-            />
+            <a-icon class="close" type="close" @click="delAppraise(index)" />
           </div>
           <div class="btn">
             <a-button
@@ -129,11 +128,13 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr2" :key="item.id">
             <a-input
+            :maxLength='30'
               v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
+            :maxLength='30'
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
@@ -164,11 +165,13 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr3" :key="item.id">
             <a-input
+            :maxLength='30'
               v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
+            :maxLength='30'
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
@@ -261,6 +264,23 @@ export default {
     }
   },
   methods: {
+    // 获取评价标签
+  async GetLabelList () {
+        // 基础-获取评价标签
+    const res2 = await gainGetLabel()
+    this.arr = res2.list
+    if (res2.list.length === 0) {
+      this.arr = [
+        {
+          id: Math.random() * 999,
+          good_tag_name: '',
+          bad_tag_name: '',
+          order_sort: ''
+        }
+      ]
+    }
+    //  console.log('基础-获取评价标签', res2)
+    },
     // 放弃提交
     async giveUp () {
       const list = this.arr3.map(item => {
@@ -283,17 +303,27 @@ export default {
     },
     // 删除 放弃
     delGiveUp (index) {
-      console.log(index)
+       if (this.arr3.length === 1) {
+        this.arr3 = [{ id: Math.random() * 999, reason: '', order_sort: '' }]
+        return
+      }
+      // console.log(index)
       this.arr3.splice(index, 1)
     },
     // 淘汰提交
     async weedOut () {
-      const list = this.arr2.map(item => {
-        return {
+      const arrTest = this.arr2.map(item => {
+        if (item.reason != '') {
+          return {
           reason: item.reason,
           sort: item.order_sort
         }
+        }
       })
+      const list = arrTest.filter(item => {
+         return item != undefined
+      })
+      // console.log('淘汰提交', list)
       const res = await addSetReason({
         reason_list: list,
         type: 1
@@ -308,18 +338,41 @@ export default {
     },
     // 删除淘汰
     delWeedOut (index) {
-      console.log(index)
+      // console.log(index)
+      if (this.arr2.length === 1) {
+        this.arr2 = [{ id: Math.random() * 999, reason: '', order_sort: '' }]
+        return
+      }
       this.arr2.splice(index, 1)
     },
     // 评价提交
     async appraiseSubmit () {
-      const list = this.arr.map(item => {
-        return {
-          good_tag_name: item.good_tag_name,
-          bad_tag_name: item.bad_tag_name,
-          sort: +item.order_sort
+      // this.arr.map(item => {
+      //   if (item.good_tag_name === '' || item.bad_tag_name === '') {
+      //     this.$message.error('请填写完整一行')
+      //   }
+      // })
+      for (let i = 0; i < this.arr.length; i++) {
+        if (
+           (this.arr[i].good_tag_name === '' || this.arr[i].bad_tag_name === '') && (this.arr[i].good_tag_name != '' || this.arr[i].bad_tag_name != '')
+        ) {
+          this.$message.error('请填写完整一行')
+          return
+        }
+      }
+      const arrTest = this.arr.map(item => {
+        if (item.good_tag_name !== '' && item.bad_tag_name !== '') {
+          return {
+            good_tag_name: item.good_tag_name,
+            bad_tag_name: item.bad_tag_name,
+            sort: +item.order_sort
+          }
         }
       })
+      const list = arrTest.filter(item => {
+        return item != undefined
+      })
+      console.log('评价提交', list)
       const res = await addSetLabel({
         tag_list: list
       })
@@ -338,7 +391,18 @@ export default {
     },
     // 删除评价标签
     delAppraise (index) {
-      console.log(index)
+      // console.log(index)
+      if (this.arr.length === 1) {
+        this.arr = [
+          {
+            id: Math.random() * 999,
+            good_tag_name: '',
+            bad_tag_name: '',
+            order_sort: ''
+          }
+        ]
+        return
+      }
       this.arr.splice(index, 1)
     },
     // 基础设置提交
@@ -384,10 +448,7 @@ export default {
     this.group_limit = res.data.group_limit
     this.task_finish = res.data.task_finish
     // console.log('获取任务基础信息', res)
-    // 基础-获取评价标签
-    const res2 = await gainGetLabel()
-   this.arr = res2.list
-    //  console.log('基础-获取评价标签', res2)
+    this.GetLabelList()
     // 获取淘汰原因列表
     const res3 = await gainGetReason({
       type: 1

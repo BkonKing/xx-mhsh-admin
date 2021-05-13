@@ -87,7 +87,9 @@ slot="is_openTitle"
             :page-size.sync="pagination.pageSize"
             :show-total="
               (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -114,59 +116,60 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '11.111111111%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '任务类型',
           dataIndex: 'type_name',
           key: 'type_name',
-          width: 100
+          width: '11.111111111%'
         },
         {
           title: '参考价(幸福币)',
           dataIndex: 'price',
           key: 'price',
-          width: 150
+          width: '11.111111111%'
         },
         {
           title: '任务',
           dataIndex: 'task_total',
           key: 'task_total',
           sorter: true,
-          width: 100
+          width: '11.111111111%'
         },
         {
           dataIndex: 'order_sort',
           key: 'order_sort',
           slots: { title: 'sortTitle' },
           scopedSlots: { customRender: 'order_sort' },
-          width: 200
+          width: '11.111111111%'
         },
         {
           dataIndex: 'is_open',
           key: 'is_open',
           slots: { title: 'is_openTitle' },
           scopedSlots: { customRender: 'is_open' },
-          width: 150
+          width: '11.111111111%'
         },
         {
           title: '创建人',
           dataIndex: 'admin_realname',
           key: 'admin_realname',
-          width: 100
+          width: '11.111111111%'
         },
         {
           title: '创建时间',
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: 200
+          width: '11.111111111%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
+          width: '11.111111111%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
@@ -174,8 +177,10 @@ export default {
         sizes: ['1', '5', '10', '15'], // 页容量
         currentPage: 1, // 默认页
         total: 50, // 总数
-        pageSize: 1 // 默认页容量
-      }
+        pageSize: 10 // 默认页容量
+      },
+      order_field: '', //	否	string	排序的字段名称task_total 任务数 ctime创建时间
+      sort_value: '' //	否	string	排序的字段值 desc降序 asc升序
     }
   },
   methods: {
@@ -208,10 +213,14 @@ export default {
     },
     // 排序
     handleTableChange (pagination, filters, sorter, { currentDataSource }) {
-      console.log('pagination', pagination)
-      console.log('filters', filters)
       console.log('sorter', sorter)
-      console.log('currentDataSource', currentDataSource)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getData()
     },
     // 确定删除
     async confirm (record) {
@@ -228,7 +237,9 @@ export default {
     async getData () {
       const res = await gainGetTaskTypeList({
         pagesize: this.pagination.pageSize,
-        pageindex: this.pagination.currentPage
+        pageindex: this.pagination.currentPage,
+        order_field: this.order_field,
+        sort_value: this.sort_value
       })
       this.taskData = res.list
       this.pagination.total = res.data.total
@@ -281,18 +292,13 @@ export default {
     .pagination {
       margin-top: 10px;
       /deep/ .ant-pagination {
-        padding: 10px;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        text-align: right;
       }
       /deep/ .ant-pagination-total-text {
-        margin-left: 20px;
-        margin-right: 890px;
+        float: left;
       }
-      // /deep/ .ant-pagination-item-active {
-      //   background-color: #1890ff;
-      //   a {
-      //     color: white;
-      //   }
-      // }
     }
   }
 }

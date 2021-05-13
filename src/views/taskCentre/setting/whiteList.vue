@@ -1,74 +1,74 @@
 <template>
   <div class="whiteList">
     <a-card class="card" ref="card">
-      <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row>
-          <a-col :span="8">
-            <a-form-model-item label="所属项目">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  Jack
-                </a-select-option>
-                <a-select-option value="lucy">
-                  Lucy
-                </a-select-option>
-                <a-select-option value="disabled">
-                  Disabled
-                </a-select-option>
-                <a-select-option value="Yiminghe">
-                  yiminghe
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="用户">
-              <a-input
-                placeholder="手机号、昵称/ID、备注"
-                style="width: 264px"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="8">
-            <a-form-model-item label="是否注册" v-if="!cardBol">
-              <a-select style="width: 264px">
-                <a-select-option value="jack">
-                  已注册
-                </a-select-option>
-                <a-select-option value="lucy">
-                  未注册
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-            <div class="btns" v-else>
-              <a-button type="primary">查询</a-button>
-              <a-button>重置</a-button>
-              <a-button
+      <div class="table-page-search-wrapper">
+        <a-row :gutter="48">
+          <a-form-model layout="inline">
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="所属项目">
+                <a-select v-model="project_id" placeholder="请选择">
+                  <a-select-option
+                    v-for="(item, index) in projectList"
+                    :key="index"
+                    :value="item.id"
+                  >
+                    {{ item.project_name }}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-model-item label="用户">
+                <a-input
+                  v-model="user_search"
+                  placeholder="手机号、昵称/ID、备注"
+                ></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :md="8" :sm="24" v-if="!cardBol">
+              <div class="btns">
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button @click="reset">重置</a-button>
+                <a-button
 type="link"
 @click="open"
-                >展开 <a-icon
+                  >展开 <a-icon
 type="down"
-              /></a-button>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form-model>
-      <a-row v-if="!cardBol">
-        <a-col :span="8"></a-col>
-        <a-col :span="8"></a-col>
-        <a-col :span="8">
-          <div class="btns">
-            <a-button type="primary">查询</a-button>
-            <a-button>重置</a-button>
-            <a-button
+                /></a-button>
+              </div>
+            </a-col>
+            <template v-if="cardBol">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="是否注册">
+                  <a-select v-model="is_register" placeholder="请选择">
+                    <a-select-option value="1">
+                      已注册
+                    </a-select-option>
+                    <a-select-option value="0">
+                      未注册
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+
+              <a-col :md="8" :sm="24"></a-col>
+              <a-col :md="8" :sm="24"></a-col>
+              <a-col :md="8" :sm="24">
+                <div class="btns">
+                  <a-button type="primary" @click="search">查询</a-button>
+                  <a-button @click="reset">重置</a-button>
+                  <a-button
 type="link"
 @click="close"
-              >收起 <a-icon
+                    >收起 <a-icon
 type="up"
-            /></a-button>
-          </div>
-        </a-col>
-      </a-row>
+                  /></a-button>
+                </div>
+              </a-col>
+            </template>
+          </a-form-model>
+        </a-row>
+      </div>
     </a-card>
     <a-card class="card2">
       <div class="btns">
@@ -77,7 +77,15 @@ type="up"
 @click="importUser"
           ><a-icon type="vertical-align-bottom" />导入用户</a-button
         >
-        <a-button @click="batchDel">批量操作<a-icon type="down"/></a-button>
+        <!-- <a-button @click="handleMenuClick">批量操作<a-icon type="down"/></a-button> -->
+        <a-dropdown>
+          <a-menu slot="overlay" @click="handleMenuClick">
+            <a-menu-item key="1">
+              批量删除
+            </a-menu-item>
+          </a-menu>
+          <a-button> 批量操作 <a-icon type="down" /> </a-button>
+        </a-dropdown>
       </div>
       <div class="selected" v-if="selectedRowKeys.length > 0">
         <a-icon class="icon" type="info-circle" />
@@ -94,6 +102,7 @@ type="up"
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange
           }"
+          @change="tableChange"
         >
           <template slot="owner_name" slot-scope="text, record">
             <div class="user">
@@ -109,14 +118,17 @@ type="up"
         </a-table>
         <div class="pagination">
           <a-pagination
+            v-model="pagination.currentPage"
             show-quick-jumper
             show-size-changer
-            :default-current="pagination.currentPage"
             :page-size-options="pagination.sizes"
             :total="pagination.total"
             :page-size.sync="pagination.pageSize"
             :show-total="
-              (total, range) =>`共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(total / pagination.pageSize)}页`
+              (total, range) =>
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
             "
             @change="onChangePage"
             @showSizeChange="sizeChange"
@@ -124,7 +136,7 @@ type="up"
         </div>
       </div>
     </a-card>
-    <adduserModel ref="adduserModel" mode='whiteUser'></adduserModel>
+    <adduserModel ref="adduserModel" mode="whiteUser"></adduserModel>
     <importFile ref="importFile" mode="whiteUser"></importFile>
   </div>
 </template>
@@ -132,7 +144,11 @@ type="up"
 <script>
 import adduserModel from '../adduserModel'
 import importFile from '../importFile'
-import { gainGetWhiteListUser, toDelWhiteUser } from '@/api/taskCentre'
+import {
+  gainGetWhiteListUser,
+  toDelWhiteUser,
+  toGetProject
+} from '@/api/taskCentre'
 export default {
   components: {
     adduserModel,
@@ -146,8 +162,6 @@ export default {
         total: 50, // 总数
         pageSize: 10 // 默认页容量
       },
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
       cardBol: false,
       tableData: [],
       columns: [
@@ -155,75 +169,113 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 100
+          width: '11.111111%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
-          width: 150
+          width: '11.111111%'
         },
         {
           title: '用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
-          width: 150,
+          width: '11.111111%',
           scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '备注',
           dataIndex: 'remark',
           key: 'remark',
-          width: 100
+          width: '11.111111%'
         },
         {
           title: '任务',
           dataIndex: 'user_task',
           key: 'user_task',
           sorter: true,
-          width: 100
+          width: '11.111111%'
         },
         {
           title: '注册时间',
           dataIndex: 'register_time',
           key: 'register_time',
           sorter: true,
-          width: 200
+          width: '11.111111%'
         },
         {
           title: '添加人',
           dataIndex: 'admin_realname',
           key: 'admin_realname',
-          width: 100
+          width: '11.111111%'
         },
         {
           title: '添加时间',
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: 200
+          width: '11.111111%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
+          width: '11.111111%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
       selectedRowKeys: [],
-      projectList: []
+      projectList: [], // 所有项目
+      user_search: '', //	否	string	用户搜索
+      is_register: undefined, //	否	int	is_register 0未注册 1已注册
+      project_id: undefined, //	否	int	用户所属项目
+      order_field: '', //	否	string	排序字段user_task任务数 register_time注册时间 ctime添加时间
+      sort_value: '' //	否	string	排序值 desc 降序 asc 降序
     }
   },
   mounted () {
-    console.log(this.$refs.card.$el.offsetHeight) // 146
+    // console.log(this.$refs.card.$el.offsetHeight) // 146
   },
   methods: {
-    // 批量删除
-    async batchDel () {
-       await toDelWhiteUser({ ids: this.selectedRowKeys })
-       this.$message.success('删除成功')
+    // 排序
+    tableChange (pagination, filters, sorter, { currentDataSource }) {
+      console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
       this.getData()
+    },
+    // 查询
+    search () {
+      this.pagination.currentPage = 1
+      this.getData()
+    },
+    // 重置
+    reset () {
+      this.user_search = ''
+      this.is_register = undefined
+      this.project_id = undefined
+      this.order_field = ''
+      this.sort_value = ''
+      this.pagination.currentPage = 1
+      this.getData()
+    },
+    // 批量删除
+    async handleMenuClick (e) {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
+      if (+e.key === 1) {
+        await toDelWhiteUser({ ids: this.selectedRowKeys })
+        this.$message.success('删除成功')
+        this.getData()
+      }
+
       // console.log('删除白名单', res)
     },
     // 删除
@@ -239,12 +291,14 @@ export default {
     async getData () {
       const res = await gainGetWhiteListUser({
         pagesize: this.pagination.pageSize,
-        pageindex: this.pagination.currentPage
+        pageindex: this.pagination.currentPage,
+        user_search: this.user_search,
+        is_register: this.is_register,
+        project_id: this.project_id,
+        order_field: this.order_field,
+        sort_value: this.sort_value
       })
       this.tableData = res.list
-      //  this.projectList = res.list.filter(item => {
-      //   return !this.projectList.includes(item)
-      //  })
       this.pagination.total = res.data.total
       console.log('获取白名单列表', res)
     },
@@ -267,32 +321,31 @@ export default {
     },
     // 页码改变事件
     onChangePage (page, size) {
-      console.log('Page: ', page)
+      // console.log('Page: ', page)
       this.pagination.currentPage = page
       this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
-      console.log('size: ', size)
+      // console.log('size: ', size)
       this.pagination.pageSize = size
       this.pagination.currentPage = 1
       this.getData()
     },
     // 展开
     open () {
-      setTimeout(() => {
-        this.cardBol = false
-      }, 200)
-      this.$refs.card.$el.style.height = '146px'
+      this.cardBol = true
     },
     // 收起
     close () {
-      this.cardBol = true
-      this.$refs.card.$el.style.height = '80px'
+      this.cardBol = false
     }
   },
-  created () {
+  async created () {
     this.getData()
+    const res = await toGetProject()
+    this.projectList = res.data
+    console.log('获取所有项目', res)
   }
 }
 </script>
@@ -300,9 +353,12 @@ export default {
 <style lang="less" scoped>
 .whiteList {
   .card {
+    /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
     margin-top: 20px;
     .btns {
-      margin-left: 178px;
+      text-align: right;
       button {
         margin-right: 10px;
       }
@@ -344,18 +400,13 @@ export default {
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
-          padding: 10px;
+          padding-top: 10px;
+          padding-bottom: 20px;
+          text-align: right;
         }
         /deep/ .ant-pagination-total-text {
-          margin-left: 20px;
-          margin-right: 890px;
+          float: left;
         }
-        // /deep/ .ant-pagination-item-active {
-        //   background-color: #1890ff;
-        //   a {
-        //     color: white;
-        //   }
-        // }
       }
     }
   }
