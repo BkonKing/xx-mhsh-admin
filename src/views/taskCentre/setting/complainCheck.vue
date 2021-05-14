@@ -70,7 +70,11 @@ type="primary"
         <div class="top">
           <div class="left">提问审核：</div>
           <div class="right">
-            <a-switch v-model="ask_check" style="marginLeft:10px" default-checked />
+            <a-switch
+              v-model="ask_check"
+              style="marginLeft:10px"
+              default-checked
+            />
             <div class="txt">
               开启后提问及提问回复都需进行人工审核，审核通过后APP才显示
             </div>
@@ -146,13 +150,13 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.complaint_type"
               placeholder="类型"
               style="width:302px"
             ></a-input>
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
@@ -162,21 +166,20 @@ type="primary"
               class="close"
               type="close"
               @click="delTaskComplain(index)"
-              v-if="arr.length > 1"
             />
           </div>
           <div class="btn">
             <a-button
-          type="primary"
-          :disabled="card4Bol"
-          @click="taskComplain"
+type="primary"
+:disabled="card4Bol"
+@click="taskComplain"
               >提交</a-button
             >
           </div>
         </div>
       </div>
     </a-card>
-      <a-card class="card5">
+    <a-card class="card5">
       <div class="title">
         提问投诉/违规类型
       </div>
@@ -185,30 +188,25 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr2" :key="item.id">
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.complaint_type"
               placeholder="类型"
               style="width:302px"
             ></a-input>
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addAskComplain" />
-            <a-icon
-              class="close"
-              type="close"
-              @click="delAskComplain(index)"
-              v-if="arr.length > 1"
-            />
+            <a-icon class="close" type="close" @click="delAskComplain(index)" />
           </div>
           <div class="btn">
             <a-button
-          type="primary"
-          :disabled="card5Bol"
-          @click="askComplain"
+type="primary"
+:disabled="card5Bol"
+@click="askComplain"
               >提交</a-button
             >
           </div>
@@ -219,7 +217,15 @@ type="primary"
 </template>
 
 <script>
-import { setTaskSet, gainGetTaskSet, toSetQuestion, gainGetBasic, toSetComplaint, toSetComplaintType, gainGetComplaintType } from '@/api/taskCentre'
+import {
+  setTaskSet,
+  gainGetTaskSet,
+  toSetQuestion,
+  gainGetBasic,
+  toSetComplaint,
+  toSetComplaintType,
+  gainGetComplaintType
+} from '@/api/taskCentre'
 export default {
   data () {
     return {
@@ -259,7 +265,7 @@ export default {
       },
       deep: true
     },
-     arr2: {
+    arr2: {
       handler () {
         this.card5Bol = false
       },
@@ -267,83 +273,151 @@ export default {
     }
   },
   methods: {
-    // 提问投诉提交
-   async askComplain () {
-      const list = this.arr2.map(item => {
-      return {
-        complaint_type: item.complaint_type,
-        sort: +item.order_sort
-      }
-    })
-    const res = await toSetComplaintType({
-      type_list: list,
+    async getAskComplaintTypeList () {
+        // 获取提问投诉列表
+    const res4 = await gainGetComplaintType({
       type: 2
     })
-    console.log('提问投诉提交', res)
-       this.card5Bol = true
+    this.arr2 = res4.list
+    if (res4.list.length === 0) {
+      this.arr2 = [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }]
+    }
+    this.$nextTick(() => {
+      this.card5Bol = true
+    })
+    // console.log('获取任务投诉列表', res4)
+    },
+    // 获取任务投诉列表
+    async getTaskComplaintTypeList () {
+      const res3 = await gainGetComplaintType({
+        type: 1
+      })
+      this.arr = res3.list
+      if (res3.list.length === 0) {
+        this.arr = [
+          { id: Math.random() * 999, complaint_type: '', order_sort: '' }
+        ]
+      }
+      this.$nextTick(() => {
+        this.card4Bol = true
+      })
+      // console.log('获取任务投诉列表', res3)
+    },
+    // 提问投诉提交
+    async askComplain () {
+        const arrTest = this.arr2.map(item => {
+        if (item.complaint_type != '') {
+          return {
+            complaint_type: item.complaint_type,
+            sort: +item.order_sort
+          }
+        }
+      })
+      const list = arrTest.filter(item => {
+        return item != undefined
+      })
+      // console.log('提问投诉', list)
+       await toSetComplaintType({
+        type_list: list,
+        type: 2
+      })
+      // console.log('提问投诉提交', res)
+      this.getAskComplaintTypeList()
+      this.card5Bol = true
       this.$message.success('提交成功')
     },
-      // 添加
+    // 添加
     addAskComplain () {
-      this.arr2.push({ id: Math.random() * 999, complaint_type: '', order_sort: '' })
+      this.arr2.push({
+        id: Math.random() * 999,
+        complaint_type: '',
+        order_sort: ''
+      })
     },
     // 删除
     delAskComplain (index) {
-      console.log(index)
+      // console.log(index)
+      if (this.arr2.length === 1) {
+        this.arr2 = [
+          {
+            id: Math.random() * 999,
+            complaint_type: '',
+            order_sort: ''
+          }
+        ]
+        return
+      }
       this.arr2.splice(index, 1)
     },
     // 任务投诉提交
-  async  taskComplain () {
-    const list = this.arr.map(item => {
-      return {
-        complaint_type: item.complaint_type,
-        sort: +item.order_sort
-      }
-    })
-    const res = await toSetComplaintType({
-      type_list: list,
-      type: 1
-    })
-    console.log('任务投诉提交', res)
+    async taskComplain () {
+      const arrTest = this.arr.map(item => {
+        if (item.complaint_type != '') {
+          return {
+            complaint_type: item.complaint_type,
+            sort: +item.order_sort
+          }
+        }
+      })
+      const list = arrTest.filter(item => {
+        return item != undefined
+      })
+      // console.log('任务投诉提交', list)
+      await toSetComplaintType({
+        type_list: list,
+        type: 1
+      })
+      // console.log('任务投诉提交', res)
       this.card4Bol = true
+      this.getTaskComplaintTypeList()
       this.$message.success('提交成功')
     },
-     // 添加任务投诉
+    // 添加任务投诉
     addTaskComplain () {
-      this.arr.push({ id: Math.random() * 999, complaint_type: '', order_sort: '' })
+      this.arr.push({
+        id: Math.random() * 999,
+        complaint_type: '',
+        order_sort: ''
+      })
     },
     // 删除任务投诉
     delTaskComplain (index) {
-      console.log(index)
+      // console.log(index)
+      if (this.arr.length === 1) {
+        this.arr = [
+          { id: Math.random() * 999, complaint_type: '', order_sort: '' }
+        ]
+        return
+      }
       this.arr.splice(index, 1)
     },
     // 投诉提交
-  async  complain () {
-    const res = await toSetComplaint({
-      complaint_time: +this.complaint_time
-    })
-    console.log('投诉提交', res)
+    async complain () {
+     await toSetComplaint({
+        complaint_time: +this.complaint_time
+      })
+      // console.log('投诉提交', res)
       this.card3Bol = true
       this.$message.success('提交成功')
     },
     // 提问提交
-   async askQuestion () {
-   const res = await toSetQuestion({
-     ask_check: this.ask_check === true ? 1 : 0,
-     check_time: +this.check_time2
-     })
-     console.log('提问提交', res)
+    async askQuestion () {
+       await toSetQuestion({
+        ask_check: this.ask_check === true ? 1 : 0,
+        check_time: +this.check_time2
+      })
+      // console.log('提问提交', res)
       this.card2Bol = true
       this.$message.success('提交成功')
     },
     // 任务提交
     async taskSubmit () {
-     const res = await setTaskSet({
-       check_open: 1,
-       check_time: +this.check_time,
-       handle_time: +this.handle_time
-     })
-     console.log('任务提交', res)
+       await setTaskSet({
+        check_open: 1,
+        check_time: +this.check_time,
+        handle_time: +this.handle_time
+      })
+      // console.log('任务提交', res)
       this.cardBol = true
       this.$message.success('提交成功')
     }
@@ -353,31 +427,21 @@ export default {
     const res = await gainGetTaskSet()
     this.check_time = res.data.check_handle
     this.handle_time = res.data.task_handle
-    console.log('获取任务设置信息', res)
+    // console.log('获取任务设置信息', res)
     // 获取基础设置信息
     const res2 = await gainGetBasic()
     this.check_time2 = res2.data.ask_check_handle
-    this.ask_check = res2.data.ask_check === 1 ? res2.data.ask_check === 1 : false
+    this.ask_check =
+      res2.data.ask_check === 1 ? res2.data.ask_check === 1 : false
     this.complaint_time = res2.data.complaint_handle
-    console.log('获取基础设置信息', res2)
-    // 获取任务投诉列表
-   const res3 = await gainGetComplaintType({
-     type: 1
-   })
-   this.arr = res3.list
-   console.log('获取任务投诉列表', res3)
-       // 获取提问投诉列表
-   const res4 = await gainGetComplaintType({
-     type: 2
-   })
-   this.arr2 = res4.list
-   console.log('获取任务投诉列表', res4)
+    // console.log('获取基础设置信息', res2)
+    this.getTaskComplaintTypeList()
+    this.getAskComplaintTypeList()
     this.$nextTick(() => {
-       this.cardBol = true
-       this.card2Bol = true
-       this.card3Bol = true
-       this.card4Bol = true
-       this.card5Bol = true
+      this.cardBol = true
+      this.card2Bol = true
+      this.card3Bol = true
+      this.card5Bol = true
     })
   }
 }
@@ -489,7 +553,6 @@ export default {
       .top {
         display: flex;
         .left {
-
           width: 70px;
         }
         .right {
@@ -621,7 +684,7 @@ export default {
       }
     }
   }
-    .card5 {
+  .card5 {
     margin-top: 20px;
     /deep/ .ant-card-body {
       padding: 0;

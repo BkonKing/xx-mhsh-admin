@@ -8,7 +8,7 @@
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            全部{{ askQuestionInfo.total }}
+            全部{{ askQuestionInfo.total===0?'':askQuestionInfo.total }}
           </div>
           <div
             class="item"
@@ -214,6 +214,11 @@ type="down"
           <template slot="task_title" slot-scope="task_title">
             <div style="color:#1890FF">{{ task_title }}</div>
           </template>
+          <template slot="complaint_total" slot-scope="text,record">
+            <div :style="{cursor: 'pointer',color:record.complaint_total>0?'#1890FF':''}" @click="openComplaint(record)">
+              {{record.complaint_total}}
+            </div>
+          </template>
           <template slot="opera" slot-scope="text, record">
             <div>
               <a-button
@@ -328,6 +333,7 @@ export default {
           title: '投诉',
           dataIndex: 'complaint_total',
           key: 'complaint_total',
+          scopedSlots: { customRender: 'complaint_total' },
           sorter: true,
           width: '10%'
         },
@@ -369,7 +375,8 @@ export default {
       task_search: '', //	否	string	任务搜索
       ctime: '', //	否	string	发布时间
       projectList: [], // 项目列表
-      createTime: []
+      createTime: [],
+      task_id: '' // 任务id
     }
   },
   mounted () {
@@ -377,6 +384,13 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+     // 跳转到投诉列表
+    openComplaint (record) {
+      if (record.complaint_total > 0) {
+        this.currentIndex = 1
+        this.$router.push(`/taskCentre/complain?task_id=${record.task_id}&uid=${record.uid}`)
+      }
+    },
     // 重置
     reset () {
       this.tab_type = ''
@@ -441,7 +455,8 @@ export default {
         status: this.status,
         content: this.content,
         task_search: this.task_search,
-        ctime: this.ctime
+        ctime: this.ctime,
+        task_id: this.task_id
       })
       this.askQuestionInfo = res.data || {}
       this.tableData = res.list
@@ -506,7 +521,12 @@ export default {
     }
   },
   async created () {
-    this.getData()
+    this.task_id = this.$route.query.task_id
+    if (this.task_id != '') {
+      this.getData()
+    } else {
+      this.getData()
+    }
     const res = await toGetProject()
     this.projectList = res.data
     console.log('所有项目', res)

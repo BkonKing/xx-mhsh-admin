@@ -30,15 +30,21 @@
             :class="{ active: currentIndex === 4 }"
           >
             白名单
+            <a-tooltip>
+              <template slot="title">
+                用户发布任务、提问免审核
+              </template>
+              <a-icon style="color:black" type="info-circle" />
+            </a-tooltip>
           </div>
         </div>
       </template>
     </page-header-wrapper>
     <div class="content">
-      <basics ref="basics" v-if="currentIndex===1"></basics>
-    <complainCheck  v-else-if="currentIndex ===2"></complainCheck>
-    <taskType v-else-if="currentIndex ===3"></taskType>
-    <whiteList v-else></whiteList>
+      <basics ref="basics" v-if="currentIndex === 1"></basics>
+      <complainCheck v-else-if="currentIndex === 2"></complainCheck>
+      <taskType v-else-if="currentIndex === 3"></taskType>
+      <whiteList v-else></whiteList>
     </div>
   </div>
 </template>
@@ -89,7 +95,7 @@ export default {
       border-bottom: 2px solid #1890ff;
     }
   }
-  .content{
+  .content {
     padding: 0 20px;
   }
 }

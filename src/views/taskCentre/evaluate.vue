@@ -275,7 +275,8 @@ export default {
       selectedRowKeys: [],
       tagList: [], // 标签下拉列表
       projectList: [],
-      evaluateTime: []
+      evaluateTime: [],
+      task_id: '' // 任务id
     }
   },
   methods: {
@@ -314,7 +315,8 @@ export default {
         user_search: this.user_search,
         is_valid: this.is_valid,
         project_id: this.project_id,
-        ctime: this.ctime
+        ctime: this.ctime,
+        task_id: this.task_id
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
@@ -355,7 +357,12 @@ export default {
     }
   },
   async created () {
-    this.getData()
+    this.task_id = this.$route.query.task_id
+    if (this.task_id != '') {
+     this.getData()
+    } else {
+      this.getData()
+    }
     // 评价-评价标签下拉列表
     const res = await toEvaluateList()
     this.tagList = res.list

@@ -376,7 +376,9 @@ export default {
       timeTxt: [],
       typeList: [], // 投诉类型列表
       TaskStatusList: [], // 任务状态列表
-      complaintInfo: ''
+      complaintInfo: '',
+      task_id: '', // 任务id
+      jump_uid: ''// 用户id
     }
   },
 
@@ -423,7 +425,9 @@ export default {
         complaint_user: this.complaint_user,
         task_search: this.task_search,
         task_status: this.task_status,
-        complaint_time: this.complaint_time
+        complaint_time: this.complaint_time,
+        task_id: this.task_id,
+        jump_uid: this.jump_uid
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
@@ -479,7 +483,13 @@ export default {
     }
   },
   async created () {
-    this.getData()
+    this.task_id = this.$route.query.task_id
+    this.jump_uid = this.$route.query.uid
+    if (this.task_id != '' || this.jump_uid != '') {
+      this.getData()
+    } else {
+      this.getData()
+    }
     // 投诉-获取投诉类型
     const res = await toGetCompalintType()
     this.typeList = res.list

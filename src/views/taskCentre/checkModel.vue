@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="isShow" title="进度">
+  <a-modal v-model="isShow" title="进度" :footer='null'>
     <a-steps progress-dot :current="userprocessList.length-1" direction="vertical">
       <a-step
       v-for="(item, index) in userprocessList"

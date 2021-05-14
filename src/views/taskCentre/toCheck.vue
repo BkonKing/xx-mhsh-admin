@@ -119,10 +119,10 @@ label="审核时间"
             </div>
           </div>
           <div class="imgcon">
-            <div class="img" v-for="item in 3" :key="item">
+            <div class="img" v-for="(item2,index2) in item.check_image" :key="index2">
               <img
                 preview="0"
-                src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+                :src="item2"
                 alt=""
               />
             </div>
@@ -246,7 +246,7 @@ export default {
     computed: {
     headers () {
       return {
-        Authorization: 'd824dfb99af3ffb4aed5860b323ba6a9c19c3fed'
+        Authorization: '3c38f83dec332332377a64be74a9936577fd1fca'
       }
     }
   },
@@ -256,7 +256,7 @@ export default {
   watch: {
     form: {
       handler () {
-        if (this.form.is_check == 2 && this.form.violation_type === '') {
+        if (this.form.is_check === 2 && this.form.violation_type === undefined) {
           this.bol = true
         } else if (this.form.is_check === 1) {
           this.bol = false

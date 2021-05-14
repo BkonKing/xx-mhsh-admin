@@ -110,6 +110,11 @@ type="up"
               <div class="t2">{{ record.project_name }}</div>
             </div>
           </template>
+          <template slot="register_time" slot-scope="register_time">
+            <div>
+              {{register_time !=0 ?register_time:''}}
+            </div>
+          </template>
           <template slot="opera" slot-scope="text, record">
             <div class="opera">
               <a-button type="link" @click="del(record)">删除</a-button>
@@ -202,6 +207,7 @@ export default {
           title: '注册时间',
           dataIndex: 'register_time',
           key: 'register_time',
+           scopedSlots: { customRender: 'register_time' },
           sorter: true,
           width: '11.111111%'
         },
@@ -241,7 +247,7 @@ export default {
   methods: {
     // 排序
     tableChange (pagination, filters, sorter, { currentDataSource }) {
-      console.log('sorter', sorter)
+      // console.log('sorter', sorter)
       this.order_field = sorter.field
       if (sorter.order === 'ascend') {
         this.sort_value = 'asc'
@@ -300,7 +306,7 @@ export default {
       })
       this.tableData = res.list
       this.pagination.total = res.data.total
-      console.log('获取白名单列表', res)
+      // console.log('获取白名单列表', res)
     },
     // 导入用户
     importUser () {
@@ -315,8 +321,8 @@ export default {
       this.selectedRowKeys = []
     },
     onSelectChange (selectedRowKeys, arr) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys)
-      console.log('arr', arr)
+      // console.log('selectedRowKeys changed: ', selectedRowKeys)
+      // console.log('arr', arr)
       this.selectedRowKeys = selectedRowKeys
     },
     // 页码改变事件
@@ -345,7 +351,7 @@ export default {
     this.getData()
     const res = await toGetProject()
     this.projectList = res.data
-    console.log('获取所有项目', res)
+    // console.log('获取所有项目', res)
   }
 }
 </script>

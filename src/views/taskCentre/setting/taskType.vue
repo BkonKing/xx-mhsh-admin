@@ -34,6 +34,8 @@ slot="sortTitle"
             <a-input
               style="width:128px"
               ref="order_sort"
+              onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
               :value="record.order_sort"
               @blur="changeOrder(record)"
             ></a-input>
@@ -186,7 +188,7 @@ export default {
   methods: {
     // 是否开启
     async isOpen (record) {
-      console.log(record)
+      // console.log(record)
       if (record.is_open === 1) {
         await toUpdateTaskType({
           update_field: 'is_open',
@@ -213,7 +215,7 @@ export default {
     },
     // 排序
     handleTableChange (pagination, filters, sorter, { currentDataSource }) {
-      console.log('sorter', sorter)
+      // console.log('sorter', sorter)
       this.order_field = sorter.field
       if (sorter.order === 'ascend') {
         this.sort_value = 'asc'
@@ -224,13 +226,13 @@ export default {
     },
     // 确定删除
     async confirm (record) {
-      const res = await toUpdateTaskType({
+       await toUpdateTaskType({
         update_field: 'is_del',
         update_value: +record.start_price,
         id: record.id
       })
       this.getData()
-      console.log('删除', res)
+      // console.log('删除', res)
       this.$message.success('删除成功')
     },
     // 获取任务列表
@@ -243,17 +245,17 @@ export default {
       })
       this.taskData = res.list
       this.pagination.total = res.data.total
-      console.log('获取任务列表', res)
+      // console.log('获取任务列表', res)
     },
     // 页码改变事件
     onChangePage (page, size) {
-      console.log('Page: ', page)
+      // console.log('Page: ', page)
       this.pagination.currentPage = page
       this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
-      console.log('size: ', size)
+      // console.log('size: ', size)
       this.pagination.pageSize = size
       this.pagination.currentPage = 1
       this.getData()
@@ -263,7 +265,7 @@ export default {
       this.$refs.editModel.mode = 'add'
     },
     edit (record) {
-      console.log('record', record)
+      // console.log('record', record)
       const obj = {
         type_name: record.type_name,
         start_price: record.start_price,

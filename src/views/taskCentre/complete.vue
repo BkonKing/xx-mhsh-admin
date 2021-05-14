@@ -1,593 +1,647 @@
 <template>
   <div class="complete" v-if="taskDetailInfo != ''">
     <page-header-wrapper></page-header-wrapper>
-<div class="cardContent">
+    <div class="cardContent">
       <a-card class="card1">
-      <div class="title">流程进度</div>
-      <div class="steps" v-if="taskDetailInfo.process.process_result === 0">
-        <a-steps progress-dot :current="1">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step title="待审核" description="" />
-          <a-step title="待接单" description="" />
-          <a-step title="待完成" description="" />
-          <a-step title="完成" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 1"
-      >
-        <a-steps progress-dot :current="2">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_check"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step title="接单" description="" />
-          <a-step title="待完成" description="" />
-          <a-step title="完成" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 2"
-      >
-        <a-steps progress-dot :current="3">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_check"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step
-            title="接单"
-            :description="taskDetailInfo.process.receive_time"
-          />
-          <a-step title="待完成" description="" />
-          <a-step title="完成" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 3"
-      >
-        <a-steps progress-dot :current="4">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_check"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step
-            title="接单"
-            :description="taskDetailInfo.process.process_accept"
-          />
-          <a-step
-            title="任务完成"
-            :description="taskDetailInfo.process.complete_time"
-          />
-          <a-step title="完成" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 5"
-      >
-        <a-steps progress-dot :current="4">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_check"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step
-            title="接单"
-            :description="taskDetailInfo.process.receive_time"
-          />
-          <a-step
-            title="任务完成(终止)"
-            :description="taskDetailInfo.process.complete_time"
-          />
-          <a-step title="完成" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 4"
-      >
-        <a-steps progress-dot :current="4">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_finish"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step title="结束" description="" />
-        </a-steps>
-      </div>
-      <div
-        class="steps"
-        v-else-if="taskDetailInfo.process.process_result === 6"
-      >
-        <a-steps progress-dot :current="4">
-          <a-step
-            :title="taskDetailInfo.process.create_start"
-            :description="taskDetailInfo.process.create_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_check"
-            :description="taskDetailInfo.process.check_time"
-          />
-          <a-step
-            :title="taskDetailInfo.process.process_finish"
-            :description="taskDetailInfo.process.complete_time"
-          />
-          <a-step title="结束" description="" />
-        </a-steps>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <div class="title">基础信息</div>
-      <div class="content">
-        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
-          <a-row>
-            <a-col :span="8">
-              <a-form-model-item label="任务标题">
-                {{ taskDetailInfo.task_title }}
-              </a-form-model-item>
-              <a-form-model-item label="任务奖励">
-                {{ taskDetailInfo.happy_reward }}币（{{
-                  taskDetailInfo.every_reward
-                }}币/人）| 已奖励{{ taskDetailInfo.reward_happiness }}币
-              </a-form-model-item>
-              <a-form-model-item
-label="需要人数"
-                >{{ taskDetailInfo.assignment }}/{{
-                  taskDetailInfo.need_people
-                }}</a-form-model-item
-              >
-              <a-form-model-item label="完成时间">{{
-                taskDetailInfo.complete_time
-              }}</a-form-model-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-model-item label="任务类型">{{
-                taskDetailInfo.task_type
-              }}</a-form-model-item>
-              <a-form-model-item label="创建者">
-                <span style="color:#1890FF">{{
-                  taskDetailInfo.task_user
-                }}</span>
-                {{ taskDetailInfo.task_project }}
-              </a-form-model-item>
-              <a-form-model-item label="任务标签">
-                {{ taskDetailInfo.task_tag }}
-              </a-form-model-item>
-              <a-form-model-item label="完成地点">{{
-                taskDetailInfo.complete_address
-              }}</a-form-model-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-model-item label="任务编号">
-                {{ taskDetailInfo.task_number }}
-                <img
-                  style="marginLeft:10px;width:20px;height:20;"
-                  preview="1"
-                  :src="taskMa"
-                  alt=""
-                />
-              </a-form-model-item>
-              <a-form-model-item label="手机号">{{
-                taskDetailInfo.mobile
-              }}</a-form-model-item>
-              <a-form-model-item label="联系电话">{{
-                taskDetailInfo.contact_number
-              }}</a-form-model-item>
-              <a-form-model-item label="可见范围">{{
-                taskDetailInfo.visible_range
-              }}</a-form-model-item>
-            </a-col>
-          </a-row>
-        </a-form-model>
-        <div class="explain">
-          <div class="left">任务说明：</div>
-          <div class="right" id="taskExplain">
-            {{ taskDetailInfo.task_desc }}
-          </div>
+        <div class="title">流程进度</div>
+        <div class="steps" v-if="taskDetailInfo.process.process_result === 0">
+          <a-steps progress-dot :current="1">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step title="待审核" description="" />
+            <a-step title="待接单" description="" />
+            <a-step title="待完成" description="" />
+            <a-step title="完成" description="" />
+          </a-steps>
         </div>
-        <div class="otherBtn">
-          <a-button
-type="link"
-v-if="!btnBol && lineNumber > 10"
-@click="open"
-            >展开 <a-icon
-type="down"
-          /></a-button>
-          <a-button
-            type="link"
-            v-else-if="btnBol && lineNumber > 10"
-            @click="close"
-            >收起 <a-icon
-type="up"
-          /></a-button>
-        </div>
-      </div>
-      <div class="imgcon">
-        <div class="img" v-for="item in taskDetailInfo.task_image" :key="item">
-          <img
-            preview="0"
-            src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
-            alt=""
-          />
-        </div>
-      </div>
-      <!-- 预览图片 -->
-      <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-        <img alt="example" style="width: 100%" :src="previewImage" />
-      </a-modal> -->
-    </a-card>
-    <a-card class="card3">
-      <a-row>
-        <a-col :span="8">
-          <div class="t1">提问</div>
-          <div class="t2">{{ taskDetailInfo.question_total }}个</div>
-          <div class="t3">
-            <span>{{ taskDetailInfo.question_total }}个提问</span>
-            <span>{{ taskDetailInfo.reply_total }}个回复</span>
-          </div>
-        </a-col>
-        <a-col :span="8">
-          <div class="t1">投诉</div>
-          <div class="t2">{{ taskDetailInfo.complaint_total }}个</div>
-          <div class="t3">
-            <span>任务方收到{{ taskDetailInfo.task_party }}个</span>
-            <span>投诉接单方{{ taskDetailInfo.single_party }}个</span>
-          </div>
-        </a-col>
-        <a-col :span="8">
-          <div class="t1">评价</div>
-          <div class="t2">{{ taskDetailInfo.evaluate_total }}星</div>
-          <div class="t3">已评{{ taskDetailInfo.evaluate_user }}人</div>
-        </a-col>
-      </a-row>
-    </a-card>
-    <a-card class="card4">
-      <div class="top">
         <div
-          class="item"
-          :class="{ active: currentIndex === index }"
-          @click="selectCard4Title(index)"
-          v-for="(item, index) in titleArr"
-          :key="index"
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 1"
         >
-          {{ item }}
+          <a-steps progress-dot :current="2">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_check"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step title="接单" description="" />
+            <a-step title="待完成" description="" />
+            <a-step title="完成" description="" />
+          </a-steps>
         </div>
-      </div>
-      <div class="form">
-        <div class="table-page-search-wrapper">
-          <a-form-model layout="inline">
-            <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="进度状态">
-                  <a-select placeholder="请选择" v-model="status">
-                    <a-select-option
-                      v-for="(item, index) in processStatusList"
-                      :key="index"
-                      :value="item.value"
-                    >
-                      {{ item.text }}
-                    </a-select-option>
-                  </a-select>
+        <div
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 2"
+        >
+          <a-steps progress-dot :current="3">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_check"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step
+              title="接单"
+              :description="taskDetailInfo.process.receive_time"
+            />
+            <a-step title="待完成" description="" />
+            <a-step title="完成" description="" />
+          </a-steps>
+        </div>
+        <div
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 3"
+        >
+          <a-steps progress-dot :current="4">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_check"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step
+              title="接单"
+              :description="taskDetailInfo.process.process_accept"
+            />
+            <a-step
+              title="任务完成"
+              :description="taskDetailInfo.process.complete_time"
+            />
+            <a-step title="完成" description="" />
+          </a-steps>
+        </div>
+        <div
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 5"
+        >
+          <a-steps progress-dot :current="4">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_check"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step
+              title="接单"
+              :description="taskDetailInfo.process.receive_time"
+            />
+            <a-step
+              title="任务完成(终止)"
+              :description="taskDetailInfo.process.complete_time"
+            />
+            <a-step title="完成" description="" />
+          </a-steps>
+        </div>
+        <div
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 4"
+        >
+          <a-steps progress-dot :current="4">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_finish"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step title="结束" description="" />
+          </a-steps>
+        </div>
+        <div
+          class="steps"
+          v-else-if="taskDetailInfo.process.process_result === 6"
+        >
+          <a-steps progress-dot :current="4">
+            <a-step
+              :title="taskDetailInfo.process.create_start"
+              :description="taskDetailInfo.process.create_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_check"
+              :description="taskDetailInfo.process.check_time"
+            />
+            <a-step
+              :title="taskDetailInfo.process.process_finish"
+              :description="taskDetailInfo.process.complete_time"
+            />
+            <a-step title="结束" description="" />
+          </a-steps>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <div class="title">基础信息</div>
+        <div class="content">
+          <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-row>
+              <a-col :span="8">
+                <a-form-model-item label="任务标题">
+                  {{ taskDetailInfo.task_title }}
                 </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="接单方">
-                  <a-input
-                    v-model="user_search"
-                    placeholder="手机号、用户昵称/ID"
-                  ></a-input>
+                <a-form-model-item label="任务奖励">
+                  {{ taskDetailInfo.happy_reward }}币（{{
+                    taskDetailInfo.every_reward
+                  }}币/人）| 已奖励{{ taskDetailInfo.reward_happiness }}币
                 </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="所属项目" v-if="!card4Bol">
-                  <a-select placeholder="请选择" v-model="project_id">
-                    <a-select-option
-                      v-for="(item, index) in projectList"
-                      :key="index"
-                      :value="item.id"
-                    >
-                      {{ item.project_name }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-model-item>
-                <div class="btns" v-else>
-                  <a-button type="primary" @click="search1">查询</a-button>
-                  <a-button @click="reset1">重置</a-button>
-                  <a-button
-type="link"
-@click="open2"
-                    >展开 <a-icon
-type="down"
-                  /></a-button>
-                </div>
-              </a-col>
-            </a-row>
-            <div class="btns" v-if="!card4Bol">
-              <a-button type="primary" @click="search1">查询</a-button>
-              <a-button @click="reset1">重置</a-button>
-              <a-button
-type="link"
-@click="close2"
-                >收起 <a-icon
-type="up"
-              /></a-button>
-            </div>
-          </a-form-model>
-        </div>
-      </div>
-      <div class="content">
-        <div class="btns" v-if="buttonStatus != ''">
-          <a-button
-v-if="buttonStatus.button_shelf === 1"
-@click="soldOut(1)"
-            >下架任务</a-button
-          >
-          <a-button
-            v-if="buttonStatus.button_termination === 1"
-            @click="terminate(2)"
-            >终止任务</a-button
-          >
-          <a-button
-v-if="buttonStatus.button_stop === 1"
-@click="stop(3)"
-            >停止接单</a-button
-          >
-          <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
-            <a-dropdown>
-      <a-menu slot="overlay" @click="handleMenuClick">
-        <a-menu-item key="1">
-          淘汰
-        </a-menu-item>
-        <a-menu-item key="2">
-          强制奖励
-        </a-menu-item>
-      </a-menu>
-      <a-button> 批量操作 <a-icon type="down" /> </a-button>
-    </a-dropdown>
-        </div>
-        <div class="selected" v-if="selectedRowKeys.length > 0">
-          <a-icon class="icon" type="info-circle" />
-          已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-          <span class="span2" @click="clear">清空</span>
-        </div>
-        <div class="table">
-          <a-table
-            rowKey="uid"
-            :row-selection="{
-              selectedRowKeys: selectedRowKeys,
-              onChange: onSelectChange
-            }"
-            :columns="columns"
-            :data-source="taskSpeedList"
-            :pagination="false"
-            @change="tableChange1"
-          >
-            <template slot="progress_desc" slot-scope="progress_desc">
-              <div :style="{ color: progress_desc === '暂停中' ? 'red' : '' }">
-                {{ progress_desc }}
-              </div>
-            </template>
-            <template slot="user" slot-scope="text, record">
-              <div class="takeOrderSide">
-                <div class="t1">{{ record.user }}</div>
-                <div class="t2">{{ record.project }}</div>
-              </div>
-            </template>
-            <template slot="complaint_total" slot-scope="complaint_total">
-              <div style="cursor: pointer;" @click="currentIndex = 1">
-                {{ complaint_total }}
-              </div>
-            </template>
-            <template slot="evaluate" slot-scope="text, record">
-              <span
-                style="color:#1890FF;cursor: pointer;"
-                @click="openAppraise(record.evaluate_id)"
-                >{{ record.evaluate }}星</span
-              >
-            </template>
-            <template slot="progress_content" slot-scope="text, record">
-              <div class="progress_content">
-                <div class="t1">{{ record.progress_title }}</div>
-                <div class="t2">
-                  {{ record.progress_content }}
-                </div>
-              </div>
-            </template>
-            <template slot="opera" slot-scope="text, record">
-              <div class="btns">
-                <a-button type="link" @click="check(record.uid)">查看</a-button>
-                <a-button
-                  type="link"
-                  @click="award(record.uid)"
-                  v-if="record.button===1"
-                  >奖励</a-button
+                <a-form-model-item
+label="需要人数"
+                  >{{ taskDetailInfo.assignment }}/{{
+                    taskDetailInfo.need_people
+                  }}</a-form-model-item
                 >
-                <a-popconfirm
-                  v-if="record.button===2"
-                  title="你确定要淘汰这个用户吗?"
-                  ok-text="确定"
-                  cancel-text="取消"
-                  @confirm="confirm(record.uid)"
-                  @cancel="cancel"
-                >
-                  <a-button type="link">淘汰</a-button>
-                </a-popconfirm>
-              </div>
-            </template>
-          </a-table>
-        </div>
-        <div class="pagination">
-          <!-- :default-current="pagination.currentPage" -->
-          <a-pagination
-          v-model="pagination.currentPage"
-            show-quick-jumper
-            show-size-changer
-            :page-size-options="pagination.sizes"
-            :total="pagination.total"
-            :page-size.sync="pagination.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                  total / pagination.pageSize
-                )}页`
-            "
-            @change="onChange"
-            @showSizeChange="sizeChange"
-          />
-        </div>
-      </div>
-    </a-card>
-    <a-card class="card5" v-if="taskDetailInfo.check_list.length>0">
-      <div class="title">
-        审核信息
-      </div>
-    <div class="card5Item" v-for="(item, index) in taskDetailInfo.check_list" :key="index">
-            <div class="c1">
-        <div class="t1">
-          审核通过：{{item.check_status}}
-        </div>
-        <div class="t2">审核人：{{item.check_user}}</div>
-        <div class="t3">审核时间：{{item.check_time}}</div>
-      </div>
-      <div class="c2" v-if="taskDetailInfo.task_status===4">违规原因：{{item.check_reason}}</div>
-      <div class="c3">
-        <div class="t1">处理回复：</div>
-        <div class="t2">
-          {{item.check_desc}}
-        </div>
-      </div>
-      <div class="imgcon">
-        <div class="img" v-for="item in item.check_image" :key="item">
-          <img
-            preview="2"
-            :src="item"
-            alt=""
-          />
-        </div>
-      </div>
-    </div>
-    </a-card>
-    <a-card class="card6">
-      <div class="title">操作日志</div>
-      <div class="table-page-search-wrapper">
-        <div class="form">
-          <a-form-model layout="inline">
-            <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="操作员">
-                  <a-input v-model="opt_user" placeholder="姓名"></a-input>
-                </a-form-model-item>
+                <a-form-model-item label="完成时间">{{
+                  taskDetailInfo.complete_time
+                }}</a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="操作时间">
-                  <a-range-picker
-                    v-model="logTime"
-                    class="piker-time"
-                    :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
-                    }"
-                    show-time
-                    format="YYYY/MM/DD HH:mm:ss"
-                    @change="onChange2"
+              <a-col :span="8">
+                <a-form-model-item label="任务类型">{{
+                  taskDetailInfo.task_type
+                }}</a-form-model-item>
+                <a-form-model-item label="创建者">
+                  <a
+                    :href="
+                      `/zht/household/member/getMemberList?uid=${this.taskDetailInfo.uid}`
+                    "
+                    target="_parent"
+                    >{{ taskDetailInfo.task_user }}</a
+                  >
+                  {{ taskDetailInfo.task_project }}
+                </a-form-model-item>
+                <a-form-model-item label="任务标签">
+                  {{ taskDetailInfo.task_tag }}
+                </a-form-model-item>
+                <a-form-model-item label="完成地点">{{
+                  taskDetailInfo.complete_address
+                }}</a-form-model-item>
+              </a-col>
+              <a-col :span="8">
+                <a-form-model-item label="任务编号">
+                  {{ taskDetailInfo.task_number }}
+                  <img
+                    style="marginLeft:10px;width:20px;height:20;"
+                    preview="1"
+                    :src="taskMa"
+                    alt=""
                   />
                 </a-form-model-item>
+                <a-form-model-item label="手机号">{{
+                  taskDetailInfo.mobile
+                }}</a-form-model-item>
+                <a-form-model-item label="联系电话">{{
+                  taskDetailInfo.contact_number
+                }}</a-form-model-item>
+                <a-form-model-item label="可见范围">
+                  <span @click="openGroupDetail" style="cursor: pointer;">
+                    {{ taskDetailInfo.visible_range }}
+                  </span>
+                </a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24" v-if="!card6Bol">
+            </a-row>
+          </a-form-model>
+          <div class="explain">
+            <div class="left">任务说明：</div>
+            <div class="right" id="taskExplain">
+              {{ taskDetailInfo.task_desc }}
+            </div>
+          </div>
+          <div class="otherBtn">
+            <a-button
+              type="link"
+              v-if="!btnBol && lineNumber > 10"
+              @click="open"
+              >展开 <a-icon
+type="down"
+            /></a-button>
+            <a-button
+              type="link"
+              v-else-if="btnBol && lineNumber > 10"
+              @click="close"
+              >收起 <a-icon
+type="up"
+            /></a-button>
+          </div>
+        </div>
+        <div class="imgcon">
+          <div
+            class="img"
+            v-for="item in taskDetailInfo.task_image"
+            :key="item"
+          >
+            <img
+              preview="0"
+              src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+              alt=""
+            />
+          </div>
+        </div>
+        <!-- 预览图片 -->
+        <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+        <img alt="example" style="width: 100%" :src="previewImage" />
+      </a-modal> -->
+      </a-card>
+      <a-card class="card3">
+        <a-row>
+          <a-col :span="8">
+            <div class="t1">提问</div>
+            <div class="t2">{{ taskDetailInfo.question_total }}个</div>
+            <div class="t3">
+              <span>{{ taskDetailInfo.question_total }}个提问</span>
+              <span>{{ taskDetailInfo.reply_total }}个回复</span>
+            </div>
+          </a-col>
+          <a-col :span="8">
+            <div class="t1">投诉</div>
+            <div class="t2">{{ taskDetailInfo.complaint_total }}个</div>
+            <div class="t3">
+              <span>任务方收到{{ taskDetailInfo.task_party }}个</span>
+              <span>投诉接单方{{ taskDetailInfo.single_party }}个</span>
+            </div>
+          </a-col>
+          <a-col :span="8">
+            <div class="t1">评价</div>
+            <div class="t2">{{ taskDetailInfo.evaluate_total }}星</div>
+            <div class="t3">已评{{ taskDetailInfo.evaluate_user }}人</div>
+          </a-col>
+        </a-row>
+      </a-card>
+      <a-card class="card4">
+        <div class="top">
+          <div
+            class="item"
+            :class="{ active: currentIndex === '' }"
+            @click="selectCard4Title('')"
+          >
+            任务进度
+          </div>
+          <div
+            class="item"
+            :class="{ active: currentIndex === 1 }"
+            @click="selectCard4Title(1)"
+          >
+            投诉
+          </div>
+          <div
+            class="item"
+            :class="{ active: currentIndex === 2 }"
+            @click="selectCard4Title(2)"
+          >
+            评价
+          </div>
+          <div
+            class="item"
+            :class="{ active: currentIndex === 3 }"
+            @click="selectCard4Title(3)"
+          >
+            提问
+          </div>
+        </div>
+        <div class="form">
+          <div class="table-page-search-wrapper">
+            <a-form-model layout="inline">
+              <a-row :gutter="48">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="进度状态">
+                    <a-select placeholder="请选择" v-model="status">
+                      <a-select-option
+                        v-for="(item, index) in processStatusList"
+                        :key="index"
+                        :value="item.value"
+                      >
+                        {{ item.text }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="接单方">
+                    <a-input
+                      v-model="user_search"
+                      placeholder="手机号、用户昵称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="所属项目" v-if="!card4Bol">
+                    <a-select placeholder="请选择" v-model="project_id">
+                      <a-select-option
+                        v-for="(item, index) in projectList"
+                        :key="index"
+                        :value="item.id"
+                      >
+                        {{ item.project_name }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                  <div class="btns" v-else>
+                    <a-button type="primary" @click="search1">查询</a-button>
+                    <a-button @click="reset1">重置</a-button>
+                    <a-button
+type="link"
+@click="open2"
+                      >展开 <a-icon
+type="down"
+                    /></a-button>
+                  </div>
+                </a-col>
+              </a-row>
+              <div class="btns" v-if="!card4Bol">
+                <a-button type="primary" @click="search1">查询</a-button>
+                <a-button @click="reset1">重置</a-button>
+                <a-button
+type="link"
+@click="close2"
+                  >收起 <a-icon
+type="up"
+                /></a-button>
+              </div>
+            </a-form-model>
+          </div>
+        </div>
+        <div class="content">
+          <div class="btns" v-if="buttonStatus != ''">
+            <a-button
+v-if="buttonStatus.button_shelf === 1"
+@click="soldOut(1)"
+              >下架任务</a-button
+            >
+            <a-button
+              v-if="buttonStatus.button_termination === 1"
+              @click="terminate(2)"
+              >终止任务</a-button
+            >
+            <a-button
+v-if="buttonStatus.button_stop === 1"
+@click="stop(3)"
+              >停止接单</a-button
+            >
+            <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
+            <a-dropdown>
+              <a-menu slot="overlay" @click="handleMenuClick">
+                <a-menu-item key="1">
+                  淘汰
+                </a-menu-item>
+                <a-menu-item key="2">
+                  强制奖励
+                </a-menu-item>
+              </a-menu>
+              <a-button> 批量操作 <a-icon type="down" /> </a-button>
+            </a-dropdown>
+          </div>
+          <div class="selected" v-if="selectedRowKeys.length > 0">
+            <a-icon class="icon" type="info-circle" />
+            已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+            <span class="span2" @click="clear">清空</span>
+          </div>
+          <div class="table">
+            <a-table
+              rowKey="uid"
+              :row-selection="{
+                selectedRowKeys: selectedRowKeys,
+                onChange: onSelectChange
+              }"
+              :columns="columns"
+              :data-source="taskSpeedList"
+              :pagination="false"
+              @change="tableChange1"
+            >
+              <template slot="progress_desc" slot-scope="progress_desc">
+                <div
+                  :style="{ color: progress_desc === '暂停中' ? 'red' : '' }"
+                >
+                  {{ progress_desc }}
+                </div>
+              </template>
+              <template slot="user" slot-scope="text, record">
+                <div class="takeOrderSide">
+                  <div class="t1">{{ record.user }}</div>
+                  <div class="t2">{{ record.project }}</div>
+                </div>
+              </template>
+              <template slot="complaint_total" slot-scope="text, record">
+                <div
+                  :style="{
+                    cursor: 'pointer',
+                    color: record.complaint_total > 0 ? '#1890FF' : ''
+                  }"
+                  @click="openComplaint(record)"
+                >
+                  {{ record.complaint_total }}
+                </div>
+              </template>
+              <template slot="evaluate" slot-scope="text, record">
+                <span
+                 v-if="record.evaluate !=0"
+                  style="color:#1890FF;cursor: pointer;"
+                  @click="openAppraise(record.evaluate_id)"
+                  >{{ record.evaluate }}星</span
+                >
+              </template>
+              <template slot="progress_content" slot-scope="text, record">
+                <div class="progress_content">
+                  <div class="t1">{{ record.progress_title }}</div>
+                  <div class="t2">
+                    {{ record.progress_content }}
+                  </div>
+                </div>
+              </template>
+              <template slot="opera" slot-scope="text, record">
                 <div class="btns">
-                  <a-button type="primary" @click="logSearch">查询</a-button>
-                  <a-button @click="logReset">重置</a-button>
                   <a-button
 type="link"
-@click="open3"
-                    >展开 <a-icon
-type="down"
-                  /></a-button>
+@click="check(record.uid)"
+                    >查看</a-button
+                  >
+                  <a-button
+                    type="link"
+                    @click="award(record.uid)"
+                    v-if="record.button === 1"
+                    >奖励</a-button
+                  >
+                  <a-popconfirm
+                    v-if="record.button === 2"
+                    title="你确定要淘汰这个用户吗?"
+                    ok-text="确定"
+                    cancel-text="取消"
+                    @confirm="confirm(record.uid)"
+                    @cancel="cancel"
+                  >
+                    <a-button type="link">淘汰</a-button>
+                  </a-popconfirm>
                 </div>
-              </a-col>
-              <template v-if="card6Bol">
+              </template>
+            </a-table>
+          </div>
+          <div class="pagination">
+            <!-- :default-current="pagination.currentPage" -->
+            <a-pagination
+              v-model="pagination.currentPage"
+              show-quick-jumper
+              show-size-changer
+              :page-size-options="pagination.sizes"
+              :total="pagination.total"
+              :page-size.sync="pagination.pageSize"
+              :show-total="
+                (total, range) =>
+                  `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                    total / pagination.pageSize
+                  )}页`
+              "
+              @change="onChange"
+              @showSizeChange="sizeChange"
+            />
+          </div>
+        </div>
+      </a-card>
+      <a-card class="card5" v-if="taskDetailInfo.check_list.length > 0">
+        <div class="title">
+          审核信息
+        </div>
+      <div class="content">
+          <div
+          class="card5Item"
+          v-for="(item, index) in taskDetailInfo.check_list"
+          :key="index"
+        >
+          <div class="c1">
+            <div class="t1">审核通过：{{ item.check_status }}</div>
+            <div class="t2">审核人：{{ item.check_user }}</div>
+            <div class="t3">审核时间：{{ item.check_time }}</div>
+          </div>
+          <div class="c2" v-if="taskDetailInfo.task_status === 4">
+            违规原因：{{ item.check_reason }}
+          </div>
+          <div class="c3">
+            <div class="t1">处理回复：</div>
+            <div class="t2">
+              {{ item.check_desc }}
+            </div>
+          </div>
+          <div class="imgcon">
+            <div class="img" v-for="item in item.check_image" :key="item">
+              <img preview="2" :src="item" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+      </a-card>
+      <a-card class="card6">
+        <div class="title">操作日志</div>
+        <div class="table-page-search-wrapper">
+          <div class="form">
+            <a-form-model layout="inline">
+              <a-row :gutter="48">
                 <a-col :md="8" :sm="24">
-                  <a-form-model-item label="操作类型">
-                    <a-input v-model="opt_type" placeholder="关键字"></a-input>
+                  <a-form-model-item label="操作员">
+                    <a-input v-model="opt_user" placeholder="姓名"></a-input>
                   </a-form-model-item>
                 </a-col>
                 <a-col :md="8" :sm="24">
-                  <a-form-model-item label="操作说明">
-                    <a-input v-model="opt_desc" placeholder="关键字"></a-input>
+                  <a-form-model-item label="操作时间">
+                    <a-range-picker
+                      v-model="logTime"
+                      class="piker-time"
+                      :ranges="{
+                        Today: [moment(), moment()],
+                        'This Month': [moment(), moment().endOf('month')]
+                      }"
+                      show-time
+                      format="YYYY/MM/DD HH:mm:ss"
+                      @change="onChange2"
+                    />
                   </a-form-model-item>
                 </a-col>
-                <a-col :md="8" :sm="24"></a-col>
-                <a-col :md="8" :sm="24">
+                <a-col :md="8" :sm="24" v-if="!card6Bol">
                   <div class="btns">
                     <a-button type="primary" @click="logSearch">查询</a-button>
                     <a-button @click="logReset">重置</a-button>
                     <a-button
 type="link"
-@click="close3"
-                      >收起 <a-icon
-type="up"
+@click="open3"
+                      >展开 <a-icon
+type="down"
                     /></a-button>
                   </div>
                 </a-col>
-              </template>
-            </a-row>
-          </a-form-model>
+                <template v-if="card6Bol">
+                  <a-col :md="8" :sm="24">
+                    <a-form-model-item label="操作类型">
+                      <a-input
+                        v-model="opt_type"
+                        placeholder="关键字"
+                      ></a-input>
+                    </a-form-model-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24">
+                    <a-form-model-item label="操作说明">
+                      <a-input
+                        v-model="opt_desc"
+                        placeholder="关键字"
+                      ></a-input>
+                    </a-form-model-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24"></a-col>
+                  <a-col :md="8" :sm="24">
+                    <div class="btns">
+                      <a-button
+type="primary"
+@click="logSearch"
+                        >查询</a-button
+                      >
+                      <a-button @click="logReset">重置</a-button>
+                      <a-button
+type="link"
+@click="close3"
+                        >收起 <a-icon
+type="up"
+                      /></a-button>
+                    </div>
+                  </a-col>
+                </template>
+              </a-row>
+            </a-form-model>
+          </div>
         </div>
-      </div>
-      <div class="table">
-        <a-table
-          rowKey="id"
-          :pagination="false"
-          :columns="columns2"
-          :data-source="logData"
-        >
-          <a slot="name" slot-scope="text">{{ text }}</a>
-        </a-table>
-        <div class="pagination">
-          <a-pagination
-          v-model="pagination2.currentPage"
-            show-quick-jumper
-            show-size-changer
-            :page-size-options="pagination2.sizes"
-            :total="pagination2.total"
-            :page-size.sync="pagination2.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                  total / pagination.pageSize
-                )}页`
-            "
-            @change="onChange3"
-            @showSizeChange="sizeChange3"
-          />
+        <div class="table">
+          <a-table
+            rowKey="id"
+            :pagination="false"
+            :columns="columns2"
+            :data-source="logData"
+          >
+            <a slot="name" slot-scope="text">{{ text }}</a>
+          </a-table>
+          <div class="pagination">
+            <a-pagination
+              v-model="pagination2.currentPage"
+              show-quick-jumper
+              show-size-changer
+              :page-size-options="pagination2.sizes"
+              :total="pagination2.total"
+              :page-size.sync="pagination2.pageSize"
+              :show-total="
+                (total, range) =>
+                  `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                    total / pagination.pageSize
+                  )}页`
+              "
+              @change="onChange3"
+              @showSizeChange="sizeChange3"
+            />
+          </div>
         </div>
-      </div>
-    </a-card>
-</div>
+      </a-card>
+    </div>
     <checkModel :id="id" ref="checkModel"></checkModel>
     <awardModel
       :selectedRowKeys="selectedRowKeys"
@@ -595,8 +649,12 @@ type="up"
       :id="id"
       ref="awardModel"
     ></awardModel>
-    <appraiseModel ref="appraiseModel" ></appraiseModel>
-    <weedOutModel ref="weedOutModel" :selectedRowKeys="selectedRowKeys" :id="id"></weedOutModel>
+    <appraiseModel ref="appraiseModel"></appraiseModel>
+    <weedOutModel
+      ref="weedOutModel"
+      :selectedRowKeys="selectedRowKeys"
+      :id="id"
+    ></weedOutModel>
   </div>
 </template>
 
@@ -633,8 +691,8 @@ export default {
       // previewVisible: false, // 是否预览图片
       // previewImage: '', // 预览图片链接
       btnBol: false, // 控制任务说明行数显示
-      titleArr: ['任务进度', '投诉', '评价', '提问'],
-      currentIndex: 0,
+      // titleArr: ['任务进度', '投诉', '评价', '提问'],
+      currentIndex: '',
       card4Bol: false,
       taskSpeedList: [], // 任务流水列表
       columns: [
@@ -793,6 +851,29 @@ export default {
     document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
+    // 新窗口打开用户详情页面
+    // openUserDetail () {
+    //    window.open(`/zht/household/member/getMemberList?uid=${this.taskDetailInfo.uid}`, '_parent')
+    // },
+    // 新窗口打开群详情
+    openGroupDetail () {
+      if (this.taskDetailInfo.group_id) {
+        const routeData = this.$router.resolve({
+          name: 'groupDetail',
+          query: { id: this.taskDetailInfo.group_id }
+        })
+        window.open(routeData.href, '_blank')
+      }
+    },
+    // 跳转到投诉列表
+    openComplaint (record) {
+      if (record.complaint_total > 0) {
+        this.currentIndex = 1
+        this.$router.push(
+          `/taskCentre/complain?task_id=${this.id}&uid=${record.uid}`
+        )
+      }
+    },
     // 批量淘汰 / 奖励
     handleMenuClick (e) {
       if (this.selectedRowKeys.length == 0) {
@@ -802,7 +883,7 @@ export default {
       if (+e.key === 1) {
         this.$refs.weedOutModel.isShow = true
       } else {
-          this.$refs.awardModel.isShow = true
+        this.$refs.awardModel.isShow = true
       }
     },
     // 日志重置
@@ -944,7 +1025,7 @@ export default {
     moment,
     // 操作时间改变
     onChange2 (dates, dateStrings) {
-       this.opt_time = dateStrings[0] + '~' + dateStrings[1]
+      this.opt_time = dateStrings[0] + '~' + dateStrings[1]
       // console.log('From: ', dates[0], ', to: ', dates[1])
       // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
     },
@@ -998,8 +1079,15 @@ export default {
       this.card4Bol = true
     },
     // 切换标题
-    selectCard4Title (index) {
-      this.currentIndex = index
+    selectCard4Title (type) {
+      this.currentIndex = type
+      if (type === 1) {
+        this.$router.push('/taskCentre/complain?task_id=' + this.id)
+      } else if (type === 2) {
+        this.$router.push('/taskCentre/evaluate?task_id=' + this.id)
+      } else if (type === 3) {
+        this.$router.push('/taskCentre/askQuestion?task_id=' + this.id)
+      }
     },
     // 任务说明收起
     close () {
@@ -1063,7 +1151,7 @@ export default {
   /deep/ .ant-card-body {
     padding: 0;
   }
-  .cardContent{
+  .cardContent {
     padding: 0 20px;
   }
   .card1 {
@@ -1263,6 +1351,16 @@ export default {
 .card5 {
   margin-top: 20px;
   padding-bottom: 20px;
+ .content{
+   padding: 0 30px;
+    .card5Item{
+     border-bottom: 1px solid #E8E8E8;
+     padding-bottom: 30px;
+     &:last-child{
+       border-bottom: none;
+     }
+  }
+ }
   .title {
     padding-left: 30px;
     height: 55px;
@@ -1276,7 +1374,7 @@ export default {
   }
   .c1 {
     margin-top: 20px;
-    padding: 0 30px;
+    // padding: 0 30px;
     display: flex;
     .t1,
     .t2,
@@ -1286,11 +1384,11 @@ export default {
   }
   .c2 {
     margin-top: 20px;
-    padding: 0 30px;
+    // padding: 0 30px;
   }
   .c3 {
     margin-top: 20px;
-    padding: 0 30px;
+    // padding: 0 30px;
     display: flex;
     .t1 {
       width: 70px;

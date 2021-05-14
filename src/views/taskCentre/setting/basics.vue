@@ -45,7 +45,8 @@
             style="width:87px;textAlign: center;"
             step="1"
             min="0"
-            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
+            onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
           ></a-input>
           <span>天后关闭交易，不可再进行投诉、评价、任务方幸福币冻结</span>
         </div>
@@ -55,7 +56,8 @@
             v-model="group_limit"
             step="1"
             min="0"
-            onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"
+            onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
             style="width:87px;textAlign: center;"
           ></a-input>
           <span>人</span>
@@ -144,7 +146,6 @@ type="primary"
               class="close"
               type="close"
               @click="delWeedOut(index)"
-              v-if="arr2.length > 1"
             />
           </div>
           <div class="btn">
@@ -181,7 +182,7 @@ type="primary"
               class="close"
               type="close"
               @click="delGiveUp(index)"
-              v-if="arr3.length > 1"
+
             />
           </div>
           <div class="btn">
@@ -244,26 +245,48 @@ export default {
     arr: {
       handler () {
         this.card3Bol = false
-        console.log('改变了')
+        // console.log('改变了')
       },
       deep: true
     },
     arr2: {
       handler () {
         this.card4Bol = false
-        console.log('改变了')
+        // console.log('改变了')
       },
       deep: true
     },
     arr3: {
       handler () {
         this.card5Bol = false
-        console.log('改变了')
+        // console.log('改变了')
       },
       deep: true
     }
   },
   methods: {
+    // 获取放弃原因列表
+   async getGiveOutReasonList () {
+    const res4 = await gainGetReason({
+      type: 2
+    })
+    this.arr3 = res4.list.length > 0 ? res4.list : this.arr3
+    this.$nextTick(() => {
+      this.card5Bol = true
+    })
+    // console.log('获取放弃原因列表', res4)
+    },
+    // 获取淘汰原因列表
+    async getWeekOutReasonList () {
+    const res3 = await gainGetReason({
+      type: 1
+    })
+    this.arr2 = res3.list.length > 0 ? res3.list : this.arr2
+    this.$nextTick(() => {
+      this.card4Bol = true
+    })
+    // console.log('获取淘汰原因列表', res3)
+    },
     // 获取评价标签
   async GetLabelList () {
         // 基础-获取评价标签
@@ -279,21 +302,31 @@ export default {
         }
       ]
     }
+    this.$nextTick(() => {
+      this.card3Bol = true
+    })
     //  console.log('基础-获取评价标签', res2)
     },
     // 放弃提交
     async giveUp () {
-      const list = this.arr3.map(item => {
-        return {
+       const arrTest = this.arr3.map(item => {
+        if (item.reason != '') {
+          return {
           reason: item.reason,
           sort: item.order_sort
         }
+        }
       })
-      const res = await addSetReason({
+      const list = arrTest.filter(item => {
+        return item != undefined
+      })
+      // console.log('放弃', list)
+       await addSetReason({
         reason_list: list,
         type: 2
       })
-      console.log('放弃提交', res)
+      // console.log('放弃提交', res)
+      this.getGiveOutReasonList()
       this.card5Bol = true
       this.$message.success('提交成功')
     },
@@ -324,11 +357,12 @@ export default {
          return item != undefined
       })
       // console.log('淘汰提交', list)
-      const res = await addSetReason({
+      await addSetReason({
         reason_list: list,
         type: 1
       })
-      console.log('淘汰提交', res)
+      // console.log('淘汰提交', res)
+      this.getWeekOutReasonList()
       this.card4Bol = true
       this.$message.success('提交成功')
     },
@@ -372,11 +406,12 @@ export default {
       const list = arrTest.filter(item => {
         return item != undefined
       })
-      console.log('评价提交', list)
-      const res = await addSetLabel({
+      // console.log('评价提交', list)
+      await addSetLabel({
         tag_list: list
       })
-      console.log('评价提交', res)
+      // console.log('评价提交', res)
+      this.GetLabelList()
       this.card3Bol = true
       this.$message.success('提交成功')
     },
@@ -407,12 +442,12 @@ export default {
     },
     // 基础设置提交
     async basicsSubmit () {
-      const res = await setSetting({
+      await setSetting({
         task_finish: this.task_finish,
         group_limit: this.group_limit,
         customer_service: +this.customer_service
       })
-      console.log('基础设置提交', res)
+      // console.log('基础设置提交', res)
       this.btnBol = true
       this.$message.success('提交成功')
     },
@@ -449,23 +484,10 @@ export default {
     this.task_finish = res.data.task_finish
     // console.log('获取任务基础信息', res)
     this.GetLabelList()
-    // 获取淘汰原因列表
-    const res3 = await gainGetReason({
-      type: 1
-    })
-    this.arr2 = res3.list.length > 0 ? res3.list : this.arr2
-    console.log('获取淘汰原因列表', res3)
-    // 获取放弃原因列表
-    const res4 = await gainGetReason({
-      type: 2
-    })
-    this.arr3 = res4.list.length > 0 ? res4.list : this.arr3
-    console.log('获取放弃原因列表', res4)
+    this.getWeekOutReasonList()
+    this.getGiveOutReasonList()
     this.$nextTick(() => {
-      this.card3Bol = true
       this.btnBol = true
-      this.card4Bol = true
-      this.card5Bol = true
     })
   }
 }

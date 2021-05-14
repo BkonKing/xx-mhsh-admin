@@ -8,210 +8,109 @@
             @click="changeTab('')"
             :class="{ active: currentIndex === '' }"
           >
-            全部{{ tabInfo.total!==0?tabInfo.total:'' }}
+            全部{{ tabInfo.total !== 0 ? tabInfo.total : "" }}
           </div>
           <div
             class="item"
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核{{ tabInfo.to_be_check!==0?tabInfo.to_be_check:''  }}
+            待审核{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}
           </div>
           <div
             class="item"
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            待接单{{ tabInfo.order_be_received!==0?tabInfo.order_be_received:'' }}
+            待接单{{
+              tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
+            }}
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待交付{{tabInfo.to_be_delivered!==0?tabInfo.to_be_delivered:''}}
+            待交付{{
+              tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : ""
+            }}
           </div>
           <div
             class="item"
             @click="changeTab(3)"
             :class="{ active: currentIndex === 3 }"
           >
-            已完成{{ tabInfo.to_completed !==0?tabInfo.to_completed:''}}
+            已完成{{ tabInfo.to_completed !== 0 ? tabInfo.to_completed : "" }}
           </div>
           <div
             class="item"
             @click="changeTab(5)"
             :class="{ active: currentIndex === 5 }"
           >
-            已终止{{ tabInfo.to_terminated !==0?tabInfo.to_terminated:''}}
+            已终止{{ tabInfo.to_terminated !== 0 ? tabInfo.to_terminated : "" }}
           </div>
           <div
             class="item"
             @click="changeTab(6)"
             :class="{ active: currentIndex === 6 }"
           >
-            已失效{{ tabInfo.to_invalid !==0?tabInfo.to_invalid:''}}
+            已失效{{ tabInfo.to_invalid !== 0 ? tabInfo.to_invalid : "" }}
           </div>
           <div
             class="item"
             @click="changeTab(4)"
             :class="{ active: currentIndex === 4 }"
           >
-            未通过{{ tabInfo.to_failed!==0?tabInfo.to_failed:'' }}
+            未通过{{ tabInfo.to_failed !== 0 ? tabInfo.to_failed : "" }}
           </div>
         </div>
       </template>
     </page-header-wrapper>
-  <div class="bodyContent">
+    <div class="bodyContent">
       <a-card class="card" ref="card">
-      <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="任务类型">
-                <a-select v-model="task_type" placeholder="请选择">
-                  <a-select-option
-                    v-for="(item, index) in typeList"
-                    :key="index"
-                    :value="item.id"
-                  >
-                    {{ item.type_name }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="任务状态">
-                <a-select v-model="task_status" placeholder="请选择">
-                  <a-select-option
-                    v-for="(item, index) in taskStatusList"
-                    :key="index"
-                    :value="item.value"
-                  >
-                    {{ item.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="cardBol">
-              <a-form-model-item label="进度状态">
-                <a-select v-model="progress_status" placeholder="请选择">
-                  <a-select-option
-                    v-for="(item, index) in processStatus"
-                    :key="index"
-                    :value="item.value"
-                  >
-                    {{ item.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="!cardBol">
-              <div class="btns">
-                <a-button
-class="btn1"
-type="primary"
-@click="search"
-                  >查询</a-button
-                >
-                <a-button @click="reset">重置</a-button>
-                <a-button
-type="link"
-@click="open"
-                  >展开 <a-icon type="down" />
-                </a-button>
-              </div>
-            </a-col>
-            <template v-if="cardBol">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="48">
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务方">
-                  <a-input
-                    v-model="task_user_search"
-                    placeholder="手机号、用户昵称/ID、任务联系电话"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="接单方">
-                  <a-input
-                    v-model="accept_search"
-                    placeholder="手机号、用户昵称/ID"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务">
-                  <a-input
-                    v-model="task_search"
-                    placeholder="编号、标题、内容"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="可见小区">
-                  <a-select placeholder="请选择" v-model="project_id">
+                <a-form-model-item label="任务类型">
+                  <a-select v-model="task_type" placeholder="请选择">
                     <a-select-option
-                      v-for="item in projectList"
-                      :key="item.id"
+                      v-for="(item, index) in typeList"
+                      :key="index"
                       :value="item.id"
                     >
-                      {{ item.project_name }}
+                      {{ item.type_name }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="可见地区">
-                  <a-cascader
-                    :changeOnSelect="true"
-                    :options="options"
-                    placeholder="请选择"
-                    @change="onChangeCity"
-                    :fieldNames="{
-                      label: 'label',
-                      value: 'label',
-                      children: 'children'
-                    }"
-                  />
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="可见群">
-                  <a-input
-                    v-model="group_search"
-                    placeholder="群名称/ID"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="所属项目">
-                  <a-select v-model="user_project" placeholder="请选择">
+                <a-form-model-item label="任务状态">
+                  <a-select v-model="task_status" placeholder="请选择">
                     <a-select-option
-                      v-for="item in projectList"
-                      :key="item.id"
-                      :value="item.id"
+                      v-for="(item, index) in taskStatusList"
+                      :key="index"
+                      :value="item.value"
                     >
-                      {{ item.project_name }}
+                      {{ item.text }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="创建时间">
-                  <a-range-picker
-                  v-model="createTime"
-                    class="piker-time"
-                    :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
-                    }"
-                    show-time
-                    @change="onChangeTime"
-                    format="YYYY-MM-DD HH:mm:ss"
-                  />
+              <a-col :md="8" :sm="24" v-if="cardBol">
+                <a-form-model-item label="进度状态">
+                  <a-select v-model="progress_status" placeholder="请选择">
+                    <a-select-option
+                      v-for="(item, index) in processStatus"
+                      :key="index"
+                      :value="item.value"
+                    >
+                      {{ item.text }}
+                    </a-select-option>
+                  </a-select>
                 </a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24">
+              <a-col :md="8" :sm="24" v-if="!cardBol">
                 <div class="btns">
                   <a-button
 class="btn1"
@@ -222,92 +121,210 @@ type="primary"
                   <a-button @click="reset">重置</a-button>
                   <a-button
 type="link"
-@click="close"
-                    >收起 <a-icon
-type="up"
-                  /></a-button>
+@click="open"
+                    >展开 <a-icon type="down" />
+                  </a-button>
                 </div>
               </a-col>
-            </template>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <div class="top">
-        <a-button type="primary">新建任务</a-button>
-        <a-button @click="batchOpera">批量操作 <a-icon type="down"/></a-button>
-      </div>
-      <div class="selected" v-if="selectedRowKeys.length > 0">
-        <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-        <span class="span2" @click="clear">清空</span>
-      </div>
-      <a-table
-        rowKey="id"
-        class="table"
-        :columns="columns"
-        :data-source="tableData"
-        :pagination="false"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-        @change="tableChange"
-      >
-        <template slot="task_user" slot-scope="text, record">
-          <div>
-            <div class="t1">{{ record.task_user }}</div>
-            <div class="t2">{{ record.task_project }}</div>
-          </div>
-        </template>
-        <div slot="customTitle">
-          接单人数
-          <a-tooltip>
-            <template slot="title">
-              接单人数/需求人数
-            </template>
-            <a-icon type="info-circle" />
-          </a-tooltip>
-        </div>
-        <template slot="accept_people" slot-scope="text, record">
-          <span> {{ record.accept_people }}</span
-          ><span>/</span>
-          <span>{{ record.need_people }}</span>
-        </template>
-        <template slot="opera" slot-scope="text, record">
-          <div class="btns">
-            <a-button type="link" @click="lookOver(record)">查看</a-button>
-            <a-button
+              <template v-if="cardBol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务方">
+                    <a-input
+                      v-model="task_user_search"
+                      placeholder="手机号、用户昵称/ID、任务联系电话"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="接单方">
+                    <a-input
+                      v-model="accept_search"
+                      placeholder="手机号、用户昵称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务">
+                    <a-input
+                      v-model="task_search"
+                      placeholder="编号、标题、内容"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="可见小区">
+                    <a-select placeholder="请选择" v-model="project_id">
+                      <a-select-option
+                        v-for="item in projectList"
+                        :key="item.id"
+                        :value="item.id"
+                      >
+                        {{ item.project_name }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="可见地区">
+                    <a-cascader
+                    v-model="areaArr"
+                      :changeOnSelect="true"
+                      :options="options"
+                      placeholder="请选择"
+                      @change="onChangeCity"
+                      :fieldNames="{
+                        label: 'label',
+                        value: 'label',
+                        children: 'children'
+                      }"
+                    />
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="可见群">
+                    <a-input
+                      v-model="group_search"
+                      placeholder="群名称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="所属项目">
+                    <a-select v-model="user_project" placeholder="请选择">
+                      <a-select-option
+                        v-for="item in projectList"
+                        :key="item.id"
+                        :value="item.id"
+                      >
+                        {{ item.project_name }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="创建时间">
+                    <a-range-picker
+                      v-model="createTime"
+                      class="piker-time"
+                      :ranges="{
+                        Today: [moment(), moment()],
+                        'This Month': [moment(), moment().endOf('month')]
+                      }"
+                      show-time
+                      @change="onChangeTime"
+                      format="YYYY-MM-DD HH:mm:ss"
+                    />
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <div class="btns">
+                    <a-button
+class="btn1"
+type="primary"
+@click="search"
+                      >查询</a-button
+                    >
+                    <a-button @click="reset">重置</a-button>
+                    <a-button
 type="link"
-v-if="record.task_status === '待审核'"
-@click="$router.push('/taskCentre/toCheck?id='+record.id)"
-              >审核</a-button
-            >
+@click="close"
+                      >收起 <a-icon
+type="up"
+                    /></a-button>
+                  </div>
+                </a-col>
+              </template>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <div class="top">
+          <a-button type="primary">新建任务</a-button>
+          <!-- <a-button @click="batchOpera">批量操作 <a-icon type="down"/></a-button> -->
+          <a-dropdown>
+            <a-menu slot="overlay" @click="handleMenuClick">
+              <a-menu-item key="1">
+                批量审核
+              </a-menu-item>
+            </a-menu>
+            <a-button> 批量操作 <a-icon type="down" /> </a-button>
+          </a-dropdown>
+        </div>
+        <div class="selected" v-if="selectedRowKeys.length > 0">
+          <a-icon class="icon" type="info-circle" />
+          已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+          <span class="span2" @click="clear">清空</span>
+        </div>
+        <a-table
+          rowKey="id"
+          class="table"
+          :columns="columns"
+          :data-source="tableData"
+          :pagination="false"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+          @change="tableChange"
+        >
+          <template slot="check_time_desc" slot-scope="text,record">
+            <div :style="{color:record.is_over===1?'#F5222D':''}">
+              {{record.check_time_desc}}
+            </div>
+          </template>
+          <template slot="task_user" slot-scope="text, record">
+            <div>
+              <div class="t1">{{ record.task_user }}</div>
+              <div class="t2">{{ record.task_project?record.task_project:'' }}</div>
+            </div>
+          </template>
+          <div slot="customTitle">
+            接单人数
+            <a-tooltip>
+              <template slot="title">
+                接单人数/需求人数
+              </template>
+              <a-icon type="info-circle" />
+            </a-tooltip>
           </div>
-        </template>
-      </a-table>
-      <div class="pagination">
-
-        <a-pagination
-        v-model="pagination.currentPage"
-          show-quick-jumper
-          show-size-changer
-          :page-size-options="pagination.sizes"
-          :total="pagination.total"
-          :page-size.sync="pagination.pageSize"
-          :show-total="
-            (total, range) =>
-              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                total / pagination.pageSize
-              )}页`
-          "
-          @change="onChange"
-          @showSizeChange="sizeChange"
-        />
-      </div>
-    </a-card>
-  </div>
+          <template slot="accept_people" slot-scope="text, record">
+            <span> {{ record.accept_people }}</span
+            ><span>/</span>
+            <span>{{ record.need_people }}</span>
+          </template>
+          <template slot="opera" slot-scope="text, record">
+            <div class="btns">
+              <a-button type="link" @click="lookOver(record)">查看</a-button>
+              <a-button
+                type="link"
+                v-if="record.task_status === '待审核'"
+                @click="$router.push('/taskCentre/toCheck?id=' + record.id)"
+                >审核</a-button
+              >
+            </div>
+          </template>
+        </a-table>
+        <div class="pagination">
+          <a-pagination
+            v-model="pagination.currentPage"
+            show-quick-jumper
+            show-size-changer
+            :page-size-options="pagination.sizes"
+            :total="pagination.total"
+            :page-size.sync="pagination.pageSize"
+            :show-total="
+              (total, range) =>
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
+            "
+            @change="onChange"
+            @showSizeChange="sizeChange"
+          />
+        </div>
+      </a-card>
+    </div>
     <batchCheck
       ref="batchCheck"
       :selectedRowKeys="selectedRowKeys"
@@ -353,6 +370,7 @@ export default {
           title: '审核时间',
           dataIndex: 'check_time_desc',
           key: 'check_time_desc',
+          scopedSlots: { customRender: 'check_time_desc' },
           width: '8.333333333%'
         },
         {
@@ -446,7 +464,8 @@ export default {
       typeList: [], // 任务类型列表
       taskStatusList: [], // 任务状态列表
       processStatus: [], // 任务进度状态列表
-      projectList: [] // 项目列表
+      projectList: [], // 项目列表
+      areaArr: []
     }
   },
 
@@ -460,7 +479,7 @@ export default {
     reset () {
       this.task_type = undefined
       this.task_status = undefined
-      this.user_project = ''
+      this.user_project = undefined
       this.group_search = ''
       this.area = []
       this.task_search = ''
@@ -472,6 +491,7 @@ export default {
       this.project_id = undefined
       this.task_user_search = ''
       this.createTime = []
+      this.areaArr = []
       this.pagination.currentPage = 1
       this.getData()
     },
@@ -480,7 +500,7 @@ export default {
       // if (record.task_status === '待审核') {
       //   this.$router.push('/taskCentre/toCheck?id=' + record.id)
       // } else {
-        this.$router.push('/taskCentre/complete?id=' + record.id)
+      this.$router.push('/taskCentre/complete?id=' + record.id)
       // }
     },
     tableChange (pagination, filters, sorter, { currentDataSource }) {
@@ -564,8 +584,11 @@ export default {
       // console.log('selectedRows', selectedRows)
     },
     // 批量操作
-    batchOpera () {
-      if (this.selectedRowKeys.length > 0) {
+    handleMenuClick (e) {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
+      if (+e.key === 1) {
         this.$refs.batchCheck.isShow = true
       }
     }
@@ -613,7 +636,7 @@ export default {
     border-bottom: 2px solid #1890ff;
   }
 }
-.bodyContent{
+.bodyContent {
   padding: 0 20px;
 }
 .btns {
