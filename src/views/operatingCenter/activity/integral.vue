@@ -86,7 +86,7 @@
                     <a-select-option value="2">核销</a-select-option>
                   </a-select>
                 </a-form-model-item>
-              </a-col> 
+              </a-col>
               <template v-if="advanced">
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="处理时间">
@@ -128,7 +128,7 @@
                       <a-select-option value="3">已失效--已失效>0</a-select-option>
                     </a-select>
                   </a-form-model-item>
-                </a-col> 
+                </a-col>
               </template>
               <a-col :md="!advanced && 8 || 16" :sm="24">
                 <span class="table-page-search-submitButtons" style="float: right; overflow: hidden">
@@ -232,17 +232,19 @@ export default {
   data () {
     this.columns = columns
     return {
-      form: this.$form.createForm(this,{onFieldsChange: (_, changedFields) => {
+      form: this.$form.createForm(this, {
+onFieldsChange: (_, changedFields) => {
         this.formChage()
-      }}),
+      }
+}),
       rangeConfig: {
         initialValue: ['', ''],
-        rules: [{ type: 'array', required: true, message: '请选择活动时间' }],
+        rules: [{ type: 'array', required: true, message: '请选择活动时间' }]
       },
       initTime: [],
       activityId: '', // 活动id
       numData: '',
-      activityInfo: {activity_name: ''}, // 活动详情
+      activityInfo: { activity_name: '' }, // 活动详情
       initInfo: '', // 初始数据
       wordNum: 0,
       imgShow: false, // 二维码大图是否显示
@@ -279,24 +281,24 @@ export default {
         this.isUnable = true
       }
     },
-    handleSubmit(e) {
+    handleSubmit (e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (err) {
           return
         }
-        const rangeTimeValue = values['activity_time']
+        const rangeTimeValue = values.activity_time
         console.log('00000')
         let flag = true
-        flag = this.timeRules(rangeTimeValue[0].format('YYYY-MM-DD HH:mm'),this.endTime)
+        flag = this.timeRules(rangeTimeValue[0].format('YYYY-MM-DD HH:mm'), this.endTime)
         if (!flag) return
         values.activity_time = rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss') + '~' + rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss')
         values.is_open = values.is_open && 1 || 0
         console.log(values)
         if (this.activityId) { // 编辑
           values.is_over = 0
-          if (this.initOpen && !values.is_open) { //初始开启，点击了关闭
-            const nowTime = moment().format("YYYY-MM-DD HH:mm:ss")
+          if (this.initOpen && !values.is_open) { // 初始开启，点击了关闭
+            const nowTime = moment().format('YYYY-MM-DD HH:mm:ss')
             values.is_over = 1
             if (this.activityInfo.status != 3) {
               values.activity_time = rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss') + '~' + nowTime
@@ -314,7 +316,7 @@ export default {
             console.log(res)
           })
         }
-        
+
         console.log('Received values of form: ', values)
       })
     },
@@ -327,7 +329,7 @@ export default {
     // 开启关闭状态改变
     openChange () {
       const that = this
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         const openVal = this.form.getFieldValue('is_open')
         console.log('变化', openVal)
         if (!openVal && this.activityId && this.activityInfo.status == 1) {
@@ -336,10 +338,10 @@ export default {
             content: '关闭将会结束本次活动',
             cancelText: '取消',
             okText: '确定关闭',
-            onOk() {
-              console.log('OK');
+            onOk () {
+              console.log('OK')
             },
-            onCancel() {
+            onCancel () {
               that.activityInfo.is_open = true
               that.form.setFieldsValue({ is_open: true })
               console.log(that.activityInfo)
@@ -350,7 +352,7 @@ export default {
     },
     // 活动名称改变
     handleNameChange () {
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         this.wordNum = this.form.getFieldValue('activity_title').length
       })
     },
@@ -360,15 +362,15 @@ export default {
       if (!dates.length) return
       // const nowTime = moment(new Date()).valueOf()
       const endTime = moment(dates[1]._d).valueOf()
-      const startTime = dateStrings[0]
+      // const startTime = dateStrings[0]
       this.endTime = endTime
       this.timeRules(dateStrings[0], endTime)
     },
     // 活动时间限制判断
-    timeRules (startTime,endTime) {
+    timeRules (startTime, endTime) {
       const nowTime = moment(new Date()).valueOf()
       if (endTime < nowTime) {
-        this.$message.error('活动结束时间不能小于当前时间',1)
+        this.$message.error('活动结束时间不能小于当前时间', 1)
         setTimeout(() => {
           this.endTime = moment(this.initTime[1]._d).valueOf()
           this.form.setFieldsValue({ activity_time: this.initTime })
@@ -380,7 +382,7 @@ export default {
         setTimeout(() => {
           this.form.setFieldsValue({ activity_time: this.initTime })
         })
-        this.$message.error('活动进行中,开始时间不能修改',1)
+        this.$message.error('活动进行中,开始时间不能修改', 1)
         return false
       } else {
         return true
@@ -400,8 +402,8 @@ export default {
           this.haveSession()
           this.activityInfo.activity_name = infoData.activity_name
           this.activityInfo.is_open = infoData.is_open && true || false
-          this.rangeConfig.initialValue = [moment(new Date(infoData.s_time)),moment(new Date(infoData.e_time))]
-          this.initTime = [moment(new Date(infoData.s_time)),moment(new Date(infoData.e_time))]
+          this.rangeConfig.initialValue = [moment(new Date(infoData.s_time)), moment(new Date(infoData.e_time))]
+          this.initTime = [moment(new Date(infoData.s_time)), moment(new Date(infoData.e_time))]
           this.startTime = infoData.s_time
           this.endTime = moment(new Date(infoData.e_time)).valueOf()
           this.$refs.table.refresh(true)
@@ -416,13 +418,13 @@ export default {
       getSessionList().then(res => {
         if (res.data.list.length) {
           let flag = 0
-          res.data.list.map((item)=>{
+          res.data.list.map((item) => {
             console.log(item)
-            if(item.id == this.activityId) {
+            if (item.id == this.activityId) {
               flag = 1
             }
           })
-          if(!flag) {
+          if (!flag) {
             this.queryParam.activity_id = undefined
           }
         }
@@ -500,7 +502,7 @@ export default {
   },
   filters: {
     getname: function (val, mobile) {
-      return val ? val : (mobile.substr(0,3) + '****' + mobile.substr(7))
+      return val || (mobile.substr(0, 3) + '****' + mobile.substr(7))
     }
   }
 }
