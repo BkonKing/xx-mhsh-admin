@@ -664,7 +664,6 @@ import checkModel from './checkModel'
 import awardModel from './awardModel'
 import appraiseModel from './appraiseModel'
 import weedOutModel from './weedOutModel'
-import $ from 'jquery'
 import {
   getTaskDetail,
   toGetTaskSpeed,
