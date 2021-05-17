@@ -1,12 +1,11 @@
 import {
-  RouteView,
-  PageView
+  RouteView
 } from '@/layouts'
 
 export default {
   path: '/taskCentre',
   name: 'taskCentre',
-  component: PageView,
+  component: RouteView,
   meta: {
     title: '任务中心',
     icon: 'table'

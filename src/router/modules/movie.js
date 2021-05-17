@@ -1,11 +1,12 @@
 import {
+  PageView,
   RouteView
 } from '@/layouts'
 
 export default {
   path: '/movie',
   name: 'movie',
-  component: RouteView,
+  component: PageView,
   meta: {
     title: '电影管理',
     icon: 'table'
