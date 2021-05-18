@@ -236,12 +236,12 @@ type="up"
         <div class="imgcon">
           <div
             class="img"
-            v-for="item in taskDetailInfo.task_image"
-            :key="item"
+            v-for="(item,index) in taskDetailInfo.task_image"
+            :key="index"
           >
             <img
               preview="0"
-              src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=380567600,1510886462&fm=26&gp=0.jpg"
+              :src="item"
               alt=""
             />
           </div>

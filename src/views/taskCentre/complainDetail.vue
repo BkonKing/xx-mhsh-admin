@@ -131,7 +131,7 @@
           <div class="imgs">
             <div
               class="item"
-              v-for="(item, index) in detailInfo.handle_image"
+              v-for="(item, index) in detailInfo.complaint_image"
               :key="index"
             >
               <img preview="0" :src="item" alt="" />

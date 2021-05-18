@@ -280,6 +280,7 @@ export default {
         await toDelWhiteUser({ ids: this.selectedRowKeys })
         this.$message.success('删除成功')
         this.getData()
+        this.selectedRowKeys = []
       }
 
       // console.log('删除白名单', res)

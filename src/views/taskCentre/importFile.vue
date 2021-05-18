@@ -107,6 +107,7 @@ export default {
         const res2 = await toImportGroupUser(fd)
         // console.log('上传群成员文件', res2)
         this.uploadFileInfo = res2
+        this.$parent.getRegister()
       }
       //  console.log('上传文件', res)
       this.isShow2 = true
