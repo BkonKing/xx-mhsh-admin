@@ -156,10 +156,16 @@ export default {
           user_list: list2,
           group_id: this.id
         })
-         this.isShow = false
+        if (res2.code === '201') {
+          this.$message.error(res2.message)
+        } else {
+        this.isShow = false
         this.$parent.pagination.currentPage = 1
+        this.$message.success('添加成功')
         this.$parent.getData()
-        console.log('添加群用户', res2)
+        this.$parent.getRegister()
+        // console.log('添加群用户', res2)
+        }
       }
     },
     // 添加

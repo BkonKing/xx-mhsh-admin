@@ -125,10 +125,11 @@ export default {
        is_check: this.form.is_check,
        check_desc: this.form.check_desc,
        check_image: this.fileList2,
-       violation_type: this.violation_type
+       violation_type: this.form.violation_type
      })
      this.$message.success('处理成功')
      this.$parent.getData()
+     this.$parent.selectedRowKeys = []
      this.isShow = false
    },
     handleCancel () {

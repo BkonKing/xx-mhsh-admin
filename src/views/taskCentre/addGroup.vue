@@ -71,6 +71,7 @@ export default {
       group_id: this.group_id
     })
     this.$parent.getGroupBase()
+    this.$parent.getRegister()
     this.$message.success('修改成功')
    }
     this.isShow = false

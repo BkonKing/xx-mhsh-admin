@@ -200,6 +200,7 @@ type="up"
               onChange: onSelectChange
             }"
             :pagination="false"
+            @change="tableChange"
           >
             <template slot="content" slot-scope="content">
               <div class="content" style="color:#1890FF">
@@ -378,11 +379,24 @@ export default {
       TaskStatusList: [], // 任务状态列表
       complaintInfo: '',
       task_id: '', // 任务id
-      jump_uid: ''// 用户id
+      jump_uid: '', // 用户id
+      order_field: '',
+      sort_value: ''
     }
   },
 
   methods: {
+    // 排序
+    tableChange (pagination, filters, sorter, { currentDataSource }) {
+      // console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getData()
+    },
     // 切换tab
     changeTab (type) {
       this.currentIndex = type
@@ -427,7 +441,9 @@ export default {
         task_status: this.task_status,
         complaint_time: this.complaint_time,
         task_id: this.task_id,
-        jump_uid: this.jump_uid
+        jump_uid: this.jump_uid,
+        sort_value: this.sort_value,
+        order_field: this.order_field
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total

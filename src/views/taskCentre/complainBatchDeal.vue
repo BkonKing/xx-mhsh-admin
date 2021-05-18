@@ -105,6 +105,7 @@ export default {
        handle_image: this.fileList2
      })
      this.$parent.getData()
+     this.$parent.selectedRowKeys = []
      this.$message.success('处理成功')
      this.isShow = false
     },

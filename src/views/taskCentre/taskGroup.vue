@@ -254,6 +254,7 @@ export default {
       task_search: '', // 任务搜索
       owner: '', // 群主搜索
       member_search: '' // 成员搜索
+
     }
   },
   mounted () {
@@ -284,6 +285,7 @@ export default {
         })
       }
       this.getData()
+
       console.log('是否允许加入', res)
     },
     // 查询
@@ -302,6 +304,7 @@ export default {
         })
         console.log('批量删除', res)
         this.getData()
+        this.selectedRowKeys = []
         this.$message.success('删除成功')
       }
     },

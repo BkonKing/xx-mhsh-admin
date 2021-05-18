@@ -550,6 +550,7 @@ export default {
      })
      this.$message.success('删除成功')
      this.getData()
+     this.getRegister()
     },
     // 重置日志查询
     resetLog () {
@@ -618,6 +619,7 @@ export default {
         group_id: this.id,
         is_open: checked === true ? 1 : 0
       })
+      this.getRegister()
       console.log('是否允许加入', res)
     },
     // 群成员列表排序
@@ -662,6 +664,9 @@ export default {
         uid: this.selectedRowKeys[0],
         group_id: this.id
       })
+      this.selectedRowKeys = []
+      this.getGroupBase()
+      this.getRegister()
       this.$message.success('设置群主成功')
     },
     // 删除群成员
@@ -678,6 +683,7 @@ export default {
         group_id: this.id
       })
       this.getData()
+      this.getRegister()
       this.$message.success('删除成功')
     },
     // 导入用户
