@@ -277,14 +277,16 @@ export default {
    async submit () {
      const arr = []
      arr.push(this.id)
-     const res = await toHandTask({
+     await toHandTask({
        ids: arr,
        is_check: this.form.is_check,
        check_desc: this.form.check_desc,
        check_image: this.fileList2,
        violation_type: this.form.violation_type
      })
-    console.log('审核', res)
+    // console.log('审核', res)
+      // this.$parent.getData()
+      this.$router.push('/taskCentre/task')
       this.$message.success('提交成功')
     },
     // handleCancel () {

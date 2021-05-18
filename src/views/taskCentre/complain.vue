@@ -8,7 +8,7 @@
             @click="changeTab('')"
             :class="{ active: currentIndex === '' }"
           >
-            全部{{pagination.total !==0 ?pagination.total:''}}
+            全部
           </div>
           <div
             class="item"
@@ -22,7 +22,7 @@
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            已处理{{complaintInfo.processed_total!==0?complaintInfo.processed_total:''}}
+            已处理
           </div>
         </div>
       </template>
@@ -400,7 +400,6 @@ export default {
     // 切换tab
     changeTab (type) {
       this.currentIndex = type
-      this.handle_status = type
       this.pagination.currentPage = 1
       this.getData()
     },
@@ -430,7 +429,7 @@ export default {
       const res = await toGetComplaintList({
         pagesize: this.pagination.pageSize,
         pageindex: this.pagination.currentPage,
-        handle_status: this.handle_status,
+        handle_status: this.handle_status || this.currentIndex,
         complaint_type: this.complaint_type,
         content_type: this.content_type,
         user_type: this.user_type,
