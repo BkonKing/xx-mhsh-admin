@@ -46,7 +46,8 @@
         </div>
       </template>
     </page-header-wrapper>
-    <a-card class="card" ref="card">
+  <div class="cardContent">
+        <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
         <a-form-model layout="inline">
           <a-row :gutter="48">
@@ -256,6 +257,7 @@ v-else
         </div>
       </div>
     </a-card>
+  </div>
     <askCheckModel ref="askCheckModel"></askCheckModel>
     <askLookOverModel ref="askLookOverModel"></askLookOverModel>
     <askBatchCheck
@@ -536,7 +538,9 @@ export default {
 
 <style lang="less" scoped>
 .askQuestion {
-  padding: 0 20px;
+  .cardContent{
+    padding: 0 20px;
+  }
   /deep/ .ant-page-header {
     padding-bottom: 0px !important;
   }
