@@ -144,7 +144,7 @@
         <div class="table-page-search-wrapper">
         <div class="title">基础信息</div>
         <div class="content">
-          <a-form-model :label-col="labelCol" >
+          <a-form-model :label-col="md" >
             <a-row>
               <a-col :span="8">
                 <a-form-model-item label="任务标题">
@@ -687,7 +687,7 @@ export default {
   data () {
     return {
       current: 2, // 当前进度条位置
-      md: { span: 8 },
+      md: { span: 4 },
       // wrapperCol: { span: 10 },
       // previewVisible: false, // 是否预览图片
       // previewImage: '', // 预览图片链接
@@ -931,7 +931,11 @@ export default {
         task_id: +this.id,
         opt_type: type
       })
-      console.log('终止任务', res)
+      if (res.code === '201') {
+        this.$message.error(res.message)
+      } else {
+        this.$message.success('终止成功')
+      }
     },
     // 停止接单
     async stop (type) {

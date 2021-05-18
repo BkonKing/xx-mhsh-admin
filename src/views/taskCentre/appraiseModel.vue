@@ -2,12 +2,12 @@
   <a-modal v-model="isShow" :footer="null" title="查看" >
     <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="任务标题">
-        <div class="title">
+        <div class="title" @click="openTaskDetail">
           {{ info.task_title }}
         </div>
       </a-form-model-item>
       <a-form-model-item label="评价用户">
-        <span style="color:#1890FF;">
+        <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail">
           {{ info.owner_name }}
           </span
         >
@@ -109,6 +109,18 @@ export default {
     }
   },
   methods: {
+    // 打开用户详情
+    openUserDetail () {
+      window.open(`/zht/household/member/getMemberList?uid=${this.info.uid}`, '_parent')
+    },
+    // 打开任务详情
+    openTaskDetail () {
+      const { href } = this.$router.resolve({
+        name: 'complete',
+        query: { id: this.info.task_id }
+      })
+      window.open(href, '_blank')
+    },
     getEvaluate () {
       toViewEvaluate({ id: this.id }).then(res => {
         this.info = res.data
@@ -138,6 +150,7 @@ export default {
 <style lang="less" scoped>
 .title {
   color: #1890ff;
+  cursor: pointer;
 }
 .btn {
   margin-left: 74px;

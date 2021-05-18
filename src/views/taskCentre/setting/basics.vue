@@ -10,7 +10,7 @@
               全部用户
               <a-switch
                 style="marginLeft:10px"
-                default-checked
+                v-model="allCheck"
                 @change="onChangeAll"
               />
             </div>
@@ -23,7 +23,7 @@
               白名单用户
               <a-switch
                 style="marginLeft:10px"
-                default-checked
+                v-model="whiteCheck"
                 :disabled="disabled"
                 @change="onChangeWhite"
               />
@@ -207,7 +207,8 @@ import {
   addSetLabel,
   gainGetLabel,
   addSetReason,
-  gainGetReason
+  gainGetReason,
+  gainGetBasic
 } from '@/api/taskCentre'
 export default {
   data () {
@@ -229,7 +230,10 @@ export default {
       arr3: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 放弃原因数组
       card3Bol: true,
       card4Bol: true,
-      card5Bol: true
+      card5Bol: true,
+      allCheck: true,
+      whiteCheck: true
+      // switchInfo: '' // 开关信息
     }
   },
   watch: {
@@ -263,6 +267,13 @@ export default {
       },
       deep: true
     }
+    // switchInfo: {
+    //   handler () {
+    //     this.allCheck = this.switchInfo.alluser_open === 1
+    //     this.whiteCheck = this.switchInfo.whitelist_open === 1
+    //   },
+    //   deep: true
+    // }
   },
   methods: {
     // 获取放弃原因列表
@@ -455,7 +466,7 @@ export default {
     async onChangeWhite (checked) {
       // console.log('onChangeWhite', checked)
       await setFunctionOpen({
-        whitelistOpen: checked === true ? 1 : 0,
+        whitelist_open: checked === true ? 1 : 0,
         type: 2
       })
       this.$message.success('设置成功')
@@ -463,17 +474,18 @@ export default {
     },
     // 设置全部用户开关
     async onChangeAll (checked) {
-      await setFunctionOpen({
-        alluserOpen: checked === true ? 1 : 0,
-        type: 1
-      })
-      this.$message.success('设置成功')
-      //  console.log('设置全部用户开关', res)
-      if (checked == false) {
+      console.log('checked', checked)
+       if (checked === false) {
         this.disabled = false
       } else {
         this.disabled = true
       }
+     const res = await setFunctionOpen({
+        alluser_open: checked === true ? 1 : 0,
+        type: 1
+      })
+      this.$message.success('设置成功')
+       console.log('设置全部用户开关', res)
     }
   },
   async created () {
@@ -483,6 +495,15 @@ export default {
     this.group_limit = res.data.group_limit
     this.task_finish = res.data.task_finish
     // console.log('获取任务基础信息', res)
+    const res2 = await gainGetBasic()
+    this.allCheck = res2.data.alluser_open === 1
+    this.whiteCheck = res2.data.whitelist_open === 1
+    if (this.allCheck === true) {
+      this.disabled = true
+    } else {
+      this.disabled = false
+    }
+    console.log('获取开关信息', res2)
     this.GetLabelList()
     this.getWeekOutReasonList()
     this.getGiveOutReasonList()

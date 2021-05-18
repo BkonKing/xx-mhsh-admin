@@ -283,6 +283,7 @@ export default {
           is_open: 1
         })
       }
+      this.getData()
       console.log('是否允许加入', res)
     },
     // 查询

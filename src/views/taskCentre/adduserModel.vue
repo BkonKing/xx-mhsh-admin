@@ -6,15 +6,17 @@
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
+              @input="getData(index, $event)"
               v-model="item.mobile"
               :maxLength="11"
               placeholder="手机号"
               style="width:216px"
             ></a-input>
             <a-input
+             :disabled="true"
               :maxLength="10"
               v-model="item.nickname"
-              placeholder="姓名"
+              placeholder="昵称"
               style="width:104px"
             ></a-input>
             <a-input
@@ -38,42 +40,92 @@
           </div>
         </div>
       </div>
-      <div class="info" v-if="false">
-        <div class="top">全部</div>
-        <div class="bottom">
-          <div class="item" v-for="item in 20" :key="item">
-            <div class="t1">用户昵称</div>
-            <div class="t2">1500000000</div>
-            <div class="t3">
-              <a-tag color="blue">
-                业主
-              </a-tag>
+      <div class="box" v-if="userInfoList.length > 0">
+          <div class="boxtitle">全部</div>
+          <div
+            class="item"
+            v-for="item in userInfoList"
+            :key="item.id"
+            @click="selectUser(item)"
+          >
+            <div class="username">
+              {{ item.realname }}
             </div>
+            <div class="phone">
+              {{ item.mobile }}
+            </div>
+            <a-tag color="blue">
+              {{ item.type_desc }}
+            </a-tag>
           </div>
         </div>
-      </div>
     </a-modal>
   </div>
 </template>
 
 <script>
 import { toAddWhiteUser, toAddGroupUser } from '@/api/taskCentre'
+import { getUserInfo } from '@/api/financeCenter.js'
+ function isNumber (value) { // 验证是否为数字
+     var patrn = /^(-)?\d+(\.\d+)?$/
+     if (patrn.exec(value) == null || value == '') {
+         return false
+     } else {
+         return true
+     }
+ }
+
 export default {
   props: ['mode', 'id'],
   data () {
     return {
       isShow: false,
-      arr: [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }]
+      arr: [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }],
+      userInfoList: [], // 用户列表
+       currentIndex: 0,
+      elm: '' // dom元素
     }
   },
   watch: {
     isShow (newVal) {
       if (newVal === false) {
         this.arr = [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }]
+        this.userInfoList = []
       }
     }
   },
   methods: {
+     // 选择用户
+    selectUser (item) {
+      this.arr[this.currentIndex].nickname = item.realname
+      this.arr[this.currentIndex].mobile = item.mobile
+      this.userInfoList = []
+      // this.elm.nextElementSibling.disabled = true
+      // console.log(this.elm)
+    },
+    // 获取用户信息
+    async getData (index, e) {
+      this.currentIndex = index
+      // console.log('事件对象', e.target)
+      // this.elm = e.target
+      if (this.arr[index].mobile.length > 0) {
+        if (isNumber(this.arr[index].mobile)) {
+        const res = await getUserInfo({
+          realname: '',
+          mobile: this.arr[index].mobile
+        })
+        // console.log('用户信息', res)
+        this.userInfoList = res.data.list
+        } else {
+        const res = await getUserInfo({
+          realname: this.arr[index].mobile,
+          mobile: ''
+        })
+        // console.log('用户信息', res)
+        this.userInfoList = res.data.list
+        }
+      }
+    },
     // 确定
     async submit () {
       if (this.mode === 'whiteUser') {
@@ -156,36 +208,34 @@ export default {
     }
   }
 }
-.info {
-  width: 440px;
-  height: 410px;
-  overflow: scroll;
-  margin-left: 166px;
-  box-shadow: 0 0 1px 1px #999;
-  padding: 0 10px;
-  .top {
-    height: 38px;
-    line-height: 38px;
-    font-family: "MicrosoftYaHei", "Microsoft YaHei";
-    font-weight: 400;
-    font-style: normal;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.647058823529412);
-  }
-  .bottom {
-    .item {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      .t1 {
-        width: 102px;
+ .box {
+      margin-left: 165px;
+      width: 417px;
+      max-height: 300px;
+      overflow: scroll;
+      padding: 0 20px;
+      box-shadow: 0px 0px 2px 2px #ededed;
+      .boxtitle {
+        height: 40px;
+        line-height: 40px;
       }
-      .t2 {
-        flex: 1;
+      .item {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+        .username {
+          width: 150px;
+        }
+        .phone {
+          flex: 1;
+        }
+        /deep/ .ant-tag-blue {
+          border-radius: 5px;
+          margin-right: 0;
+        }
       }
     }
-  }
-}
 /deep/ .ant-modal-content {
   width: 864px;
 }
