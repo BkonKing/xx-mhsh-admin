@@ -104,7 +104,7 @@
 </template>
 
 <script>
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 import askLookOverModel from './askLookOverModel'
 import {
   toViewQuestion,
@@ -149,8 +149,8 @@ export default {
       },
       fileList2: [],
       headers: {
-        // Authorization: Cookies.get('access_token')
-        Authorization: 'db11093e1a38961a662cc75fd378af20d265538c'
+        Authorization: Cookies.get('access_token')
+        // Authorization: 'db11093e1a38961a662cc75fd378af20d265538c'
         // Projectid: Cookies.get('project_id')
       }
     }

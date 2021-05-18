@@ -15,9 +15,10 @@
       </div>
     </a-card>
     <a-card class="card2">
+      <div class="table-page-search-wrapper">
       <div class="title">基础信息</div>
       <div class="form">
-        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-model :label-col="md" >
           <a-row>
             <a-col :span="8">
               <a-form-model-item
@@ -88,6 +89,7 @@ label="可见范围"
             </div>
           </div>
         </div>
+      </div>
       </div>
     </a-card>
     <a-card class="card3" v-if="taskDetailInfo.check_list.length>0">
@@ -221,6 +223,7 @@ function getBase64 (file) {
 export default {
   data () {
     return {
+      md: { span: 4 },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       previewVisible: false,
@@ -356,6 +359,9 @@ export default {
     }
   }
   .card2 {
+     /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
     margin-top: 20px;
     padding-bottom: 20px;
     /deep/ .ant-card-body {

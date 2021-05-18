@@ -540,7 +540,17 @@ export default {
   },
   methods: {
     // 批量操作
-    handleMenuClick () {},
+   async handleMenuClick () {
+     if (this.selectedRowKeys.length === 0) {
+       return
+     }
+     await toDelGroupUser({
+       uids: this.selectedRowKeys,
+       group_id: this.id
+     })
+     this.$message.success('删除成功')
+     this.getData()
+    },
     // 重置日志查询
     resetLog () {
       this.opt_user = ''

@@ -8,7 +8,7 @@
             @click="changeTab('')"
             :class="{ active: currentIndex === '' }"
           >
-            全部{{ tabInfo.total !== 0 ? tabInfo.total : "" }}
+            全部
           </div>
           <div
             class="item"
@@ -40,28 +40,28 @@
             @click="changeTab(3)"
             :class="{ active: currentIndex === 3 }"
           >
-            已完成{{ tabInfo.to_completed !== 0 ? tabInfo.to_completed : "" }}
+            已完成
           </div>
           <div
             class="item"
             @click="changeTab(5)"
             :class="{ active: currentIndex === 5 }"
           >
-            已终止{{ tabInfo.to_terminated !== 0 ? tabInfo.to_terminated : "" }}
+            已终止
           </div>
           <div
             class="item"
             @click="changeTab(6)"
             :class="{ active: currentIndex === 6 }"
           >
-            已失效{{ tabInfo.to_invalid !== 0 ? tabInfo.to_invalid : "" }}
+            已失效
           </div>
           <div
             class="item"
             @click="changeTab(4)"
             :class="{ active: currentIndex === 4 }"
           >
-            未通过{{ tabInfo.to_failed !== 0 ? tabInfo.to_failed : "" }}
+            未通过
           </div>
         </div>
       </template>
