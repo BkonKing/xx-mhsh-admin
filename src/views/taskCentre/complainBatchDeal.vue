@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { toHandComplaint } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -78,16 +79,15 @@ export default {
       uploadData: {
         field_name: 'file'
       },
-      fileList2: [] // 处理图片
-    }
-  },
-  computed: {
-    headers () {
-      return {
-        Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
+      fileList2: [], // 处理图片
+      headers: {
+        Authorization: Cookies.get('access_token')
+        // Authorization: '3c38f83dec332332377a64be74a9936577fd1fca'
+        // Projectid: Cookies.get('project_id')
       }
     }
   },
+
   watch: {
     isShow (newVal) {
       if (newVal === false) {

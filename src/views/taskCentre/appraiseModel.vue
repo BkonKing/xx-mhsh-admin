@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="isShow" :footer="null" title="查看">
+  <a-modal v-model="isShow" :footer="null" title="查看" >
     <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="任务标题">
         <div class="title">
@@ -100,6 +100,7 @@ export default {
         this.bol = false
         this.showInfo = false
         this.info = {}
+        this.id = ''
       }
     },
     id () {
@@ -161,7 +162,7 @@ export default {
   margin-top: 20px;
 }
 .info {
-  border-top: 2px dashed #e8e8e8;
+  border-top: 2px dashed #eaeaea;
   .item {
     display: flex;
     margin: 10px 8px;

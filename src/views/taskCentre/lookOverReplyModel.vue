@@ -1,6 +1,6 @@
 <template>
-  <div class="askLookOverModel">
-    <a-modal v-model="isShow" title="查看" :footer="null" v-if="lookOverInfo!=''" >
+
+     <a-modal v-model="isShow" title="查看" :footer="null" v-if="lookOverInfo!=''">
       <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-model-item label="任务标题">
           <span style="color:#1d92ff">{{ lookOverInfo.task_title }}</span>
@@ -12,11 +12,6 @@
         <a-form-model-item label="创建时间">{{
           lookOverInfo.ctime
         }}</a-form-model-item>
-        <a-form-model-item label="提问编号" v-if="lookOverInfo.type !== 1">
-          <span style="color:#1d92ff;cursor: pointer;" @click="lookOver">{{
-            lookOverInfo.id
-          }}</span>
-        </a-form-model-item>
         <a-form-model-item label="类型">{{
           lookOverInfo.type === 1 ? "提问" : "回复"
         }}</a-form-model-item>
@@ -52,61 +47,31 @@
         </div>
       </a-form-model>
     </a-modal>
-    <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-      <img alt="example" style="width: 100%" :src="previewImage" />
-    </a-modal> -->
-    <lookOverReplyModel ref="lookOverReplyModel"></lookOverReplyModel>
-  </div>
+
 </template>
 
 <script>
 import { toViewQuestion } from '@/api/taskCentre'
-import lookOverReplyModel from './lookOverReplyModel'
 export default {
-  components: {
-    lookOverReplyModel
-  },
   data () {
     return {
       isShow: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      previewVisible: false,
-      previewImage: '',
-      info: {},
+      id: '',
       lookOverInfo: ''
     }
   },
-  mounted () {},
   watch: {
-    info: {
-      async handler () {
-        // 提问-查看详情
-        const res = await toViewQuestion({
-          type: +this.info.type,
-          id: this.info.id
-        })
-        console.log('提问-查看详情', res)
+    id () {
+    toViewQuestion({
+          type: 1,
+          id: this.id
+        }).then(res => {
+         console.log('提问-查看详情', res)
         this.lookOverInfo = res.data
         this.$previewRefresh()
-      },
-      deep: true
-    }
-  },
-  created () {},
-  methods: {
-    // 查看 回复的提问
-    async lookOver () {
-      //  // 提问-查看详情
-      this.$refs.lookOverReplyModel.id = this.lookOverInfo.id
-      this.$refs.lookOverReplyModel.isShow = true
-      // const res = await toViewQuestion({
-      //   type: 1,
-      //   id: this.lookOverInfo.id
-      // })
-      // console.log('提问-查看详情', res)
-      // this.lookOverInfo = res.data
-      // this.$previewRefresh()
+        })
     }
   }
 }

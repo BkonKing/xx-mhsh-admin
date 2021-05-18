@@ -1,7 +1,8 @@
 <template>
   <div class="toCheck">
     <page-header-wrapper></page-header-wrapper>
-    <a-card class="card">
+    <div class="cardContent">
+          <a-card class="card">
       <div class="title">流程进度</div>
       <div class="steps">
         <a-steps progress-dot :current="1">
@@ -96,7 +97,7 @@ label="可见范围"
         <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-row>
             <a-col :span="8">
-              <a-form-model-item label="审核状态">{{item.chek_status}}</a-form-model-item>
+              <a-form-model-item label="审核状态">{{item.check_status}}</a-form-model-item>
             </a-col>
             <a-col :span="8">
               <a-form-model-item label="审核人">{{item.check_user}}</a-form-model-item>
@@ -199,6 +200,7 @@ class="btn"
         </a-form-model-item>
       </a-form-model>
     </a-card>
+    </div>
     <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal> -->
@@ -206,6 +208,7 @@ class="btn"
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { getTaskDetail, toViolationReason, toHandTask } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -240,16 +243,15 @@ export default {
         field_name: 'file'
       },
       fileList2: [], // 处理图片
-      reasonList: []// 违规原因列表
-    }
-  },
-    computed: {
-    headers () {
-      return {
-        Authorization: '3c38f83dec332332377a64be74a9936577fd1fca'
+      reasonList: [], // 违规原因列表
+      headers: {
+        Authorization: Cookies.get('access_token')
+        // Authorization: '62a06a999f077310fea01466e3eb9686dd183f98'
+        // Projectid: Cookies.get('project_id')
       }
     }
   },
+
   mounted () {
     this.$previewRefresh()
   },
@@ -330,6 +332,9 @@ export default {
 
 <style lang="less" scoped>
 .toCheck {
+  .cardContent{
+    padding: 0 20px;
+  }
   .card {
     margin-top: 20px;
     /deep/ .ant-card-body {
@@ -402,6 +407,9 @@ export default {
   }
   .card3 {
     margin-top: 20px;
+    /deep/ .ant-form-item-label{
+      width: 70px;
+    }
     /deep/ .ant-card-body {
       padding: 0;
     }
@@ -420,18 +428,18 @@ export default {
       margin-bottom: 0;
     }
     .content{
-      padding: 0 20px;
+      padding: 0 30px;
       .form {
       border-bottom: 1px solid #E8E8E8;
 
       .cause {
         display: flex;
-        margin-left: 36px;
+        // margin-left: 36px;
       }
       .reply {
         margin-top: 12px;
         display: flex;
-        margin-left: 36px;
+        // margin-left: 36px;
         .t1 {
           width: 70px;
         }

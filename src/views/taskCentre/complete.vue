@@ -141,9 +141,10 @@
         </div>
       </a-card>
       <a-card class="card2">
+        <div class="table-page-search-wrapper">
         <div class="title">基础信息</div>
         <div class="content">
-          <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-form-model :label-col="labelCol" >
             <a-row>
               <a-col :span="8">
                 <a-form-model-item label="任务标题">
@@ -249,6 +250,7 @@ type="up"
         <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
         <img alt="example" style="width: 100%" :src="previewImage" />
       </a-modal> -->
+      </div>
       </a-card>
       <a-card class="card3">
         <a-row>
@@ -514,7 +516,7 @@ type="link"
           :key="index"
         >
           <div class="c1">
-            <div class="t1">审核通过：{{ item.check_status }}</div>
+            <div class="t1">审核状态：{{ item.check_status }}</div>
             <div class="t2">审核人：{{ item.check_user }}</div>
             <div class="t3">审核时间：{{ item.check_time }}</div>
           </div>
@@ -685,8 +687,8 @@ export default {
   data () {
     return {
       current: 2, // 当前进度条位置
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      md: { span: 8 },
+      // wrapperCol: { span: 10 },
       // previewVisible: false, // 是否预览图片
       // previewImage: '', // 预览图片链接
       btnBol: false, // 控制任务说明行数显示
@@ -1059,7 +1061,7 @@ export default {
     // 淘汰 取消
     cancel (e) {
       console.log(e)
-      this.$message.error('Click on No')
+      // this.$message.error('Click on No')
     },
     // 用户流水表格复选框选择事件
     onSelectChange (selectedRowKeys, selectedRows) {
@@ -1171,6 +1173,9 @@ export default {
     }
   }
   .card2 {
+      /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
     /deep/ .ant-card-body {
       padding-bottom: 20px;
     }

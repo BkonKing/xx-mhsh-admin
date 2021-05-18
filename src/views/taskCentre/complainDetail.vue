@@ -20,11 +20,11 @@
                 </div>
               </template>
             </a-step>
-            <a-step title="待处理">
+            <a-step :title="detailInfo.is_handle==='1'?'处理回复':'待处理'">
               <template #description>
                 <div class="description">
                   <div class="t1">
-                    {{ detailInfo.complaint_project }}-{{
+                    {{
                       detailInfo.handle_user
                     }}
                   </div>
@@ -59,10 +59,10 @@
                 <div class="t1">被投诉次数：</div>
                 <div
                   class="t2"
-                  style="color:#1890FF"
-                  @click="$router.push('/taskCentre/complain')"
+                  style="color:#1890FF;cursor: pointer;"
+                  @click="$router.push('/taskCentre/complain?task_id='+detailInfo.task_id)"
                 >
-                  {{ detailInfo.complait_total }}
+                  {{ detailInfo.complaint_total }}
                 </div>
               </div>
             </a-col>
@@ -74,11 +74,11 @@
                 class="item"
                 @click="openDetail"
                 v-if="detailInfo.content_type === '任务'"
-                style="color:#1890FF"
+                style="color:#1890FF;cursor: pointer;"
               >
                 {{ detailInfo.content }}
               </div>
-              <div class="item2" v-else @click="lookOver">
+              <div class="item2" style="cursor: pointer;" v-else @click="lookOver">
                 {{ detailInfo.content }}
               </div>
             </div>
@@ -93,7 +93,7 @@
               <div class="item item1">
                 <div class="t1">投诉人：</div>
                 <div class="t2">
-                  <span style="color:#1890FF">{{
+                  <span style="color:#1890FF" @click="openUserDetail">{{
                     detailInfo.complaint_user
                   }}</span>
                   {{ detailInfo.complaint_project }}
@@ -104,7 +104,7 @@
               <div class="item">
                 <div class="t1">被投诉人：</div>
                 <div class="t2">
-                  <span style="color:#1890FF">{{
+                  <span style="color:#1890FF" @click="openUserDetail">{{
                     detailInfo.complainted_user
                   }}</span>
                   {{ detailInfo.complaint_project }}
@@ -194,10 +194,15 @@
               <div class="item">
                 <div class="t1">处理时间：</div>
                 <div class="t2">
-                 {{detailInfo.handle_time}}（<span
+                 {{detailInfo.handle_time}}
+                 <span v-if="detailInfo.over_content">
+                   (<span
 style="color: #F5222D;"
-                    >{{detailInfo.over_content}}</span
-                  >）
+                    >
+                    {{detailInfo.over_content}}
+                    </span
+                  >)
+                 </span>
                 </div>
               </div>
             </a-col>
@@ -231,6 +236,7 @@ style="color: #F5222D;"
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { getComplaintDetail, toHandComplaint } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -261,20 +267,30 @@ export default {
       uploadData: {
         field_name: 'file'
       },
-      fileList2: [] // 处理图片
+      fileList2: [], // 处理图片
+      headers: {
+        Authorization: Cookies.get('access_token')
+        // Authorization: '801ea07a89da8ee893176dbdd982627688960d80'
+        // Projectid: Cookies.get('project_id')
+      }
     }
   },
   mounted () {
     // this.$previewRefresh()
   },
-  computed: {
-    headers () {
-      return {
-        Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
-      }
-    }
-  },
+  // computed: {
+  //   headers () {
+  //     return {
+  //       Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
+  //     }
+  //   }
+  // },
   methods: {
+   // 新窗口打开用户详情页面
+    openUserDetail () {
+       window.open(`/zht/household/member/getMemberList?uid=${this.detailInfo.uid}`, '_parent')
+    },
+    // 获取详情信息
     async getDetailInfo () {
       const res = await getComplaintDetail({ id: this.id })
       this.detailInfo = res.data
@@ -289,7 +305,8 @@ export default {
     // 新窗口打开任务详情
     openDetail () {
       const { href } = this.$router.resolve({
-        path: '/taskCentre/complain'
+        name: 'complete',
+        query: { id: this.detailInfo.task_id }
       })
       window.open(href, '_blank')
     },
