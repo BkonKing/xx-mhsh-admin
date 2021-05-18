@@ -240,7 +240,7 @@ type="up"
       </a-card>
       <a-card class="card2">
         <div class="top">
-          <a-button type="primary">新建任务</a-button>
+          <a-button type="primary" v-if="false">新建任务</a-button>
           <!-- <a-button @click="batchOpera">批量操作 <a-icon type="down"/></a-button> -->
           <a-dropdown>
             <a-menu slot="overlay" @click="handleMenuClick">
@@ -666,8 +666,11 @@ export default {
   }
   .table {
     margin-top: 20px;
-    /deep/ .ant-table-row-cell-break-word {
-      white-space: nowrap !important;
+    // /deep/ .ant-table-row-cell-break-word {
+    //   white-space: nowrap !important;
+    // }
+    .btns{
+     display: flex;
     }
   }
   .pagination {

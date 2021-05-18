@@ -24,7 +24,7 @@
         <a-form-model-item label="创建时间">{{
           lookOverInfo.ctime
         }}</a-form-model-item>
-        <a-form-model-item label="提问编号">
+        <a-form-model-item label="提问编号" v-if="lookOverInfo.type !==1">
           <span style="color:#1890FF;cursor: pointer;" @click="lookOver">{{
             lookOverInfo.id
           }}</span>
@@ -46,25 +46,25 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-              <a-form-model-item
-        v-if="form.is_check !== 1"
-        label="违规原因"
-        prop="violation_type"
-      >
-        <a-select
-          v-model="form.violation_type"
-          placeholder="请选择"
-          style="width: 379px"
+        <a-form-model-item
+          v-if="form.is_check !== 1"
+          label="违规原因"
+          prop="violation_type"
         >
-          <a-select-option
-            v-for="(item, index) in reasonList"
-            :key="index"
-            :value="item.id"
+          <a-select
+            v-model="form.violation_type"
+            placeholder="请选择"
+            style="width: 379px"
           >
-            {{ item.violation }}
-          </a-select-option>
-        </a-select>
-      </a-form-model-item>
+            <a-select-option
+              v-for="(item, index) in reasonList"
+              :key="index"
+              :value="item.id"
+            >
+              {{ item.violation }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="审核说明">
           <a-textarea
             v-model="form.check_desc"
@@ -74,7 +74,7 @@
         </a-form-model-item>
         <a-form-model-item label="图片">
           <a-upload
-          :data="uploadData"
+            :data="uploadData"
             :headers="headers"
             :action="uploadUrl"
             list-type="picture-card"
@@ -104,8 +104,13 @@
 </template>
 
 <script>
+// import Cookies from 'js-cookie'
 import askLookOverModel from './askLookOverModel'
-import { toViewQuestion, toCheckQuestionReply, toViolationReason } from '@/api/taskCentre'
+import {
+  toViewQuestion,
+  toCheckQuestionReply,
+  toViolationReason
+} from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -142,16 +147,15 @@ export default {
       uploadData: {
         field_name: 'file'
       },
-      fileList2: []
-    }
-  },
-  computed: {
-    headers () {
-      return {
-        Authorization: '53d79c31961cdb2d995e6fdec25eed7d4115cecb'
+      fileList2: [],
+      headers: {
+        // Authorization: Cookies.get('access_token')
+        Authorization: 'db11093e1a38961a662cc75fd378af20d265538c'
+        // Projectid: Cookies.get('project_id')
       }
     }
   },
+
   watch: {
     info: {
       async handler () {
@@ -170,7 +174,7 @@ export default {
     async submit () {
       const idArr = []
       idArr.push(this.info.id)
-       await toCheckQuestionReply({
+      await toCheckQuestionReply({
         ids: idArr,
         is_check: this.form.is_check,
         check_desc: this.form.check_desc,
@@ -184,7 +188,10 @@ export default {
     },
     // 查看
     lookOver () {
+      const obj = JSON.parse(JSON.stringify(this.lookOverInfo))
+      obj.type = 1
       this.$refs.askLookOverModel.isShow = true
+      this.$refs.askLookOverModel.info = obj
     },
     // 点击新窗口打开用户详情页面
     openNewPage () {
@@ -207,22 +214,22 @@ export default {
       // console.log('上传和删除图片时触发')
       this.fileList = fileList
       // console.log(fileList)
-     const arr1 = this.fileList.map(item => {
+      const arr1 = this.fileList.map(item => {
         if (item.response) {
-         return item.response.data
-       }
-     })
-     const arr2 = arr1.filter(item => {
-       return item
-     })
-     this.fileList2 = arr2
-     console.log('上传和删除图片时触发', arr2)
+          return item.response.data
+        }
+      })
+      const arr2 = arr1.filter(item => {
+        return item
+      })
+      this.fileList2 = arr2
+      console.log('上传和删除图片时触发', arr2)
     }
   },
- async created () {
+  async created () {
     const res = await toViolationReason({ type: 2 })
     this.reasonList = res.list
-     console.log('获取违规原因', res)
+    console.log('获取违规原因', res)
     this.uploadUrl =
       process.env.NODE_ENV === 'production'
         ? '/nsolid/spi/v1/upload/uploads/uImages'

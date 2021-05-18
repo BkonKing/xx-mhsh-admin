@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { toHandTask, toViolationReason } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -110,23 +111,22 @@ export default {
         field_name: 'file'
       },
       fileList2: [], // 处理图片
-      reasonList: [] // 违规原因列表
-    }
-  },
-  computed: {
-    headers () {
-      return {
-        Authorization: '86a68cd71147f817c92d1b70e8d8234fcd6b5dc1'
+      reasonList: [], // 违规原因列表
+       headers: {
+        Authorization: Cookies.get('access_token')
+        // Authorization: '3c38f83dec332332377a64be74a9936577fd1fca'
+        // Projectid: Cookies.get('project_id')
       }
     }
   },
+
   methods: {
     // 批量审核
     async submit () {
       await toHandTask({
         ids: this.selectedRowKeys,
         is_check: this.form.is_check,
-        check_desc: this.check_desc,
+        check_desc: this.form.check_desc,
         check_image: this.fileList2,
         violation_type: this.form.violation_type
       })

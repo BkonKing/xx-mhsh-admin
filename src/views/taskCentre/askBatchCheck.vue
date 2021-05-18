@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import { toViolationReason, toCheckQuestionReply } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -108,16 +109,14 @@ export default {
         field_name: 'file'
       },
       fileList2: [], // 处理图片
-      reasonList: [] // 违规原因列表
-    }
-  },
-  computed: {
-    headers () {
-      return {
-        Authorization: '53d79c31961cdb2d995e6fdec25eed7d4115cecb'
+      reasonList: [], // 违规原因列表
+       headers: {
+        Authorization: Cookies.get('access_token')
+        // Authorization: '801ea07a89da8ee893176dbdd982627688960d80'
       }
     }
   },
+
   methods: {
     // 审核
    async submit () {
