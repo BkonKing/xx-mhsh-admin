@@ -67,6 +67,7 @@ export default {
           this.$parent.getTaskSpeedData()
           this.$parent.getTaskLog()
            this.$parent.selectedRowKeys = []
+           this.$message.success('处理成功')
           this.isShow = false
         }
       } else {

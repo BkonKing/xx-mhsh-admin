@@ -1060,6 +1060,7 @@ export default {
         ids: arr,
         task_id: this.id
       })
+      this.getTaskSpeedData()
       this.getTaskLog()
       this.$message.success('处理成功')
     },
