@@ -1,11 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Cookies from 'js-cookie'
+import pageMaps from './pageMaps'
 // import {
 //   UserLayout,
 //   BasicLayout
 //   // BlankLayout
 // } from '@/layouts'
 // import userRoutes from './modules/user'
+
+/**
+ * 重写路由的push方法
+ */
+// 保存原来的push函数
+const routerPush = Router.prototype.push
+// 重写push函数
+Router.prototype.push = function push (location, onComplete, onAbort) {
+  if (process.env.NODE_ENV === 'production') {
+    let url = `#${location}`
+    if (typeof location !== 'string') {
+      url = this.resolve(location).href
+    }
+    const href = url.split('?')[0]
+    if (pageMaps[href]) {
+      const ht = +Cookies.get('project_id') ? 'xmht' : 'zht'
+      top.location.href = `/${ht}${pageMaps[href]}?url=/film/index.html${url}`
+      return
+    } else {
+      // 调用原来的push函数，并捕获异常
+      return routerPush.call(this, location, onComplete, onAbort).catch(error => error)
+    }
+  }
+  // 调用原来的push函数，并捕获异常
+  return routerPush.call(this, location, onComplete, onAbort).catch(error => error)
+}
 
 Vue.use(Router)
 
