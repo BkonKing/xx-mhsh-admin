@@ -285,7 +285,7 @@ export default {
   methods: {
     // 排序
      tableChange (pagination, filters, sorter, { currentDataSource }) {
-      // console.log('sorter', sorter)
+      console.log('sorter', sorter)
       this.order_field = sorter.field
       if (sorter.order === 'ascend') {
         this.sort_value = 'asc'
@@ -294,6 +294,7 @@ export default {
       }
       this.getData()
     },
+    // 重置
     reset () {
       this.evaluate_starts = undefined
       this.evaluate_tag = undefined
@@ -332,7 +333,7 @@ export default {
         ctime: this.ctime,
         task_id: this.task_id,
         sort_value: this.sort_value,
-        order_field: this.sort_value
+        order_field: this.order_field
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
