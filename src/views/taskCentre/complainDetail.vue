@@ -288,7 +288,7 @@ export default {
   methods: {
    // 新窗口打开用户详情页面
     openUserDetail () {
-       window.open(`/zht/household/member/getMemberList?uid=${this.detailInfo.uid}`, '_parent')
+       window.open(`/zht/user/user/getUserList?uid=${this.detailInfo.uid}`, '_parent')
     },
     // 获取详情信息
     async getDetailInfo () {

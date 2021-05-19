@@ -15,7 +15,7 @@
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待处理{{complaintInfo.pending_total!==0?complaintInfo.pending_total:''}}
+            待处理 <span style="width:10px;text-align: center;display: inline-block;">{{complaintInfo.pending_total!==0?complaintInfo.pending_total:''}}</span>
           </div>
           <div
             class="item"

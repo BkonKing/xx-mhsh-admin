@@ -16,7 +16,7 @@
           </div>
         </a-form-model-item>
         <a-form-model-item label="发布用户">
-          <span style="color:#1890FF;cursor: pointer;" @click="openNewPage">{{
+          <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail">{{
             lookOverInfo.publish_user
           }}</span>
           {{ lookOverInfo.project_name }}
@@ -193,9 +193,10 @@ export default {
       this.$refs.askLookOverModel.isShow = true
       this.$refs.askLookOverModel.info = obj
     },
-    // 点击新窗口打开用户详情页面
-    openNewPage () {
-      window.open('http://develop.mhshjy.com/zht/user/user/getUserList')
+
+    // 打开用户详情
+    openUserDetail () {
+      window.open(`/zht/user/user/getUserList?uid=${this.lookOverInfo.uid}`, '_parent')
     },
     // 关闭预览
     handleCancel () {

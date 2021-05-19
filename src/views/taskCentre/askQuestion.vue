@@ -8,40 +8,32 @@
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            全部{{ askQuestionInfo.total===0?'':askQuestionInfo.total }}
+            全部
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待审核{{
+            待审核 <span style="marginLeft:5px">{{
               askQuestionInfo.reviewed_total === 0
                 ? ""
                 : askQuestionInfo.reviewed_total
-            }}
+            }}</span>
           </div>
           <div
             class="item"
             @click="changeTab(3)"
             :class="{ active: currentIndex === 3 }"
           >
-            已通过{{
-              askQuestionInfo.passed_total === 0
-                ? ""
-                : askQuestionInfo.passed_total
-            }}
+            已通过
           </div>
           <div
             class="item"
             @click="changeTab(4)"
             :class="{ active: currentIndex === 4 }"
           >
-            未通过{{
-              askQuestionInfo.failed_total === 0
-                ? ""
-                : askQuestionInfo.failed_total
-            }}
+            未通过
           </div>
         </div>
       </template>

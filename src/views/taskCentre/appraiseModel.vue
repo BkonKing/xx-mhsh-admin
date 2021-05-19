@@ -111,7 +111,7 @@ export default {
   methods: {
     // 打开用户详情
     openUserDetail () {
-      window.open(`/zht/household/member/getMemberList?uid=${this.info.uid}`, '_parent')
+      window.open(`/zht/user/user/getUserList?uid=${this.info.uid}`, '_parent')
     },
     // 打开任务详情
     openTaskDetail () {
