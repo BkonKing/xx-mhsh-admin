@@ -1120,8 +1120,7 @@ export default {
         console.log('任务详情', res)
         this.$nextTick(() => {
           this.lineNumber = Math.round(
-            $('#taskExplain').height() /
-              parseFloat($('#taskExplain').css('line-height'))
+            document.querySelector('#taskExplain').clientHeight / 20
           )
           this.close()
           this.close2()
