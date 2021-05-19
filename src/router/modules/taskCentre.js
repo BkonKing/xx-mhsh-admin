@@ -95,17 +95,17 @@ export default {
         title: '任务',
         icon: 'table'
       },
-      redirect: '/taskCentre/addTask',
+      redirect: '/taskCentre/task',
       children: [
-        {
-          path: '/taskCentre/addTask', // 完整地址
-          name: 'addTask',
-          component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/addTask'),
-          meta: {
-            title: '新建任务',
-            icon: 'table'
-          }
-        },
+        // {
+        //   path: '/taskCentre/addTask', // 完整地址
+        //   name: 'addTask',
+        //   component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/addTask'),
+        //   meta: {
+        //     title: '新建任务',
+        //     icon: 'table'
+        //   }
+        // },
         {
           path: '/taskCentre/complete', // 完整地址
           name: 'complete',
