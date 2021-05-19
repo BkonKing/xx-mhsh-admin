@@ -15,25 +15,27 @@
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}
+            待审核 <span style="width:10px;text-align: center;display: inline-block;">{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}</span>
           </div>
           <div
             class="item"
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            待接单{{
+            待接单 <span style="width:10px;text-align: center;display: inline-block;">{{
               tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
-            }}
+            }}</span>
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待交付{{
+            待交付 <span style="width:10px;text-align: center;display: inline-block;">
+              {{
               tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : ""
             }}
+            </span>
           </div>
           <div
             class="item"
@@ -361,8 +363,8 @@ export default {
       columns: [
         {
           title: '任务编号',
-          dataIndex: 'id',
-          key: 'id',
+          dataIndex: 'task_number',
+          key: 'task_number',
           width: '8.333333333%'
           // scopedSlots: { customRender: 'name' }
         },

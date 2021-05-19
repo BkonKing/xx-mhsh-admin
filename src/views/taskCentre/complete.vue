@@ -172,7 +172,7 @@ label="需要人数"
                 <a-form-model-item label="创建者">
                   <a
                     :href="
-                      `/zht/household/member/getMemberList?uid=${this.taskDetailInfo.uid}`
+                      `/zht/user/user/getUserList?uid=${this.taskDetailInfo.uid}`
                     "
                     target="_parent"
                     >{{ taskDetailInfo.task_user }}</a
@@ -212,8 +212,9 @@ label="需要人数"
           </a-form-model>
           <div class="explain">
             <div class="left">任务说明：</div>
-            <div class="right" id="taskExplain">
-              {{ taskDetailInfo.task_desc }}
+
+            <div class="right" id="taskExplain" >
+ {{ taskDetailInfo.task_desc }}
             </div>
           </div>
           <div class="otherBtn">
@@ -1097,18 +1098,12 @@ export default {
     // 任务说明收起
     close () {
       this.btnBol = false
-      document.querySelector('#taskExplain').style.display = '-webkit-box'
-      document.querySelector('#taskExplain').style.webkitBoxOrient = 'vertical'
-      document.querySelector('#taskExplain').style.webkitLineClamp = '10'
-      document.querySelector('#taskExplain').style.overflow = 'hidden'
+      document.querySelector('#taskExplain').setAttribute('class', 'hasHidden')
     },
     // 任务说明展开
     open () {
       this.btnBol = true
-      document.querySelector('#taskExplain').style.display = ''
-      document.querySelector('#taskExplain').style.webkitBoxOrient = ''
-      document.querySelector('#taskExplain').style.webkitLineClamp = ''
-      document.querySelector('#taskExplain').style.overflow = ''
+      document.querySelector('#taskExplain').removeAttribute('class')
     }
   },
   async created () {
@@ -1176,6 +1171,12 @@ export default {
     }
   }
   .card2 {
+    .hasHidden{
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 10;
+      overflow: hidden;
+    }
       /deep/ .ant-form-item-label {
       min-width: 88px;
     }
@@ -1200,14 +1201,12 @@ export default {
       display: flex;
       .left {
         width: 70px;
+        white-space: nowrap;
       }
       .right {
         flex: 1;
         line-height: 20px;
-        // display: -webkit-box;
-        // -webkit-box-orient: vertical;
-        // -webkit-line-clamp: 10;
-        // overflow: hidden;
+
       }
     }
     .otherBtn {

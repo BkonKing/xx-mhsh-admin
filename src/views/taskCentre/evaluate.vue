@@ -87,7 +87,7 @@
                     <a-select-option
                       v-for="item in projectList"
                       :key="item.id"
-                      value="item.id"
+                      :value="item.id"
                     >
                       {{ item.project_name }}
                     </a-select-option>
@@ -147,6 +147,7 @@
         :columns="columns"
         :data-source="tableData"
         :pagination="false"
+        @change="tableChange"
       >
         <template slot="task_title" slot-scope="task_title">
           <div class="task" style="color:#1890FF">
@@ -276,10 +277,23 @@ export default {
       tagList: [], // 标签下拉列表
       projectList: [],
       evaluateTime: [],
-      task_id: '' // 任务id
+      task_id: '', // 任务id
+      order_field: '',
+      sort_value: ''
     }
   },
   methods: {
+    // 排序
+     tableChange (pagination, filters, sorter, { currentDataSource }) {
+      // console.log('sorter', sorter)
+      this.order_field = sorter.field
+      if (sorter.order === 'ascend') {
+        this.sort_value = 'asc'
+      } else {
+        this.sort_value = 'desc'
+      }
+      this.getData()
+    },
     reset () {
       this.evaluate_starts = undefined
       this.evaluate_tag = undefined
@@ -316,7 +330,9 @@ export default {
         is_valid: this.is_valid,
         project_id: this.project_id,
         ctime: this.ctime,
-        task_id: this.task_id
+        task_id: this.task_id,
+        sort_value: this.sort_value,
+        order_field: this.sort_value
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
