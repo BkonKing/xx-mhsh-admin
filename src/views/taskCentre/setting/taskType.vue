@@ -32,12 +32,13 @@ slot="sortTitle"
           </template> -->
           <div class="order_sort" slot="order_sort" slot-scope="text, record">
             <a-input
+
               style="width:128px"
               ref="order_sort"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
                 onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
               :value="record.order_sort"
-              @blur="changeOrder(record)"
+              @blur="changeOrder(record,$event)"
             ></a-input>
           </div>
           <span
@@ -183,6 +184,7 @@ export default {
       },
       order_field: '', //	否	string	排序的字段名称task_total 任务数 ctime创建时间
       sort_value: '' //	否	string	排序的字段值 desc降序 asc升序
+
     }
   },
   methods: {
@@ -202,13 +204,14 @@ export default {
           id: record.id
         })
       }
+      this.getData()
     },
     // 修改排序
-    async changeOrder (record) {
-      //  console.log(this.$refs.order_sort.$el.value)
+    async changeOrder (record, e) {
+      //  console.log(e.target.value)
       await toUpdateTaskType({
         update_field: 'order_sort',
-        update_value: +this.$refs.order_sort.$el.value,
+        update_value: +e.target.value,
         id: record.id
       })
       this.$message.success('修改成功')
