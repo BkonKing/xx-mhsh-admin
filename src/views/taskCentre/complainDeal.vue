@@ -45,7 +45,7 @@
 </template>
 
 <script>
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 import { toViewComplaint, toHandComplaint } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -75,8 +75,8 @@ export default {
         handle_reply: ''
       },
       headers: {
-        // Authorization: Cookies.get('access_token')
-        Authorization: 'a7656d54ab4272a07f786eef32237687ec120202'
+        Authorization: Cookies.get('access_token')
+        // Authorization: 'a7656d54ab4272a07f786eef32237687ec120202'
         // Projectid: Cookies.get('project_id')
       },
       rules: {
@@ -109,7 +109,7 @@ export default {
       }
       const idArr = []
       idArr.push(this.id)
-       await toHandComplaint({
+      await toHandComplaint({
         ids: idArr,
         is_handle: 0,
         handle_reply: this.form.handle_reply,

@@ -104,8 +104,10 @@ export default {
       }
     },
     id () {
-    console.log('idid', this.id)
-      this.getEvaluate()
+      // console.log('idid', this.id)
+      if (this.id != '') {
+        this.getEvaluate()
+      }
     }
   },
   methods: {

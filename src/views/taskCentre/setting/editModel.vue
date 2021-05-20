@@ -86,7 +86,7 @@ export default {
     // 确定
     async submit () {
       if (this.mode === 'add') {
-       await toAddTaskType(this.form)
+        await toAddTaskType(this.form)
         this.$parent.getData()
         this.$message.success('新增成功')
         this.isShow = false

@@ -110,7 +110,7 @@ export default {
       },
       fileList2: [], // 处理图片
       reasonList: [], // 违规原因列表
-       headers: {
+      headers: {
         Authorization: Cookies.get('access_token')
         // Authorization: '801ea07a89da8ee893176dbdd982627688960d80'
       }
@@ -119,19 +119,19 @@ export default {
 
   methods: {
     // 审核
-   async submit () {
+    async submit () {
       await toCheckQuestionReply({
-       ids: this.selectedRowKeys,
-       is_check: this.form.is_check,
-       check_desc: this.form.check_desc,
-       check_image: this.fileList2,
-       violation_type: this.form.violation_type
-     })
-     this.$message.success('处理成功')
-     this.$parent.getData()
-     this.$parent.selectedRowKeys = []
-     this.isShow = false
-   },
+        ids: this.selectedRowKeys,
+        is_check: this.form.is_check,
+        check_desc: this.form.check_desc,
+        check_image: this.fileList2,
+        violation_type: this.form.violation_type
+      })
+      this.$message.success('处理成功')
+      this.$parent.getData()
+      this.$parent.selectedRowKeys = []
+      this.isShow = false
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -159,10 +159,10 @@ export default {
       console.log('上传和删除图片时触发', arr2)
     }
   },
- async created () {
+  async created () {
     const res = await toViolationReason({ type: 2 })
     this.reasonList = res.list
-     console.log('获取违规原因', res)
+    console.log('获取违规原因', res)
     this.uploadUrl =
       process.env.NODE_ENV === 'production'
         ? '/nsolid/spi/v1/upload/uploads/uImages'

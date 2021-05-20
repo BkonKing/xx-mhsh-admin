@@ -27,16 +27,16 @@ export default {
     }
   },
   methods: {
-   async submit () {
+    async submit () {
       await toEliminate({
-       ids: this.selectedRowKeys,
-       task_id: +this.id
-     })
-     this.$message.success('处理成功')
-     this.$parent.getTaskSpeedData()
-     this.$parent.getTaskLog()
-     this.$parent.selectedRowKeys = []
-     this.isShow = false
+        ids: this.selectedRowKeys,
+        task_id: +this.id
+      })
+      this.$message.success('处理成功')
+      this.$parent.getTaskSpeedData()
+      this.$parent.getTaskLog()
+      this.$parent.selectedRowKeys = []
+      this.isShow = false
     }
   }
 }

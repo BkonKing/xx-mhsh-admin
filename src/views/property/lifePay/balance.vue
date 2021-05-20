@@ -368,28 +368,28 @@ export default {
       }
       // console.log(this.queryParam, page)
       const requestParameters = Object.assign(this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getBalanceList(requestParameters)
-          .then(res => {
-            if (columns.length == 10) {
-              this.columns = columns
-              if (!this.payStatu[3]) {
-                this.columns.splice(5, 1)
-              }
-              if (!this.payStatu[2]) {
-                this.columns.splice(4, 1)
-              }
-              if (!this.payStatu[1]) {
-                this.columns.splice(3, 1)
-              }
-              if (!this.payStatu[0]) {
-                this.columns.splice(2, 1)
-              }
+      console.log('loadData request parameters:', requestParameters)
+      return getBalanceList(requestParameters)
+        .then(res => {
+          if (columns.length == 10) {
+            this.columns = columns
+            if (!this.payStatu[3]) {
+              this.columns.splice(5, 1)
             }
-            // this.columns.splice(1, 1) // 隐藏第二列
-            this.dataObj = res.tab_data
-            return res
-          })
+            if (!this.payStatu[2]) {
+              this.columns.splice(4, 1)
+            }
+            if (!this.payStatu[1]) {
+              this.columns.splice(3, 1)
+            }
+            if (!this.payStatu[0]) {
+              this.columns.splice(2, 1)
+            }
+          }
+          // this.columns.splice(1, 1) // 隐藏第二列
+          this.dataObj = res.tab_data
+          return res
+        })
     },
     // 充值
     investModal (item) {

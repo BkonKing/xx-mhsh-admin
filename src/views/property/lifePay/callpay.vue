@@ -280,13 +280,13 @@ export default {
         }
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getCallpayList(requestParameters)
-          .then(res => {
-            this.monthList = res.month_list
-            console.log('res.data', res.data)
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getCallpayList(requestParameters)
+        .then(res => {
+          this.monthList = res.month_list
+          console.log('res.data', res.data)
+          return res
+        })
     },
     // 单个催缴
     handleSub (item) {

@@ -443,21 +443,21 @@ export default {
       ],
       tableData: [], // 任务列表
       selectedRowKeys: [], // 表格复选框数组
-      // tab_status: '', //	是	int	tab切换 待审核（0）待接单（2）待交付（3）已完成（4）已终止（6）已失效（7） 未通过（5）
-      pagesize: '', //	是	string	每页显示的条数
-      pageindex: '', //	是	string	页码
-      task_type: undefined, //	否	int	任务类型
-      task_status: undefined, //	否	int	任务状态
-      user_project: undefined, //	否	int	所属项目（任务方）
-      group_search: '', //	否	string	任务群搜索
-      area: [], //	否	string	区域搜索
-      task_search: '', //	否	string	任务搜索
-      progress_status: undefined, //	否	string	进度状态搜索
-      order_field: '', //	否	string	排序字段 投诉：complaint_total，提问：ask_total，创建时间：ctime
-      sort_value: '', //	否	string	排序值 降序desc 升序asc
+      // tab_status: '', //是inttab切换 待审核（0）待接单（2）待交付（3）已完成（4）已终止（6）已失效（7） 未通过（5）
+      pagesize: '', // 是string每页显示的条数
+      pageindex: '', // 是string页码
+      task_type: undefined, // 否int任务类型
+      task_status: undefined, // 否int任务状态
+      user_project: undefined, // 否int所属项目（任务方）
+      group_search: '', // 否string任务群搜索
+      area: [], // 否string区域搜索
+      task_search: '', // 否string任务搜索
+      progress_status: undefined, // 否string进度状态搜索
+      order_field: '', // 否string排序字段 投诉：complaint_total，提问：ask_total，创建时间：ctime
+      sort_value: '', // 否string排序值 降序desc 升序asc
       accept_search: '', // 接单方
       ctime: '', // 创建时间
-      project_id: undefined, // 	可见小区
+      project_id: undefined, // 可见小区
       task_user_search: '', // 任务方搜索
       createTime: [],
       tabInfo: {}, // tab栏数据

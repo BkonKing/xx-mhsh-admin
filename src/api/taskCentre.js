@@ -323,7 +323,7 @@ export function toSetGroupOwner (data) {
 //     method: 'post'
 //   })
 // }
- // 获取所有项目
+// 获取所有项目
 export function toGetProject () {
   return request({
     url: taskCentreApi.getProject,
@@ -385,7 +385,7 @@ export function toEvaluateList () {
     method: 'post'
   })
 }
- // 评价-标记评价
+// 评价-标记评价
 export function toOptEvaluate (data) {
   return request({
     url: taskCentreApi.optEvaluate,

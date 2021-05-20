@@ -157,7 +157,7 @@ export default {
         )
         this.rechargeMoney = keepTwoDecimalFull(this.price / 0.0035)
       } else {
-         this.price = e.target.value.replace(
+        this.price = e.target.value.replace(
           /^\D*(\d*(?:\.\d{0,2})?).*$/g,
           '$1'
         )

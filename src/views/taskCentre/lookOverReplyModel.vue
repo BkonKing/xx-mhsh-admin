@@ -64,14 +64,14 @@ export default {
   },
   watch: {
     id () {
-    toViewQuestion({
-          type: 1,
-          id: this.id
-        }).then(res => {
-         console.log('提问-查看详情', res)
+      toViewQuestion({
+        type: 1,
+        id: this.id
+      }).then(res => {
+        console.log('提问-查看详情', res)
         this.lookOverInfo = res.data
         this.$previewRefresh()
-        })
+      })
     }
   }
 }

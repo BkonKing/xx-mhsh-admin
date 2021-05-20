@@ -233,10 +233,10 @@ export default {
     this.columns = columns
     return {
       form: this.$form.createForm(this, {
-onFieldsChange: (_, changedFields) => {
-        this.formChage()
-      }
-}),
+        onFieldsChange: (_, changedFields) => {
+          this.formChage()
+        }
+      }),
       rangeConfig: {
         initialValue: ['', ''],
         rules: [{ type: 'array', required: true, message: '请选择活动时间' }]

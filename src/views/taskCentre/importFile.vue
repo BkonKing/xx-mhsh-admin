@@ -1,6 +1,6 @@
 <template>
   <div class="importFile">
-    <a-modal v-model="isShow" title="导入文件" @ok="submit">
+    <a-modal v-model="isShow" title="导入文件" @ok="submit" :destroyOnClose='true'>
       <div class="form">
         <div class="leftForm"><span style="color:red">*</span> 选择文件：</div>
         <div class="rightForm">
@@ -17,10 +17,18 @@
         </div>
       </div>
 
-      <a-button
-class="btn"
-        ><a-icon type="vertical-align-bottom" /> 下载模板</a-button
-      >
+      <a-button class="btn"
+        ><a-icon type="vertical-align-bottom" />
+        <a
+          :href="
+            mode === 'whiteUser'
+              ? 'http://develop.mhshjy.com/library/mb/mb_whitelist.xlsx'
+              : 'http://develop.mhshjy.com/library/mb/mb_group.xlsx'
+          "
+          style="color:rgba(0, 0, 0, 0.647058823529412)"
+          >下载模板</a
+        >
+      </a-button>
     </a-modal>
     <a-modal class="modal" v-model="isShow2" :closable="false" :footer="null">
       <div class="content">
@@ -95,11 +103,14 @@ export default {
         return
       }
       const fd = new FormData()
+      // 上传白名单
       if (this.mode === 'whiteUser') {
         fd.append('whitelist_file', this.fileUrl)
         const res = await toImportWhiteUser(fd)
         this.uploadFileInfo = res
+        // console.log('上传文件', this.uploadFileInfo)
       } else {
+        // 上传群文件
         console.log('this.fileUrl', this.fileUrl)
         fd.append('group_file', this.fileUrl)
         console.log(fd)
@@ -109,7 +120,7 @@ export default {
         this.uploadFileInfo = res2
         this.$parent.getRegister()
       }
-      //  console.log('上传文件', res)
+
       this.isShow2 = true
       this.isShow = false
       this.$parent.pagination.currentPage = 1
@@ -119,6 +130,11 @@ export default {
       this.isShow2 = false
     }
   }
+  // beforeRouteLeave (to, from, next) {
+  //   // 参数（马上去的页面，现在的页面，跳转）
+  //   from.meta.keepAlive = false // 将要去的那个页面的缓存清空
+  //   next()
+  // }
 }
 </script>
 

@@ -271,27 +271,27 @@ export default {
       // const param = this.form
       // return getRefundList(param)
       // const aa = this.$nextTick(() => {
-        const param = {
-          date: this.weekDateList[this.weekActiveTabKey].year_date,
-          film_no: this.film_code,
-          city_id: this.areaCodeL[1],
-          county_id: this.areaCodeL[2]
-        }
-        const requestParameters = Object.assign(param, this.queryParam)
-        console.log('loadData request parameters:', requestParameters)
-        return getFilmScheduling(requestParameters)
-          .then(res => {
-            // const list = res.data.list
-            // const listArr = []
-            // for (const key in res.data.list) {
-            //   listArr.push(res.data.list[key])
-            // }
-            // res.data.total = 1
-            // res.data.list = listArr[0]
-            // console.log(res)
-            this.tableData = res.data.list
-            console.log('this.tableData', this.tableData)
-          })
+      const param = {
+        date: this.weekDateList[this.weekActiveTabKey].year_date,
+        film_no: this.film_code,
+        city_id: this.areaCodeL[1],
+        county_id: this.areaCodeL[2]
+      }
+      const requestParameters = Object.assign(param, this.queryParam)
+      console.log('loadData request parameters:', requestParameters)
+      return getFilmScheduling(requestParameters)
+        .then(res => {
+          // const list = res.data.list
+          // const listArr = []
+          // for (const key in res.data.list) {
+          //   listArr.push(res.data.list[key])
+          // }
+          // res.data.total = 1
+          // res.data.list = listArr[0]
+          // console.log(res)
+          this.tableData = res.data.list
+          console.log('this.tableData', this.tableData)
+        })
       // })
       // console.log('a', aa)
     }

@@ -146,9 +146,9 @@ export default {
     }
   },
   destroyed () {
- clearInterval(this.timeId)
-        this.onChange = null
-        this.payMa = ''
+    clearInterval(this.timeId)
+    this.onChange = null
+    this.payMa = ''
   }
 }
 </script>

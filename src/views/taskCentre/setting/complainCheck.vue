@@ -274,17 +274,17 @@ export default {
   },
   methods: {
     async getAskComplaintTypeList () {
-        // 获取提问投诉列表
-    const res4 = await gainGetComplaintType({
-      type: 2
-    })
-    this.arr2 = res4.list
-    if (res4.list.length === 0) {
-      this.arr2 = [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }]
-    }
-    this.$nextTick(() => {
-      this.card5Bol = true
-    })
+      // 获取提问投诉列表
+      const res4 = await gainGetComplaintType({
+        type: 2
+      })
+      this.arr2 = res4.list
+      if (res4.list.length === 0) {
+        this.arr2 = [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }]
+      }
+      this.$nextTick(() => {
+        this.card5Bol = true
+      })
     // console.log('获取任务投诉列表', res4)
     },
     // 获取任务投诉列表
@@ -305,7 +305,7 @@ export default {
     },
     // 提问投诉提交
     async askComplain () {
-        const arrTest = this.arr2.map(item => {
+      const arrTest = this.arr2.map(item => {
         if (item.complaint_type != '') {
           return {
             complaint_type: item.complaint_type,
@@ -317,7 +317,7 @@ export default {
         return item != undefined
       })
       // console.log('提问投诉', list)
-       await toSetComplaintType({
+      await toSetComplaintType({
         type_list: list,
         type: 2
       })
@@ -393,7 +393,7 @@ export default {
     },
     // 投诉提交
     async complain () {
-     await toSetComplaint({
+      await toSetComplaint({
         complaint_time: +this.complaint_time
       })
       // console.log('投诉提交', res)
@@ -402,7 +402,7 @@ export default {
     },
     // 提问提交
     async askQuestion () {
-       await toSetQuestion({
+      await toSetQuestion({
         ask_check: this.ask_check === true ? 1 : 0,
         check_time: +this.check_time2
       })
@@ -412,7 +412,7 @@ export default {
     },
     // 任务提交
     async taskSubmit () {
-       await setTaskSet({
+      await setTaskSet({
         check_open: 1,
         check_time: +this.check_time,
         handle_time: +this.handle_time

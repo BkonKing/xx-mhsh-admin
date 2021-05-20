@@ -229,7 +229,7 @@ export default {
     },
     // 确定删除
     async confirm (record) {
-       await toUpdateTaskType({
+      await toUpdateTaskType({
         update_field: 'is_del',
         update_value: +record.start_price,
         id: record.id

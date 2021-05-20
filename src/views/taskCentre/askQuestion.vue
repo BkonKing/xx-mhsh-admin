@@ -356,18 +356,18 @@ export default {
       ],
       selectedRowKeys: [], // 表格复选框数组
       askQuestionInfo: {}, // 提问列表信息
-      tab_type: '', //	否	int	标签切换值 0待审核 1通过 2未通过
-      type: undefined, //	否	int	类型1提问 2回复
-      check_type: undefined, //	否	int	审核状态 审核状态 0待审核 1通过 2未通过 3无需审核
-      is_reply: undefined, //	否	int	有无回复
-      user_search: '', //	否	string	用户搜索
-      project_id: undefined, //	否	int	项目ID
-      order_field: '', //	否	string	排序字段
-      sort_value: '', //	否	string	排序值
-      status: '', //	否	int	0待审核 1已通过 2未通过
-      content: '', //	否	string	发布内容
-      task_search: '', //	否	string	任务搜索
-      ctime: '', //	否	string	发布时间
+      tab_type: '', // 否int标签切换值 0待审核 1通过 2未通过
+      type: undefined, // 否int类型1提问 2回复
+      check_type: undefined, // 否int审核状态 审核状态 0待审核 1通过 2未通过 3无需审核
+      is_reply: undefined, // 否int有无回复
+      user_search: '', // 否string用户搜索
+      project_id: undefined, // 否int项目ID
+      order_field: '', // 否string排序字段
+      sort_value: '', // 否string排序值
+      status: '', // 否int0待审核 1已通过 2未通过
+      content: '', // 否string发布内容
+      task_search: '', // 否string任务搜索
+      ctime: '', // 否string发布时间
       projectList: [], // 项目列表
       createTime: [],
       task_id: '' // 任务id

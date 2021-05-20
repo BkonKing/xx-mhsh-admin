@@ -126,14 +126,14 @@ export default {
     },
     // 设置提醒用户
     async submit () {
-     for (let i = 0; i < this.list.length; i++) {
+      for (let i = 0; i < this.list.length; i++) {
         if (this.list[i].phone === '') {
           this.$message.error('请输入手机号')
           return
         }
-     }
+      }
       // console.log(this.list)
-     let arr = this.list.map(item => {
+      let arr = this.list.map(item => {
         if (item.phone != '') {
           return {
             realname: item.name,
@@ -142,7 +142,7 @@ export default {
         }
       })
       // console.log(arr)
-    arr = arr.filter(item => {
+      arr = arr.filter(item => {
         return item != undefined
       })
       // console.log(arr)

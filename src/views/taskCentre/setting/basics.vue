@@ -277,62 +277,62 @@ export default {
   },
   methods: {
     // 获取放弃原因列表
-   async getGiveOutReasonList () {
-    const res4 = await gainGetReason({
-      type: 2
-    })
-    this.arr3 = res4.list.length > 0 ? res4.list : this.arr3
-    this.$nextTick(() => {
-      this.card5Bol = true
-    })
+    async getGiveOutReasonList () {
+      const res4 = await gainGetReason({
+        type: 2
+      })
+      this.arr3 = res4.list.length > 0 ? res4.list : this.arr3
+      this.$nextTick(() => {
+        this.card5Bol = true
+      })
     // console.log('获取放弃原因列表', res4)
     },
     // 获取淘汰原因列表
     async getWeekOutReasonList () {
-    const res3 = await gainGetReason({
-      type: 1
-    })
-    this.arr2 = res3.list.length > 0 ? res3.list : this.arr2
-    this.$nextTick(() => {
-      this.card4Bol = true
-    })
+      const res3 = await gainGetReason({
+        type: 1
+      })
+      this.arr2 = res3.list.length > 0 ? res3.list : this.arr2
+      this.$nextTick(() => {
+        this.card4Bol = true
+      })
     // console.log('获取淘汰原因列表', res3)
     },
     // 获取评价标签
-  async GetLabelList () {
-        // 基础-获取评价标签
-    const res2 = await gainGetLabel()
-    this.arr = res2.list
-    if (res2.list.length === 0) {
-      this.arr = [
-        {
-          id: Math.random() * 999,
-          good_tag_name: '',
-          bad_tag_name: '',
-          order_sort: ''
-        }
-      ]
-    }
-    this.$nextTick(() => {
-      this.card3Bol = true
-    })
+    async GetLabelList () {
+      // 基础-获取评价标签
+      const res2 = await gainGetLabel()
+      this.arr = res2.list
+      if (res2.list.length === 0) {
+        this.arr = [
+          {
+            id: Math.random() * 999,
+            good_tag_name: '',
+            bad_tag_name: '',
+            order_sort: ''
+          }
+        ]
+      }
+      this.$nextTick(() => {
+        this.card3Bol = true
+      })
     //  console.log('基础-获取评价标签', res2)
     },
     // 放弃提交
     async giveUp () {
-       const arrTest = this.arr3.map(item => {
+      const arrTest = this.arr3.map(item => {
         if (item.reason != '') {
           return {
-          reason: item.reason,
-          sort: item.order_sort
-        }
+            reason: item.reason,
+            sort: item.order_sort
+          }
         }
       })
       const list = arrTest.filter(item => {
         return item != undefined
       })
       // console.log('放弃', list)
-       await addSetReason({
+      await addSetReason({
         reason_list: list,
         type: 2
       })
@@ -347,7 +347,7 @@ export default {
     },
     // 删除 放弃
     delGiveUp (index) {
-       if (this.arr3.length === 1) {
+      if (this.arr3.length === 1) {
         this.arr3 = [{ id: Math.random() * 999, reason: '', order_sort: '' }]
         return
       }
@@ -359,13 +359,13 @@ export default {
       const arrTest = this.arr2.map(item => {
         if (item.reason != '') {
           return {
-          reason: item.reason,
-          sort: item.order_sort
-        }
+            reason: item.reason,
+            sort: item.order_sort
+          }
         }
       })
       const list = arrTest.filter(item => {
-         return item != undefined
+        return item != undefined
       })
       // console.log('淘汰提交', list)
       await addSetReason({
@@ -399,7 +399,7 @@ export default {
       // })
       for (let i = 0; i < this.arr.length; i++) {
         if (
-           (this.arr[i].good_tag_name === '' || this.arr[i].bad_tag_name === '') && (this.arr[i].good_tag_name != '' || this.arr[i].bad_tag_name != '')
+          (this.arr[i].good_tag_name === '' || this.arr[i].bad_tag_name === '') && (this.arr[i].good_tag_name != '' || this.arr[i].bad_tag_name != '')
         ) {
           this.$message.error('请填写完整一行')
           return
@@ -475,17 +475,17 @@ export default {
     // 设置全部用户开关
     async onChangeAll (checked) {
       console.log('checked', checked)
-       if (checked === false) {
+      if (checked === false) {
         this.disabled = false
       } else {
         this.disabled = true
       }
-     const res = await setFunctionOpen({
+      const res = await setFunctionOpen({
         alluser_open: checked === true ? 1 : 0,
         type: 1
       })
       this.$message.success('设置成功')
-       console.log('设置全部用户开关', res)
+      console.log('设置全部用户开关', res)
     }
   },
   async created () {

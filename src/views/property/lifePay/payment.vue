@@ -299,12 +299,12 @@ export default {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, this.queryParam, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getPaymentList(requestParameters)
-          .then(res => {
-            this.dataObj = res.tab_data
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getPaymentList(requestParameters)
+        .then(res => {
+          this.dataObj = res.tab_data
+          return res
+        })
     }
   }
 }

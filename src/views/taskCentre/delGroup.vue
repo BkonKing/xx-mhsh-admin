@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     // 删除群
-  async  del () {
+    async  del () {
       const arr = []
       arr.push(this.id)
       const res = await toDelGroup({

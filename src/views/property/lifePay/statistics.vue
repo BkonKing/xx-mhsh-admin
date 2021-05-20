@@ -361,31 +361,31 @@ export default {
       padding: [50, 400, 50, 0],
       offset: [15, 0],
       scale: [
-          {
-              dataKey: 'percent',
-              formatter: function formatter (val) {
-                  val = (val * 100).toFixed(2) + '%'
-                  return val
-              },
-              nice: false
-          }
+        {
+          dataKey: 'percent',
+          formatter: function formatter (val) {
+            val = (val * 100).toFixed(2) + '%'
+            return val
+          },
+          nice: false
+        }
       ],
       filter: {
-          dataKey: 'payType',
-          callback: function (val) {
-              return val !== 'UK'
-          }
+        dataKey: 'payType',
+        callback: function (val) {
+          return val !== 'UK'
+        }
       },
-      containerTplTooltip: `<div class="g2-tooltip"><ul class="g2-tooltip-list"></ul></div>`,
+      containerTplTooltip: '<div class="g2-tooltip"><ul class="g2-tooltip-list"></ul></div>',
       itemTplTooltip: '<li data-index={index}><span style="color:{color}">{name}:</span>{value}</li>',
-      containerTplLegend: `<div class="g2-legend" style="top: 0;bottom: 0;display: flex;align-items: center;"> <table class="g2-legend-list"></table> </div>`,
+      containerTplLegend: '<div class="g2-legend" style="top: 0;bottom: 0;display: flex;align-items: center;"> <table class="g2-legend-list"></table> </div>',
       color: [
-          'payType',
-          ['#67b7dc', '#84b761', '#fdd400', '#cc4748', '#cd82ad', '#2f4074', '#448e4d', '#b7b83f', '#b9783f']
+        'payType',
+        ['#67b7dc', '#84b761', '#fdd400', '#cc4748', '#cd82ad', '#2f4074', '#448e4d', '#b7b83f', '#b9783f']
       ],
       style: {
-          lineWidth: 2,
-          stroke: '#fff'
+        lineWidth: 2,
+        stroke: '#fff'
       },
       // 折线
       // 页面分析tooltip自定义显示内容
@@ -639,14 +639,14 @@ export default {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
       const requestParameters = Object.assign({}, this.params, page)
-        console.log('loadData request parameters:', requestParameters)
-        return getNoPaySituation(requestParameters)
-          .then(res => {
-            this.noMoney = res.z_money / 100
-            this.noCount = res.data && res.data.total
-            console.log(res.data)
-            return res
-          })
+      console.log('loadData request parameters:', requestParameters)
+      return getNoPaySituation(requestParameters)
+        .then(res => {
+          this.noMoney = res.z_money / 100
+          this.noCount = res.data && res.data.total
+          console.log(res.data)
+          return res
+        })
     },
     // 费用类型切换
     lineChange () {

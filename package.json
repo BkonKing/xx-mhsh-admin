@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "build:preview": "vue-cli-service build --mode preview",
     "lint": "vue-cli-service lint",
-    "lint2": "eslint --fix --ext .js,.vue src",
+    "lint2": "eslint --fix --ext .js,.vue src test/unit",
     "analyze": "cross-env use_analyzer=true npm run serve"
   },
   "dependencies": {
