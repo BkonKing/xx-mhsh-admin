@@ -98,6 +98,9 @@ export default {
   methods: {
     // 批量处理
    async submit () {
+     if (this.form.handle_reply === '') {
+       return
+     }
       await toHandComplaint({
        ids: this.selectedRowKeys,
        is_handle: 1,

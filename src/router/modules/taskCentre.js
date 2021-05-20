@@ -74,7 +74,7 @@ export default {
         title: '任务群',
         icon: 'table'
       },
-      redirect: '/taskCentre/groupDetail',
+      redirect: '/taskCentre/taskGroup',
       children: [
         {
           path: '/taskCentre/groupDetail', // 完整地址
