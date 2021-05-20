@@ -310,7 +310,7 @@ export default {
     },
     // 展开
     open () {
-        this.cardBol = true
+      this.cardBol = true
     },
     // 收起
     close () {

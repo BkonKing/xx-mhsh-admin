@@ -55,7 +55,7 @@
         <div class="table-page-search-wrapper">
           <div class="top" ref="card2">
             <a-form-model layout="inline">
-              <a-row :gutter="48">
+              <a-row :gutter="36">
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="加入方式">
                     <a-select v-model="join_type" placeholder="请选择">
@@ -77,11 +77,8 @@
                   <div class="btns">
                     <a-button type="primary" @click="search">查询</a-button>
                     <a-button @click="resetGroupUserList">重置</a-button>
-                    <a-button
-type="link"
-@click="open"
-                      >展开 <a-icon
-type="down"
+                    <a-button type="link" @click="open"
+                      >展开 <a-icon type="down"
                     /></a-button>
                   </div>
                 </a-col>
@@ -131,11 +128,8 @@ type="down"
                     <div class="btns">
                       <a-button type="primary" @click="search">查询</a-button>
                       <a-button @click="resetGroupUserList">重置</a-button>
-                      <a-button
-type="link"
-@click="close"
-                        >收起 <a-icon
-type="up"
+                      <a-button type="link" @click="close"
+                        >收起 <a-icon type="up"
                       /></a-button>
                     </div>
                   </a-col>
@@ -145,10 +139,8 @@ type="up"
           </div>
           <div class="btns2">
             <a-button type="primary" @click="addUser">添加用户</a-button>
-            <a-button
-@click="importUser"
-              >导入用户 <a-icon
-type="vertical-align-bottom"
+            <a-button @click="importUser"
+              >导入用户 <a-icon type="vertical-align-bottom"
             /></a-button>
             <a-dropdown>
               <a-menu slot="overlay" @click="handleMenuClick">
@@ -158,9 +150,7 @@ type="vertical-align-bottom"
               </a-menu>
               <a-button> 批量操作 <a-icon type="down" /> </a-button>
             </a-dropdown>
-            <a-button
-@click="setGroupOwner"
-:disabled="setOwnerBol"
+            <a-button @click="setGroupOwner" :disabled="setOwnerBol"
               >设为群主</a-button
             >
           </div>
@@ -239,7 +229,7 @@ type="vertical-align-bottom"
           <div class="title">操作日志</div>
           <div class="top" ref="card3">
             <a-form-model layout="inline">
-              <a-row :gutter="48">
+              <a-row :gutter="36">
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="操作员">
                     <a-input v-model="opt_user" placeholder="姓名"></a-input>
@@ -264,11 +254,8 @@ type="vertical-align-bottom"
                   <div class="btns">
                     <a-button type="primary" @click="searchLog">查询</a-button>
                     <a-button @click="resetLog">重置</a-button>
-                    <a-button
-type="link"
-@click="open2"
-                      >展开 <a-icon
-type="down"
+                    <a-button type="link" @click="open2"
+                      >展开 <a-icon type="down"
                     /></a-button>
                   </div>
                 </a-col>
@@ -292,17 +279,12 @@ type="down"
                   <a-col :md="8" :sm="24"></a-col>
                   <a-col :md="8" :sm="24">
                     <div class="btns">
-                      <a-button
-type="primary"
-@click="searchLog"
+                      <a-button type="primary" @click="searchLog"
                         >查询</a-button
                       >
                       <a-button @click="resetLog">重置</a-button>
-                      <a-button
-type="link"
-@click="close2"
-                        >收起 <a-icon
-type="up"
+                      <a-button type="link" @click="close2"
+                        >收起 <a-icon type="up"
                       /></a-button>
                     </div>
                   </a-col>
@@ -540,17 +522,17 @@ export default {
   },
   methods: {
     // 批量操作
-   async handleMenuClick () {
-     if (this.selectedRowKeys.length === 0) {
-       return
-     }
-     await toDelGroupUser({
-       uids: this.selectedRowKeys,
-       group_id: this.id
-     })
-     this.$message.success('删除成功')
-     this.getData()
-     this.getRegister()
+    async handleMenuClick () {
+      if (this.selectedRowKeys.length === 0) {
+        return
+      }
+      await toDelGroupUser({
+        uids: this.selectedRowKeys,
+        group_id: this.id
+      })
+      this.$message.success('删除成功')
+      this.getData()
+      this.getRegister()
     },
     // 重置日志查询
     resetLog () {
@@ -781,6 +763,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .groupDetail {
   .cardContent {
     padding: 0 20px;
@@ -825,9 +810,10 @@ export default {
       padding: 0 20px;
     }
     .btns {
+      padding-bottom: 20px;
       text-align: right;
-      button {
-        margin-right: 10px;
+      button + button {
+        margin-left: 10px;
       }
     }
     /deep/ .ant-card-body {
@@ -868,6 +854,9 @@ export default {
     .table {
       margin-top: 20px;
       padding: 0px 32px;
+      /deep/ .ant-table-body {
+        overflow-x: auto;
+      }
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {
@@ -907,11 +896,10 @@ export default {
     .top {
       padding: 0 20px;
       margin-top: 20px;
-      .btns {
-        text-align: right;
-        button {
-          margin-right: 10px;
-        }
+      padding-bottom: 20px;
+      text-align: right;
+      button + button {
+        margin-left: 10px;
       }
     }
     .table {

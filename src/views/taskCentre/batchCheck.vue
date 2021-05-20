@@ -112,7 +112,7 @@ export default {
       },
       fileList2: [], // 处理图片
       reasonList: [], // 违规原因列表
-       headers: {
+      headers: {
         Authorization: Cookies.get('access_token')
         // Authorization: '3c38f83dec332332377a64be74a9936577fd1fca'
         // Projectid: Cookies.get('project_id')

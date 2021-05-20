@@ -148,6 +148,7 @@
         okText="保存"
         @ok="importFile"
         @cancel="importModal=false"
+        :destroyOnClose='true'
       >
         <a-form
           class="form-file"

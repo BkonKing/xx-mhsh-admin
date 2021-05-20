@@ -53,7 +53,7 @@
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="区域">
                     <div style="display: flex;">
-                      <a-select v-model="queryParam.building_id" placeholder="楼栋" default-value="0" @change="selectHouse" style="margin-right: 8px">
+                      <a-select v-model="queryParam.building_id" placeholder="楼栋" default-value="0" @change="selectHouse" style="margin-right: 15px">
                         <a-select-option v-for="item in houseList" :key="item.id" :value="item.id">
                           {{ item.building_name }}
                         </a-select-option>
@@ -150,7 +150,7 @@ import detailInfo from './components/detailInfo'
 const columns = [
   {
     title: '明细单号',
-    dataIndex: 'id_no'
+    dataIndex: 'id'
   },
   {
     title: '明细类型',
@@ -243,7 +243,7 @@ export default {
     // 账单月份
     getBillMonth () {
       getBillMonth().then(res => {
-        this.monthList = res.data.list.reverse()
+        this.monthList = res.data.list
       })
     },
     // 费用类型
@@ -277,8 +277,7 @@ export default {
     look (item) {
       this.params = {
         pay_log_id: item.id,
-        bill_type: item.bill_type,
-        genre_id: item.genre_id
+        bill_type: item.bill_type
       }
       this.$nextTick(() => {
         this.$refs.info.getData()
@@ -288,9 +287,6 @@ export default {
     // 重置
     reSet () {
       this.queryParam = {}
-      if (this.tabIndex > 0 && this.tabIndex < 5) {
-        this.queryParam.genre_type = this.tabIndex
-      }
       this.publishDate = []
     },
     // 刷新表格数据
@@ -302,12 +298,7 @@ export default {
       if (page.sortOrder) {
         page.sortOrder = page.sortOrder == 'ascend' ? 'asc' : 'desc'
       }
-      const obj = Object.assign({}, this.queryParam)
-      if (obj.genre_id > 0 && obj.genre_id < 4) {
-        obj.genre_type = obj.genre_id
-        delete obj.genre_id
-      }
-      const requestParameters = Object.assign({}, obj, page)
+      const requestParameters = Object.assign({}, this.queryParam, page)
       console.log('loadData request parameters:', requestParameters)
       return getPaymentList(requestParameters)
         .then(res => {

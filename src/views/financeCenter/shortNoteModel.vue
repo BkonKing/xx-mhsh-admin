@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     // 微信支付
-     onChange () {
+    onChange () {
       if (this.pay_type === 1) {
         payOrder({
           recharge_id: this.payInfo.recharge_id,
@@ -105,17 +105,17 @@ export default {
           this.hasImg = true
           console.log('微信支付', res.data.url)
           this.timeId = setInterval(async () => {
-          const res2 = await payQuery({
-            pay_type: this.pay_type,
-            out_trade_no: res.data.order_num + ''
-          })
-          // console.log('是否支付成功', res2)
-          if (res2.is_success === 1) {
-            this.isPay = true
-            this.$listeners.getData()
-            clearInterval(this.timeId)
-          }
-        }, 2000)
+            const res2 = await payQuery({
+              pay_type: this.pay_type,
+              out_trade_no: res.data.order_num + ''
+            })
+            // console.log('是否支付成功', res2)
+            if (res2.is_success === 1) {
+              this.isPay = true
+              this.$listeners.getData()
+              clearInterval(this.timeId)
+            }
+          }, 2000)
         })
 
         // console.log('支付', res)
@@ -146,9 +146,9 @@ export default {
     }
   },
   destroyed () {
- clearInterval(this.timeId)
-        this.onChange = null
-        this.payMa = ''
+    clearInterval(this.timeId)
+    this.onChange = null
+    this.payMa = ''
   }
 }
 </script>

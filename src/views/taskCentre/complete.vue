@@ -142,116 +142,112 @@
       </a-card>
       <a-card class="card2">
         <div class="table-page-search-wrapper">
-        <div class="title">基础信息</div>
-        <div class="content">
-          <a-form-model :label-col="md" >
-            <a-row>
-              <a-col :span="8">
-                <a-form-model-item label="任务标题">
-                  {{ taskDetailInfo.task_title }}
-                </a-form-model-item>
-                <a-form-model-item label="任务奖励">
-                  {{ taskDetailInfo.happy_reward }}币（{{
-                    taskDetailInfo.every_reward
-                  }}币/人）| 已奖励{{ taskDetailInfo.reward_happiness }}币
-                </a-form-model-item>
-                <a-form-model-item
-label="需要人数"
-                  >{{ taskDetailInfo.assignment }}/{{
-                    taskDetailInfo.need_people
-                  }}</a-form-model-item
-                >
-                <a-form-model-item label="完成时间">{{
-                  taskDetailInfo.complete_time
-                }}</a-form-model-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-model-item label="任务类型">{{
-                  taskDetailInfo.task_type
-                }}</a-form-model-item>
-                <a-form-model-item label="创建者">
-                  <a
-                    :href="
-                      `/zht/user/user/getUserList?uid=${this.taskDetailInfo.uid}`
-                    "
-                    target="_parent"
-                    >{{ taskDetailInfo.task_user }}</a
+          <div class="title">基础信息</div>
+          <div
+            class="content"
+            style="padding-left: 11px;"
+          >
+            <a-form-model :label-col="md">
+              <a-row>
+                <a-col :span="8">
+                  <a-form-model-item label="任务标题">
+                    {{ taskDetailInfo.task_title }}
+                  </a-form-model-item>
+                  <a-form-model-item label="任务奖励">
+                    {{ taskDetailInfo.happy_reward }}币（{{
+                      taskDetailInfo.every_reward
+                    }}币/人）| 已奖励{{ taskDetailInfo.reward_happiness }}币
+                  </a-form-model-item>
+                  <a-form-model-item label="需要人数"
+                    >{{ taskDetailInfo.assignment }}/{{
+                      taskDetailInfo.need_people
+                    }}</a-form-model-item
                   >
-                  {{ taskDetailInfo.task_project }}
-                </a-form-model-item>
-                <a-form-model-item label="任务标签">
-                  {{ taskDetailInfo.task_tag }}
-                </a-form-model-item>
-                <a-form-model-item label="完成地点">{{
-                  taskDetailInfo.complete_address
-                }}</a-form-model-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-model-item label="任务编号">
-                  {{ taskDetailInfo.task_number }}
-                  <img
-                    style="marginLeft:10px;width:20px;height:20;"
-                    preview="1"
-                    :src="taskMa"
-                    alt=""
-                  />
-                </a-form-model-item>
-                <a-form-model-item label="手机号">{{
-                  taskDetailInfo.mobile
-                }}</a-form-model-item>
-                <a-form-model-item label="联系电话">{{
-                  taskDetailInfo.contact_number
-                }}</a-form-model-item>
-                <a-form-model-item label="可见范围">
-                  <span @click="openGroupDetail" style="cursor: pointer;">
-                    {{ taskDetailInfo.visible_range }}
-                  </span>
-                </a-form-model-item>
-              </a-col>
-            </a-row>
-          </a-form-model>
-          <div class="explain">
-            <div class="left">任务说明：</div>
+                  <a-form-model-item label="完成时间">{{
+                    taskDetailInfo.complete_time
+                  }}</a-form-model-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-model-item label="任务类型">{{
+                    taskDetailInfo.task_type
+                  }}</a-form-model-item>
+                  <a-form-model-item label="创建者">
+                    <a
+                      :href="
+                        `/zht/user/user/getUserList?uid=${this.taskDetailInfo.uid}`
+                      "
+                      target="_parent"
+                      >{{ taskDetailInfo.task_user }}</a
+                    >
+                    {{ taskDetailInfo.task_project }}
+                  </a-form-model-item>
+                  <a-form-model-item label="任务标签">
+                    {{ taskDetailInfo.task_tag }}
+                  </a-form-model-item>
+                  <a-form-model-item label="完成地点">{{
+                    taskDetailInfo.complete_address
+                  }}</a-form-model-item>
+                </a-col>
+                <a-col :span="8">
+                  <a-form-model-item label="任务编号">
+                    {{ taskDetailInfo.task_number }}
+                    <img
+                      style="marginLeft:10px;width:20px;height:20;"
+                      preview="1"
+                      :src="taskMa"
+                      alt=""
+                    />
+                  </a-form-model-item>
+                  <a-form-model-item label="手机号">{{
+                    taskDetailInfo.mobile
+                  }}</a-form-model-item>
+                  <a-form-model-item label="联系电话">{{
+                    taskDetailInfo.contact_number
+                  }}</a-form-model-item>
+                  <a-form-model-item label="可见范围">
+                    <span @click="openGroupDetail" style="cursor: pointer;">
+                      {{ taskDetailInfo.visible_range }}
+                    </span>
+                  </a-form-model-item>
+                </a-col>
+              </a-row>
+            </a-form-model>
+            <div class="explain">
+              <div class="left">任务说明：</div>
 
-            <div class="right" id="taskExplain" >
- {{ taskDetailInfo.task_desc }}
+              <div class="right" id="taskExplain">
+                {{ taskDetailInfo.task_desc }}
+              </div>
+            </div>
+            <div class="otherBtn">
+              <a-button
+                type="link"
+                v-if="!btnBol && lineNumber > 10"
+                @click="open"
+                >展开 <a-icon type="down"
+              /></a-button>
+              <a-button
+                type="link"
+                v-else-if="btnBol && lineNumber > 10"
+                @click="close"
+                >收起 <a-icon type="up"
+              /></a-button>
             </div>
           </div>
-          <div class="otherBtn">
-            <a-button
-              type="link"
-              v-if="!btnBol && lineNumber > 10"
-              @click="open"
-              >展开 <a-icon
-type="down"
-            /></a-button>
-            <a-button
-              type="link"
-              v-else-if="btnBol && lineNumber > 10"
-              @click="close"
-              >收起 <a-icon
-type="up"
-            /></a-button>
+          <div class="imgcon">
+            <div
+              class="img"
+              v-for="(item, index) in taskDetailInfo.task_image"
+              :key="index"
+            >
+              <img preview="0" :src="item" alt="" />
+            </div>
           </div>
-        </div>
-        <div class="imgcon">
-          <div
-            class="img"
-            v-for="(item,index) in taskDetailInfo.task_image"
-            :key="index"
-          >
-            <img
-              preview="0"
-              :src="item"
-              alt=""
-            />
-          </div>
-        </div>
-        <!-- 预览图片 -->
-        <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+          <!-- 预览图片 -->
+          <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
         <img alt="example" style="width: 100%" :src="previewImage" />
       </a-modal> -->
-      </div>
+        </div>
       </a-card>
       <a-card class="card3">
         <a-row>
@@ -349,11 +345,8 @@ type="up"
                   <div class="btns" v-else>
                     <a-button type="primary" @click="search1">查询</a-button>
                     <a-button @click="reset1">重置</a-button>
-                    <a-button
-type="link"
-@click="open2"
-                      >展开 <a-icon
-type="down"
+                    <a-button type="link" @click="open2"
+                      >展开 <a-icon type="down"
                     /></a-button>
                   </div>
                 </a-col>
@@ -361,11 +354,8 @@ type="down"
               <div class="btns" v-if="!card4Bol">
                 <a-button type="primary" @click="search1">查询</a-button>
                 <a-button @click="reset1">重置</a-button>
-                <a-button
-type="link"
-@click="close2"
-                  >收起 <a-icon
-type="up"
+                <a-button type="link" @click="close2"
+                  >收起 <a-icon type="up"
                 /></a-button>
               </div>
             </a-form-model>
@@ -373,9 +363,7 @@ type="up"
         </div>
         <div class="content">
           <div class="btns" v-if="buttonStatus != ''">
-            <a-button
-v-if="buttonStatus.button_shelf === 1"
-@click="soldOut(1)"
+            <a-button v-if="buttonStatus.button_shelf === 1" @click="soldOut(1)"
               >下架任务</a-button
             >
             <a-button
@@ -383,9 +371,7 @@ v-if="buttonStatus.button_shelf === 1"
               @click="terminate(2)"
               >终止任务</a-button
             >
-            <a-button
-v-if="buttonStatus.button_stop === 1"
-@click="stop(3)"
+            <a-button v-if="buttonStatus.button_stop === 1" @click="stop(3)"
               >停止接单</a-button
             >
             <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
@@ -444,7 +430,7 @@ v-if="buttonStatus.button_stop === 1"
               </template>
               <template slot="evaluate" slot-scope="text, record">
                 <span
-                 v-if="record.evaluate !=0"
+                  v-if="record.evaluate != 0"
                   style="color:#1890FF;cursor: pointer;"
                   @click="openAppraise(record.evaluate_id)"
                   >{{ record.evaluate }}星</span
@@ -460,14 +446,12 @@ v-if="buttonStatus.button_stop === 1"
               </template>
               <template slot="opera" slot-scope="text, record">
                 <div class="btns">
-                  <a-button
-type="link"
-@click="check(record.uid)"
+                  <a-button type="link" @click="check(record.uid)"
                     >查看</a-button
                   >
                   <a-button
                     type="link"
-                    @click="award(record.uid)"
+                    @click="award(record)"
                     v-if="record.button === 1"
                     >奖励</a-button
                   >
@@ -510,33 +494,33 @@ type="link"
         <div class="title">
           审核信息
         </div>
-      <div class="content">
+        <div class="content">
           <div
-          class="card5Item"
-          v-for="(item, index) in taskDetailInfo.check_list"
-          :key="index"
-        >
-          <div class="c1">
-            <div class="t1">审核状态：{{ item.check_status }}</div>
-            <div class="t2">审核人：{{ item.check_user }}</div>
-            <div class="t3">审核时间：{{ item.check_time }}</div>
-          </div>
-          <div class="c2" v-if="taskDetailInfo.task_status === 4">
-            违规原因：{{ item.check_reason }}
-          </div>
-          <div class="c3">
-            <div class="t1">处理回复：</div>
-            <div class="t2">
-              {{ item.check_desc }}
+            class="card5Item"
+            v-for="(item, index) in taskDetailInfo.check_list"
+            :key="index"
+          >
+            <div class="c1">
+              <div class="t1">审核状态：{{ item.check_status }}</div>
+              <div class="t2">审核人：{{ item.check_user }}</div>
+              <div class="t3">审核时间：{{ item.check_time }}</div>
             </div>
-          </div>
-          <div class="imgcon">
-            <div class="img" v-for="item in item.check_image" :key="item">
-              <img preview="2" :src="item" alt="" />
+            <div class="c2" v-if="taskDetailInfo.task_status === 4">
+              违规原因：{{ item.check_reason }}
+            </div>
+            <div class="c3">
+              <div class="t1">处理回复：</div>
+              <div class="t2">
+                {{ item.check_desc }}
+              </div>
+            </div>
+            <div class="imgcon">
+              <div class="img" v-for="item in item.check_image" :key="item">
+                <img preview="2" :src="item" alt="" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </a-card>
       <a-card class="card6">
         <div class="title">操作日志</div>
@@ -568,11 +552,8 @@ type="link"
                   <div class="btns">
                     <a-button type="primary" @click="logSearch">查询</a-button>
                     <a-button @click="logReset">重置</a-button>
-                    <a-button
-type="link"
-@click="open3"
-                      >展开 <a-icon
-type="down"
+                    <a-button type="link" @click="open3"
+                      >展开 <a-icon type="down"
                     /></a-button>
                   </div>
                 </a-col>
@@ -596,17 +577,12 @@ type="down"
                   <a-col :md="8" :sm="24"></a-col>
                   <a-col :md="8" :sm="24">
                     <div class="btns">
-                      <a-button
-type="primary"
-@click="logSearch"
+                      <a-button type="primary" @click="logSearch"
                         >查询</a-button
                       >
                       <a-button @click="logReset">重置</a-button>
-                      <a-button
-type="link"
-@click="close3"
-                        >收起 <a-icon
-type="up"
+                      <a-button type="link" @click="close3"
+                        >收起 <a-icon type="up"
                       /></a-button>
                     </div>
                   </a-col>
@@ -995,12 +971,15 @@ export default {
       this.currentIndex = 2
     },
     // 奖励
-    award (uid) {
-      if (typeof uid === 'number') {
-        this.$refs.awardModel.uid = uid
+    award (record) {
+      console.log('record', record)
+      if (typeof record.uid === 'number') {
+        this.$refs.awardModel.uid = record.uid
+        this.$refs.awardModel.reward_happiness = record.reward_happiness
+
         this.selectedRowKeys = []
+        this.$refs.awardModel.isShow = true
       }
-      this.$refs.awardModel.isShow = true
     },
     // 查看
     check (uid) {
@@ -1060,6 +1039,7 @@ export default {
         ids: arr,
         task_id: this.id
       })
+      this.getTaskSpeedData()
       this.getTaskLog()
       this.$message.success('处理成功')
     },
@@ -1146,6 +1126,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .complete {
   /deep/ .ant-card-body {
     padding: 0;
@@ -1171,13 +1154,13 @@ export default {
     }
   }
   .card2 {
-    .hasHidden{
+    .hasHidden {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 10;
       overflow: hidden;
     }
-      /deep/ .ant-form-item-label {
+    /deep/ .ant-form-item-label {
       min-width: 88px;
     }
     /deep/ .ant-card-body {
@@ -1197,8 +1180,10 @@ export default {
       border-bottom: 1px solid rgba(233, 233, 233, 1);
     }
     .explain {
-      padding: 0 38px;
       display: flex;
+      margin-top: 10px;
+      margin-left: 17px;
+      margin-bottom: 9px;
       .left {
         width: 70px;
         white-space: nowrap;
@@ -1206,7 +1191,6 @@ export default {
       .right {
         flex: 1;
         line-height: 20px;
-
       }
     }
     .otherBtn {
@@ -1215,9 +1199,9 @@ export default {
     }
     .imgcon {
       display: flex;
+      margin-left: 99px;
       .img {
         cursor: pointer;
-        margin-left: 38px;
         margin-top: 10px;
         width: 104px;
         height: 104px;
@@ -1228,6 +1212,9 @@ export default {
           height: 100%;
           object-fit: cover;
         }
+      }
+      .img + .img {
+        margin-left: 38px;
       }
     }
   }
@@ -1286,7 +1273,6 @@ export default {
       padding-right: 30px;
       .btns {
         text-align: right;
-
         button {
           margin-right: 10px;
         }
@@ -1337,6 +1323,9 @@ export default {
             white-space: nowrap;
           }
         }
+        .btns{
+          white-space: nowrap;
+        }
       }
       .pagination {
         margin-top: 10px;
@@ -1357,16 +1346,16 @@ export default {
 .card5 {
   margin-top: 20px;
   padding-bottom: 20px;
- .content{
-   padding: 0 30px;
-    .card5Item{
-     border-bottom: 1px solid #E8E8E8;
-     padding-bottom: 30px;
-     &:last-child{
-       border-bottom: none;
-     }
+  .content {
+    padding: 0 30px;
+    .card5Item {
+      border-bottom: 1px solid #e8e8e8;
+      padding-bottom: 30px;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
- }
   .title {
     padding-left: 30px;
     height: 55px;
@@ -1405,9 +1394,9 @@ export default {
   }
   .imgcon {
     display: flex;
+    padding-left: 70px;
     .img {
       cursor: pointer;
-      margin-left: 38px;
       margin-top: 10px;
       width: 104px;
       height: 104px;
@@ -1418,6 +1407,9 @@ export default {
         height: 100%;
         object-fit: cover;
       }
+    }
+    .img + .img {
+      margin-left: 38px;
     }
   }
 }
@@ -1444,6 +1436,7 @@ export default {
     padding: 0 20px;
     margin-top: 20px;
     .btns {
+      padding-bottom: 20px;
       text-align: right;
       button {
         margin-right: 10px;

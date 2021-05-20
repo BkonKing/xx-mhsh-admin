@@ -93,7 +93,7 @@
               <div class="item item1">
                 <div class="t1">投诉人：</div>
                 <div class="t2">
-                  <span style="color:#1890FF" @click="openUserDetail">{{
+                  <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail(detailInfo.complaint_uid)">{{
                     detailInfo.complaint_user
                   }}</span>
                   {{ detailInfo.complaint_project }}
@@ -104,7 +104,7 @@
               <div class="item">
                 <div class="t1">被投诉人：</div>
                 <div class="t2">
-                  <span style="color:#1890FF" @click="openUserDetail">{{
+                  <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail(detailInfo.complainted_uid)">{{
                     detailInfo.complainted_user
                   }}</span>
                   {{ detailInfo.complaint_project }}
@@ -278,17 +278,11 @@ export default {
   mounted () {
     // this.$previewRefresh()
   },
-  // computed: {
-  //   headers () {
-  //     return {
-  //       Authorization: '14f6100a3efceafe5d8f841fe359230c39ee52fb'
-  //     }
-  //   }
-  // },
+
   methods: {
-   // 新窗口打开用户详情页面
-    openUserDetail () {
-       window.open(`/zht/user/user/getUserList?uid=${this.detailInfo.uid}`, '_parent')
+    // 新窗口打开用户详情页面
+    openUserDetail (uid) {
+      window.open(`/zht/user/user/getUserList?uid=${uid}`, '_parent')
     },
     // 获取详情信息
     async getDetailInfo () {

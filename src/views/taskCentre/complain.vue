@@ -31,7 +31,7 @@
       <a-card class="card" ref="card">
         <div class="table-page-search-wrapper">
           <a-form-model layout="inline">
-            <a-row :gutter="48">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="处理状态">
                   <a-select placeholder="请选择" v-model="handle_status">
@@ -518,6 +518,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .complain {
   .content {
     padding: 0 20px;
@@ -562,12 +565,13 @@ export default {
         margin-left: 10px;
       }
     }
-    .btns {
-      text-align: right;
-      button {
-        margin-right: 10px;
-      }
+  .btns {
+    padding-bottom: 20px;
+    text-align: right;
+    button + button {
+      margin-left: 10px;
     }
+  }
   }
   .card2 {
     margin-top: 20px;

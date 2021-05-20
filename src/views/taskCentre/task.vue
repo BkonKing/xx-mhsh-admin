@@ -15,26 +15,33 @@
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核 <span style="width:10px;text-align: center;display: inline-block;">{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}</span>
+            待审核
+            <span
+              style="width:10px;text-align: center;display: inline-block;"
+              >{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}</span
+            >
           </div>
           <div
             class="item"
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            待接单 <span style="width:10px;text-align: center;display: inline-block;">{{
-              tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
-            }}</span>
+            待接单
+            <span
+              style="width:10px;text-align: center;display: inline-block;"
+              >{{
+                tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
+              }}</span
+            >
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待交付 <span style="width:10px;text-align: center;display: inline-block;">
-              {{
-              tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : ""
-            }}
+            待交付
+            <span style="width:10px;text-align: center;display: inline-block;">
+              {{ tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : "" }}
             </span>
           </div>
           <div
@@ -72,7 +79,7 @@
       <a-card class="card" ref="card">
         <div class="table-page-search-wrapper">
           <a-form-model layout="inline">
-            <a-row :gutter="48">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务类型">
                   <a-select v-model="task_type" placeholder="请选择">
@@ -114,16 +121,11 @@
               </a-col>
               <a-col :md="8" :sm="24" v-if="!cardBol">
                 <div class="btns">
-                  <a-button
-class="btn1"
-type="primary"
-@click="search"
+                  <a-button class="btn1" type="primary" @click="search"
                     >查询</a-button
                   >
                   <a-button @click="reset">重置</a-button>
-                  <a-button
-type="link"
-@click="open"
+                  <a-button type="link" @click="open"
                     >展开 <a-icon type="down" />
                   </a-button>
                 </div>
@@ -169,7 +171,7 @@ type="link"
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="可见地区">
                     <a-cascader
-                    v-model="areaArr"
+                      v-model="areaArr"
                       :changeOnSelect="true"
                       :options="options"
                       placeholder="请选择"
@@ -220,18 +222,12 @@ type="link"
                 </a-col>
                 <a-col :md="8" :sm="24">
                   <div class="btns">
-                    <a-button
-class="btn1"
-type="primary"
-@click="search"
+                    <a-button class="btn1" type="primary" @click="search"
                       >查询</a-button
                     >
                     <a-button @click="reset">重置</a-button>
-                    <a-button
-type="link"
-@click="close"
-                      >收起 <a-icon
-type="up"
+                    <a-button type="link" @click="close"
+                      >收起 <a-icon type="up"
                     /></a-button>
                   </div>
                 </a-col>
@@ -270,15 +266,17 @@ type="up"
           }"
           @change="tableChange"
         >
-          <template slot="check_time_desc" slot-scope="text,record">
-            <div :style="{color:record.is_over===1?'#F5222D':''}">
-              {{record.check_time_desc}}
+          <template slot="check_time_desc" slot-scope="text, record">
+            <div :style="{ color: record.is_over === 1 ? '#F5222D' : '' }">
+              {{ record.check_time_desc }}
             </div>
           </template>
           <template slot="task_user" slot-scope="text, record">
             <div>
               <div class="t1">{{ record.task_user }}</div>
-              <div class="t2">{{ record.task_project?record.task_project:'' }}</div>
+              <div class="t2">
+                {{ record.task_project ? record.task_project : "" }}
+              </div>
             </div>
           </template>
           <div slot="customTitle">
@@ -445,21 +443,21 @@ export default {
       ],
       tableData: [], // 任务列表
       selectedRowKeys: [], // 表格复选框数组
-      // tab_status: '', //	是	int	tab切换 待审核（0）待接单（2）待交付（3）已完成（4）已终止（6）已失效（7） 未通过（5）
-      pagesize: '', //	是	string	每页显示的条数
-      pageindex: '', //	是	string	页码
-      task_type: undefined, //	否	int	任务类型
-      task_status: undefined, //	否	int	任务状态
-      user_project: undefined, //	否	int	所属项目（任务方）
-      group_search: '', //	否	string	任务群搜索
-      area: [], //	否	string	区域搜索
-      task_search: '', //	否	string	任务搜索
-      progress_status: undefined, //	否	string	进度状态搜索
-      order_field: '', //	否	string	排序字段 投诉：complaint_total，提问：ask_total，创建时间：ctime
-      sort_value: '', //	否	string	排序值 降序desc 升序asc
+      // tab_status: '', //是inttab切换 待审核（0）待接单（2）待交付（3）已完成（4）已终止（6）已失效（7） 未通过（5）
+      pagesize: '', // 是string每页显示的条数
+      pageindex: '', // 是string页码
+      task_type: undefined, // 否int任务类型
+      task_status: undefined, // 否int任务状态
+      user_project: undefined, // 否int所属项目（任务方）
+      group_search: '', // 否string任务群搜索
+      area: [], // 否string区域搜索
+      task_search: '', // 否string任务搜索
+      progress_status: undefined, // 否string进度状态搜索
+      order_field: '', // 否string排序字段 投诉：complaint_total，提问：ask_total，创建时间：ctime
+      sort_value: '', // 否string排序值 降序desc 升序asc
       accept_search: '', // 接单方
       ctime: '', // 创建时间
-      project_id: undefined, // 	可见小区
+      project_id: undefined, // 可见小区
       task_user_search: '', // 任务方搜索
       createTime: [],
       tabInfo: {}, // tab栏数据
@@ -624,13 +622,13 @@ export default {
   align-items: center;
 
   .item {
-    padding: 0 20px;
+    padding: 15px 20px;
     cursor: pointer;
     font-weight: 400;
     font-style: normal;
     font-size: 14px;
     font-family: "MicrosoftYaHei", "Microsoft YaHei";
-    line-height: 50px;
+    // line-height: 50px;
     border-bottom: 2px solid transparent;
   }
   .active {
@@ -646,8 +644,11 @@ export default {
   // .btn1 {
   //   margin-left: 150px;
   // }
-  button {
-    margin-right: 10px;
+  button + button {
+    margin-left: 10px;
+  }
+  /deep/ .ant-btn-link {
+    padding: 0;
   }
 }
 .card {
@@ -671,8 +672,14 @@ export default {
     // /deep/ .ant-table-row-cell-break-word {
     //   white-space: nowrap !important;
     // }
-    .btns{
-     display: flex;
+    /deep/ .ant-table-body {
+      overflow-x: auto;
+    }
+    .btns {
+      display: flex;
+    }
+    button {
+      padding: 0;
     }
   }
   .pagination {
