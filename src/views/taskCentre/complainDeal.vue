@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model="isShow" title="处理" @ok="submit">
-    <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+    <a-form-model :model='form' :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="投诉类型">
         {{ info.complaint_type }}
       </a-form-model-item>
@@ -8,9 +8,9 @@
         {{ info.complaint_desc }}
       </a-form-model-item>
       <div class="line"></div>
-      <a-form-model-item label="处理回复">
+      <a-form-model-item label="处理回复" prop="handle_reply">
         <a-textarea
-          v-model="handle_reply"
+          v-model="form.handle_reply"
           placeholder="请输入"
           :auto-size="{ minRows: 3, maxRows: 5 }"
         />
@@ -71,11 +71,16 @@ export default {
         field_name: 'file'
       },
       fileList2: [], // 处理图片
-      handle_reply: '', // 回复处理内容
+      form: {
+        handle_reply: ''
+      },
       headers: {
         // Authorization: Cookies.get('access_token')
         Authorization: 'a7656d54ab4272a07f786eef32237687ec120202'
         // Projectid: Cookies.get('project_id')
+      },
+      rules: {
+        handle_reply: [{ required: true, message: '必填', trigger: 'change' }]
       }
     }
   },
@@ -99,12 +104,15 @@ export default {
   methods: {
     // 处理
     async submit () {
+      if (this.form.handle_reply === '') {
+        return
+      }
       const idArr = []
       idArr.push(this.id)
        await toHandComplaint({
         ids: idArr,
         is_handle: 0,
-        handle_reply: this.handle_reply,
+        handle_reply: this.form.handle_reply,
         handle_image: this.fileList2
       })
       // console.log('处理', res)
