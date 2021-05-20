@@ -5,7 +5,7 @@
       <a-card class="card" ref="card">
         <div class="table-page-search-wrapper">
           <a-form-model layout="inline">
-            <a-row :gutter="48">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务群">
                   <a-input
@@ -26,11 +26,8 @@
                 <div class="btns">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button @click="reset">重置</a-button>
-                  <a-button
-type="link"
-@click="open"
-                    >展开 <a-icon
-type="down"
+                  <a-button type="link" @click="open"
+                    >展开 <a-icon type="down"
                   /></a-button>
                 </div>
               </a-col>
@@ -60,11 +57,8 @@ type="down"
                   <div class="btns">
                     <a-button type="primary" @click="search">查询</a-button>
                     <a-button @click="reset">重置</a-button>
-                    <a-button
-type="link"
-@click="close"
-                      >收起 <a-icon
-type="up"
+                    <a-button type="link" @click="close"
+                      >收起 <a-icon type="up"
                     /></a-button>
                   </div>
                 </a-col>
@@ -74,10 +68,7 @@ type="up"
         </div>
       </a-card>
       <a-card class="card2">
-        <a-button
-type="primary"
-style="marginRight:10px"
-@click="add"
+        <a-button type="primary" style="marginRight:10px" @click="add"
           >新增群</a-button
         >
         <!-- <a-button @click="batchDel">批量操作 <a-icon type="down"/></a-button> -->
@@ -129,9 +120,7 @@ style="marginRight:10px"
                   "
                   >查看</a-button
                 >
-                <a-button
-type="link"
-@click="deleteGroup(record)"
+                <a-button type="link" @click="deleteGroup(record)"
                   >删除</a-button
                 >
               </div>
@@ -254,7 +243,6 @@ export default {
       task_search: '', // 任务搜索
       owner: '', // 群主搜索
       member_search: '' // 成员搜索
-
     }
   },
   mounted () {
@@ -386,6 +374,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .taskGroup {
   .cardContent {
     padding: 0 20px;
@@ -399,9 +390,10 @@ export default {
     // }
     margin-top: 20px;
     .btns {
+      padding-bottom: 20px;
       text-align: right;
-      button {
-        margin-right: 10px;
+      button + button {
+        margin-left: 10px;
       }
     }
     /deep/ .ant-card-body {
@@ -436,6 +428,9 @@ export default {
     }
     .table {
       margin-top: 20px;
+      /deep/ .ant-table-body {
+        overflow-x: auto;
+      }
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {

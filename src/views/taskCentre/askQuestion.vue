@@ -15,7 +15,8 @@
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待审核 <span style="marginLeft:5px">{{
+            待审核
+            <span style="marginLeft:5px">{{
               askQuestionInfo.reviewed_total === 0
                 ? ""
                 : askQuestionInfo.reviewed_total
@@ -38,218 +39,217 @@
         </div>
       </template>
     </page-header-wrapper>
-  <div class="cardContent">
-        <a-card class="card" ref="card">
-      <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="类型">
-                <a-select v-model="type" placeholder="请选择">
-                  <a-select-option value="1">
-                    提问
-                  </a-select-option>
-                  <a-select-option value="2">
-                    回复
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="审核状态">
-                <a-select v-model="check_type" placeholder="请选择">
-                  <a-select-option value="0">
-                    待审核
-                  </a-select-option>
-                  <a-select-option value="1">
-                    通过
-                  </a-select-option>
-                  <a-select-option value="2">
-                    未通过
-                  </a-select-option>
-                  <a-select-option value="3">
-                    无审核
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <template v-if="bol">
+    <div class="cardContent">
+      <a-card class="card" ref="card">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="有无回复">
-                  <a-select v-model="is_reply" placeholder="请选择">
+                <a-form-model-item label="类型">
+                  <a-select v-model="type" placeholder="请选择">
                     <a-select-option value="1">
-                      有
+                      提问
                     </a-select-option>
+                    <a-select-option value="2">
+                      回复
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="审核状态">
+                  <a-select v-model="check_type" placeholder="请选择">
                     <a-select-option value="0">
-                      无
+                      待审核
+                    </a-select-option>
+                    <a-select-option value="1">
+                      通过
+                    </a-select-option>
+                    <a-select-option value="2">
+                      未通过
+                    </a-select-option>
+                    <a-select-option value="3">
+                      无审核
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="发布用户">
-                  <a-input
-                    v-model="user_search"
-                    placeholder="手机号、用户昵称/ID"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="发布内容">
-                  <a-input v-model="content" placeholder="内容、ID"></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务">
-                  <a-input
-                    v-model="task_search"
-                    placeholder="编号、标题"
-                  ></a-input>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="所属项目">
-                  <a-select v-model="project_id" placeholder="请选择">
-                    <a-select-option
-                      v-for="(item, index) in projectList"
-                      :key="index"
-                      :value="item.id"
-                    >
-                      {{ item.project_name }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="创建时间">
-                  <a-range-picker
-                  v-model="createTime"
-                    class="piker-time"
-                    :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
-                    }"
-                    show-time
-                    format="YYYY-MM-DD HH:mm:ss"
-                    @change="onChange"
-                  />
-                </a-form-model-item>
-              </a-col>
-            </template>
+              <template v-if="bol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="有无回复">
+                    <a-select v-model="is_reply" placeholder="请选择">
+                      <a-select-option value="1">
+                        有
+                      </a-select-option>
+                      <a-select-option value="0">
+                        无
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="发布用户">
+                    <a-input
+                      v-model="user_search"
+                      placeholder="手机号、用户昵称/ID"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="发布内容">
+                    <a-input v-model="content" placeholder="内容、ID"></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务">
+                    <a-input
+                      v-model="task_search"
+                      placeholder="编号、标题"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="所属项目">
+                    <a-select v-model="project_id" placeholder="请选择">
+                      <a-select-option
+                        v-for="(item, index) in projectList"
+                        :key="index"
+                        :value="item.id"
+                      >
+                        {{ item.project_name }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="创建时间">
+                    <a-range-picker
+                      v-model="createTime"
+                      class="piker-time"
+                      :ranges="{
+                        Today: [moment(), moment()],
+                        'This Month': [moment(), moment().endOf('month')]
+                      }"
+                      show-time
+                      format="YYYY-MM-DD HH:mm:ss"
+                      @change="onChange"
+                    />
+                  </a-form-model-item>
+                </a-col>
+              </template>
 
-            <a-col :md="8" :sm="24" v-if="bol">
-              <div class="btns">
-                <a-button type="primary" @click="search">
-                  查询
-                </a-button>
-                <a-button @click="reset">重置</a-button>
-                <a-button
-type="link"
-@click="close"
-                  >收起 <a-icon
-type="up"
-                /></a-button>
-              </div>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="!bol">
-              <div class="btns">
-                <a-button type="primary" @click="search">
-                  查询
-                </a-button>
-                <a-button @click="reset">重置</a-button>
-                <a-button
-type="link"
-@click="open"
-                  >展开 <a-icon
-type="down"
-                /></a-button>
-              </div>
-            </a-col>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <a-button type="primary" @click="batchCheck">审核</a-button>
-      <div class="selected" v-if="selectedRowKeys.length > 0">
-        <a-icon class="icon" type="info-circle" />
-        已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-        <span class="span2" @click="clear">清空</span>
-      </div>
-      <div class="table">
-        <a-table
-          rowKey="id"
-          :pagination="false"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
-          }"
-          :columns="columns"
-          :data-source="tableData"
-          @change="tableChange"
-        >
-          <template slot="check_time_desc" slot-scope="check_time_desc">
-            <div :style="{ color: check_time_desc.is_over === 1 ? 'red' : '' }">
-              {{ check_time_desc.check_time_desc }}
-            </div>
-          </template>
-          <template slot="type" slot-scope="type">
-            <div class="type">
-              {{ +type === 1 ? "提问" : "回复" }}
-            </div>
-          </template>
-          <template slot="owner_name" slot-scope="text, record">
-            <div class="issueUser">
-              <div class="t1">{{ record.owner_name }}</div>
-              <div class="t2">{{ record.project_name }}</div>
-            </div>
-          </template>
-          <template slot="task_title" slot-scope="task_title">
-            <div style="color:#1890FF">{{ task_title }}</div>
-          </template>
-          <template slot="complaint_total" slot-scope="text,record">
-            <div :style="{cursor: 'pointer',color:record.complaint_total>0?'#1890FF':''}" @click="openComplaint(record)">
-              {{record.complaint_total}}
-            </div>
-          </template>
-          <template slot="opera" slot-scope="text, record">
-            <div>
-              <a-button
-                type="link"
-                @click="check(record)"
-                v-if="record.is_check === 0"
-                >审核</a-button
-              >
-              <a-button
-type="link"
-@click="lookOver(record)"
-v-else
-                >查看</a-button
-              >
-            </div>
-          </template>
-        </a-table>
-        <div class="pagination">
-          <a-pagination
-            v-model="pagination.currentPage"
-            show-quick-jumper
-            show-size-changer
-            :page-size-options="pagination.sizes"
-            :total="pagination.total"
-            :page-size.sync="pagination.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                  total / pagination.pageSize
-                )}页`
-            "
-            @change="onChangePage"
-            @showSizeChange="sizeChange"
-          />
+              <a-col :md="8" :sm="24" v-if="bol">
+                <div class="btns">
+                  <a-button type="primary" @click="search">
+                    查询
+                  </a-button>
+                  <a-button @click="reset">重置</a-button>
+                  <a-button type="link" @click="close"
+                    >收起 <a-icon type="up"
+                  /></a-button>
+                </div>
+              </a-col>
+              <a-col :md="8" :sm="24" v-if="!bol">
+                <div class="btns">
+                  <a-button type="primary" @click="search">
+                    查询
+                  </a-button>
+                  <a-button @click="reset">重置</a-button>
+                  <a-button type="link" @click="open"
+                    >展开 <a-icon type="down"
+                  /></a-button>
+                </div>
+              </a-col>
+            </a-row>
+          </a-form-model>
         </div>
-      </div>
-    </a-card>
-  </div>
+      </a-card>
+      <a-card class="card2">
+        <a-button type="primary" @click="batchCheck">审核</a-button>
+        <div class="selected" v-if="selectedRowKeys.length > 0">
+          <a-icon class="icon" type="info-circle" />
+          已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
+          <span class="span2" @click="clear">清空</span>
+        </div>
+        <div class="table">
+          <a-table
+            rowKey="id"
+            :pagination="false"
+            :row-selection="{
+              selectedRowKeys: selectedRowKeys,
+              onChange: onSelectChange
+            }"
+            :columns="columns"
+            :data-source="tableData"
+            @change="tableChange"
+          >
+            <template slot="check_time_desc" slot-scope="check_time_desc">
+              <div
+                :style="{ color: check_time_desc.is_over === 1 ? 'red' : '' }"
+              >
+                {{ check_time_desc.check_time_desc }}
+              </div>
+            </template>
+            <template slot="type" slot-scope="type">
+              <div class="type">
+                {{ +type === 1 ? "提问" : "回复" }}
+              </div>
+            </template>
+            <template slot="owner_name" slot-scope="text, record">
+              <div class="issueUser">
+                <div class="t1">{{ record.owner_name }}</div>
+                <div class="t2">{{ record.project_name }}</div>
+              </div>
+            </template>
+            <template slot="task_title" slot-scope="task_title">
+              <div style="color:#1890FF">{{ task_title }}</div>
+            </template>
+            <template slot="complaint_total" slot-scope="text, record">
+              <div
+                :style="{
+                  cursor: 'pointer',
+                  color: record.complaint_total > 0 ? '#1890FF' : ''
+                }"
+                @click="openComplaint(record)"
+              >
+                {{ record.complaint_total }}
+              </div>
+            </template>
+            <template slot="opera" slot-scope="text, record">
+              <div>
+                <a-button
+                  type="link"
+                  @click="check(record)"
+                  v-if="record.is_check === 0"
+                  >审核</a-button
+                >
+                <a-button type="link" @click="lookOver(record)" v-else
+                  >查看</a-button
+                >
+              </div>
+            </template>
+          </a-table>
+          <div class="pagination">
+            <a-pagination
+              v-model="pagination.currentPage"
+              show-quick-jumper
+              show-size-changer
+              :page-size-options="pagination.sizes"
+              :total="pagination.total"
+              :page-size.sync="pagination.pageSize"
+              :show-total="
+                (total, range) =>
+                  `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                    total / pagination.pageSize
+                  )}页`
+              "
+              @change="onChangePage"
+              @showSizeChange="sizeChange"
+            />
+          </div>
+        </div>
+      </a-card>
+    </div>
     <askCheckModel ref="askCheckModel"></askCheckModel>
     <askLookOverModel ref="askLookOverModel"></askLookOverModel>
     <askBatchCheck
@@ -378,11 +378,13 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
-     // 跳转到投诉列表
+    // 跳转到投诉列表
     openComplaint (record) {
       if (record.complaint_total > 0) {
         this.currentIndex = 1
-        this.$router.push(`/taskCentre/complain?task_id=${record.task_id}&uid=${record.uid}`)
+        this.$router.push(
+          `/taskCentre/complain?task_id=${record.task_id}&uid=${record.uid}`
+        )
       }
     },
     // 重置
@@ -529,8 +531,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .askQuestion {
-  .cardContent{
+  .cardContent {
     padding: 0 20px;
   }
   /deep/ .ant-page-header {
@@ -564,9 +569,10 @@ export default {
     }
     margin-top: 20px;
     .btns {
+      padding-bottom: 20px;
       text-align: right;
-      button {
-        margin-right: 10px;
+      button + button {
+        margin-left: 10px;
       }
     }
   }
