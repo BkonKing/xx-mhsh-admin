@@ -2,7 +2,7 @@
   <div class="whiteList">
     <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
-        <a-row :gutter="48">
+        <a-row :gutter="36">
           <a-form-model layout="inline">
             <a-col :md="8" :sm="24">
               <a-form-model-item label="所属项目">
@@ -29,11 +29,8 @@
               <div class="btns">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button @click="reset">重置</a-button>
-                <a-button
-type="link"
-@click="open"
-                  >展开 <a-icon
-type="down"
+                <a-button type="link" @click="open"
+                  >展开 <a-icon type="down"
                 /></a-button>
               </div>
             </a-col>
@@ -57,11 +54,8 @@ type="down"
                 <div class="btns">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button @click="reset">重置</a-button>
-                  <a-button
-type="link"
-@click="close"
-                    >收起 <a-icon
-type="up"
+                  <a-button type="link" @click="close"
+                    >收起 <a-icon type="up"
                   /></a-button>
                 </div>
               </a-col>
@@ -73,8 +67,7 @@ type="up"
     <a-card class="card2">
       <div class="btns">
         <a-button type="primary" @click="add">添加用户</a-button>
-        <a-button
-@click="importUser"
+        <a-button @click="importUser"
           ><a-icon type="vertical-align-bottom" />导入用户</a-button
         >
         <!-- <a-button @click="handleMenuClick">批量操作<a-icon type="down"/></a-button> -->
@@ -112,7 +105,7 @@ type="up"
           </template>
           <template slot="register_time" slot-scope="register_time">
             <div>
-              {{register_time !=0 ?register_time:''}}
+              {{ register_time != 0 ? register_time : "" }}
             </div>
           </template>
           <template slot="opera" slot-scope="text, record">
@@ -207,7 +200,7 @@ export default {
           title: '注册时间',
           dataIndex: 'register_time',
           key: 'register_time',
-           scopedSlots: { customRender: 'register_time' },
+          scopedSlots: { customRender: 'register_time' },
           sorter: true,
           width: '11.111111%'
         },
@@ -358,6 +351,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .whiteList {
   .card {
     /deep/ .ant-form-item-label {
@@ -365,9 +361,10 @@ export default {
     }
     margin-top: 20px;
     .btns {
+      padding-bottom: 20px;
       text-align: right;
-      button {
-        margin-right: 10px;
+      button + button {
+        margin-left: 10px;
       }
     }
   }

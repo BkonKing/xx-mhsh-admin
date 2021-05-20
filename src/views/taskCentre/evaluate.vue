@@ -5,7 +5,7 @@
       <a-card class="card" ref="card">
       <div class="table-page-search-wrapper">
         <a-form-model layout="inline">
-          <a-row :gutter="48">
+          <a-row :gutter="36">
             <a-col :md="8" :sm="24">
               <a-form-model-item label="评星">
                 <a-select placeholder="请选择" v-model="evaluate_starts">
@@ -284,7 +284,7 @@ export default {
   },
   methods: {
     // 排序
-     tableChange (pagination, filters, sorter, { currentDataSource }) {
+    tableChange (pagination, filters, sorter, { currentDataSource }) {
       console.log('sorter', sorter)
       this.order_field = sorter.field
       if (sorter.order === 'ascend') {
@@ -376,7 +376,7 @@ export default {
   async created () {
     this.task_id = this.$route.query.task_id
     if (this.task_id != '') {
-     this.getData()
+      this.getData()
     } else {
       this.getData()
     }
@@ -393,14 +393,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form .ant-btn-link {
+  padding: 0;
+}
 .evaluate {
   .cardContent{
     padding: 0 20px;
   }
   .btns {
+    padding-bottom: 20px;
     text-align: right;
-    button {
-      margin-right: 10px;
+    button + button {
+      margin-left: 10px;
     }
   }
   .card {

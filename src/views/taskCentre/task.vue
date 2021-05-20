@@ -15,26 +15,33 @@
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待审核 <span style="width:10px;text-align: center;display: inline-block;">{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}</span>
+            待审核
+            <span
+              style="width:10px;text-align: center;display: inline-block;"
+              >{{ tabInfo.to_be_check !== 0 ? tabInfo.to_be_check : "" }}</span
+            >
           </div>
           <div
             class="item"
             @click="changeTab(1)"
             :class="{ active: currentIndex === 1 }"
           >
-            待接单 <span style="width:10px;text-align: center;display: inline-block;">{{
-              tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
-            }}</span>
+            待接单
+            <span
+              style="width:10px;text-align: center;display: inline-block;"
+              >{{
+                tabInfo.order_be_received !== 0 ? tabInfo.order_be_received : ""
+              }}</span
+            >
           </div>
           <div
             class="item"
             @click="changeTab(2)"
             :class="{ active: currentIndex === 2 }"
           >
-            待交付 <span style="width:10px;text-align: center;display: inline-block;">
-              {{
-              tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : ""
-            }}
+            待交付
+            <span style="width:10px;text-align: center;display: inline-block;">
+              {{ tabInfo.to_be_delivered !== 0 ? tabInfo.to_be_delivered : "" }}
             </span>
           </div>
           <div
@@ -72,7 +79,7 @@
       <a-card class="card" ref="card">
         <div class="table-page-search-wrapper">
           <a-form-model layout="inline">
-            <a-row :gutter="48">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务类型">
                   <a-select v-model="task_type" placeholder="请选择">
@@ -114,16 +121,11 @@
               </a-col>
               <a-col :md="8" :sm="24" v-if="!cardBol">
                 <div class="btns">
-                  <a-button
-class="btn1"
-type="primary"
-@click="search"
+                  <a-button class="btn1" type="primary" @click="search"
                     >查询</a-button
                   >
                   <a-button @click="reset">重置</a-button>
-                  <a-button
-type="link"
-@click="open"
+                  <a-button type="link" @click="open"
                     >展开 <a-icon type="down" />
                   </a-button>
                 </div>
@@ -169,7 +171,7 @@ type="link"
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="可见地区">
                     <a-cascader
-                    v-model="areaArr"
+                      v-model="areaArr"
                       :changeOnSelect="true"
                       :options="options"
                       placeholder="请选择"
@@ -220,18 +222,12 @@ type="link"
                 </a-col>
                 <a-col :md="8" :sm="24">
                   <div class="btns">
-                    <a-button
-class="btn1"
-type="primary"
-@click="search"
+                    <a-button class="btn1" type="primary" @click="search"
                       >查询</a-button
                     >
                     <a-button @click="reset">重置</a-button>
-                    <a-button
-type="link"
-@click="close"
-                      >收起 <a-icon
-type="up"
+                    <a-button type="link" @click="close"
+                      >收起 <a-icon type="up"
                     /></a-button>
                   </div>
                 </a-col>
@@ -270,15 +266,17 @@ type="up"
           }"
           @change="tableChange"
         >
-          <template slot="check_time_desc" slot-scope="text,record">
-            <div :style="{color:record.is_over===1?'#F5222D':''}">
-              {{record.check_time_desc}}
+          <template slot="check_time_desc" slot-scope="text, record">
+            <div :style="{ color: record.is_over === 1 ? '#F5222D' : '' }">
+              {{ record.check_time_desc }}
             </div>
           </template>
           <template slot="task_user" slot-scope="text, record">
             <div>
               <div class="t1">{{ record.task_user }}</div>
-              <div class="t2">{{ record.task_project?record.task_project:'' }}</div>
+              <div class="t2">
+                {{ record.task_project ? record.task_project : "" }}
+              </div>
             </div>
           </template>
           <div slot="customTitle">
@@ -624,13 +622,13 @@ export default {
   align-items: center;
 
   .item {
-    padding: 0 20px;
+    padding: 15px 20px;
     cursor: pointer;
     font-weight: 400;
     font-style: normal;
     font-size: 14px;
     font-family: "MicrosoftYaHei", "Microsoft YaHei";
-    line-height: 50px;
+    // line-height: 50px;
     border-bottom: 2px solid transparent;
   }
   .active {
@@ -646,8 +644,11 @@ export default {
   // .btn1 {
   //   margin-left: 150px;
   // }
-  button {
-    margin-right: 10px;
+  button + button {
+    margin-left: 10px;
+  }
+  /deep/ .ant-btn-link {
+    padding: 0;
   }
 }
 .card {
@@ -671,8 +672,14 @@ export default {
     // /deep/ .ant-table-row-cell-break-word {
     //   white-space: nowrap !important;
     // }
-    .btns{
-     display: flex;
+    /deep/ .ant-table-body {
+      overflow-x: auto;
+    }
+    .btns {
+      display: flex;
+    }
+    button {
+      padding: 0;
     }
   }
   .pagination {
