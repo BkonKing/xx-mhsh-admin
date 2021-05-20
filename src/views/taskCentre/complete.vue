@@ -145,7 +145,8 @@
           <div class="title">基础信息</div>
           <div
             class="content"
-            style="padding-left: 11px;"
+            style="padding-left
+          : 11px;"
           >
             <a-form-model :label-col="md">
               <a-row>
@@ -451,7 +452,7 @@
                   >
                   <a-button
                     type="link"
-                    @click="award(record)"
+                    @click="award(record.uid)"
                     v-if="record.button === 1"
                     >奖励</a-button
                   >
@@ -971,15 +972,12 @@ export default {
       this.currentIndex = 2
     },
     // 奖励
-    award (record) {
-      console.log('record', record)
-      if (typeof record.uid === 'number') {
-        this.$refs.awardModel.uid = record.uid
-        this.$refs.awardModel.reward_happiness = record.reward_happiness
-
+    award (uid) {
+      if (typeof uid === 'number') {
+        this.$refs.awardModel.uid = uid
         this.selectedRowKeys = []
-        this.$refs.awardModel.isShow = true
       }
+      this.$refs.awardModel.isShow = true
     },
     // 查看
     check (uid) {
@@ -1322,9 +1320,6 @@ export default {
           .t1 {
             white-space: nowrap;
           }
-        }
-        .btns{
-          white-space: nowrap;
         }
       }
       .pagination {

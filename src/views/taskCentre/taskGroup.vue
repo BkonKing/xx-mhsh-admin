@@ -243,7 +243,6 @@ export default {
       task_search: '', // 任务搜索
       owner: '', // 群主搜索
       member_search: '' // 成员搜索
-
     }
   },
   mounted () {

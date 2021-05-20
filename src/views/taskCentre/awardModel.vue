@@ -15,8 +15,7 @@
       </a-form-model-item>
       <a-form-model-item label="奖励" prop="credits">
         <a-input v-model="form.credits" placeholder="请输入" addon-after="币" />
-        <div class="txt" v-if="selectedRowKeys.length<=1">还可以奖励{{taskDetailInfo.every_reward-reward_happiness}}幸福币</div>
-        <div class="txt" v-if="selectedRowKeys.length>=2">还可以奖励{{taskDetailInfo.happy_reward-taskDetailInfo.reward_happiness}}幸福币</div>
+        <div class="txt">还可以奖励{{taskDetailInfo.happy_reward-taskDetailInfo.reward_happiness}}幸福币</div>
       </a-form-model-item>
     </a-form-model>
   </a-modal>
@@ -32,10 +31,9 @@ export default {
       wrapperCol: { span: 14 },
       isShow: false,
       form: {
-        credits: ''// 幸福币
+        credits: ''
       },
-      uid: '', // 用户id
-      reward_happiness: '', // 已经奖励的幸福币
+      uid: '',
       rules: {
         credits: [{ required: true, message: '必填', trigger: 'change' }]
       }
@@ -57,19 +55,19 @@ export default {
       if (this.uid != '') {
         const arr = []
         arr.push(this.uid)
-        const res = await toReward({
+      const res = await toReward({
           task_id: +this.id,
           credits: +this.form.credits,
           uids: arr
         })
         if (+res.code === 201) {
-          this.$message.error(res.message)
-          this.isShow = false
+        this.$message.error(res.message)
+        this.isShow = false
         } else if (+res.code === 200) {
           this.$parent.getTaskSpeedData()
           this.$parent.getTaskLog()
-          this.$parent.selectedRowKeys = []
-          this.$message.success('处理成功')
+           this.$parent.selectedRowKeys = []
+           this.$message.success('处理成功')
           this.isShow = false
         }
       } else {
@@ -80,14 +78,14 @@ export default {
           uids: this.selectedRowKeys
         })
         if (+res.code === 201) {
-          this.$message.error(res.message)
-          this.isShow = false
+        this.$message.error(res.message)
+        this.isShow = false
         } else if (+res.code === 200) {
-          this.$parent.selectedRowKeys = []
-          this.$parent.getTaskSpeedData()
-          this.$parent.getTaskLog()
-          this.$message.success('处理成功')
-          this.isShow = false
+        this.$parent.selectedRowKeys = []
+        this.$parent.getTaskSpeedData()
+         this.$parent.getTaskLog()
+        this.$message.success('处理成功')
+        this.isShow = false
         }
       }
     }
