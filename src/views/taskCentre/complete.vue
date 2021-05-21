@@ -1109,7 +1109,7 @@ export default {
       })
 
       const res4 = await toGetButtonStatus({
-        id: +this.id
+        task_id: +this.id
       })
       this.buttonStatus = res4.data
       // console.log('任务详情-按钮状态控制', res4)

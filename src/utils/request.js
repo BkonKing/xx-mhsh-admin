@@ -10,7 +10,11 @@ import Vue from 'vue'
 // 创建 axios 实例
 const request = axios.create({
   headers: {
-    Authorization: Cookies.get('access_token'),
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    // Authorization: Cookies.get('access_token'),
+    Authorization: 'c635da98fe31410736d763cc7d6139c640447500', // admin
+    // Authorization: '42946e3cad60b4fdd93be68f353bef1730f9860a', // 总后台
+    // Authorization: 'f087e58820b47c7eb97d468f6a9e0902f6933851', // 项目后台  子
     Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
