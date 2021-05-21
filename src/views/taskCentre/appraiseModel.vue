@@ -113,15 +113,16 @@ export default {
   methods: {
     // 打开用户详情
     openUserDetail () {
-      window.open(`/zht/user/user/getUserList?uid=${this.info.uid}`, '_parent')
+      window.open(`/zht/user/user/getUserList?uid=${this.info.uid}`, '_blank')
     },
     // 打开任务详情
     openTaskDetail () {
-      const { href } = this.$router.resolve({
-        name: 'complete',
-        query: { id: this.info.task_id }
-      })
-      window.open(href, '_blank')
+      // const { href } = this.$router.resolve({
+      //   name: 'complete',
+      //   query: { id: this.info.task_id }
+      // })
+      // window.open(href, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?id=${this.info.task_id}`, '_blank')
     },
     getEvaluate () {
       toViewEvaluate({ id: this.id }).then(res => {

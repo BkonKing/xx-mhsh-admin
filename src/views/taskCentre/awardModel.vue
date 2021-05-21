@@ -15,7 +15,8 @@
       </a-form-model-item>
       <a-form-model-item label="奖励" prop="credits">
         <a-input v-model="form.credits" placeholder="请输入" addon-after="币" />
-        <div class="txt" v-if="selectedRowKeys.length<=1">还可以奖励{{taskDetailInfo.every_reward-reward_happiness}}幸福币</div>
+        <div class="txt" v-if="selectedRowKeys.length<=1 && selectedRows.length===0">还可以奖励{{taskDetailInfo.every_reward-reward_happiness}}幸福币</div>
+        <div class="txt" v-if="selectedRowKeys.length<=1 && selectedRows.length===1">还可以奖励{{taskDetailInfo.every_reward- selectedRows[0].reward_happiness}}幸福币</div>
         <div class="txt" v-if="selectedRowKeys.length>=2">还可以奖励{{taskDetailInfo.happy_reward-taskDetailInfo.reward_happiness}}幸福币</div>
       </a-form-model-item>
     </a-form-model>
@@ -38,13 +39,16 @@ export default {
       reward_happiness: '', // 已经奖励的幸福币
       rules: {
         credits: [{ required: true, message: '必填', trigger: 'change' }]
-      }
+      },
+      selectedRows: []
     }
   },
   watch: {
     isShow (newVal) {
       if (newVal === false) {
         this.form.credits = ''
+        this.uid = ''
+        this.reward_happiness = ''
       }
     }
   },

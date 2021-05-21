@@ -28,7 +28,7 @@
         <a-select
           v-model="form.violation_type"
           placeholder="请选择"
-          style="width: 379px"
+          style="width: 254px"
         >
           <a-select-option
             v-for="(item, index) in reasonList"
@@ -93,7 +93,8 @@ export default {
       isShow: false,
       form: {
         is_check: 1,
-        check_desc: ''
+        check_desc: '',
+        violation_type: undefined
       },
       rules: {
         is_check: [{ required: true, message: '必填', trigger: 'change' }],
@@ -116,7 +117,17 @@ export default {
       }
     }
   },
-
+  watch: {
+    isShow () {
+      this.form.check_desc = ''
+      this.form.violation_type = undefined
+      this.form.is_check = 1
+    },
+    'form.is_check' () {
+      // console.log('改变了')
+      this.form.check_desc = ''
+    }
+  },
   methods: {
     // 审核
     async submit () {

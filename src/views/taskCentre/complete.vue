@@ -803,21 +803,22 @@ export default {
       },
       id: '', // 任务详情id
       taskDetailInfo: '', // 任务详情信息
-      order_field: '', //	否	string	排序的字段 评价evaluate 接单时间ctime 奖励幸福币reward_happiness
-      sort_value: '', //	否	string	排序的值
-      status: undefined, //	否	int	任务状态
-      user_search: '', //	否	string	接单方搜索
-      project_id: undefined, //	否	int	所属项目
+      order_field: '', // 否string排序的字段 评价evaluate 接单时间ctime 奖励幸福币reward_happiness
+      sort_value: '', // 否string排序的值
+      status: undefined, // 否int任务状态
+      user_search: '', // 否string接单方搜索
+      project_id: undefined, // 否int所属项目
       processStatusList: [], // 状态列表
       projectList: [], // 项目列表
       buttonStatus: '', // 按钮状态
       lineNumber: '', // 任务说明行数
       taskMa: '',
-      opt_user: '', //	否	string	操作员
-      opt_time: '', //	否	string	操作时间
-      opt_type: '', //	否	string	操作类型
-      opt_desc: '', //	否	string	操作描述
-      logTime: []
+      opt_user: '', // 否string操作员
+      opt_time: '', // 否string操作时间
+      opt_type: '', // 否string操作类型
+      opt_desc: '', // 否string操作描述
+      logTime: [],
+      selectedRows: [] // 复选框选择的当前行的数据
     }
   },
   mounted () {
@@ -836,11 +837,12 @@ export default {
     // 新窗口打开群详情
     openGroupDetail () {
       if (this.taskDetailInfo.group_id) {
-        const routeData = this.$router.resolve({
-          name: 'groupDetail',
-          query: { id: this.taskDetailInfo.group_id }
-        })
-        window.open(routeData.href, '_blank')
+        // const routeData = this.$router.resolve({
+        //   name: 'groupDetail',
+        //   query: { id: this.taskDetailInfo.group_id }
+        // })
+        // window.open(routeData.href, '_blank')
+        window.open(`/zht/task/task/getTaskGroup?id=${this.taskDetailInfo.group_id}`, '_blank')
       }
     },
     // 跳转到投诉列表
@@ -862,6 +864,9 @@ export default {
         this.$refs.weedOutModel.isShow = true
       } else {
         this.$refs.awardModel.isShow = true
+        if (this.selectedRows.length === 1) {
+          this.$refs.awardModel.selectedRows = JSON.parse(JSON.stringify(this.selectedRows))
+        }
       }
     },
     // 日志重置
@@ -1053,6 +1058,7 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       console.log('selectedRows', selectedRows)
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     // 展开2
     open2 () {
