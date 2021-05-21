@@ -5,15 +5,12 @@ import Cookies from 'js-cookie'
 import notification from 'ant-design-vue/es/notification'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import qs from 'qs'
+import Vue from 'vue'
 
 // 创建 axios 实例
 const request = axios.create({
   headers: {
-    // 'Content-Type': 'application/x-www-form-urlencoded',
-    // Authorization: Cookies.get('access_token'),
-    Authorization: '726038ada9a30c70c9d2262e4c14f74bacf8593d', // admin
-    // Authorization: '42946e3cad60b4fdd93be68f353bef1730f9860a', // 总后台
-    // Authorization: 'f087e58820b47c7eb97d468f6a9e0902f6933851', // 项目后台  子
+    Authorization: Cookies.get('access_token'),
     Projectid: Cookies.get('project_id')
   },
   // API 请求的默认前缀
@@ -52,6 +49,10 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
+  console.log('config', config.headers.isLoading)
+  if (config.headers.isLoading) {
+    Vue.prototype.$loading.show()
+  }
   const token = storage.get(ACCESS_TOKEN)
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
@@ -67,6 +68,10 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
+  Vue.prototype.$loading.hide()
+  if (response.data.code == '401') {
+    top.token_invalid()
+  }
   return response.data
 }, errorHandler)
 
