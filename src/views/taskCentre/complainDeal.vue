@@ -92,6 +92,11 @@ export default {
   //   }
   // },
   watch: {
+    isShow () {
+      this.form.handle_reply = ''
+      this.fileList = []
+      this.fileList2 = []
+    },
     id () {
       toViewComplaint({
         id: this.id

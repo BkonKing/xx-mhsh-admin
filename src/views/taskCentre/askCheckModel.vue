@@ -161,6 +161,8 @@ export default {
       this.form.check_desc = ''
       this.form.violation_type = undefined
       this.form.is_check = 1
+      this.fileList2 = []
+      this.fileList = []
     },
     info: {
       async handler () {
@@ -176,6 +178,9 @@ export default {
     'form.is_check' () {
       // console.log('改变了')
       this.form.check_desc = ''
+      this.form.violation_type = undefined
+      this.fileList2 = []
+      this.fileList = []
     }
   },
   methods: {

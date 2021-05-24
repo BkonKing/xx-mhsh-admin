@@ -403,7 +403,7 @@ export default {
       this.task_search = ''
       this.ctime = ''
       this.createTime = []
-
+      this.selectedRowKeys = []
       this.pagination.currentPage = 1
       this.getData()
     },

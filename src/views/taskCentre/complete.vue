@@ -830,10 +830,28 @@ export default {
     document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
-    // 新窗口打开用户详情页面
-    // openUserDetail () {
-    //    window.open(`/zht/household/member/getMemberList?uid=${this.taskDetailInfo.uid}`, '_parent')
-    // },
+    // 获取按钮状态
+    async getButtonInfo () {
+      const res4 = await toGetButtonStatus({
+        task_id: +this.id
+      })
+      this.buttonStatus = res4.data
+      // console.log('任务详情-按钮状态控制', res4)
+    },
+    // 获取任务详情
+    getTaskDetailInfo () {
+      getTaskDetail({ id: +this.id }).then(res => {
+        this.taskDetailInfo = res.data
+        console.log('任务详情', res)
+        this.$nextTick(() => {
+          this.lineNumber = Math.round(
+            document.querySelector('#taskExplain').clientHeight / 20
+          )
+          this.close()
+          this.close2()
+        })
+      })
+    },
     // 新窗口打开群详情
     openGroupDetail () {
       if (this.taskDetailInfo.group_id) {
@@ -905,7 +923,14 @@ export default {
         task_id: +this.id,
         opt_type: type
       })
-      console.log('下架任务', res)
+      if (res.code === '201') {
+        this.$message.error(res.message)
+      } else {
+        this.$message.success('下架成功')
+      }
+      this.getTaskDetailInfo()
+      this.getButtonInfo()
+      // console.log('下架任务', res)
     },
     // 终止任务
     async terminate (type) {
@@ -918,6 +943,8 @@ export default {
       } else {
         this.$message.success('终止成功')
       }
+      this.getTaskDetailInfo()
+      this.getButtonInfo()
     },
     // 停止接单
     async stop (type) {
@@ -925,7 +952,14 @@ export default {
         task_id: +this.id,
         opt_type: type
       })
-      console.log('停止接单', res)
+      if (res.code === '201') {
+        this.$message.error(res.message)
+      } else {
+        this.$message.success('停止成功')
+      }
+      this.getTaskDetailInfo()
+      this.getButtonInfo()
+      // console.log('停止接单', res)
     },
     // 任务流水排序
     tableChange1 (pagination, filters, sorter, { currentDataSource }) {
@@ -1096,23 +1130,8 @@ export default {
     this.id = this.$route.query.id
     this.getTaskSpeedData()
     if (this.id !== '') {
-      getTaskDetail({ id: +this.id }).then(res => {
-        this.taskDetailInfo = res.data
-        console.log('任务详情', res)
-        this.$nextTick(() => {
-          this.lineNumber = Math.round(
-            document.querySelector('#taskExplain').clientHeight / 20
-          )
-          this.close()
-          this.close2()
-        })
-      })
-
-      const res4 = await toGetButtonStatus({
-        task_id: +this.id
-      })
-      this.buttonStatus = res4.data
-      // console.log('任务详情-按钮状态控制', res4)
+      this.getTaskDetailInfo()
+      this.getButtonInfo()
       const res5 = await toTaskCode({
         task_id: this.id
       })

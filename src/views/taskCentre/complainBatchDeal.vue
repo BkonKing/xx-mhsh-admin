@@ -92,6 +92,8 @@ export default {
     isShow (newVal) {
       if (newVal === false) {
         this.form.handle_reply = ''
+        this.fileList2 = []
+        this.fileList = []
       }
     }
   },

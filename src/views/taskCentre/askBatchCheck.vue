@@ -122,10 +122,15 @@ export default {
       this.form.check_desc = ''
       this.form.violation_type = undefined
       this.form.is_check = 1
+      this.fileList = []
+      this.fileList2 = []
     },
     'form.is_check' () {
       // console.log('改变了')
       this.form.check_desc = ''
+      this.fileList = []
+      this.fileList2 = []
+      this.form.violation_type = undefined
     }
   },
   methods: {

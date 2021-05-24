@@ -101,6 +101,7 @@ export default {
         this.showInfo = false
         this.info = {}
         this.id = ''
+        this.label_desc = ''
       }
     },
     id () {
