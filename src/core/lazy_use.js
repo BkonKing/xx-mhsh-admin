@@ -13,7 +13,6 @@ import {
   Select,
   Card,
   Form,
-  FormModel,
   Row,
   Col,
   Modal,
@@ -46,7 +45,12 @@ import {
   Descriptions,
   Space,
   message,
-  notification
+  notification,
+  FormModel,
+  Pagination,
+  LocaleProvider,
+  Tree,
+  Cascader
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -56,6 +60,9 @@ import MultiTab from '@/components/MultiTab'
 import PageLoading from '@/components/PageLoading'
 import PermissionHelper from '@/core/permission'
 import '@/directives/action'
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
+Vue.use(preview)
 
 Vue.use(ConfigProvider)
 Vue.use(Layout)
@@ -100,6 +107,10 @@ Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Space)
+Vue.use(Pagination)
+Vue.use(LocaleProvider)
+Vue.use(Tree)
+Vue.use(Cascader)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message

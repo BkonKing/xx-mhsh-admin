@@ -64,3 +64,15 @@ export function toThousandFilter (num) {
 export function uppercaseFirst (string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * 10000 => "10,000",12.00 => "12.00"
+ * @param {number} num
+ */
+export function NumberFormat (value) {
+  if (!value) {
+    return '0'
+  }
+  const intPartFormat = value.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')
+  return intPartFormat
+}
