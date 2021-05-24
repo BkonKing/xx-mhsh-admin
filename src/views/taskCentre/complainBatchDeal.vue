@@ -72,10 +72,10 @@ export default {
       rules: {
         handle_reply: [{ required: true, message: '必填', trigger: 'change' }]
       },
-       previewVisible: false,
+      previewVisible: false,
       previewImage: '',
       fileList: [],
-       uploadUrl: '', // 上传图片接口
+      uploadUrl: '', // 上传图片接口
       uploadData: {
         field_name: 'file'
       },
@@ -97,20 +97,20 @@ export default {
   },
   methods: {
     // 批量处理
-   async submit () {
-     if (this.form.handle_reply === '') {
-       return
-     }
+    async submit () {
+      if (this.form.handle_reply === '') {
+        return
+      }
       await toHandComplaint({
-       ids: this.selectedRowKeys,
-       is_handle: 1,
-       handle_reply: this.form.handle_reply,
-       handle_image: this.fileList2
-     })
-     this.$parent.getData()
-     this.$parent.selectedRowKeys = []
-     this.$message.success('处理成功')
-     this.isShow = false
+        ids: this.selectedRowKeys,
+        is_handle: 1,
+        handle_reply: this.form.handle_reply,
+        handle_image: this.fileList2
+      })
+      this.$parent.getData()
+      this.$parent.selectedRowKeys = []
+      this.$message.success('处理成功')
+      this.isShow = false
     },
     handleCancel () {
       this.previewVisible = false
@@ -122,7 +122,7 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-      // 上传和删除图片时触发
+    // 上传和删除图片时触发
     handleChange ({ fileList }) {
       // console.log('上传和删除图片时触发')
       this.fileList = fileList
@@ -140,7 +140,7 @@ export default {
     }
   },
   created () {
-  this.uploadUrl =
+    this.uploadUrl =
       process.env.NODE_ENV === 'production'
         ? '/nsolid/spi/v1/upload/uploads/uImages'
         : '/api/upload/uploads/uImages'

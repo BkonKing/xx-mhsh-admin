@@ -10,7 +10,7 @@
         <a-form-model-item label="任务标题">
           <div
             style="color:#1890FF;cursor: pointer;"
-            @click="$router.push('/taskCentre/complete')"
+            @click="openTaskDetail"
           >
             {{ lookOverInfo.task_title }}
           </div>
@@ -54,7 +54,7 @@
           <a-select
             v-model="form.violation_type"
             placeholder="请选择"
-            style="width: 379px"
+            style="width: 254px"
           >
             <a-select-option
               v-for="(item, index) in reasonList"
@@ -131,7 +131,7 @@ export default {
       form: {
         is_check: 1,
         check_desc: '',
-        violation_type: ''
+        violation_type: undefined
       },
       rules: {
         is_check: [{ required: true, message: '必填', trigger: 'change' }],
@@ -157,6 +157,11 @@ export default {
   },
 
   watch: {
+    isShow () {
+      this.form.check_desc = ''
+      this.form.violation_type = undefined
+      this.form.is_check = 1
+    },
     info: {
       async handler () {
         // 提问-查看详情
@@ -167,9 +172,22 @@ export default {
         this.lookOverInfo = res.data
       },
       deep: true
+    },
+    'form.is_check' () {
+      // console.log('改变了')
+      this.form.check_desc = ''
     }
   },
   methods: {
+    // 打开任务详情
+    openTaskDetail () {
+      // const { href } = this.$router.resolve({
+      //   name: 'complete',
+      //   query: { id: this.lookOverInfo.task_id }
+      // })
+      // window.open(href, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?id=${this.lookOverInfo.task_id}`, '_blank')
+    },
     // 确定
     async submit () {
       const idArr = []
@@ -196,7 +214,7 @@ export default {
 
     // 打开用户详情
     openUserDetail () {
-      window.open(`/zht/user/user/getUserList?uid=${this.lookOverInfo.uid}`, '_parent')
+      window.open(`/zht/user/user/getUserList?uid=${this.lookOverInfo.uid}`, '_blank')
     },
     // 关闭预览
     handleCancel () {

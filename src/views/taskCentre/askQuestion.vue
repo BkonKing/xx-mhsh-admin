@@ -389,6 +389,7 @@ export default {
     },
     // 重置
     reset () {
+      this.currentIndex = 1
       this.tab_type = ''
       this.type = undefined
       this.check_type = undefined
@@ -402,6 +403,7 @@ export default {
       this.task_search = ''
       this.ctime = ''
       this.createTime = []
+
       this.pagination.currentPage = 1
       this.getData()
     },

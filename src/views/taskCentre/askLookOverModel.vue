@@ -3,10 +3,10 @@
     <a-modal v-model="isShow" title="查看" :footer="null" v-if="lookOverInfo!=''" >
       <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-model-item label="任务标题">
-          <span style="color:#1d92ff">{{ lookOverInfo.task_title }}</span>
+          <span style="color:#1d92ff;cursor: pointer;" @click="openTaskDetail">{{ lookOverInfo.task_title }}</span>
         </a-form-model-item>
         <a-form-model-item label="发布用户">
-          <span style="color:#1d92ff">{{ lookOverInfo.publish_user }} </span
+          <span style="color:#1d92ff;cursor: pointer;" @click="openUserDetail">{{ lookOverInfo.publish_user }} </span
           >{{ lookOverInfo.project_name }}
         </a-form-model-item>
         <a-form-model-item label="创建时间">{{
@@ -95,6 +95,19 @@ export default {
   },
   created () {},
   methods: {
+    // 打开用户详情
+    openUserDetail () {
+      window.open(`/zht/user/user/getUserList?uid=${this.lookOverInfo.uid}`, '_blank')
+    },
+    // 打开任务详情
+    openTaskDetail () {
+      // const { href } = this.$router.resolve({
+      //   name: 'complete',
+      //   query: { id: this.lookOverInfo.task_id }
+      // })
+      // window.open(href, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?id=${this.lookOverInfo.task_id}`, '_blank')
+    },
     // 查看 回复的提问
     async lookOver () {
       //  // 提问-查看详情

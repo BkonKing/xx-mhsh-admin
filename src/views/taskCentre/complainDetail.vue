@@ -280,9 +280,9 @@ export default {
   },
 
   methods: {
-   // 新窗口打开用户详情页面
+    // 新窗口打开用户详情页面
     openUserDetail (uid) {
-       window.open(`/zht/user/user/getUserList?uid=${uid}`, '_parent')
+      window.open(`/zht/user/user/getUserList?uid=${uid}`, '_blank')
     },
     // 获取详情信息
     async getDetailInfo () {
@@ -298,11 +298,12 @@ export default {
     },
     // 新窗口打开任务详情
     openDetail () {
-      const { href } = this.$router.resolve({
-        name: 'complete',
-        query: { id: this.detailInfo.task_id }
-      })
-      window.open(href, '_blank')
+      // const { href } = this.$router.resolve({
+      //   name: 'complete',
+      //   query: { id: this.detailInfo.task_id }
+      // })
+      // window.open(href, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?id=${this.detailInfo.task_id}`, '_blank')
     },
     // 确定
     async submit () {

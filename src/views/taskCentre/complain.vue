@@ -364,16 +364,16 @@ export default {
         }
       ],
       selectedRowKeys: [],
-      handle_status: undefined, //	否	int	投诉处理状态 0待处理 1已处理
-      complaint_type: undefined, //	否	int	投诉类型
-      content_type: undefined, //	否	int	1任务 2提问 3提问回复
-      user_type: undefined, //	否	int	1接单方 2任务方
-      user_search: '', //	否	string	用户搜索与user_type联合使用
-      complaint_desc: '', //	否	string	投诉描述
-      complaint_user: '', //	否	string	投诉人
-      task_search: '', //	否	string	任务搜索
-      task_status: undefined, //	否	int	任务状态搜索
-      complaint_time: '', //	否	string	投诉时间
+      handle_status: undefined, // 否int投诉处理状态 0待处理 1已处理
+      complaint_type: undefined, // 否int投诉类型
+      content_type: undefined, // 否int1任务 2提问 3提问回复
+      user_type: undefined, // 否int1接单方 2任务方
+      user_search: '', // 否string用户搜索与user_type联合使用
+      complaint_desc: '', // 否string投诉描述
+      complaint_user: '', // 否string投诉人
+      task_search: '', // 否string任务搜索
+      task_status: undefined, // 否int任务状态搜索
+      complaint_time: '', // 否string投诉时间
       timeTxt: [],
       typeList: [], // 投诉类型列表
       TaskStatusList: [], // 任务状态列表
@@ -476,10 +476,13 @@ export default {
     onChangePage (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
+      this.getData()
     },
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.pageSize = size
+      this.getData()
     },
     // 展开
     open () {
