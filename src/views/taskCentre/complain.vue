@@ -202,6 +202,11 @@ type="up"
             :pagination="false"
             @change="tableChange"
           >
+          <template slot="handle_desc" slot-scope="text,record">
+            <div :style="{color:record.is_over===1?'red':''}">
+              {{record.handle_desc}}
+            </div>
+          </template>
             <template slot="content" slot-scope="content">
               <div class="content" style="color:#1890FF">
                 {{ content }}
@@ -307,7 +312,8 @@ export default {
           title: '处理时间',
           dataIndex: 'handle_desc',
           key: 'handle_desc',
-          width: '10%'
+          width: '10%',
+          scopedSlots: { customRender: 'handle_desc' }
         },
         {
           title: '状态',
@@ -481,6 +487,7 @@ export default {
     // 页容量改变事件
     sizeChange (current, size) {
       console.log('size: ', size)
+      this.pagination.currentPage = 1
       this.pagination.pageSize = size
       this.getData()
     },

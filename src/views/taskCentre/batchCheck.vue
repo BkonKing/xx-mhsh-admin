@@ -28,7 +28,7 @@
         <a-select
           v-model="form.violation_type"
           placeholder="请选择"
-          style="width: 379px"
+          style="width: 274px"
         >
           <a-select-option
             v-for="(item, index) in reasonList"
@@ -119,7 +119,23 @@ export default {
       }
     }
   },
-
+  watch: {
+    isShow (newVal) {
+      if (newVal === false) {
+        this.form.check_desc = ''
+        this.form.is_check = 1
+        this.form.violation_type = undefined
+        this.fileList2 = []
+        this.fileList = []
+      }
+    },
+    'form.is_check' () {
+      this.form.check_desc = ''
+      this.form.violation_type = undefined
+      this.fileList2 = []
+      this.fileList = []
+    }
+  },
   methods: {
     // 批量审核
     async submit () {
@@ -139,12 +155,12 @@ export default {
     },
     // 关闭大图弹窗
     handleCancel () {
-      console.log('handleCancel')
+      // console.log('handleCancel')
       this.previewVisible = false
     },
     // 查看大图
     async handlePreview (file) {
-      console.log('handlePreview')
+      // console.log('handlePreview')
       if (!file.url && !file.preview) {
         file.preview = await getBase64(file.originFileObj)
       }
@@ -155,7 +171,7 @@ export default {
     handleChange ({ fileList }) {
       // console.log('上传和删除图片时触发')
       this.fileList = fileList
-      console.log(fileList)
+      // console.log(fileList)
       const arr1 = this.fileList.map(item => {
         if (item.response) {
           return item.response.data
@@ -165,7 +181,7 @@ export default {
         return item
       })
       this.fileList2 = arr2
-      console.log('上传和删除图片时触发', arr2)
+      // console.log('上传和删除图片时触发', arr2)
     }
   },
   async created () {

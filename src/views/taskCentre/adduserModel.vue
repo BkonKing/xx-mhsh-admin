@@ -218,8 +218,8 @@ export default {
   }
 }
 .box {
-  margin-left: 165px;
-  width: 417px;
+  margin-left: 58px;
+  width: 446px;
   max-height: 300px;
   overflow: scroll;
   padding: 0 20px;

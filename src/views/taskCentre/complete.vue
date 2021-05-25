@@ -176,7 +176,7 @@
                       :href="
                         `/zht/user/user/getUserList?uid=${this.taskDetailInfo.uid}`
                       "
-                      target="_parent"
+                      target="_blank"
                       >{{ taskDetailInfo.task_user }}</a
                     >
                     {{ taskDetailInfo.task_project }}
