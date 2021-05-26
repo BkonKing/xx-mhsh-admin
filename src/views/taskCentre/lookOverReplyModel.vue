@@ -86,7 +86,7 @@ export default {
       //   query: { id: this.lookOverInfo.task_id }
       // })
       // window.open(href, '_blank')
-      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete%3Fid%3D?id=${this.lookOverInfo.task_id}`, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete?id=${this.lookOverInfo.task_id}`, '_blank')
     }
   }
 }
