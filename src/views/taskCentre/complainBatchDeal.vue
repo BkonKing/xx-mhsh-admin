@@ -6,6 +6,7 @@
         已选择 <span class="span1">{{selectedRowKeys.length}}</span> 项
       </div>
       <a-form-model
+      ref="form"
         :model="form"
         :rules="rules"
         :label-col="labelCol"
@@ -92,25 +93,28 @@ export default {
     isShow (newVal) {
       if (newVal === false) {
         this.form.handle_reply = ''
+        this.fileList2 = []
+        this.fileList = []
       }
     }
   },
   methods: {
     // 批量处理
-    async submit () {
-      if (this.form.handle_reply === '') {
-        return
-      }
-      await toHandComplaint({
-        ids: this.selectedRowKeys,
-        is_handle: 1,
-        handle_reply: this.form.handle_reply,
-        handle_image: this.fileList2
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          await toHandComplaint({
+            ids: this.selectedRowKeys,
+            is_handle: 1,
+            handle_reply: this.form.handle_reply,
+            handle_image: this.fileList2
+          })
+          this.$parent.getData()
+          this.$parent.selectedRowKeys = []
+          this.$message.success('处理成功')
+          this.isShow = false
+        }
       })
-      this.$parent.getData()
-      this.$parent.selectedRowKeys = []
-      this.$message.success('处理成功')
-      this.isShow = false
     },
     handleCancel () {
       this.previewVisible = false

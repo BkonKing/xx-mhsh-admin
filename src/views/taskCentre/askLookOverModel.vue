@@ -106,20 +106,13 @@ export default {
       //   query: { id: this.lookOverInfo.task_id }
       // })
       // window.open(href, '_blank')
-      window.open(`/zht/task/task/getTaskInfo?id=${this.lookOverInfo.task_id}`, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete%3Fid%3D?id=${this.lookOverInfo.task_id}`, '_blank')
     },
     // 查看 回复的提问
     async lookOver () {
       //  // 提问-查看详情
       this.$refs.lookOverReplyModel.id = this.lookOverInfo.id
       this.$refs.lookOverReplyModel.isShow = true
-      // const res = await toViewQuestion({
-      //   type: 1,
-      //   id: this.lookOverInfo.id
-      // })
-      // console.log('提问-查看详情', res)
-      // this.lookOverInfo = res.data
-      // this.$previewRefresh()
     }
   }
 }

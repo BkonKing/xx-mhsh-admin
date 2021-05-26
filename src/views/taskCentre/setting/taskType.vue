@@ -32,7 +32,7 @@ slot="sortTitle"
           </template> -->
           <div class="order_sort" slot="order_sort" slot-scope="text, record">
             <a-input
-
+              :maxLength="10"
               style="width:128px"
               ref="order_sort"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
@@ -182,8 +182,8 @@ export default {
         total: 50, // 总数
         pageSize: 10 // 默认页容量
       },
-      order_field: '', //	否	string	排序的字段名称task_total 任务数 ctime创建时间
-      sort_value: '' //	否	string	排序的字段值 desc降序 asc升序
+      order_field: '', // 否string排序的字段名称task_total 任务数 ctime创建时间
+      sort_value: '' // 否string排序的字段值 desc降序 asc升序
 
     }
   },
@@ -214,6 +214,7 @@ export default {
         update_value: +e.target.value,
         id: record.id
       })
+      this.getData()
       this.$message.success('修改成功')
     },
     // 排序

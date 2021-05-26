@@ -5,6 +5,7 @@
       已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
     </div>
     <a-form-model
+    ref="form"
       :model="form"
       :rules="rules"
       :label-col="labelCol"
@@ -28,7 +29,7 @@
         <a-select
           v-model="form.violation_type"
           placeholder="请选择"
-          style="width: 254px"
+          style="width: 274px"
         >
           <a-select-option
             v-for="(item, index) in reasonList"
@@ -122,26 +123,35 @@ export default {
       this.form.check_desc = ''
       this.form.violation_type = undefined
       this.form.is_check = 1
+      this.fileList = []
+      this.fileList2 = []
     },
     'form.is_check' () {
       // console.log('改变了')
       this.form.check_desc = ''
+      this.fileList = []
+      this.fileList2 = []
+      this.form.violation_type = undefined
     }
   },
   methods: {
     // 审核
-    async submit () {
-      await toCheckQuestionReply({
-        ids: this.selectedRowKeys,
-        is_check: this.form.is_check,
-        check_desc: this.form.check_desc,
-        check_image: this.fileList2,
-        violation_type: this.form.violation_type
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          await toCheckQuestionReply({
+            ids: this.selectedRowKeys,
+            is_check: this.form.is_check,
+            check_desc: this.form.check_desc,
+            check_image: this.fileList2,
+            violation_type: this.form.violation_type
+          })
+          this.$message.success('处理成功')
+          this.$parent.getData()
+          this.$parent.selectedRowKeys = []
+          this.isShow = false
+        }
       })
-      this.$message.success('处理成功')
-      this.$parent.getData()
-      this.$parent.selectedRowKeys = []
-      this.isShow = false
     },
     handleCancel () {
       this.previewVisible = false

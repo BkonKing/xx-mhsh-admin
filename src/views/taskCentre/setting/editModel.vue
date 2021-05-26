@@ -1,23 +1,30 @@
 <template>
   <div class="editModel">
-    <a-modal v-model="isShow" title="新增/编辑" @ok="submit">
+    <a-modal
+      v-model="isShow"
+      :title="mode === 'add' ? '新增' : '编辑'"
+      @ok="submit"
+    >
       <a-form-model
+        ref="form"
         :model="form"
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="类型名称" prop="value1">
+        <a-form-model-item label="类型名称" prop="type_name">
           <a-input
-            placeholder="请选择"
+            placeholder="请输入"
             v-model="form.type_name"
-            style="width:320px"
+            style="width:326px"
+            :maxLength="10"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item label="参考价" prop="value2">
+        <a-form-model-item label="参考价" prop="start_price">
           <div class="input">
             <a-input
               placeholder="最低价"
+              :maxLength="15"
               style="width:148px"
               v-model="form.start_price"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
@@ -27,6 +34,7 @@
             <a-input
               style="width:148px"
               placeholder="最高价"
+              :maxLength="15"
               v-model="form.end_price"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
               onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
@@ -84,19 +92,27 @@ export default {
   },
   methods: {
     // 确定
-    async submit () {
+    submit () {
       if (this.mode === 'add') {
-        await toAddTaskType(this.form)
-        this.$parent.getData()
-        this.$message.success('新增成功')
-        this.isShow = false
-        // console.log('新增', res)
+        this.$refs.form.validate(async result => {
+          if (result) {
+            await toAddTaskType(this.form)
+            this.$parent.getData()
+            this.$message.success('新增成功')
+            this.isShow = false
+            // console.log('新增', res)
+          }
+        })
       } else {
-        await toAddTaskType(this.form)
-        this.$parent.getData()
-        this.$message.success('编辑成功')
-        this.isShow = false
-        // console.log('编辑', res)
+        this.$refs.form.validate(async result => {
+          if (result) {
+            await toAddTaskType(this.form)
+            this.$parent.getData()
+            this.$message.success('编辑成功')
+            this.isShow = false
+            // console.log('编辑', res)
+          }
+        })
       }
     }
   }
@@ -104,6 +120,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form-item-label{
+  width: 80px;
+}
+/deep/ .ant-modal-content {
+  width: 480px;
+  height: 400px;
+}
+/deep/ .ant-modal-body {
+  height: 290px;
+}
 .input {
   display: flex;
   align-items: center;

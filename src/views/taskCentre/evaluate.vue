@@ -265,14 +265,14 @@ export default {
           width: '12.555555555%'
         }
       ],
-      evaluate_starts: undefined, //	否	int	评价星星数
-      evaluate_tag: undefined, //	否	int	评价标签
-      task_search: '', //	否	string	任务搜索
-      user_type: undefined, //	否	int	评价用户类型1用户2系统
-      user_search: '', //	否	string	用户
-      is_valid: undefined, //	否	int	,//是否有效 1有效 0无效
-      project_id: undefined, //	否	int	评价用户所属项目ID
-      ctime: '', //	否	int	评价时间
+      evaluate_starts: undefined, // 否int评价星星数
+      evaluate_tag: undefined, // 否int评价标签
+      task_search: '', // 否string任务搜索
+      user_type: undefined, // 否int评价用户类型1用户2系统
+      user_search: '', // 否string用户
+      is_valid: undefined, // 否int,//是否有效 1有效 0无效
+      project_id: undefined, // 否int评价用户所属项目ID
+      ctime: '', // 否int评价时间
       selectedRowKeys: [],
       tagList: [], // 标签下拉列表
       projectList: [],

@@ -157,6 +157,7 @@
       <a-card class="card4">
         <div class="title">审核</div>
         <a-form-model
+        ref="form"
           class="form"
           :model="form"
           :rules="rules"
@@ -300,20 +301,22 @@ export default {
   },
   methods: {
     // 确定
-    async submit () {
-      const arr = []
-      arr.push(this.id)
-      await toHandTask({
-        ids: arr,
-        is_check: this.form.is_check,
-        check_desc: this.form.check_desc,
-        check_image: this.fileList2,
-        violation_type: this.form.violation_type
+    submit () {
+      this.$refs.form.validate(async result => {
+        const arr = []
+        arr.push(this.id)
+        await toHandTask({
+          ids: arr,
+          is_check: this.form.is_check,
+          check_desc: this.form.check_desc,
+          check_image: this.fileList2,
+          violation_type: this.form.violation_type
+        })
+        // console.log('审核', res)
+        // this.$parent.getData()
+        this.$router.push('/taskCentre/task')
+        this.$message.success('提交成功')
       })
-      // console.log('审核', res)
-      // this.$parent.getData()
-      this.$router.push('/taskCentre/task')
-      this.$message.success('提交成功')
     },
     // handleCancel () {
     //   this.previewVisible = false

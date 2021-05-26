@@ -2,6 +2,7 @@
   <div class="askCheckModel">
     <a-modal v-model="isShow" title="审核" @ok="submit">
       <a-form-model
+      ref="form"
         :model="form"
         :rules="rules"
         :label-col="labelCol"
@@ -161,6 +162,8 @@ export default {
       this.form.check_desc = ''
       this.form.violation_type = undefined
       this.form.is_check = 1
+      this.fileList2 = []
+      this.fileList = []
     },
     info: {
       async handler () {
@@ -176,6 +179,9 @@ export default {
     'form.is_check' () {
       // console.log('改变了')
       this.form.check_desc = ''
+      this.form.violation_type = undefined
+      this.fileList2 = []
+      this.fileList = []
     }
   },
   methods: {
@@ -186,23 +192,27 @@ export default {
       //   query: { id: this.lookOverInfo.task_id }
       // })
       // window.open(href, '_blank')
-      window.open(`/zht/task/task/getTaskInfo?id=${this.lookOverInfo.task_id}`, '_blank')
+      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete%3Fid%3D?id=${this.lookOverInfo.task_id}`, '_blank')
     },
     // 确定
-    async submit () {
-      const idArr = []
-      idArr.push(this.info.id)
-      await toCheckQuestionReply({
-        ids: idArr,
-        is_check: this.form.is_check,
-        check_desc: this.form.check_desc,
-        check_image: this.fileList2,
-        violation_type: this.form.violation_type
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          const idArr = []
+          idArr.push(this.info.id)
+          await toCheckQuestionReply({
+            ids: idArr,
+            is_check: this.form.is_check,
+            check_desc: this.form.check_desc,
+            check_image: this.fileList2,
+            violation_type: this.form.violation_type
+          })
+          this.$message.success('审核成功')
+          this.$parent.getData()
+          this.isShow = false
+          // console.log('确定', res)
+        }
       })
-      this.$message.success('审核成功')
-      this.$parent.getData()
-      this.isShow = false
-      // console.log('确定', res)
     },
     // 查看
     lookOver () {
