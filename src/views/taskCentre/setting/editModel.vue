@@ -24,6 +24,7 @@
           <div class="input">
             <a-input
               placeholder="最低价"
+              :maxLength="10"
               style="width:148px"
               v-model="form.start_price"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
@@ -33,6 +34,7 @@
             <a-input
               style="width:148px"
               placeholder="最高价"
+              :maxLength="10"
               v-model="form.end_price"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
               onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
