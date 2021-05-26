@@ -32,7 +32,7 @@ slot="sortTitle"
           </template> -->
           <div class="order_sort" slot="order_sort" slot-scope="text, record">
             <a-input
-
+              :maxLength="10"
               style="width:128px"
               ref="order_sort"
               onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
@@ -214,6 +214,7 @@ export default {
         update_value: +e.target.value,
         id: record.id
       })
+      this.getData()
       this.$message.success('修改成功')
     },
     // 排序

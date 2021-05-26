@@ -2,6 +2,7 @@
   <div class="askCheckModel">
     <a-modal v-model="isShow" title="审核" @ok="submit">
       <a-form-model
+      ref="form"
         :model="form"
         :rules="rules"
         :label-col="labelCol"
@@ -194,20 +195,24 @@ export default {
       window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete%3Fid%3D?id=${this.lookOverInfo.task_id}`, '_blank')
     },
     // 确定
-    async submit () {
-      const idArr = []
-      idArr.push(this.info.id)
-      await toCheckQuestionReply({
-        ids: idArr,
-        is_check: this.form.is_check,
-        check_desc: this.form.check_desc,
-        check_image: this.fileList2,
-        violation_type: this.form.violation_type
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          const idArr = []
+          idArr.push(this.info.id)
+          await toCheckQuestionReply({
+            ids: idArr,
+            is_check: this.form.is_check,
+            check_desc: this.form.check_desc,
+            check_image: this.fileList2,
+            violation_type: this.form.violation_type
+          })
+          this.$message.success('审核成功')
+          this.$parent.getData()
+          this.isShow = false
+          // console.log('确定', res)
+        }
       })
-      this.$message.success('审核成功')
-      this.$parent.getData()
-      this.isShow = false
-      // console.log('确定', res)
     },
     // 查看
     lookOver () {

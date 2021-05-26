@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model="isShow" title="处理" @ok="submit">
-    <a-form-model :model='form' :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
+    <a-form-model ref="form" :model='form' :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-model-item label="投诉类型">
         {{ info.complaint_type }}
       </a-form-model-item>
@@ -108,22 +108,23 @@ export default {
   },
   methods: {
     // 处理
-    async submit () {
-      if (this.form.handle_reply === '') {
-        return
-      }
-      const idArr = []
-      idArr.push(this.id)
-      await toHandComplaint({
-        ids: idArr,
-        is_handle: 0,
-        handle_reply: this.form.handle_reply,
-        handle_image: this.fileList2
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          const idArr = []
+          idArr.push(this.id)
+          await toHandComplaint({
+            ids: idArr,
+            is_handle: 0,
+            handle_reply: this.form.handle_reply,
+            handle_image: this.fileList2
+          })
+          // console.log('处理', res)
+          this.$message.success('处理成功')
+          this.$emit('getData')
+          this.isShow = false
+        }
       })
-      // console.log('处理', res)
-      this.$message.success('处理成功')
-      this.$emit('getData')
-      this.isShow = false
     },
     handleCancel () {
       this.previewVisible = false

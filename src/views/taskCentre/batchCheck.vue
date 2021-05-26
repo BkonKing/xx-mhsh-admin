@@ -5,12 +5,13 @@
       已选择 {{ selectedRowKeys.length }} 项
     </div>
     <a-form-model
+    ref="form"
       :model="form"
       :rules="rules"
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-model-item label="是否通过" prop="value">
+      <a-form-model-item label="是否通过" prop="is_check">
         <a-radio-group v-model="form.is_check">
           <a-radio :value="1">
             通过
@@ -100,7 +101,8 @@ export default {
         violation_type: undefined
       },
       rules: {
-        is_check: [{ required: true, message: '必填', trigger: 'change' }]
+        is_check: [{ required: true, message: '必填', trigger: 'change' }],
+        violation_type: [{ required: true, message: '必填', trigger: 'change' }]
       },
       isShow: false,
       previewVisible: false,
@@ -138,20 +140,24 @@ export default {
   },
   methods: {
     // 批量审核
-    async submit () {
-      await toHandTask({
-        ids: this.selectedRowKeys,
-        is_check: this.form.is_check,
-        check_desc: this.form.check_desc,
-        check_image: this.fileList2,
-        violation_type: this.form.violation_type
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          await toHandTask({
+            ids: this.selectedRowKeys,
+            is_check: this.form.is_check,
+            check_desc: this.form.check_desc,
+            check_image: this.fileList2,
+            violation_type: this.form.violation_type
+          })
+          this.$message.success('处理成功')
+          this.$parent.pagination.currentPage = 1
+          this.$parent.selectedRowKeys = []
+          this.$parent.getData()
+          this.isShow = false
+          // console.log('批量审核', res)
+        }
       })
-      this.$message.success('处理成功')
-      this.$parent.pagination.currentPage = 1
-      this.$parent.selectedRowKeys = []
-      this.$parent.getData()
-      this.isShow = false
-      // console.log('批量审核', res)
     },
     // 关闭大图弹窗
     handleCancel () {
