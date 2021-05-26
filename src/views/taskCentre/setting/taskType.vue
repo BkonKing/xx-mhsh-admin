@@ -182,8 +182,8 @@ export default {
         total: 50, // 总数
         pageSize: 10 // 默认页容量
       },
-      order_field: '', //	否	string	排序的字段名称task_total 任务数 ctime创建时间
-      sort_value: '' //	否	string	排序的字段值 desc降序 asc升序
+      order_field: '', // 否string排序的字段名称task_total 任务数 ctime创建时间
+      sort_value: '' // 否string排序的字段值 desc降序 asc升序
 
     }
   },
