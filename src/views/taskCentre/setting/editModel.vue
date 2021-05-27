@@ -27,8 +27,8 @@
               :maxLength="15"
               style="width:148px"
               v-model="form.start_price"
-              onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-              onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+              oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+
             ></a-input>
             <span>~</span>
             <a-input
@@ -36,8 +36,7 @@
               placeholder="最高价"
               :maxLength="15"
               v-model="form.end_price"
-              onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-              onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+              oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
             ></a-input>
           </div>
           <div class="txt">任务参考的幸福币价格，含最低最高价</div>
@@ -96,20 +95,29 @@ export default {
       if (this.mode === 'add') {
         this.$refs.form.validate(async result => {
           if (result) {
-            await toAddTaskType(this.form)
-            this.$parent.getData()
-            this.$message.success('新增成功')
-            this.isShow = false
+            const res = await toAddTaskType(this.form)
+            if (res.code === '201') {
+              this.$message.error(res.message)
+            } else {
+              this.$parent.getData()
+              this.$message.success('新增成功')
+              this.isShow = false
             // console.log('新增', res)
+            }
           }
         })
       } else {
         this.$refs.form.validate(async result => {
           if (result) {
-            await toAddTaskType(this.form)
-            this.$parent.getData()
-            this.$message.success('编辑成功')
-            this.isShow = false
+            const res = await toAddTaskType(this.form)
+            if (res.code === '201') {
+              this.$message.error(res.message)
+            } else {
+              this.$parent.getData()
+              this.$message.success('编辑成功')
+              this.isShow = false
+            }
+
             // console.log('编辑', res)
           }
         })
@@ -125,11 +133,12 @@ export default {
 }
 /deep/ .ant-modal-content {
   width: 480px;
-  height: 400px;
+  // height: 400px;
+  min-height: 400px;
 }
-/deep/ .ant-modal-body {
-  height: 290px;
-}
+// /deep/ .ant-modal-body {
+//   height: 290px;
+// }
 .input {
   display: flex;
   align-items: center;
