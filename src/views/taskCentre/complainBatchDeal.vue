@@ -32,7 +32,7 @@
             <div v-if="fileList.length < 8">
               <a-icon type="plus" />
               <div class="ant-upload-text">
-                Upload
+                上传
               </div>
             </div>
           </a-upload>

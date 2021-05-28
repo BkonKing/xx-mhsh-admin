@@ -29,6 +29,15 @@ export default {
         title: '马甲用户',
         icon: 'table'
       }
+    },
+    {
+      path: '/userManage/tourist',
+      name: 'tourist',
+      component: () => import('@/views/userManage/tourist'),
+      meta: {
+        title: '游客管理',
+        icon: 'table'
+      }
     }
   ]
 

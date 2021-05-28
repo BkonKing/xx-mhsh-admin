@@ -295,13 +295,14 @@
           </template>
           <template slot="opera" slot-scope="text, record">
             <div class="btns">
-              <a-button type="link" @click="lookOver(record)">查看</a-button>
               <a-button
                 type="link"
                 v-if="record.task_status === '待审核'"
                 @click="$router.push('/taskCentre/toCheck?id=' + record.id)"
                 >审核</a-button
               >
+              <a-button type="link" v-else @click="lookOver(record)">查看</a-button>
+
             </div>
           </template>
         </a-table>

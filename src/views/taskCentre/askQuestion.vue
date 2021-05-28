@@ -293,7 +293,7 @@ export default {
           title: '审核时间',
           dataIndex: 'check_time_desc',
           key: 'check_time_desc',
-          width: '10%',
+          width: '6%',
           scopedSlots: { customRender: 'check_time_desc' }
         },
         {
@@ -306,7 +306,7 @@ export default {
           title: '类型',
           dataIndex: 'type',
           key: 'type',
-          width: '10%',
+          width: '6%',
           scopedSlots: { customRender: 'type' }
         },
         {
@@ -314,14 +314,14 @@ export default {
           dataIndex: 'content',
           key: 'content',
           ellipsis: true,
-          width: '10%'
+          width: '13%'
         },
         {
           title: '发布用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
           scopedSlots: { customRender: 'owner_name' },
-          width: '10%'
+          width: '12%'
         },
         {
           title: '投诉',
@@ -336,7 +336,7 @@ export default {
           dataIndex: 'task_title',
           key: 'task_title',
           // ellipsis: true,
-          width: '10%',
+          width: '13%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
