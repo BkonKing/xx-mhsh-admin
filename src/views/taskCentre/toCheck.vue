@@ -68,8 +68,9 @@
                   <a-form-model-item label="任务编号"
                     >{{ taskDetailInfo.task_number }}
                     <img
-                      style="marginLeft:10px"
-                      src="@/assets/imgs/task_ma.png"
+                     preview="1"
+                      style="marginLeft:10px;width:20px;height:20;"
+                      :src="taskMa"
                       alt=""
                     />
                   </a-form-model-item>
@@ -235,7 +236,7 @@
 
 <script>
 import Cookies from 'js-cookie'
-import { getTaskDetail, toViolationReason, toHandTask } from '@/api/taskCentre'
+import { getTaskDetail, toViolationReason, toHandTask, toTaskCode } from '@/api/taskCentre'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -269,6 +270,7 @@ export default {
       uploadData: {
         field_name: 'file'
       },
+      taskMa: '', // 任务码
       fileList2: [], // 处理图片
       reasonList: [], // 违规原因列表
       headers: {
@@ -352,6 +354,10 @@ export default {
         this.taskDetailInfo = res.data
         console.log('任务详情', res)
       })
+      const res5 = await toTaskCode({
+        task_id: this.id
+      })
+      this.taskMa = res5.data.img_url
     }
     const res = await toViolationReason({ type: 1 })
     this.reasonList = res.list
