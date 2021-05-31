@@ -27,7 +27,7 @@ v-if="recharge_type === 1"
             v-model="count"
             @input="setPrice"
             placeholder="请输入"
-            suffix="0.1元/条"
+            suffix="0.05元/条"
           />
           <a-input
             v-else
@@ -161,7 +161,7 @@ export default {
           /^\D*(\d*(?:\.\d{0,2})?).*$/g,
           '$1'
         )
-        this.count = this.price / 0.1
+        this.count = this.price / 0.05
       }
     },
     // 设置金额
@@ -179,7 +179,7 @@ export default {
         } else {
           this.count = e.target.value.replace(/\D/g, '')
         }
-        this.price = keepTwoDecimalFull(this.count * 0.1)
+        this.price = keepTwoDecimalFull(this.count * 0.05)
       }
     },
     // 充值
