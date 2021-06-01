@@ -72,16 +72,18 @@ export default {
       console.log('短信使用信息', res2)
     }
   },
-  watch: {
-    projectID () {
-      this.getInfo()
-    }
-  },
   async created () {
     this.getInfo()
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', typeof this.projectID)
+  },
+  destroyed () {
+    this.smsUseInfo = ''
   }
+  // beforeRouteLeave (to, from, next) { // 参数（马上去的页面，现在的页面，跳转）
+  //   from.meta.keepAlive = false// 将当前的那个页面的缓存清空
+  //   next()
+  // }
 }
 </script>
 
