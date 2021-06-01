@@ -18,7 +18,7 @@
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-model-item label="用户">
-                <a-input placeholder="昵称、手机号" v-model="searcg"></a-input>
+                <a-input placeholder="昵称、手机号" v-model="search"></a-input>
               </a-form-model-item>
             </a-col>
             <a-col :md="8" :sm="24" v-if="btnBol">
@@ -55,8 +55,8 @@
        <a-table rowKey="id"  :columns="columns" :data-source="tableData" :pagination='false'>
          <template  slot="user_type" slot-scope="user_type">
            <div>
-             <span v-if="user_type===1">游客-定位</span>
-             <span v-if="user_type===2">游客-未认证业主</span>
+             <span v-if="user_type===0">游客定位</span>
+             <span v-if="user_type===5">游客未认证业主</span>
            </div>
          </template>
     <template  slot="avatar" slot-scope="avatar">
@@ -165,7 +165,7 @@ export default {
       ],
       tableData: [], // 表格列表
       createTime: [],
-      searcg: '',
+      search: '',
       type: undefined// 类型
     }
   },
@@ -181,7 +181,7 @@ export default {
         pagesize: this.pagination.pageSize,
         type: this.type,
         ctime: this.ctime,
-        searcg: this.searcg
+        search: this.search
       })
       this.tableData = res.data.list
       this.pagination.total = +res.data.total
@@ -210,7 +210,7 @@ export default {
     },
     reset () {
       this.type = undefined
-      this.searcg = ''
+      this.search = ''
       this.ctime = []
       this.createTime = []
       this.getData()
