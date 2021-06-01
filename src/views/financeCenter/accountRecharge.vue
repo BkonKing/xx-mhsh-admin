@@ -64,11 +64,21 @@ export default {
       projectID: ''
     }
   },
+  methods: {
+    async getInfo () {
+      const res2 = await getSmsUseInfo()
+      this.smsUseInfo = res2.data
+      window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
+      console.log('短信使用信息', res2)
+    }
+  },
+  watch: {
+    projectID () {
+      this.getInfo()
+    }
+  },
   async created () {
-    const res2 = await getSmsUseInfo()
-    this.smsUseInfo = res2.data
-    window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
-    // console.log('短信使用信息', res2)
+    this.getInfo()
     this.projectID = +Cookies.get('project_id') || ''
     // console.log('this.projectID', typeof this.projectID)
   }
