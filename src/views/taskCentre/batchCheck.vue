@@ -50,6 +50,7 @@
       <a-form-model-item label="图片">
         <div class="clearfix">
           <a-upload
+          multiple
             :data="uploadData"
             :headers="headers"
             :action="uploadUrl"

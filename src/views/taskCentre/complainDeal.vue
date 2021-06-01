@@ -1,6 +1,12 @@
 <template>
   <a-modal v-model="isShow" title="处理" @ok="submit">
-    <a-form-model ref="form" :model='form' :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
+    <a-form-model
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
+    >
       <a-form-model-item label="投诉类型">
         {{ info.complaint_type }}
       </a-form-model-item>
@@ -17,6 +23,7 @@
       </a-form-model-item>
       <a-form-model-item label="图片">
         <a-upload
+        multiple
           :data="uploadData"
           :headers="headers"
           :action="uploadUrl"
@@ -169,6 +176,9 @@ export default {
 }
 /deep/ .ant-form-item {
   margin-bottom: 0px;
+}
+/deep/ .ant-form-item-label {
+  min-width: 88px;
 }
 .ant-upload-select-picture-card i {
   font-size: 32px;

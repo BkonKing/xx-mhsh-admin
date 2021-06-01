@@ -19,7 +19,8 @@ ref="form"
         <a-form-model-item label='头像'>
           <div class="title">建议尺寸200*200;大小不超过2MB</div>
           <a-upload
-name="avatar"
+          multiple
+                  name="avatar"
                     list-type="picture-card"
                     class="avatar-uploader"
                     :show-upload-list="false"

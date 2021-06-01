@@ -471,7 +471,7 @@ export default {
       .top {
         display: flex;
         .left {
-          width: 70px;
+          min-width: 70px;
         }
         .right {
           flex: 1;
@@ -490,7 +490,7 @@ export default {
         margin-top: 15px;
         display: flex;
         .left {
-          width: 70px;
+          min-width: 70px;
           line-height: 32px;
         }
         .right {
@@ -553,7 +553,7 @@ export default {
       .top {
         display: flex;
         .left {
-          width: 70px;
+          min-width: 70px;
         }
         .right {
           flex: 1;
@@ -572,7 +572,7 @@ export default {
         margin-top: 15px;
         display: flex;
         .left {
-          width: 70px;
+          min-width: 70px;
           line-height: 32px;
         }
         .right {
@@ -616,7 +616,7 @@ export default {
         margin-top: 15px;
         display: flex;
         .left {
-          width: 70px;
+          min-width: 70px;
           line-height: 32px;
         }
         .right {
@@ -660,7 +660,7 @@ export default {
 
       .left {
         margin-top: 5px;
-        width: 104px;
+        min-width: 104px;
       }
       .right {
         flex: 1;
@@ -707,7 +707,7 @@ export default {
 
       .left {
         margin-top: 5px;
-        width: 104px;
+        min-width: 104px;
       }
       .right {
         flex: 1;

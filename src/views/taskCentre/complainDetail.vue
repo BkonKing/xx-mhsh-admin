@@ -143,6 +143,7 @@
         <div class="title">投诉处理</div>
         <div class="form">
           <a-form-model
+          ref="form"
             :model="form"
             :rules="rules"
             :label-col="labelCol"
@@ -157,6 +158,7 @@
             </a-form-model-item>
             <a-form-model-item label="图片">
               <a-upload
+              multiple
                 :data="uploadData"
                 :headers="headers"
                 :action="uploadUrl"
@@ -306,17 +308,21 @@ export default {
       window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete?id=${this.detailInfo.task_id}`, '_blank')
     },
     // 确定
-    async submit () {
-      const idArr = []
-      idArr.push(this.id)
-      await toHandComplaint({
-        ids: idArr,
-        is_handle: 0,
-        handle_reply: this.form.handle_reply,
-        handle_image: this.fileList2
+    submit () {
+      this.$refs.form.validate(async result => {
+        if (result) {
+          const idArr = []
+          idArr.push(this.id)
+          await toHandComplaint({
+            ids: idArr,
+            is_handle: 0,
+            handle_reply: this.form.handle_reply,
+            handle_image: this.fileList2
+          })
+          this.$message.success('处理成功')
+          this.getDetailInfo()
+        }
       })
-      this.$message.success('处理成功')
-      this.getDetailInfo()
     },
     handleCancel () {
       this.previewVisible = false

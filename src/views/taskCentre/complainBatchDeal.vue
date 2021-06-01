@@ -21,6 +21,7 @@
         </a-form-model-item>
         <a-form-model-item label="图片">
           <a-upload
+          multiple
             :data="uploadData"
           :headers="headers"
           :action="uploadUrl"

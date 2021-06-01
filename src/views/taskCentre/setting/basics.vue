@@ -536,7 +536,8 @@ export default {
       padding: 30px;
       display: flex;
       .left {
-        width: 70px;
+        // width: 70px;
+        min-width: 70px;
       }
       .right {
         flex: 1;
@@ -627,7 +628,7 @@ export default {
 
       .left {
         margin-top: 5px;
-        width: 70px;
+        min-width: 70px;
       }
       .right {
         flex: 1;
@@ -674,7 +675,7 @@ export default {
 
       .left {
         margin-top: 5px;
-        width: 70px;
+        min-width: 70px;
       }
       .right {
         flex: 1;
@@ -721,7 +722,7 @@ export default {
 
       .left {
         margin-top: 5px;
-        width: 70px;
+        min-width: 70px;
       }
       .right {
         flex: 1;
