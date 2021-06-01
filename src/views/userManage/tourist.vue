@@ -38,7 +38,7 @@
             </a-col>
             <a-col :md="btnBol ? 24:8" :sm="24" :lg="btnBol ? 24:8">
               <div class="btns">
-                <a-button class="btn1" type="primary" @click="search"
+                <a-button class="btn1" type="primary" @click="toSearch"
                   >查询</a-button
                 >
                 <a-button @click="reset">重置</a-button>
@@ -204,7 +204,7 @@ export default {
     toggle () {
       this.btnBol = !this.btnBol
     },
-    search () {
+    toSearch () {
       this.pagination.currentPage = 1
       this.getData()
     },
