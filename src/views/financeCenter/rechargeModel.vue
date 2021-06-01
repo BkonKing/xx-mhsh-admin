@@ -66,7 +66,7 @@ v-if="recharge_type === 1"
 <script>
 import shortNoteModel from './shortNoteModel.vue'
 import payChannelModel from './payChannelModel'
-import { addRecharge } from '@/api/financeCenter.js'
+import { addRecharge, getSmsUseInfo } from '@/api/financeCenter.js'
 // 四舍五入保留2位小数
 function keepTwoDecimalFull (num) {
   var result = parseFloat(num)
@@ -139,6 +139,12 @@ export default {
   },
 
   methods: {
+    async getInfo () {
+      const res2 = await getSmsUseInfo()
+      this.smsUseInfo = res2.data
+      // window.localStorage.setItem('smsUseInfo', JSON.stringify(res2.data))
+      console.log('短信使用信息', res2)
+    },
     // 判断充值额度是否大于100
     ismore100 () {
       if (this.rechargeMoney < 100) {
@@ -220,10 +226,11 @@ export default {
     }
   },
   created () {
-    this.smsUseInfo =
-      JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
-  },
-  mounted () {}
+    this.getInfo()
+    // this.smsUseInfo =
+    //   JSON.parse(window.localStorage.getItem('smsUseInfo')) || {}
+  }
+
 }
 </script>
 
