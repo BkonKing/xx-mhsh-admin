@@ -20,7 +20,7 @@ ref="form"
           <div class="title">建议尺寸200*200;大小不超过2MB</div>
           <a-upload
           multiple
-                  name="avatar"
+                 name="avatar"
                     list-type="picture-card"
                     class="avatar-uploader"
                     :show-upload-list="false"

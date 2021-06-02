@@ -216,16 +216,27 @@
               </div>
             </template>
             <template slot="opera" slot-scope="text, record">
-              <div>
+              <div class="btn">
                 <a-button
                   type="link"
                   @click="check(record)"
                   v-if="record.is_check === 0"
                   >审核</a-button
                 >
-                <a-button type="link" @click="lookOver(record)" v-else
-                  >查看</a-button
+                <div class="otherBtn" v-else >
+                  <a-button type="link" @click="lookOver(record)"
+                    >查看</a-button
+                  >
+                  <a-button type="link" @click="edit(record)">编辑</a-button>
+                </div>
+                <a-popconfirm
+                  title="你确定要删除该提问吗?"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="confirm(record.id)"
                 >
+                  <a-button type="link">删除</a-button>
+                </a-popconfirm>
               </div>
             </template>
           </a-table>
@@ -256,6 +267,7 @@
       ref="askBatchCheck"
       :selectedRowKeys="selectedRowKeys"
     ></askBatchCheck>
+    <askEditModel ref="askEditModel"></askEditModel>
   </div>
 </template>
 
@@ -264,12 +276,18 @@ import moment from 'moment'
 import askCheckModel from './askCheckModel'
 import askLookOverModel from './askLookOverModel'
 import askBatchCheck from './askBatchCheck'
-import { toGetQuestionList, toGetProject } from '@/api/taskCentre'
+import askEditModel from './askEditModel'
+import {
+  toGetQuestionList,
+  toGetProject,
+  toDelQuestion
+} from '@/api/taskCentre'
 export default {
   components: {
     askCheckModel,
     askLookOverModel,
-    askBatchCheck
+    askBatchCheck,
+    askEditModel
   },
   data () {
     return {
@@ -287,20 +305,20 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '10%'
+          width: '6%'
         },
         {
           title: '审核时间',
           dataIndex: 'check_time_desc',
           key: 'check_time_desc',
-          width: '6%',
+          width: '10%',
           scopedSlots: { customRender: 'check_time_desc' }
         },
         {
           title: '审核状态',
           dataIndex: 'check_status',
           key: 'check_status',
-          width: '10%'
+          width: '8%'
         },
         {
           title: '类型',
@@ -350,7 +368,7 @@ export default {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-          width: '10%',
+          width: '12%',
           scopedSlots: { customRender: 'opera' }
         }
       ],
@@ -378,6 +396,20 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+    // 编辑
+    edit (record) {
+      console.log(record)
+      this.$refs.askEditModel.isShow = true
+      this.$refs.askEditModel.info = JSON.parse(JSON.stringify(record))
+    },
+    // 删除提问
+    async confirm (id) {
+      console.log(id)
+      await toDelQuestion({ id: +id })
+      this.$message.success('删除成功')
+      this.getData()
+    },
+
     // 跳转到投诉列表
     openComplaint (record) {
       if (record.complaint_total > 0) {
@@ -619,6 +651,10 @@ export default {
           // margin-right: 300px;
         }
       }
+    }
+    .btn {
+      white-space: nowrap;
+      display: flex;
     }
   }
   /deep/ .ant-card-body {

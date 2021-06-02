@@ -60,7 +60,8 @@ const taskCentreApi = {
   taskCode: '/linli/task/taskCode',
   optTask: '/linli/task/optTask',
   violationReason: '/linli/common/violationReason',
-  eliminate: '/linli/task/eliminate'
+  eliminate: '/linli/task/eliminate',
+  delQuestion: '/linli/question/delQuestion'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -545,6 +546,15 @@ export function toViolationReason (data) {
 export function toEliminate (data) {
   return request({
     url: taskCentreApi.eliminate,
+    method: 'post',
+    data
+  })
+}
+
+// 提问-删除问题
+export function toDelQuestion (data) {
+  return request({
+    url: taskCentreApi.delQuestion,
     method: 'post',
     data
   })
