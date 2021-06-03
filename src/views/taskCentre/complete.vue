@@ -243,10 +243,6 @@
               <img preview="0" :src="item" alt="" />
             </div>
           </div>
-          <!-- 预览图片 -->
-          <!-- <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-        <img alt="example" style="width: 100%" :src="previewImage" />
-      </a-modal> -->
         </div>
       </a-card>
       <a-card class="card3">
@@ -305,190 +301,10 @@
             提问
           </div>
         </div>
-        <div class="form">
-          <div class="table-page-search-wrapper">
-            <a-form-model layout="inline">
-              <a-row :gutter="48">
-                <a-col :md="8" :sm="24">
-                  <a-form-model-item label="进度状态">
-                    <a-select placeholder="请选择" v-model="status">
-                      <a-select-option
-                        v-for="(item, index) in processStatusList"
-                        :key="index"
-                        :value="item.value"
-                      >
-                        {{ item.text }}
-                      </a-select-option>
-                    </a-select>
-                  </a-form-model-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-model-item label="接单方">
-                    <a-input
-                      v-model="user_search"
-                      placeholder="手机号、用户昵称/ID"
-                    ></a-input>
-                  </a-form-model-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-model-item label="所属项目" v-if="!card4Bol">
-                    <a-select placeholder="请选择" v-model="project_id">
-                      <a-select-option
-                        v-for="(item, index) in projectList"
-                        :key="index"
-                        :value="item.id"
-                      >
-                        {{ item.project_name }}
-                      </a-select-option>
-                    </a-select>
-                  </a-form-model-item>
-                  <div class="btns" v-else>
-                    <a-button type="primary" @click="search1">查询</a-button>
-                    <a-button @click="reset1">重置</a-button>
-                    <a-button type="link" @click="open2"
-                      >展开 <a-icon type="down"
-                    /></a-button>
-                  </div>
-                </a-col>
-              </a-row>
-              <div class="btns" v-if="!card4Bol">
-                <a-button type="primary" @click="search1">查询</a-button>
-                <a-button @click="reset1">重置</a-button>
-                <a-button type="link" @click="close2"
-                  >收起 <a-icon type="up"
-                /></a-button>
-              </div>
-            </a-form-model>
-          </div>
-        </div>
-        <div class="content">
-          <div class="btns" v-if="buttonStatus != ''">
-            <a-button v-if="buttonStatus.button_shelf === 1" @click="soldOut(1)"
-              >下架任务</a-button
-            >
-            <a-button
-              v-if="buttonStatus.button_termination === 1"
-              @click="terminate(2)"
-              >终止任务</a-button
-            >
-            <a-button v-if="buttonStatus.button_stop === 1" @click="stop(3)"
-              >停止接单</a-button
-            >
-            <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
-            <a-dropdown>
-              <a-menu slot="overlay" @click="handleMenuClick">
-                <a-menu-item key="1">
-                  淘汰
-                </a-menu-item>
-                <a-menu-item key="2">
-                  强制奖励
-                </a-menu-item>
-              </a-menu>
-              <a-button> 批量操作 <a-icon type="down" /> </a-button>
-            </a-dropdown>
-          </div>
-          <div class="selected" v-if="selectedRowKeys.length > 0">
-            <a-icon class="icon" type="info-circle" />
-            已选择 <span class="span1">{{ selectedRowKeys.length }}</span> 项
-            <span class="span2" @click="clear">清空</span>
-          </div>
-          <div class="table">
-            <a-table
-              rowKey="uid"
-              :row-selection="{
-                selectedRowKeys: selectedRowKeys,
-                onChange: onSelectChange
-              }"
-              :columns="columns"
-              :data-source="taskSpeedList"
-              :pagination="false"
-              @change="tableChange1"
-            >
-              <template slot="progress_desc" slot-scope="progress_desc">
-                <div
-                  :style="{ color: progress_desc === '暂停中' ? 'red' : '' }"
-                >
-                  {{ progress_desc }}
-                </div>
-              </template>
-              <template slot="user" slot-scope="text, record">
-                <div class="takeOrderSide">
-                  <div class="t1">{{ record.user }}</div>
-                  <div class="t2">{{ record.project }}</div>
-                </div>
-              </template>
-              <template slot="complaint_total" slot-scope="text, record">
-                <div
-                  :style="{
-                    cursor: 'pointer',
-                    color: record.complaint_total > 0 ? '#1890FF' : ''
-                  }"
-                  @click="openComplaint(record)"
-                >
-                  {{ record.complaint_total }}
-                </div>
-              </template>
-              <template slot="evaluate" slot-scope="text, record">
-                <span
-                  v-if="record.evaluate != 0"
-                  style="color:#1890FF;cursor: pointer;"
-                  @click="openAppraise(record.evaluate_id)"
-                  >{{ record.evaluate }}星</span
-                >
-              </template>
-              <template slot="progress_content" slot-scope="text, record">
-                <div class="progress_content">
-                  <div class="t1">{{ record.progress_title }}</div>
-                  <div class="t2">
-                    {{ record.progress_content }}
-                  </div>
-                </div>
-              </template>
-              <template slot="opera" slot-scope="text, record">
-                <div class="btns">
-                  <a-button type="link" @click="check(record.uid)"
-                    >查看</a-button
-                  >
-                  <a-button
-                    type="link"
-                    @click="award(record)"
-                    v-if="record.button === 1"
-                    >奖励</a-button
-                  >
-                  <a-popconfirm
-                    v-if="record.button === 2"
-                    title="你确定要淘汰这个用户吗?"
-                    ok-text="确定"
-                    cancel-text="取消"
-                    @confirm="confirm(record.uid)"
-                    @cancel="cancel"
-                  >
-                    <a-button type="link">淘汰</a-button>
-                  </a-popconfirm>
-                </div>
-              </template>
-            </a-table>
-          </div>
-          <div class="pagination">
-            <!-- :default-current="pagination.currentPage" -->
-            <a-pagination
-              v-model="pagination.currentPage"
-              show-quick-jumper
-              show-size-changer
-              :page-size-options="pagination.sizes"
-              :total="pagination.total"
-              :page-size.sync="pagination.pageSize"
-              :show-total="
-                (total, range) =>
-                  `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                    total / pagination.pageSize
-                  )}页`
-              "
-              @change="onChange"
-              @showSizeChange="sizeChange"
-            />
-          </div>
-        </div>
+        <taskProgress @changeTab='selectCard4Title' v-if="currentIndex===''" :id='id' :taskDetailInfo="taskDetailInfo" @getTaskSpeedData='getTaskSpeedData' @getTaskLog='getTaskLog'></taskProgress>
+        <complainTable v-else-if="currentIndex===1" :task_id='id'></complainTable>
+        <evaluateTable v-else-if="currentIndex===2" :task_id='id'></evaluateTable>
+        <askQuestionTable v-else :task_id='id'></askQuestionTable>
       </a-card>
       <a-card class="card5" v-if="taskDetailInfo.check_list.length > 0">
         <div class="title">
@@ -621,45 +437,31 @@
         </div>
       </a-card>
     </div>
-    <checkModel :id="id" ref="checkModel"></checkModel>
-    <awardModel
-      :selectedRowKeys="selectedRowKeys"
-      :taskDetailInfo="taskDetailInfo"
-      :id="id"
-      ref="awardModel"
-    ></awardModel>
-    <appraiseModel ref="appraiseModel"></appraiseModel>
-    <weedOutModel
-      ref="weedOutModel"
-      :selectedRowKeys="selectedRowKeys"
-      :id="id"
-    ></weedOutModel>
+
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import checkModel from './checkModel'
-import awardModel from './awardModel'
-import appraiseModel from './appraiseModel'
-import weedOutModel from './weedOutModel'
+import taskProgress from './components/taskProgress'
+import complainTable from './components/complainTable'
+import evaluateTable from './components/evaluateTable'
+import askQuestionTable from './components/askQuestionTable'
 import {
   getTaskDetail,
   toGetTaskSpeed,
   toGetProcessStatus,
   toGetProject,
-  toGetButtonStatus,
   toTaskCode,
   toOptTask,
-  toGetLog,
-  toEliminate
+  toGetLog
 } from '@/api/taskCentre'
 export default {
   components: {
-    checkModel,
-    awardModel,
-    appraiseModel,
-    weedOutModel
+    complainTable,
+    taskProgress,
+    evaluateTable,
+    askQuestionTable
   },
   data () {
     return {
@@ -672,80 +474,7 @@ export default {
       // titleArr: ['任务进度', '投诉', '评价', '提问'],
       currentIndex: '',
       card4Bol: false,
-      taskSpeedList: [], // 任务流水列表
-      columns: [
-        // 表格一数据
-        {
-          title: '进度ID',
-          dataIndex: 'id',
-          key: 'id',
-          width: '10%'
-          // scopedSlots: { customRender: 'name' }
-        },
-        {
-          title: '进度状态',
-          dataIndex: 'progress_desc',
-          key: 'progress_desc',
-          scopedSlots: { customRender: 'progress_desc' },
-          width: '10%'
-        },
-        {
-          title: '接单方',
-          dataIndex: 'user',
-          key: 'user',
-          scopedSlots: { customRender: 'user' },
-          width: '10%'
-        },
-        {
-          title: '手机号',
-          dataIndex: 'mobile',
-          key: 'mobile',
-          width: '10%'
-        },
-        {
-          title: '奖励(币)',
-          dataIndex: 'reward_happiness',
-          key: 'reward_happiness',
-          width: '10%',
-          sorter: true
-        },
-        {
-          title: '投诉',
-          dataIndex: 'complaint_total',
-          key: 'complaint_total',
-          width: '10%',
-          scopedSlots: { customRender: 'complaint_total' }
-        },
-        {
-          title: '评价',
-          dataIndex: 'evaluate ',
-          key: 'evaluate ',
-          width: '10%',
-          sorter: true,
-          scopedSlots: { customRender: 'evaluate' }
-        },
-        {
-          title: '最新进度',
-          dataIndex: 'progress_content',
-          key: 'progress_content',
-          width: '10%',
-          scopedSlots: { customRender: 'progress_content' }
-        },
-        {
-          title: '接单时间',
-          dataIndex: 'ctime',
-          key: 'ctime',
-          width: '10%',
-          sorter: true
-        },
-        {
-          title: '操作',
-          dataIndex: 'opera',
-          key: 'opera',
-          width: '10%',
-          scopedSlots: { customRender: 'opera' }
-        }
-      ],
+
       selectedRowKeys: [], // 表格复选框数组
       pagination: {
         // 任务流水列表页码
@@ -823,6 +552,7 @@ export default {
   },
   mounted () {
     this.$previewRefresh()
+
     // 设置文本超出隐藏
     document.querySelector('#taskExplain').style.display = '-webkit-box'
     document.querySelector('#taskExplain').style.webkitBoxOrient = 'vertical'
@@ -830,14 +560,7 @@ export default {
     document.querySelector('#taskExplain').style.overflow = 'hidden'
   },
   methods: {
-    // 获取按钮状态
-    async getButtonInfo () {
-      const res4 = await toGetButtonStatus({
-        task_id: +this.id
-      })
-      this.buttonStatus = res4.data
-      // console.log('任务详情-按钮状态控制', res4)
-    },
+
     // 获取任务详情
     getTaskDetailInfo () {
       getTaskDetail({ id: +this.id }).then(res => {
@@ -863,15 +586,15 @@ export default {
         window.open(`/zht/task/task/getTaskGroup?id=${this.taskDetailInfo.group_id}`, '_blank')
       }
     },
-    // 跳转到投诉列表
-    openComplaint (record) {
-      if (record.complaint_total > 0) {
-        this.currentIndex = 1
-        this.$router.push(
-          `/taskCentre/complain?task_id=${this.id}&uid=${record.uid}`
-        )
-      }
-    },
+    // // 跳转到投诉列表
+    // openComplaint (record) {
+    //   if (record.complaint_total > 0) {
+    //     this.currentIndex = 1
+    //     this.$router.push(
+    //       `/taskCentre/complain?task_id=${this.id}&uid=${record.uid}`
+    //     )
+    //   }
+    // },
     // 批量淘汰 / 奖励
     handleMenuClick (e) {
       if (this.selectedRowKeys.length == 0) {
@@ -1057,43 +780,7 @@ export default {
     clear () {
       this.selectedRowKeys = []
     },
-    // 任务流水页码改变事件
-    onChange (page, size) {
-      // console.log('Page: ', page)
-      this.pagination.currentPage = page
-      this.getTaskSpeedData()
-    },
-    // 任务流水页容量改变事件
-    sizeChange (current, size) {
-      // console.log('size: ', size)
-      this.pagination.currentPage = 1
-      this.pagination.pageSize = size
-      this.getTaskSpeedData()
-    },
-    // 淘汰 确定
-    async confirm (uid) {
-      const arr = []
-      arr.push(uid)
-      await toEliminate({
-        ids: arr,
-        task_id: this.id
-      })
-      this.getTaskSpeedData()
-      this.getTaskLog()
-      this.$message.success('处理成功')
-    },
-    // 淘汰 取消
-    cancel (e) {
-      console.log(e)
-      // this.$message.error('Click on No')
-    },
-    // 用户流水表格复选框选择事件
-    onSelectChange (selectedRowKeys, selectedRows) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys)
-      console.log('selectedRows', selectedRows)
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
-    },
+
     // 展开2
     open2 () {
       document.querySelector('.card4 .form').style.height = '116px'
@@ -1108,11 +795,11 @@ export default {
     selectCard4Title (type) {
       this.currentIndex = type
       if (type === 1) {
-        this.$router.push('/taskCentre/complain?task_id=' + this.id)
+        // this.$router.push('/taskCentre/complain?task_id=' + this.id)
       } else if (type === 2) {
-        this.$router.push('/taskCentre/evaluate?task_id=' + this.id)
+        // this.$router.push('/taskCentre/evaluate?task_id=' + this.id)
       } else if (type === 3) {
-        this.$router.push('/taskCentre/askQuestion?task_id=' + this.id)
+        // this.$router.push('/taskCentre/askQuestion?task_id=' + this.id)
       }
     },
     // 任务说明收起

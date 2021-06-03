@@ -10,6 +10,10 @@
         <div class="description">
           <div class="t1">{{item.progress_title}}</div>
           <div class="t2">{{item.content}}</div>
+          <div class="t3" style="color:#1890FF;cursor: pointer;" v-if="item.image_count>0" @click="openImg(item.image_arr)">
+              图片{{item.image_count}}张
+          </div>
+
         </div>
       </template>
       </a-step>
@@ -26,6 +30,16 @@ export default {
       isShow: false,
       uid: '',
       userprocessList: []
+
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    openImg (arr) {
+      this.$viewerApi({
+        images: arr
+      })
     }
   },
   watch: {

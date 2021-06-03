@@ -34,7 +34,7 @@ export default {
       })
       this.$message.success('处理成功')
       this.$parent.getTaskSpeedData()
-      this.$parent.getTaskLog()
+      this.$listeners.getTaskLog()
       this.$parent.selectedRowKeys = []
       this.isShow = false
     }

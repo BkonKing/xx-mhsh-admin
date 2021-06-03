@@ -71,7 +71,7 @@ export default {
           this.isShow = false
         } else if (+res.code === 200) {
           this.$parent.getTaskSpeedData()
-          this.$parent.getTaskLog()
+          this.$listeners.getTaskLog()
           this.$parent.selectedRowKeys = []
           this.$message.success('处理成功')
           this.isShow = false
@@ -89,7 +89,7 @@ export default {
         } else if (+res.code === 200) {
           this.$parent.selectedRowKeys = []
           this.$parent.getTaskSpeedData()
-          this.$parent.getTaskLog()
+          this.$listeners.getTaskLog()
           this.$message.success('处理成功')
           this.isShow = false
         }

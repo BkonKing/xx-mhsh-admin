@@ -1,10 +1,8 @@
 <template>
-  <div class="evaluate">
-    <page-header-wrapper></page-header-wrapper>
-<div class="cardContent">
-      <a-card class="card" ref="card">
+    <div class="evaluateTable">
+     <div class="form">
       <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
+           <a-form-model layout="inline">
           <a-row :gutter="36">
             <a-col :md="8" :sm="24">
               <a-form-model-item label="评星">
@@ -136,9 +134,10 @@
           </a-row>
         </a-form-model>
       </div>
-    </a-card>
-    <a-card class="card2">
-      <a-table
+    </div>
+    <div class="content">
+      <div class="table">
+       <a-table
         rowKey="id"
         :row-selection="{
           selectedRowKeys: selectedRowKeys,
@@ -168,7 +167,8 @@
           </div>
         </template>
       </a-table>
-      <div class="pagination">
+      </div>
+        <div class="pagination">
         <a-pagination
           show-quick-jumper
           show-size-changer
@@ -186,17 +186,17 @@
           @showSizeChange="sizeChange"
         />
       </div>
-    </a-card>
-</div>
-    <appraiseModel ref="appraiseModel"></appraiseModel>
+    </div>
+ <appraiseModel ref="appraiseModel"></appraiseModel>
   </div>
 </template>
 
 <script>
+import { toEvaluateList, toGetProject, toGetList } from '@/api/taskCentre'
 import moment from 'moment'
-import appraiseModel from './appraiseModel'
-import { toGetList, toEvaluateList, toGetProject } from '@/api/taskCentre'
+import appraiseModel from '../appraiseModel'
 export default {
+  props: ['task_id'],
   components: {
     appraiseModel
   },
@@ -278,7 +278,6 @@ export default {
       tagList: [], // 标签下拉列表
       projectList: [],
       evaluateTime: [],
-      task_id: '', // 任务id
       order_field: '',
       sort_value: ''
     }
@@ -338,11 +337,11 @@ export default {
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
-      console.log('获取评价列表', res)
+      // console.log('获取评价列表', res)
     },
     // 查看
     lookOver (record) {
-      console.log('record', record)
+      // console.log('record', record)
       this.$refs.appraiseModel.id = record.id
       this.$refs.appraiseModel.isShow = true
     },
@@ -375,7 +374,6 @@ export default {
     }
   },
   async created () {
-    this.task_id = this.$route.query.task_id
     if (this.task_id != '') {
       this.getData()
     } else {
@@ -393,14 +391,26 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-/deep/ .ant-form .ant-btn-link {
-  padding: 0;
-}
-.evaluate {
-  .cardContent{
-    padding: 0 20px;
-  }
+<style lang='less' scoped>
+.evaluateTable{
+    margin-top: 20px;
+     margin-top: 20px;
+    /deep/ .ant-form-item-label {
+      min-width: 88px;
+    }
+    .piker-time {
+      width: 100% !important;
+    }
+    .complaintItem {
+      display: flex;
+      .select {
+        max-width: 82px;
+      }
+      .input {
+        flex: 1;
+        margin-left: 10px;
+      }
+    }
   .btns {
     padding-bottom: 20px;
     text-align: right;
@@ -408,40 +418,93 @@ export default {
       margin-left: 10px;
     }
   }
-  .card {
-    margin-top: 20px;
-    /deep/ .ant-form-item-label {
-      min-width: 88px;
+  .top {
+    display: flex;
+    height: 51px;
+    line-height: 51px;
+    padding: 0 15px;
+    border-bottom: 1px solid rgba(233, 233, 233, 1);
+    .item {
+      padding: 0 10px;
+      margin: 0 15px;
+      cursor: pointer;
     }
-    .piker-time {
-      width: 100% !important;
-    }
-    /deep/ .ant-card-body {
-      padding-bottom: 0;
-    }
-    .evaUser {
-      display: flex;
-      .select {
-        max-width: 82px;
-        // width: 82px !important;
-        margin-right: 10px;
-      }
-      // .phoneInput{
-      //   flex: 1;
-      // }
+    .active {
+      color: #1890ff;
+      border-bottom: 2px solid #1890ff;
     }
   }
-  .card2 {
-    margin-top: 20px;
+  .form {
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    .btns {
+      text-align: right;
+      button {
+        margin-right: 10px;
+      }
+    }
+  }
+  .content {
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    .btns2 {
+      button {
+        margin-right: 10px;
+      }
+    }
+    .selected {
+      margin-top: 10px;
+      width: 100%;
+      height: 40px;
+      padding-left: 15px;
+      line-height: 40px;
+      background-color: rgba(230, 247, 255, 1);
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgba(186, 231, 255, 1);
+      border-radius: 4px;
+      .icon {
+        color: #0e77d1;
+        margin-right: 10px;
+      }
+      .span1 {
+        color: #0e77d1;
+      }
+      .span2 {
+        cursor: pointer;
+        color: #0e77d1;
+        margin-left: 10px;
+      }
+    }
+    .table {
+      margin-top: 20px;
+      .takeOrderSide {
+        .t2 {
+          color: rgba(0, 0, 0, 0.349019607843137);
+        }
+      }
+      .progress_content {
+        .t1 {
+          white-space: nowrap;
+        }
+      }
+      .btns {
+        white-space: nowrap;
+      }
+    }
     .pagination {
       margin-top: 10px;
       /deep/ .ant-pagination {
         padding-top: 10px;
-        // padding-bottom: 20px;
+        padding-bottom: 20px;
         text-align: right;
       }
       /deep/ .ant-pagination-total-text {
         float: left;
+        // margin-left: 20px;
+        // margin-right: 300px;
       }
     }
   }

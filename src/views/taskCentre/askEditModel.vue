@@ -177,23 +177,29 @@ export default {
         console.log('提问-查看详情', res)
         this.lookOverInfo = res.data
         this.form.is_check = +res.data.is_check
-        this.$set(this.form, 'violation_type', res.data.violation_type)
+        this.$set(this.form, 'violation_type', res.data.violation_type + '')
         this.form.check_desc = res.data.check_desc
-        this.fileList = res.data.check_image ? res.data.check_image : []
-        console.log('是否通过', this.form.is_check)
-        console.log('违规原因', this.form.violation_type)
-        console.log('审核说明', this.form.check_desc)
-        console.log('图片', this.fileList)
+        if (res.data.check_image.length > 0) {
+          this.fileList2 = res.data.check_image.length
+          this.fileList = res.data.check_image.map(item => {
+            return {
+              uid: Math.random() * 999,
+              name: 'image.png',
+              status: 'done',
+              url: item
+            }
+          })
+        }
       },
       deep: true
-    },
-    'form.is_check' () {
-      // console.log('改变了')
-      this.form.check_desc = ''
-      this.form.violation_type = undefined
-      this.fileList2 = []
-      this.fileList = []
     }
+    // 'form.is_check' () {
+    //   // console.log('改变了')
+    //   this.form.check_desc = ''
+    //   this.form.violation_type = undefined
+    //   this.fileList2 = []
+    //   this.fileList = []
+    // }
   },
   methods: {
     // 打开任务详情
@@ -213,7 +219,7 @@ export default {
             check_image: this.fileList2,
             violation_type: this.form.violation_type
           })
-          this.$message.success('审核成功')
+          this.$message.success('编辑成功')
           this.$parent.getData()
           this.isShow = false
           // console.log('确定', res)
