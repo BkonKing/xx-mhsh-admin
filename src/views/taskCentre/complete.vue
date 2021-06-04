@@ -652,7 +652,7 @@ export default {
         this.$message.success('下架成功')
       }
       this.getTaskDetailInfo()
-      this.getButtonInfo()
+      // this.getButtonInfo()
       // console.log('下架任务', res)
     },
     // 终止任务
@@ -667,7 +667,7 @@ export default {
         this.$message.success('终止成功')
       }
       this.getTaskDetailInfo()
-      this.getButtonInfo()
+      // this.getButtonInfo()
     },
     // 停止接单
     async stop (type) {
@@ -681,7 +681,7 @@ export default {
         this.$message.success('停止成功')
       }
       this.getTaskDetailInfo()
-      this.getButtonInfo()
+      // this.getButtonInfo()
       // console.log('停止接单', res)
     },
     // 任务流水排序
@@ -819,7 +819,7 @@ export default {
     this.getTaskLog()
     if (this.id !== '') {
       this.getTaskDetailInfo()
-      this.getButtonInfo()
+      // this.getButtonInfo()
 
       const res5 = await toTaskCode({
         task_id: this.id
