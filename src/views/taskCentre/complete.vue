@@ -816,15 +816,16 @@ export default {
   async created () {
     this.id = this.$route.query.id
     this.getTaskSpeedData()
+    this.getTaskLog()
     if (this.id !== '') {
       this.getTaskDetailInfo()
       this.getButtonInfo()
+
       const res5 = await toTaskCode({
         task_id: this.id
       })
       this.taskMa = res5.data.img_url
       // console.log('任务二维码', res5)
-      this.getTaskLog()
     }
     const res2 = await toGetProcessStatus()
     this.processStatusList = res2.list
