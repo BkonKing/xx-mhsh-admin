@@ -552,6 +552,10 @@ export default {
   },
   async created () {
     this.task_id = this.$route.query.task_id
+    if (this.$route.query.toCheck) {
+      this.currentIndex = 2
+      this.changeTab(2)
+    }
     if (this.task_id != '') {
       this.getData()
     } else {

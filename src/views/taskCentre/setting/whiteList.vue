@@ -227,11 +227,11 @@ export default {
       ],
       selectedRowKeys: [],
       projectList: [], // 所有项目
-      user_search: '', //	否	string	用户搜索
-      is_register: undefined, //	否	int	is_register 0未注册 1已注册
-      project_id: undefined, //	否	int	用户所属项目
-      order_field: '', //	否	string	排序字段user_task任务数 register_time注册时间 ctime添加时间
-      sort_value: '' //	否	string	排序值 desc 降序 asc 降序
+      user_search: '', // 否string用户搜索
+      is_register: undefined, // 否intis_register 0未注册 1已注册
+      project_id: undefined, // 否int用户所属项目
+      order_field: '', // 否string排序字段user_task任务数 register_time注册时间 ctime添加时间
+      sort_value: '' // 否string排序值 desc 降序 asc 降序
     }
   },
   mounted () {

@@ -508,8 +508,13 @@ export default {
     }
   },
   async created () {
+    if (this.$route.query.toCheck) {
+      this.currentIndex = 0
+      this.changeTab(0)
+    }
     this.task_id = this.$route.query.task_id
     this.jump_uid = this.$route.query.uid
+
     if (this.task_id != '' || this.jump_uid != '') {
       this.getData()
     } else {

@@ -596,6 +596,9 @@ export default {
   },
   async created () {
     // console.log('this.options', this.options)
+    if (this.$route.query.toCheck) {
+      this.currentIndex = 0
+    }
     this.getData()
     // 任务-获取任务状态
     const res = await toGetCommonTaskStatus()
