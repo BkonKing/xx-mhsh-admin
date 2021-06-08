@@ -5,7 +5,7 @@
         <a-icon class="icon" type="exclamation-circle" /> <span>删除任务群</span>
       </div>
       <div class="t2">
-        <span >将解散群成员</span>,
+        <span >将解散群成员</span>，
         <span>你还要继续吗？</span>
       </div>
       <div class="btns">
@@ -46,11 +46,14 @@ export default {
 </script>
 
 <style lang='less' scoped>
+/deep/.ant-modal-body {
+    padding: 32px 32px 24px;
+}
 .t1{
   display: flex;
   align-items: center;
   .icon{
-  font-size: 24px;
+  font-size: 22px;
   color: #faad14;
 
 }
@@ -59,23 +62,27 @@ span{
     font-family: 'Microsoft Tai Le Bold', 'Microsoft Tai Le Regular', 'Microsoft Tai Le';
     font-weight: 700;
     font-style: normal;
-    font-size: 18px;
+    font-size: 14px;
     color: rgba(0, 0, 0, 0.647058823529412);
 }
 }
 .t2{
   margin-left: 42px;
   margin-top: 10px;
-  font-size: 18px;
+  font-size: 14px;
   span:nth-child(1){
       color: #F04134;
   }
 }
 .btns{
-  margin-top: 10px;
-  margin-left: 192px;
+  margin-top: 24px;
+  // margin-left: 192px;
+  text-align: right;
   button{
     margin-right: 10px;
+    &:last-child{
+      margin-right: 0;
+    }
   }
 }
 /deep/ .ant-modal-content{
