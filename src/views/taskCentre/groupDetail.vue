@@ -22,7 +22,7 @@
             <a-col :span="8">
               <div class="item">
                 <span>群主：</span>
-                <span style="color:#1890ff;marginRight:10px">{{
+                <span style="color:#1890ff;marginRight:10px;cursor: pointer;" @click="openUserDetail">{{
                   baseInfo.owner_name
                 }}</span>
                 <span style="color:#1890ff">{{ baseInfo.group_mobile }}</span>
@@ -144,7 +144,7 @@
             /></a-button>
             <a-dropdown>
               <a-menu slot="overlay" @click="handleMenuClick">
-                <a-menu-item key="1">
+                <a-menu-item key="1" >
                   批量删除
                 </a-menu-item>
               </a-menu>
@@ -521,9 +521,14 @@ export default {
     }
   },
   methods: {
+    // 新窗口打开用户详情
+    openUserDetail () {
+      window.open(`/zht/user/user/getUserList?uid=${this.baseInfo.group_ownerid}`, '_blank')
+    },
     // 批量操作
     async handleMenuClick () {
       if (this.selectedRowKeys.length === 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       await toDelGroupUser({

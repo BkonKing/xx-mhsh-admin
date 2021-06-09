@@ -22,8 +22,8 @@
         <a
           :href="
             mode === 'whiteUser'
-              ? 'http://develop.mhshjy.com/library/mb/mb_whitelist.xlsx'
-              : 'http://develop.mhshjy.com/library/mb/mb_group.xlsx'
+              ? 'https://test.tosolomo.com/library/mb/mb_whitelist.xlsx'
+              : 'https://test.tosolomo.com/library/mb/mb_group.xlsx'
           "
           style="color:rgba(0, 0, 0, 0.647058823529412)"
           >下载模板</a

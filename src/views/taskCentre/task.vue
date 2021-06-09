@@ -391,6 +391,7 @@ export default {
           dataIndex: 'task_title',
           key: 'task_title',
           width: '8.333333333%'
+          // ellipsis: true
         },
         {
           title: '奖励(币)',
@@ -587,6 +588,7 @@ export default {
     // 批量操作
     handleMenuClick (e) {
       if (this.selectedRowKeys.length === 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       if (+e.key === 1) {

@@ -44,8 +44,8 @@
           <a-row>
             <a-col :span="8">
               <div class="item item1">
-                <div class="t1">内容类型：</div>
-                <div class="t2">{{ detailInfo.content_type }}</div>
+                <div class="t1" style="color:color: rgba(0, 0, 0, 0.847058823529412)">内容类型：</div>
+                <div class="t2" style="color:color: rgba(0, 0, 0, 0.647058823529412)">{{ detailInfo.content_type }}</div>
               </div>
             </a-col>
             <a-col :span="8">
@@ -413,6 +413,7 @@ export default {
       padding: 30px 0;
       .item {
         display: flex;
+
       }
       .item1 {
         margin-left: 30px;
@@ -496,6 +497,7 @@ export default {
   }
   .card4 {
     margin-top: 20px;
+
     .title {
       padding-left: 30px;
       font-family: "PingFangSC-Semibold", "PingFang SC Semibold", "PingFang SC";
@@ -527,6 +529,7 @@ export default {
   }
   .card5 {
     margin-top: 20px;
+    padding-bottom: 20px;
     .title {
       padding-left: 30px;
       font-family: "PingFangSC-Semibold", "PingFang SC Semibold", "PingFang SC";

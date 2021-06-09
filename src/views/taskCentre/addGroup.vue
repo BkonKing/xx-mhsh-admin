@@ -1,5 +1,5 @@
 <template>
-   <a-modal v-model="isShow" title="新增/修改群" @ok='submit'>
+   <a-modal v-model="isShow" :title="mode==='add'?'新增':'修改群'" @ok='submit'>
       <a-form-model :model="form" :rules='rules' :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-model-item label="群名称" prop='group_name'>
                 <a-input v-model="form.group_name" :maxLength='10'  :suffix="form.group_name.length+'/10'" />

@@ -72,10 +72,10 @@
         <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
         <a-dropdown>
           <a-menu slot="overlay" @click="handleMenuClick">
-            <a-menu-item key="1">
+            <a-menu-item key="1" >
               淘汰
             </a-menu-item>
-            <a-menu-item key="2">
+            <a-menu-item key="2" >
               强制奖励
             </a-menu-item>
           </a-menu>
@@ -322,8 +322,10 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ]
+
     }
   },
+
   methods: {
     // 获取按钮状态
     async getButtonInfo () {
@@ -407,6 +409,7 @@ export default {
     // 批量淘汰 / 奖励
     handleMenuClick (e) {
       if (this.selectedRowKeys.length == 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       // console.log(e.key)
@@ -563,16 +566,16 @@ export default {
     }
   }
   .content {
-    padding-top: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-top: 24px;
+    padding-left: 32px;
+    padding-right: 32px;
     .btns {
       button {
         margin-right: 10px;
       }
     }
     .selected {
-      margin-top: 10px;
+      margin-top: 16px;
       width: 100%;
       height: 40px;
       padding-left: 15px;
@@ -596,7 +599,7 @@ export default {
       }
     }
     .table {
-      margin-top: 20px;
+      margin-top: 16px;
       .takeOrderSide {
         .t2 {
           color: rgba(0, 0, 0, 0.349019607843137);

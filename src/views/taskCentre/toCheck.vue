@@ -69,7 +69,7 @@
                     >{{ taskDetailInfo.task_number }}
                     <img
                      preview="1"
-                      style="marginLeft:10px;width:20px;height:20;"
+                      style="marginLeft:10px;width:20px;height:20;margin-top: -3px"
                       :src="taskMa"
                       alt=""
                     />
@@ -80,9 +80,12 @@
                   <a-form-model-item label="联系电话">
                     {{ taskDetailInfo.contact_number }}
                   </a-form-model-item>
-                  <a-form-model-item label="可见范围">{{
-                    taskDetailInfo.visible_range
-                  }}</a-form-model-item>
+                  <a-form-model-item label="可见范围"> <span v-if="taskDetailInfo.range_type===0">全部</span>
+                    <span v-else-if="taskDetailInfo.range_type===1">地区</span>
+                    <span v-else-if="taskDetailInfo.range_type===2">小区</span>
+                    <span v-else @click="openGroupDetail" style="cursor: pointer;">群 </span>-<span @click="openGroupDetail" style="cursor: pointer;">
+                      {{  taskDetailInfo.visible_range }}
+                    </span></a-form-model-item>
                 </a-col>
               </a-row>
             </a-form-model>
@@ -303,6 +306,12 @@ export default {
     }
   },
   methods: {
+    // 新窗口打开群详情
+    openGroupDetail () {
+      if (this.taskDetailInfo.group_id) {
+        window.open(`/zht/task/task/getTaskGroup?id=${this.taskDetailInfo.group_id}`, '_blank')
+      }
+    },
     // 确定
     submit () {
       this.$refs.form.validate(async result => {
@@ -393,7 +402,10 @@ export default {
       border-bottom: 1px solid rgba(233, 233, 233, 1);
     }
     .steps {
-      padding: 20px;
+     padding-top: 24px;
+      padding-left: 64px;
+      padding-right: 64px;
+      padding-bottom: 32px;
     }
   }
   .card2 {
@@ -401,7 +413,7 @@ export default {
       min-width: 88px;
     }
     margin-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 32px;
     /deep/ .ant-card-body {
       padding: 0;
     }
@@ -416,6 +428,9 @@ export default {
       color: rgba(0, 0, 0, 0.847058823529412);
       border-bottom: 1px solid rgba(233, 233, 233, 1);
     }
+    .form{
+      margin-top: 14px;
+    }
     /deep/ .ant-form-item {
       margin-bottom: 0;
     }
@@ -423,13 +438,14 @@ export default {
       .explain {
         display: flex;
         margin-top: 10px;
-        margin-left: 17px;
+        margin-left: 32px;
         margin-bottom: 9px;
         .left {
           width: 70px;
         }
         .right {
           flex: 1;
+          padding-right: 32px;
         }
       }
       .imgcon {

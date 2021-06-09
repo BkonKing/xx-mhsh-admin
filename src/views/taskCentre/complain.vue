@@ -332,7 +332,8 @@ export default {
           dataIndex: 'content',
           key: 'content',
           scopedSlots: { customRender: 'content' },
-          width: '10%'
+          width: '10%',
+          ellipsis: true
         },
         {
           title: '投诉类型',

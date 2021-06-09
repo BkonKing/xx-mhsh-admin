@@ -70,7 +70,7 @@
             />
             <a-step
               title="接单"
-              :description="taskDetailInfo.process.process_accept"
+              :description="taskDetailInfo.process.receive_time"
             />
             <a-step
               title="任务完成"
@@ -182,7 +182,7 @@
                     {{ taskDetailInfo.task_project }}
                   </a-form-model-item>
                   <a-form-model-item label="任务标签">
-                    {{ taskDetailInfo.task_tag }}
+                    {{ taskDetailInfo.task_tag ?taskDetailInfo.task_tag :'--'}}
                   </a-form-model-item>
                   <a-form-model-item label="完成地点">{{
                     taskDetailInfo.complete_address
@@ -192,7 +192,7 @@
                   <a-form-model-item label="任务编号">
                     {{ taskDetailInfo.task_number }}
                     <img
-                      style="marginLeft:10px;width:20px;height:20;"
+                      style="marginLeft:8px;width:20px;height:20;margin-top: -3px"
                       preview="1"
                       :src="taskMa"
                       alt=""
@@ -205,8 +205,11 @@
                     taskDetailInfo.contact_number
                   }}</a-form-model-item>
                   <a-form-model-item label="可见范围">
-                    <span @click="openGroupDetail" style="cursor: pointer;">
-                      {{ taskDetailInfo.visible_range }}
+                    <span v-if="taskDetailInfo.range_type===0">全部</span>
+                    <span v-else-if="taskDetailInfo.range_type===1">地区</span>
+                    <span v-else-if="taskDetailInfo.range_type===2">小区</span>
+                    <span v-else @click="openGroupDetail" style="cursor: pointer;">群 </span>-<span @click="openGroupDetail" style="cursor: pointer;">
+                      {{  taskDetailInfo.visible_range }}
                     </span>
                   </a-form-model-item>
                 </a-col>
@@ -578,11 +581,6 @@ export default {
     // 新窗口打开群详情
     openGroupDetail () {
       if (this.taskDetailInfo.group_id) {
-        // const routeData = this.$router.resolve({
-        //   name: 'groupDetail',
-        //   query: { id: this.taskDetailInfo.group_id }
-        // })
-        // window.open(routeData.href, '_blank')
         window.open(`/zht/task/task/getTaskGroup?id=${this.taskDetailInfo.group_id}`, '_blank')
       }
     },
@@ -847,7 +845,7 @@ export default {
     padding: 0;
   }
   .cardContent {
-    padding: 0 20px;
+    padding: 0 24px;
   }
   .card1 {
     margin-top: 20px;
@@ -863,15 +861,25 @@ export default {
       border-bottom: 1px solid rgba(233, 233, 233, 1);
     }
     .steps {
-      padding: 30px;
+
+      padding-top: 24px;
+      padding-left: 64px;
+      padding-right: 64px;
+      padding-bottom: 32px;
     }
   }
   .card2 {
+    /deep/ .ant-form-item{
+      margin-bottom: 0;
+    }
     .hasHidden {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 10;
       overflow: hidden;
+    }
+    .content{
+      margin-top: 14px;
     }
     /deep/ .ant-form-item-label {
       min-width: 88px;
@@ -909,6 +917,7 @@ export default {
     .otherBtn {
       padding: 0 38px;
       text-align: right;
+
     }
     .imgcon {
       display: flex;
@@ -933,8 +942,9 @@ export default {
   }
   .card3 {
     /deep/ .ant-card-body {
-      padding-left: 30px;
-      padding-right: 30px;
+      padding-left: 32px;
+      padding-right: 32px;
+      padding-bottom: 10px;
     }
     margin-top: 20px;
     .ant-col {
@@ -945,7 +955,7 @@ export default {
         border-right: 1px solid rgba(233, 233, 233, 1);
       }
       .t1 {
-        margin-top: 30px;
+        margin-top: 32px;
       }
       .t2 {
         font-size: 24px;
@@ -958,6 +968,7 @@ export default {
       .t3 {
         span {
           padding: 0 10px;
+
         }
       }
     }

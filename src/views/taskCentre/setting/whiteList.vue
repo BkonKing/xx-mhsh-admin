@@ -267,6 +267,7 @@ export default {
     // 批量删除
     async handleMenuClick (e) {
       if (this.selectedRowKeys.length === 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       if (+e.key === 1) {

@@ -100,7 +100,7 @@
             <template slot="owner_name" slot-scope="text, record">
               <div class="groupOwner">
                 <div class="t1">{{ record.owner_name }}</div>
-                <div class="t2">{{ record.project_name }}</div>
+                <div class="t2" style="color:rgba(0, 0, 0, 0.349019607843137);">{{ record.project_name }}</div>
               </div>
             </template>
             <template slot="is_open" slot-scope="text, record">
@@ -284,6 +284,7 @@ export default {
     // 批量操作
     async handleMenuClick (e) {
       if (this.selectedRowKeys.length === 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       if (+e.key === 1) {
