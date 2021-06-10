@@ -332,8 +332,7 @@ export default {
           dataIndex: 'content',
           key: 'content',
           scopedSlots: { customRender: 'content' },
-          width: '10%',
-          ellipsis: true
+          width: '10%'
         },
         {
           title: '投诉类型',
@@ -617,6 +616,15 @@ export default {
     }
     .table {
       margin-top: 20px;
+      .content{
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      }
     }
     .pagination {
       margin-top: 10px;

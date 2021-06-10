@@ -195,6 +195,11 @@
                 {{ +type === 1 ? "提问" : "回复" }}
               </div>
             </template>
+            <template slot="content" slot-scope="content">
+              <div class="content">
+                {{ content }}
+              </div>
+            </template>
             <template slot="owner_name" slot-scope="text, record">
               <div class="issueUser">
                 <div class="t1">{{ record.owner_name }}</div>
@@ -223,7 +228,7 @@
                   v-if="record.is_check === 0"
                   >审核</a-button
                 >
-                <div class="otherBtn" v-else >
+                <div class="otherBtn" v-else>
                   <a-button type="link" @click="lookOver(record)"
                     >查看</a-button
                   >
@@ -331,8 +336,8 @@ export default {
           title: '内容',
           dataIndex: 'content',
           key: 'content',
-          ellipsis: true,
-          width: '13%'
+          width: '13%',
+          scopedSlots: { customRender: 'content' }
         },
         {
           title: '发布用户',
@@ -642,6 +647,15 @@ export default {
     }
     .table {
       margin-top: 20px;
+      .content {
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
       .pagination {
         margin-top: 10px;
         /deep/ .ant-pagination {

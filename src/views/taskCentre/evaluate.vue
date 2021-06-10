@@ -1,193 +1,198 @@
 <template>
   <div class="evaluate">
     <page-header-wrapper></page-header-wrapper>
-<div class="cardContent">
+    <div class="cardContent">
       <a-card class="card" ref="card">
-      <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="36">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="评星">
-                <a-select placeholder="请选择" v-model="evaluate_starts">
-                  <a-select-option value="1">
-                    一星
-                  </a-select-option>
-                  <a-select-option value="2">
-                    二星
-                  </a-select-option>
-                  <a-select-option value="3">
-                    三星
-                  </a-select-option>
-                  <a-select-option value="4">
-                    四星
-                  </a-select-option>
-                  <a-select-option value="5">
-                    五星
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="评价标签">
-                <a-select placeholder="请选择" v-model="evaluate_tag">
-                  <a-select-option
-                    v-for="(item, index) in tagList"
-                    :key="index"
-                    :value="item"
-                  >
-                    {{ item }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="!cardBol">
-              <div class="btns">
-                <a-button type="primary" @click="search">查询</a-button>
-                <a-button @click="reset">重置</a-button>
-                <a-button type="link" @click="open">
-                  展开 <a-icon type="down" />
-                </a-button>
-              </div>
-            </a-col>
-            <template v-if="cardBol">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="36">
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="任务">
-                  <a-input
-                    v-model="task_search"
-                    placeholder="编号、标题"
-                  ></a-input>
+                <a-form-model-item label="评星">
+                  <a-select placeholder="请选择" v-model="evaluate_starts">
+                    <a-select-option value="1">
+                      一星
+                    </a-select-option>
+                    <a-select-option value="2">
+                      二星
+                    </a-select-option>
+                    <a-select-option value="3">
+                      三星
+                    </a-select-option>
+                    <a-select-option value="4">
+                      四星
+                    </a-select-option>
+                    <a-select-option value="5">
+                      五星
+                    </a-select-option>
+                  </a-select>
                 </a-form-model-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-model-item label="评价用户">
-                  <div class="evaUser">
-                    <a-select
-                      class="select"
-                      v-model="user_type"
-                      placeholder="请选择"
+                <a-form-model-item label="评价标签">
+                  <a-select placeholder="请选择" v-model="evaluate_tag">
+                    <a-select-option
+                      v-for="(item, index) in tagList"
+                      :key="index"
+                      :value="item"
                     >
-                      <a-select-option value="1">
-                        用户
-                      </a-select-option>
-                      <a-select-option value="2">
-                        系统
+                      {{ item }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24" v-if="!cardBol">
+                <div class="btns">
+                  <a-button type="primary" @click="search">查询</a-button>
+                  <a-button @click="reset">重置</a-button>
+                  <a-button type="link" @click="open">
+                    展开 <a-icon type="down" />
+                  </a-button>
+                </div>
+              </a-col>
+              <template v-if="cardBol">
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="任务">
+                    <a-input
+                      v-model="task_search"
+                      placeholder="编号、标题"
+                    ></a-input>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="评价用户">
+                    <div class="evaUser">
+                      <a-select
+                        class="select"
+                        v-model="user_type"
+                        placeholder="请选择"
+                      >
+                        <a-select-option value="1">
+                          用户
+                        </a-select-option>
+                        <a-select-option value="2">
+                          系统
+                        </a-select-option>
+                      </a-select>
+                      <a-input
+                        v-model="user_search"
+                        class="phoneInput"
+                        placeholder="手机号、昵称/ID"
+                      ></a-input>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="所属项目">
+                    <a-select v-model="project_id" placeholder="评价用户">
+                      <a-select-option
+                        v-for="item in projectList"
+                        :key="item.id"
+                        :value="item.id"
+                      >
+                        {{ item.project_name }}
                       </a-select-option>
                     </a-select>
-                    <a-input
-                    v-model="user_search"
-                      class="phoneInput"
-                      placeholder="手机号、昵称/ID"
-                    ></a-input>
-                  </div>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="所属项目">
-                  <a-select v-model="project_id" placeholder="评价用户">
-                    <a-select-option
-                      v-for="item in projectList"
-                      :key="item.id"
-                      :value="item.id"
-                    >
-                      {{ item.project_name }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24" v-if="cardBol">
-                <a-form-model-item>
-                  <div class="btns">
-                    <a-button type="primary" @click="search">查询</a-button>
-                    <a-button @click="reset">重置</a-button>
-                    <a-button type="link" @click="close">
-                      收起 <a-icon type="up" />
-                    </a-button>
-                  </div>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="是否有效">
-                  <a-select placeholder="请选择" v-model="is_valid">
-                    <a-select-option value="1">
-                      有效评价
-                    </a-select-option>
-                    <a-select-option value="0">
-                      无效评价
-                    </a-select-option>
-                  </a-select>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="评价时间">
-                  <a-range-picker
-                    v-model="evaluateTime"
-                    class="piker-time"
-                    :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
-                    }"
-                    show-time
-                    format="YYYY-MM-DD HH:mm:ss"
-                    @change="onChange"
-                  />
-                </a-form-model-item>
-              </a-col>
-            </template>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <a-table
-        rowKey="id"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange
-        }"
-        :columns="columns"
-        :data-source="tableData"
-        :pagination="false"
-        @change="tableChange"
-      >
-        <template slot="task_title" slot-scope="task_title">
-          <div class="task" style="color:#1890FF">
-            {{ task_title }}
-          </div>
-        </template>
-        <template slot="owner_name" slot-scope="text,record" >
-          <div class="appraiseUser">
-            <div class="t1">{{record.owner_name}}</div>
-            <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
-              {{record.project_name}}
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24" v-if="cardBol">
+                  <a-form-model-item>
+                    <div class="btns">
+                      <a-button type="primary" @click="search">查询</a-button>
+                      <a-button @click="reset">重置</a-button>
+                      <a-button type="link" @click="close">
+                        收起 <a-icon type="up" />
+                      </a-button>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="是否有效">
+                    <a-select placeholder="请选择" v-model="is_valid">
+                      <a-select-option value="1">
+                        有效评价
+                      </a-select-option>
+                      <a-select-option value="0">
+                        无效评价
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-model-item label="评价时间">
+                    <a-range-picker
+                      v-model="evaluateTime"
+                      class="piker-time"
+                      :ranges="{
+                        Today: [moment(), moment()],
+                        'This Month': [moment(), moment().endOf('month')]
+                      }"
+                      show-time
+                      format="YYYY-MM-DD HH:mm:ss"
+                      @change="onChange"
+                    />
+                  </a-form-model-item>
+                </a-col>
+              </template>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <a-table
+          rowKey="id"
+          :row-selection="{
+            selectedRowKeys: selectedRowKeys,
+            onChange: onSelectChange
+          }"
+          :columns="columns"
+          :data-source="tableData"
+          :pagination="false"
+          @change="tableChange"
+        >
+          <template slot="task_title" slot-scope="task_title">
+            <div class="task_title" style="color:#1890FF">
+              {{ task_title }}
             </div>
-          </div>
-        </template>
-        <template slot="opera" slot-scope="text, record">
-          <div>
-            <a-button type="link" @click="lookOver(record)">查看</a-button>
-          </div>
-        </template>
-      </a-table>
-      <div class="pagination">
-        <a-pagination
-          show-quick-jumper
-          show-size-changer
-          :default-current="pagination.currentPage"
-          :page-size-options="pagination.sizes"
-          :total="pagination.total"
-          :page-size.sync="pagination.pageSize"
-          :show-total="
-            (total, range) =>
-              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                total / pagination.pageSize
-              )}页`
-          "
-          @change="onChangePage"
-          @showSizeChange="sizeChange"
-        />
-      </div>
-    </a-card>
-</div>
+          </template>
+          <template slot="evaluate_supplement" slot-scope="evaluate_supplement">
+            <div class="evaluate_supplement">
+              {{evaluate_supplement}}
+            </div>
+          </template>
+          <template slot="owner_name" slot-scope="text, record">
+            <div class="appraiseUser">
+              <div class="t1">{{ record.owner_name }}</div>
+              <div class="t2" style="color: rgba(0, 0, 0, 0.349019607843137);">
+                {{ record.project_name }}
+              </div>
+            </div>
+          </template>
+          <template slot="opera" slot-scope="text, record">
+            <div>
+              <a-button type="link" @click="lookOver(record)">查看</a-button>
+            </div>
+          </template>
+        </a-table>
+        <div class="pagination">
+          <a-pagination
+            show-quick-jumper
+            show-size-changer
+            :default-current="pagination.currentPage"
+            :page-size-options="pagination.sizes"
+            :total="pagination.total"
+            :page-size.sync="pagination.pageSize"
+            :show-total="
+              (total, range) =>
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
+            "
+            @change="onChangePage"
+            @showSizeChange="sizeChange"
+          />
+        </div>
+      </a-card>
+    </div>
     <appraiseModel ref="appraiseModel"></appraiseModel>
   </div>
 </template>
@@ -249,7 +254,8 @@ export default {
           dataIndex: 'evaluate_supplement',
           key: 'evaluate_supplement',
           width: '12.555555555%',
-          ellipsis: true
+          scopedSlots: { customRender: 'evaluate_supplement' }
+
         },
         {
           title: '评价时间',
@@ -398,7 +404,7 @@ export default {
   padding: 0;
 }
 .evaluate {
-  .cardContent{
+  .cardContent {
     padding: 0 20px;
   }
   .btns {
@@ -433,6 +439,24 @@ export default {
   }
   .card2 {
     margin-top: 20px;
+    .task_title {
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .evaluate_supplement{
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
     .pagination {
       margin-top: 10px;
       /deep/ .ant-pagination {
