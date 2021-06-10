@@ -446,6 +446,7 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('下架成功')
+        this.getTaskSpeedData()
       }
 
       this.getButtonInfo()
@@ -461,6 +462,7 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('终止成功')
+        this.getTaskSpeedData()
       }
 
       this.getButtonInfo()
@@ -475,6 +477,7 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('停止成功')
+        this.getTaskSpeedData()
       }
 
       this.getButtonInfo()
