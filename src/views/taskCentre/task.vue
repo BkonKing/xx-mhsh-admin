@@ -390,8 +390,8 @@ export default {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '8.333333333%'
-          // ellipsis: true
+          width: '8.333333333%',
+          ellipsis: true
         },
         {
           title: '奖励(币)',

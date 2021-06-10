@@ -330,7 +330,7 @@
             <div class="c3">
               <div class="t1">处理回复：</div>
               <div class="t2">
-                {{ item.check_desc }}
+                {{ item.check_desc?item.check_desc:'--' }}
               </div>
             </div>
             <div class="imgcon">
@@ -417,7 +417,7 @@
             :columns="columns2"
             :data-source="logData"
           >
-            <a slot="name" slot-scope="text">{{ text }}</a>
+
           </a-table>
           <div class="pagination">
             <a-pagination
@@ -492,38 +492,38 @@ export default {
           title: 'id',
           dataIndex: 'id',
           key: 'id',
-          width: '16.666666%'
+          width: '10.666666%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '操作时间',
           dataIndex: 'ctime',
           key: 'ctime',
-          width: '16.666666%'
+          width: '14.666666%'
         },
         {
           title: '模块',
           dataIndex: 'module_type',
           key: 'module_type',
-          width: '16.666666%'
+          width: '14.666666%'
         },
         {
           title: '操作员',
           dataIndex: 'username',
           key: 'username',
-          width: '16.666666%'
+          width: '14.666666%'
         },
         {
           title: '操作类型',
           dataIndex: 'opt_type',
           key: 'opt_type',
-          width: '16.666666%'
+          width: '14.666666%'
         },
         {
           title: '操作说明',
           dataIndex: 'content',
           key: 'content',
-          width: '16.666666%'
+          width: '30.666666%'
         }
       ],
       logData: [],
@@ -596,6 +596,7 @@ export default {
     // 批量淘汰 / 奖励
     handleMenuClick (e) {
       if (this.selectedRowKeys.length == 0) {
+        this.$message.warning('请先选择后再操作')
         return
       }
       // console.log(e.key)
@@ -1069,7 +1070,7 @@ export default {
 }
 .card5 {
   margin-top: 20px;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
   .content {
     padding: 0 30px;
     .card5Item {

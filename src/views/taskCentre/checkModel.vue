@@ -58,6 +58,6 @@ export default {
 
 <style lang='less' scoped>
 /deep/ .ant-steps-dot .ant-steps-item-content, .ant-steps-dot.ant-steps-small .ant-steps-item-content {
-    width: 200px;
+    width: 424px;
 }
 </style>

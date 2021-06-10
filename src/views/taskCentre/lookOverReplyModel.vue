@@ -34,7 +34,7 @@
           >{{ lookOverInfo.violation_reason }}</a-form-model-item
         >
         <a-form-model-item label="审核说明">
-          {{ lookOverInfo.check_desc }}
+          {{ lookOverInfo.check_desc?lookOverInfo.check_desc:'--' }}
         </a-form-model-item>
         <div class="imgcon">
           <div

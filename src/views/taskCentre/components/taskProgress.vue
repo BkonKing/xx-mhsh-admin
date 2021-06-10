@@ -72,10 +72,10 @@
         <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
         <a-dropdown>
           <a-menu slot="overlay" @click="handleMenuClick">
-            <a-menu-item key="1" >
+            <a-menu-item key="1">
               淘汰
             </a-menu-item>
-            <a-menu-item key="2" >
+            <a-menu-item key="2">
               强制奖励
             </a-menu-item>
           </a-menu>
@@ -90,9 +90,10 @@
       <div class="table">
         <a-table
           rowKey="uid"
+          :rowSelection="rowSelection"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
+            onChange: onSelectChange,
           }"
           :columns="columns"
           :data-source="taskSpeedList"
@@ -139,7 +140,7 @@
           </template>
           <template slot="opera" slot-scope="text, record">
             <div class="btns">
-              <a-button type="link" @click="check(record.uid)">查看</a-button>
+              <a-button style="paddingLeft:0" type="link" @click="check(record.uid)">查看</a-button>
               <a-button
                 type="link"
                 @click="award(record)"
@@ -181,7 +182,7 @@
       </div>
     </div>
     <awardModel
-     v-on="$listeners"
+      v-on="$listeners"
       :selectedRowKeys="selectedRowKeys"
       :taskDetailInfo="taskDetailInfo"
       :id="id"
@@ -189,8 +190,8 @@
     ></awardModel>
     <checkModel :id="id" ref="checkModel"></checkModel>
     <appraiseModel ref="appraiseModel"></appraiseModel>
-<weedOutModel
-v-on="$listeners"
+    <weedOutModel
+      v-on="$listeners"
       ref="weedOutModel"
       :selectedRowKeys="selectedRowKeys"
       :id="id"
@@ -254,7 +255,7 @@ export default {
           title: '进度ID',
           dataIndex: 'id',
           key: 'id',
-          width: '10%'
+          width: '6%'
           // scopedSlots: { customRender: 'name' }
         },
         {
@@ -288,7 +289,7 @@ export default {
           title: '投诉',
           dataIndex: 'complaint_total',
           key: 'complaint_total',
-          width: '10%',
+          width: '6%',
           scopedSlots: { customRender: 'complaint_total' }
         },
         {
@@ -303,7 +304,7 @@ export default {
           title: '最新进度',
           dataIndex: 'progress_content',
           key: 'progress_content',
-          width: '10%',
+          width: '14%',
           scopedSlots: { customRender: 'progress_content' },
           ellipsis: true
         },
@@ -311,7 +312,7 @@ export default {
           title: '接单时间',
           dataIndex: 'ctime',
           key: 'ctime',
-          width: '10%',
+          width: '14%',
           sorter: true
         },
         {
@@ -322,10 +323,21 @@ export default {
           scopedSlots: { customRender: 'opera' }
         }
       ]
-
     }
   },
+  computed: {
+    rowSelection () {
+      return {
+        getCheckboxProps: record => ({
+          props: {
+            disabled: ['已终止', '已放弃'].includes(record.progress_desc) // Column configuration not to be checked
+          }
 
+        })
+
+      }
+    }
+  },
   methods: {
     // 获取按钮状态
     async getButtonInfo () {
@@ -607,6 +619,14 @@ export default {
       }
       .progress_content {
         .t1 {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .t2 {
+          overflow: hidden;
+          text-overflow: ellipsis;
           white-space: nowrap;
         }
       }

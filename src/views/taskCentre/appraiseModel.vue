@@ -66,7 +66,7 @@
       </div>
       <div class="item">
         <div class="t1">标记说明：</div>
-        <div class="t2">{{info.sign_desc}}</div>
+        <div class="t2">{{info.sign_desc?info.sign_desc:'--'}}</div>
       </div>
     </div>
   </a-modal>

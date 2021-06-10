@@ -22,10 +22,12 @@
             <a-col :span="8">
               <div class="item">
                 <span>群主：</span>
-                <span style="color:#1890ff;marginRight:10px;cursor: pointer;" @click="openUserDetail">{{
+                <span style="color:#1890ff;marginRight:10px;cursor: pointer;" @click="openUserDetail">
+                  <span >{{
                   baseInfo.owner_name
-                }}</span>
-                <span style="color:#1890ff">{{ baseInfo.group_mobile }}</span>
+                }}</span> &nbsp;&nbsp;&nbsp;
+                <span >{{ baseInfo.group_mobile }}</span>
+                </span>
               </div>
             </a-col>
           </a-row>
@@ -398,8 +400,8 @@ export default {
         },
         {
           title: '加入方式',
-          dataIndex: 'join_type',
-          key: 'join_type',
+          dataIndex: 'join_method',
+          key: 'join_method',
           width: '10%'
         },
         {
