@@ -208,7 +208,7 @@ type="up"
             </div>
           </template>
             <template slot="content" slot-scope="content">
-              <div class="content" style="color:#1890FF">
+              <div class="tableContent" style="color:#1890FF">
                 {{ content }}
               </div>
             </template>
@@ -616,7 +616,7 @@ export default {
     }
     .table {
       margin-top: 20px;
-      .content{
+      .tableContent{
       text-overflow: -o-ellipsis-lastline;
       overflow: hidden;
       text-overflow: ellipsis;
