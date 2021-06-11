@@ -177,7 +177,7 @@
             >
               <template slot="owner_name" slot-scope="text, record">
                 <div class="user">
-                  <div class="t1">{{ record.owner_name }}</div>
+                  <div class="t1"><span v-if="record.is_owner==='1'" style="color:#F5222D">群主</span>  {{ record.owner_name }} </div>
                   <div class="t2">{{ record.project_name }}</div>
                 </div>
               </template>

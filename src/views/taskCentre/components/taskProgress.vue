@@ -90,11 +90,7 @@
       <div class="table">
         <a-table
           rowKey="uid"
-          :rowSelection="rowSelection"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange,
-          }"
+          :row-selection="rowSelection"
           :columns="columns"
           :data-source="taskSpeedList"
           :pagination="false"
@@ -327,7 +323,10 @@ export default {
   },
   computed: {
     rowSelection () {
+      const { selectedRowKeys } = this
       return {
+        selectedRowKeys,
+        onChange: this.onSelectChange,
         getCheckboxProps: record => ({
           props: {
             disabled: ['已终止', '已放弃'].includes(record.progress_desc) // Column configuration not to be checked
@@ -420,7 +419,7 @@ export default {
     },
     // 批量淘汰 / 奖励
     handleMenuClick (e) {
-      if (this.selectedRowKeys.length == 0) {
+      if (this.selectedRowKeys.length === 0) {
         this.$message.warning('请先选择后再操作')
         return
       }

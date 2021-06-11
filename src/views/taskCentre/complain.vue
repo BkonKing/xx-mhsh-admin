@@ -208,7 +208,7 @@ type="up"
             </div>
           </template>
             <template slot="content" slot-scope="content">
-              <div class="tableContent" style="color:#1890FF">
+              <div class="tableContent">
                 {{ content }}
               </div>
             </template>
