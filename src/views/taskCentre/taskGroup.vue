@@ -379,6 +379,7 @@ export default {
   padding: 0;
 }
 .taskGroup {
+  padding-bottom: 20px;
   .cardContent {
     padding: 0 20px;
   }

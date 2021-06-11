@@ -842,6 +842,7 @@ export default {
   padding: 0;
 }
 .complete {
+  padding-bottom: 20px;
   /deep/ .ant-card-body {
     padding: 0;
   }

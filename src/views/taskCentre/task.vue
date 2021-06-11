@@ -620,6 +620,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.task{
+  padding-bottom: 20px;
+}
 /deep/ .ant-page-header {
   padding-bottom: 0px !important;
 }

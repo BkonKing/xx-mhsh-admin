@@ -537,6 +537,7 @@ export default {
   padding: 0;
 }
 .complain {
+  padding-bottom: 20px;
   .content {
     padding: 0 20px;
   }

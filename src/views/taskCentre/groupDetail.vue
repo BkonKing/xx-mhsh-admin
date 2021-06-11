@@ -774,6 +774,7 @@ export default {
   padding: 0;
 }
 .groupDetail {
+  padding-bottom: 20px;
   .cardContent {
     padding: 0 20px;
   }

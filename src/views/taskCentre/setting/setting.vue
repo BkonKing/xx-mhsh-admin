@@ -73,6 +73,7 @@ export default {
 
 <style lang="less" scoped>
 .basics {
+  padding-bottom: 20px;
   /deep/ .ant-page-header {
     padding-bottom: 0px !important;
   }

@@ -366,6 +366,7 @@ export default {
 
 <style lang="less" scoped>
 .complainDetail {
+  padding-bottom: 20px;
   .complainContent {
     padding: 0 20px;
   }
