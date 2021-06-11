@@ -904,10 +904,12 @@ export default {
     .explain {
       display: flex;
       margin-top: 10px;
-      margin-left: 34px;
+      // margin-left: 34px;
       margin-bottom: 9px;
       .left {
-        width: 70px;
+        min-width: 88px;
+        width: 5.56%;
+        text-align: right;
         white-space: nowrap;
       }
       .right {
