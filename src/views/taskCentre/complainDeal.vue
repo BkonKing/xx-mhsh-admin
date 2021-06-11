@@ -11,7 +11,7 @@
         {{ info.complaint_type }}
       </a-form-model-item>
       <a-form-model-item label="投诉描述">
-        {{ info.complaint_desc }}
+        {{ info.complaint_desc?info.complaint_desc:'--' }}
       </a-form-model-item>
       <div class="line"></div>
       <a-form-model-item label="处理回复" prop="handle_reply">

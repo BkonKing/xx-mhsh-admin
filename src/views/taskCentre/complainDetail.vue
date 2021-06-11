@@ -76,10 +76,10 @@
                 v-if="detailInfo.content_type === '任务'"
                 style="color:#1890FF;cursor: pointer;"
               >
-                {{ detailInfo.content }}
+                {{ detailInfo.content?detailInfo.content:'--' }}
               </div>
               <div class="item2" style="cursor: pointer;" v-else @click="lookOver">
-                {{ detailInfo.content }}
+                {{ detailInfo.content?detailInfo.content:'--'}}
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
           <div class="bottom">
             <div class="t1">投诉描述：</div>
             <div class="t2">
-              {{ detailInfo.complaint_desc }}
+              {{ detailInfo.complaint_desc?detailInfo.complaint_desc:'--' }}
             </div>
           </div>
           <div class="imgs">
