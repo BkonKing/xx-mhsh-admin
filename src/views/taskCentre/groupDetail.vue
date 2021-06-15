@@ -374,8 +374,8 @@ export default {
         // 成员列表
         {
           title: '用户ID',
-          dataIndex: 'uid',
-          key: 'uid',
+          dataIndex: 'id',
+          key: 'id',
           width: '10%'
           // scopedSlots: { customRender: 'name' }
         },
@@ -534,7 +534,7 @@ export default {
         return
       }
       await toDelGroupUser({
-        uids: this.selectedRowKeys,
+        ids: this.selectedRowKeys,
         group_id: this.id
       })
       this.$message.success('删除成功')
@@ -661,14 +661,10 @@ export default {
     // 删除群成员
     async del (record) {
       console.log('record', record)
-      if (record.uid === 0) {
-        this.$message.error('该用户无法删除')
-        return
-      }
       const idArr = []
-      idArr.push(record.uid)
+      idArr.push(record.id)
       await toDelGroupUser({
-        uids: idArr,
+        ids: idArr,
         group_id: this.id
       })
       this.getData()

@@ -132,13 +132,21 @@ export default {
     // 确定
     async submit () {
       if (this.mode === 'whiteUser') {
-        const list = this.arr.map(item => {
-          return {
-            mobile: item.mobile,
-            nickname: item.nickname,
-            remark: item.remark
+        // const list = this.arr.map(item => {
+        //   if (item.mobile) {
+        //     return {
+        //       mobile: item.mobile,
+        //       nickname: item.nickname,
+        //       remark: item.remark
+        //     }
+        //   }
+        // })
+        const list = []
+        for (let i = 0; i < this.arr.length; i++) {
+          if (this.arr[i].mobile) {
+            list.push(this.arr[i])
           }
-        })
+        }
         await toAddWhiteUser({
           user_list: list
         })
@@ -148,13 +156,21 @@ export default {
         this.$parent.getData()
         this.$message.success('添加成功')
       } else {
-        const list2 = this.arr.map(item => {
-          return {
-            mobile: item.mobile,
-            nickname: item.nickname,
-            remark: item.remark
+        // const list2 = this.arr.map(item => {
+        //   if (item.mobile) {
+        //     return {
+        //       mobile: item.mobile,
+        //       nickname: item.nickname,
+        //       remark: item.remark
+        //     }
+        //   }
+        // })
+        const list2 = []
+        for (let i = 0; i < this.arr.length; i++) {
+          if (this.arr[i].mobile) {
+            list2.push(this.arr[i])
           }
-        })
+        }
         const res2 = await toAddGroupUser({
           user_list: list2,
           group_id: this.id
