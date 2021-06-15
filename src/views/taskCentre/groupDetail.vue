@@ -166,7 +166,7 @@
           <div class="table">
             <a-table
               @change="changeGroupMember"
-              rowKey="uid"
+              rowKey="id"
               :columns="columns"
               :data-source="tableData"
               :pagination="false"
