@@ -220,13 +220,13 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '12.555555555%'
+          width: 50
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '12.555555555%',
+          width: '12%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -234,20 +234,21 @@ export default {
           dataIndex: 'evaluate_stars',
           key: 'evaluate_stars',
           sorter: true,
-          width: '12.555555555%'
+          width: '12.555555555%',
+          align: 'center'
         },
         {
           title: '标签',
           dataIndex: 'evaluate_tags',
           key: 'evaluate_tags',
-          width: '12.555555555%'
+          width: '15%'
         },
         {
           title: '评价用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
           scopedSlots: { customRender: 'owner_name' },
-          width: '12.555555555%'
+          width: '13.555555555%'
         },
         {
           title: '补充内容',
@@ -269,7 +270,7 @@ export default {
           dataIndex: 'opera',
           key: 'opera',
           scopedSlots: { customRender: 'opera' },
-          width: '12.555555555%'
+          width: '6%'
         }
       ],
       evaluate_starts: undefined, // 否int评价星星数

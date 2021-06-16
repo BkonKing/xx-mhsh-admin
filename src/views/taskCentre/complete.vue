@@ -320,15 +320,15 @@
             :key="index"
           >
             <div class="c1">
-              <div class="t1">审核状态：{{ item.check_status }}</div>
-              <div class="t2">审核人：{{ item.check_user }}</div>
-              <div class="t3">审核时间：{{ item.check_time }}</div>
+              <div class="t1" > <span style="color: rgba(0, 0, 0, 0.847058823529412)">审核状态：</span> {{ item.check_status }}</div>
+              <div class="t2"> <span style="color: rgba(0, 0, 0, 0.847058823529412)">审核人：</span> {{ item.check_user }}</div>
+              <div class="t3"><span style="color: rgba(0, 0, 0, 0.847058823529412)">审核时间：</span> {{ item.check_time }}</div>
             </div>
             <div class="c2" v-if="taskDetailInfo.task_status === 4">
               违规原因：{{ item.check_reason }}
             </div>
             <div class="c3">
-              <div class="t1">处理回复：</div>
+              <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">处理回复：</div>
               <div class="t2">
                 {{ item.check_desc?item.check_desc:'--' }}
               </div>

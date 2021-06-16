@@ -72,10 +72,10 @@
         <!-- <a-button @click="award">批量操作 <a-icon type="down"/></a-button> -->
         <a-dropdown>
           <a-menu slot="overlay" @click="handleMenuClick">
-            <a-menu-item key="1">
+            <a-menu-item key="1" :disabled="isWeek">
               淘汰
             </a-menu-item>
-            <a-menu-item key="2">
+            <a-menu-item key="2" :disabled="isAward">
               强制奖励
             </a-menu-item>
           </a-menu>
@@ -190,6 +190,7 @@
       v-on="$listeners"
       ref="weedOutModel"
       :selectedRowKeys="selectedRowKeys"
+
       :id="id"
     ></weedOutModel>
   </div>
@@ -318,7 +319,9 @@ export default {
           width: '10%',
           scopedSlots: { customRender: 'opera' }
         }
-      ]
+      ],
+      isAward: false, // 是否可以奖励
+      isWeek: false // 是否可以淘汰
     }
   },
   computed: {
@@ -335,6 +338,29 @@ export default {
         })
 
       }
+    }
+  },
+  watch: {
+
+    selectedRows: {
+      handler () {
+        if (this.selectedRows.length === 0) {
+          this.isAward = false
+          this.isWeek = false
+          return
+        }
+        this.selectedRows.forEach(item => {
+          if (item.is_reward === 0) {
+            console.log('isAward')
+            this.isAward = true
+          }
+          if (item.is_discard === 0) {
+            console.log('isWeek')
+            this.isWeek = true
+          }
+        })
+      },
+      deep: true
     }
   },
   methods: {
@@ -416,6 +442,8 @@ export default {
     // 清空表格复选框数组
     clear () {
       this.selectedRowKeys = []
+      this.isAward = false
+      this.isWeek = false
     },
     // 批量淘汰 / 奖励
     handleMenuClick (e) {

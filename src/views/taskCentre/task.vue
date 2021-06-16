@@ -271,6 +271,11 @@
               {{ record.check_time_desc }}
             </div>
           </template>
+          <template slot="task_title" slot-scope="task_title">
+            <div class="task_title">
+              {{ task_title }}
+            </div>
+          </template>
           <template slot="task_user" slot-scope="text, record">
             <div>
               <div class="t1">{{ record.task_user }}</div>
@@ -301,8 +306,9 @@
                 @click="$router.push('/taskCentre/toCheck?id=' + record.id)"
                 >审核</a-button
               >
-              <a-button type="link" v-else @click="lookOver(record)">查看</a-button>
-
+              <a-button type="link" v-else @click="lookOver(record)"
+                >查看</a-button
+              >
             </div>
           </template>
         </a-table>
@@ -364,7 +370,7 @@ export default {
           title: '任务编号',
           dataIndex: 'task_number',
           key: 'task_number',
-          width: '8.333333333%'
+          width: 80
           // scopedSlots: { customRender: 'name' }
         },
         {
@@ -384,27 +390,28 @@ export default {
           title: '类型',
           dataIndex: 'task_type',
           key: 'task_type',
-          width: '8.333333333%'
+          width: 80
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
           width: '8.333333333%',
-          ellipsis: true
+          scopedSlots: { customRender: 'task_title' }
         },
         {
           title: '奖励(币)',
           dataIndex: 'reward_happiness',
           key: 'reward_happiness',
           sorter: true,
-          width: '8.333333333%'
+          width: '8.333333333%',
+          align: 'center'
         },
         {
           title: '任务方',
           dataIndex: 'task_user',
           key: 'task_user',
-          width: '8.333333333%',
+          width: '10%',
           scopedSlots: { customRender: 'task_user' }
         },
         {
@@ -412,35 +419,38 @@ export default {
           key: 'accept_people',
           slots: { title: 'customTitle' },
           scopedSlots: { customRender: 'accept_people' },
-          width: '8.333333333%'
+          width: '8.333333333%',
+          align: 'center'
         },
         {
           title: '投诉',
           dataIndex: 'complaint_total',
           key: 'complaint_total',
           sorter: true,
-          width: '8.333333333%'
+          width: 50,
+          align: 'center'
         },
         {
           title: '提问',
           dataIndex: 'ask_total',
           key: 'ask_total',
           sorter: true,
-          width: '8.333333333%'
+          width: 50,
+          align: 'center'
         },
         {
           title: '创建时间',
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: '8.333333333%'
+          width: '10%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
           scopedSlots: { customRender: 'opera' },
-          width: '8.333333333%'
+          width: '6%'
         }
       ],
       tableData: [], // 任务列表
@@ -620,7 +630,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.task{
+.task {
   padding-bottom: 20px;
 }
 /deep/ .ant-page-header {
@@ -631,7 +641,8 @@ export default {
   align-items: center;
 
   .item {
-    padding: 15px 20px;
+    padding: 8px;
+    margin-right: 32px;
     cursor: pointer;
     font-weight: 400;
     font-style: normal;
@@ -689,6 +700,15 @@ export default {
     }
     button {
       padding: 0;
+    }
+    .task_title {
+      text-overflow: -o-ellipsis-lastline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
   }
   .pagination {

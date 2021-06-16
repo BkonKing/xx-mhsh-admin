@@ -50,13 +50,13 @@
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">内容ID：</div>
-                <div class="t2">{{ detailInfo.content_id }}</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">内容ID：</div>
+                <div class="t2" style="color: rgba(0, 0, 0, 0.647058823529412)">{{ detailInfo.content_id }}</div>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">被投诉次数：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">被投诉次数：</div>
                 <div
                   class="t2"
                   style="color:#1890FF;cursor: pointer;"
@@ -68,7 +68,7 @@
             </a-col>
           </a-row>
           <div class="bottom">
-            <div class="t1">被投诉内容：</div>
+            <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">被投诉内容：</div>
             <div class="t2">
               <div
                 class="item"
@@ -91,7 +91,7 @@
           <a-row>
             <a-col :span="8">
               <div class="item item1">
-                <div class="t1">投诉人：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">投诉人：</div>
                 <div class="t2">
                   <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail(detailInfo.complaint_uid)">{{
                     detailInfo.complaint_user
@@ -102,7 +102,7 @@
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">被投诉人：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">被投诉人：</div>
                 <div class="t2">
                   <span style="color:#1890FF;cursor: pointer;" @click="openUserDetail(detailInfo.complainted_uid)">{{
                     detailInfo.complainted_user
@@ -113,17 +113,17 @@
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">投诉时间：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">投诉时间：</div>
                 <div class="t2">{{ detailInfo.ctime }}</div>
               </div>
             </a-col>
           </a-row>
           <div class="middle">
-            <div class="t1">投诉类型：</div>
+            <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">投诉类型：</div>
             <div class="t2">{{ detailInfo.complaint_type }}</div>
           </div>
           <div class="bottom">
-            <div class="t1">投诉描述：</div>
+            <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">投诉描述：</div>
             <div class="t2">
               {{ detailInfo.complaint_desc?detailInfo.complaint_desc:'--' }}
             </div>
@@ -140,7 +140,7 @@
         </div>
       </a-card>
       <a-card class="card4" v-if="detailInfo.is_handle !== '1'">
-        <div class="title">投诉处理</div>
+        <div class="title" style="color: rgba(0, 0, 0, 0.847058823529412)">投诉处理</div>
         <div class="form">
           <a-form-model
           ref="form"
@@ -194,7 +194,7 @@
           <a-row>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">处理时间：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">处理时间：</div>
                 <div class="t2">
                  {{detailInfo.handle_time}}
                  <span v-if="detailInfo.over_content">
@@ -210,7 +210,7 @@ style="color: #F5222D;"
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <div class="t1">处理人：</div>
+                <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">处理人：</div>
                 <div class="t2">{{detailInfo.handle_user}}</div>
               </div>
             </a-col>
@@ -218,7 +218,7 @@ style="color: #F5222D;"
           </a-row>
         </div>
         <div class="mid">
-          <div class="t1">处理回复：</div>
+          <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">处理回复：</div>
           <div class="t2">
             {{detailInfo.handle_content}}
           </div>

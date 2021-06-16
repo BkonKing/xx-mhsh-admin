@@ -352,7 +352,8 @@ export default {
           key: 'complaint_total',
           scopedSlots: { customRender: 'complaint_total' },
           sorter: true,
-          width: '10%'
+          width: 50,
+          align: 'center'
         },
         {
           title: '任务',

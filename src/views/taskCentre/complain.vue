@@ -306,7 +306,7 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '10%'
+          width: '4%'
         },
         {
           title: '处理时间',
@@ -319,20 +319,21 @@ export default {
           title: '状态',
           dataIndex: 'is_handle',
           key: 'is_handle',
-          width: '10%'
+          width: '6%'
         },
         {
           title: '内容类型',
           dataIndex: 'info_type_desc',
           key: 'info_type_desc',
-          width: '10%'
+          width: '8%',
+          align: 'center'
         },
         {
           title: '被投诉内容',
           dataIndex: 'content',
           key: 'content',
           scopedSlots: { customRender: 'content' },
-          width: '10%'
+          width: '13%'
         },
         {
           title: '投诉类型',
@@ -345,14 +346,14 @@ export default {
           dataIndex: 'complainted_user',
           key: 'complainted_user',
           scopedSlots: { customRender: 'complainted_user' },
-          width: '10%'
+          width: '12%'
         },
         {
           title: '投诉人',
           dataIndex: 'complaint_user',
           key: 'complaint_user',
           scopedSlots: { customRender: 'complaint_user' },
-          width: '10%'
+          width: '12%'
         },
         {
           title: '投诉时间',

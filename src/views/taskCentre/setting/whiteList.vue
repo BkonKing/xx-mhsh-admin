@@ -167,7 +167,7 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '11.111111%'
+          width: '8%'
           // scopedSlots: { customRender: 'name' }
         },
         {
@@ -180,21 +180,22 @@ export default {
           title: '用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
-          width: '11.111111%',
+          width: '13%',
           scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '备注',
           dataIndex: 'remark',
           key: 'remark',
-          width: '11.111111%'
+          width: '6%'
         },
         {
           title: '任务',
           dataIndex: 'user_task',
           key: 'user_task',
           sorter: true,
-          width: '11.111111%'
+          width: '11.111111%',
+          align: 'center'
         },
         {
           title: '注册时间',
@@ -202,7 +203,7 @@ export default {
           key: 'register_time',
           scopedSlots: { customRender: 'register_time' },
           sorter: true,
-          width: '11.111111%'
+          width: '16%'
         },
         {
           title: '添加人',
@@ -215,7 +216,7 @@ export default {
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: '11.111111%'
+          width: '16%'
         },
         {
           title: '操作',
