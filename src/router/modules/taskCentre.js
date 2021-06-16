@@ -123,13 +123,24 @@ export default {
             title: '任务详情',
             icon: 'table'
           }
-        },
+        }
+      ]
+    },
+    {
+      path: '/taskCentre/complain11', // 完整地址
+      name: 'task3',
+      component: RouteView,
+      meta: {
+        title: '投诉'
+      },
+      redirect: '/taskCentre/complain',
+      children: [
         {
           path: '/taskCentre/complainDetail', // 完整地址
           name: 'complainDetail',
           component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/complainDetail'),
           meta: {
-            title: '任务详情',
+            title: '投诉详情',
             icon: 'table'
           }
         }
