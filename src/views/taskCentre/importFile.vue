@@ -36,19 +36,19 @@
           <a-icon
             type="check-circle"
             style="color: #52c41a;"
-            v-if="uploadFileInfo.failed_count === 0"
+            v-if="uploadFileInfo.failed_count === 0 && isSuccess"
           />
-          <a-icon type="close-circle" style="color:red" v-else />
+          <a-icon type="close-circle" style="color:red" v-else-if="isFail202" />
         </div>
-        <div class="right" v-if="uploadFileInfo.failed_count === 0">
-          <div class="t1">导入成功</div>
+        <div class="right" v-if="uploadFileInfo.failed_count === 0 && isSuccess">
+          <div class="t1">{{uploadFileInfo.message}}</div>
           <div class="t2">
             共{{ uploadFileInfo.count }}条信息，{{
               uploadFileInfo.success_count
             }}条成功
           </div>
         </div>
-        <div class="right" v-else>
+        <div class="right" v-else-if="isFail202">
           <div class="t1">部分导入失败</div>
           <div class="t2">
             共{{ uploadFileInfo.count }}条信息，{{
@@ -77,7 +77,10 @@ export default {
       isShow2: false,
       fileSize: 0,
       fileUrl: '',
-      uploadFileInfo: ''
+      uploadFileInfo: '',
+      isFail201: false,
+      isFail202: false,
+      isSuccess: true
     }
   },
   watch: {
@@ -108,6 +111,23 @@ export default {
         fd.append('whitelist_file', this.fileUrl)
         const res = await toImportWhiteUser(fd)
         this.uploadFileInfo = res
+        if (res.code === '201') {
+          this.isSuccess = false
+          this.isShow = false
+          this.$message.error(res.message)
+        } else if (res.code === '202') {
+          this.isSuccess = false
+          this.isFail202 = true
+          this.isShow2 = true
+          this.isShow = false
+          this.$message.error(res.message)
+        } else if (res.code === '200') {
+          this.isSuccess = true
+          this.isFail201 = false
+          this.isFail202 = false
+          this.isShow2 = true
+          this.isShow = false
+        }
         // console.log('上传文件', this.uploadFileInfo)
       } else {
         // 上传群文件
@@ -118,11 +138,26 @@ export default {
         const res2 = await toImportGroupUser(fd)
         // console.log('上传群成员文件', res2)
         this.uploadFileInfo = res2
+        if (res2.code === '201') {
+          this.isSuccess = false
+          this.isShow = false
+          this.$message.error(res2.message)
+        } else if (res2.code === '202') {
+          this.isSuccess = false
+          this.isFail202 = true
+          this.isShow2 = true
+          this.isShow = false
+          this.$message.error(res2.message)
+        } else if (res2.code === '200') {
+          this.isSuccess = true
+          this.isFail201 = false
+          this.isFail202 = false
+          this.isShow2 = true
+          this.isShow = false
+        }
         this.$parent.getRegister()
       }
 
-      this.isShow2 = true
-      this.isShow = false
       this.$parent.pagination.currentPage = 1
       this.$parent.getData()
     },
