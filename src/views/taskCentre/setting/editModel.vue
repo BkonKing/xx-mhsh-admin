@@ -45,7 +45,7 @@
           <a-textarea
             v-model="form.remark"
             placeholder="请输入"
-            :auto-size="{ minRows: 3, maxRows: 5 }"
+            :auto-size="{ minRows: 3, maxRows: 100000 }"
           />
         </a-form-model-item>
       </a-form-model>
@@ -131,20 +131,28 @@ export default {
 /deep/ .ant-form-item-label{
   width: 80px;
 }
+/deep/ .ant-form-item{
+  padding-bottom: 16px;
+  margin-bottom: 0;
+}
 /deep/ .ant-modal-content {
   width: 480px;
   // height: 400px;
   min-height: 400px;
+
 }
-// /deep/ .ant-modal-body {
-//   height: 290px;
-// }
+/deep/ .ant-modal-body {
+  padding: 20px 20px 16px 20px;
+}
 .input {
   display: flex;
   align-items: center;
   span {
     margin: 0 10px;
   }
+}
+/deep/ .ant-modal-footer{
+  padding: 16px;
 }
 .txt {
   font-family: "MicrosoftYaHei", "Microsoft YaHei";

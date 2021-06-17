@@ -7,19 +7,22 @@
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
               @input="getData(index, $event)"
+              onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
               v-model="item.mobile"
               :maxLength="11"
               placeholder="手机号"
               style="width:216px"
             ></a-input>
             <a-input
-              :disabled="true"
+            :disabled="false"
+               @input="getData(index, $event)"
               :maxLength="10"
               v-model="item.nickname"
               placeholder="昵称"
               style="width:104px"
             ></a-input>
             <a-input
+
               :maxLength="10"
               v-model="item.remark"
               placeholder="备注"
@@ -66,15 +69,15 @@
 <script>
 import { toAddWhiteUser, toAddGroupUser } from '@/api/taskCentre'
 import { getUserInfo } from '@/api/financeCenter.js'
-function isNumber (value) {
-  // 验证是否为数字
-  var patrn = /^(-)?\d+(\.\d+)?$/
-  if (patrn.exec(value) == null || value == '') {
-    return false
-  } else {
-    return true
-  }
-}
+// function isNumber (value) {
+//   // 验证是否为数字
+//   var patrn = /^(-)?\d+(\.\d+)?$/
+//   if (patrn.exec(value) == null || value == '') {
+//     return false
+//   } else {
+//     return true
+//   }
+// }
 
 export default {
   props: ['mode', 'id'],
@@ -103,30 +106,47 @@ export default {
       this.arr[this.currentIndex].nickname = item.realname
       this.arr[this.currentIndex].mobile = item.mobile
       this.userInfoList = []
-      // this.elm.nextElementSibling.disabled = true
+      this.elm.disabled = true
+      this.elm.nextElementSibling.disabled = true
       // console.log(this.elm)
     },
     // 获取用户信息
     async getData (index, e) {
       this.currentIndex = index
-      // console.log('事件对象', e.target)
-      // this.elm = e.target
-      if (this.arr[index].mobile.length > 0) {
-        if (isNumber(this.arr[index].mobile)) {
-          const res = await getUserInfo({
-            realname: '',
-            mobile: this.arr[index].mobile
-          })
-          // console.log('用户信息', res)
-          this.userInfoList = res.data.list
-        } else {
-          const res = await getUserInfo({
-            realname: this.arr[index].mobile,
-            mobile: ''
-          })
-          // console.log('用户信息', res)
-          this.userInfoList = res.data.list
-        }
+      console.log('事件对象', e.target)
+      this.elm = e.target
+      // if (this.arr[index].mobile.length > 0) {
+      //   if (isNumber(this.arr[index].mobile)) {
+      //     const res = await getUserInfo({
+      //       realname: '',
+      //       mobile: this.arr[index].mobile
+      //     })
+      //     // console.log('用户信息', res)
+      //     this.userInfoList = res.data.list
+      //   } else {
+      //     const res = await getUserInfo({
+      //       realname: this.arr[index].mobile,
+      //       mobile: ''
+      //     })
+      //     // console.log('用户信息', res)
+      //     this.userInfoList = res.data.list
+      //   }
+      // }
+      if (this.arr[index].mobile.length === 11) {
+        const res = await getUserInfo({
+          realname: this.arr[index].nickname,
+          mobile: this.arr[index].mobile
+        })
+        // console.log('用户信息', res)
+        this.userInfoList = res.data.list
+      }
+      if (this.arr[index].nickname) {
+        const res = await getUserInfo({
+          realname: this.arr[index].nickname,
+          mobile: this.arr[index].phone
+        })
+        // console.log('用户信息', res)
+        this.userInfoList = res.data.list
       }
     },
     // 确定

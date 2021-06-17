@@ -22,11 +22,12 @@
             <a-col :span="8">
               <div class="item">
                 <span>群主：</span>
-                <span style="color:#1890ff;marginRight:10px;cursor: pointer;" @click="openUserDetail">
-                  <span >{{
-                  baseInfo.owner_name
-                }}</span> &nbsp;&nbsp;&nbsp;
-                <span >{{ baseInfo.group_mobile }}</span>
+                <span
+                  style="color:#1890ff;marginRight:10px;cursor: pointer;"
+                  @click="openUserDetail"
+                >
+                  <span>{{ baseInfo.owner_name }}</span> &nbsp;&nbsp;&nbsp;
+                  <span>{{ baseInfo.group_mobile }}</span>
                 </span>
               </div>
             </a-col>
@@ -104,11 +105,16 @@
                       <a-range-picker
                         v-model="joinTime"
                         class="piker-time"
-                        :ranges="{
-                          Today: [moment(), moment()],
-                          'This Month': [moment(), moment().endOf('month')]
-                        }"
-                        show-time
+                       :ranges="{
+                        Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
+                        'This Month': [moment('00:00:00', 'HH:mm:ss'), moment().endOf('month')]
+                      }"
+                         :show-time="{
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('00:00:00', 'HH:mm:ss')
+                        ]
+                      }"
                         format="YYYY-MM-DD HH:mm:ss"
                         @change="onChange"
                       />
@@ -146,7 +152,7 @@
             /></a-button>
             <a-dropdown>
               <a-menu slot="overlay" @click="handleMenuClick">
-                <a-menu-item key="1" >
+                <a-menu-item key="1">
                   批量删除
                 </a-menu-item>
               </a-menu>
@@ -177,7 +183,12 @@
             >
               <template slot="owner_name" slot-scope="text, record">
                 <div class="user">
-                  <div class="t1"><span v-if="record.is_owner==='1'" style="color:#F5222D">群主</span>  {{ record.owner_name }} </div>
+                  <div class="t1">
+                    <span v-if="record.is_owner === '1'" style="color:#F5222D"
+                      >群主</span
+                    >
+                    {{ record.owner_name }}
+                  </div>
                   <div class="t2">{{ record.project_name }}</div>
                 </div>
               </template>
@@ -246,7 +257,13 @@
                         Today: [moment(), moment()],
                         'This Month': [moment(), moment().endOf('month')]
                       }"
-                      show-time
+
+                      :show-time="{
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('00:00:00', 'HH:mm:ss')
+                        ]
+                      }"
                       format="YYYY-MM-DD HH:mm:ss"
                       @change="onChange2"
                     />
@@ -296,6 +313,7 @@
           </div>
           <div class="table">
             <a-table
+              rowKey="uid"
               :columns="columns2"
               :data-source="tableData2"
               :pagination="false"
@@ -502,7 +520,8 @@ export default {
       opt_type: '', // 操作类型
       opt_desc: '', // 操作内容
       joinTime: [],
-      operaTime: []
+      operaTime: [],
+      selectedRows: []
     }
   },
   mounted () {
@@ -525,7 +544,10 @@ export default {
   methods: {
     // 新窗口打开用户详情
     openUserDetail () {
-      window.open(`/zht/user/user/getUserList?uid=${this.baseInfo.group_ownerid}`, '_blank')
+      window.open(
+        `/zht/user/user/getUserList?uid=${this.baseInfo.group_ownerid}`,
+        '_blank'
+      )
     },
     // 批量操作
     async handleMenuClick () {
@@ -537,6 +559,8 @@ export default {
         ids: this.selectedRowKeys,
         group_id: this.id
       })
+      this.selectedRowKeys = []
+      this.selectedRows = []
       this.$message.success('删除成功')
       this.getData()
       this.getRegister()
@@ -644,16 +668,19 @@ export default {
     },
     // 设为群主
     async setGroupOwner () {
-      if (this.selectedRowKeys[0] === 0) {
+      console.log('群主', this.selectedRows)
+      if (this.selectedRows[0].uid === 0) {
         this.$message.error('该用户无法设置为群主')
         this.selectedRowKeys = []
+        this.selectedRows = []
         return
       }
       await toSetGroupOwner({
-        uid: this.selectedRowKeys[0],
+        uid: this.selectedRows[0].uid,
         group_id: this.id
       })
       this.selectedRowKeys = []
+      this.selectedRows = []
       this.getGroupBase()
       this.getRegister()
       this.$message.success('设置群主成功')
@@ -706,6 +733,7 @@ export default {
     onSelectChange (selectedRowKeys, selectedRows) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       console.log('selectedRows', selectedRows)
+      this.selectedRows = selectedRows
       this.selectedRowKeys = selectedRowKeys
     },
     // 页码改变事件
