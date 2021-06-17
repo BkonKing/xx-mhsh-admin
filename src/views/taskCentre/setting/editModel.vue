@@ -20,25 +20,35 @@
             :maxLength="10"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item label="参考价" prop="start_price">
-          <div class="input">
+        <a-form-model-item label="参考价" >
+
+            <a-row type="flex">
+              <a-col flex='1'>
+            <a-form-model-item prop="start_price">
             <a-input
               placeholder="最低价"
               :maxLength="15"
-              style="width:148px"
+
               v-model="form.start_price"
               oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
 
             ></a-input>
-            <span>~</span>
+            </a-form-model-item>
+            </a-col>
+            <a-col flex='30px' style="textAlign: center;"><span>~</span></a-col>
+            <a-col flex='1'>
+            <a-form-model-item prop="end_price">
             <a-input
-              style="width:148px"
+
               placeholder="最高价"
               :maxLength="15"
               v-model="form.end_price"
               oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
             ></a-input>
-          </div>
+            </a-form-model-item>
+            </a-col>
+            </a-row>
+
           <div class="txt">任务参考的幸福币价格，含最低最高价</div>
         </a-form-model-item>
         <a-form-model-item label="备注">
@@ -86,6 +96,7 @@ export default {
           remark: '', // 备注
           id: ''
         }
+        this.$refs.form.clearValidate()
       }
     }
   },
@@ -134,6 +145,7 @@ export default {
 /deep/ .ant-form-item{
   padding-bottom: 16px;
   margin-bottom: 0;
+
 }
 /deep/ .ant-modal-content {
   width: 480px;
@@ -144,17 +156,18 @@ export default {
 /deep/ .ant-modal-body {
   padding: 20px 20px 16px 20px;
 }
-.input {
-  display: flex;
-  align-items: center;
-  span {
-    margin: 0 10px;
-  }
-}
+// .input {
+//   display: flex;
+//   align-items: center;
+//   span {
+//     margin: 0 10px;
+//   }
+// }
 /deep/ .ant-modal-footer{
   padding: 16px;
 }
 .txt {
+  margin-top: -20px;
   font-family: "MicrosoftYaHei", "Microsoft YaHei";
   font-weight: 400;
   font-style: normal;
