@@ -231,7 +231,7 @@ export default {
     async confirm (record) {
       await toUpdateTaskType({
         update_field: 'is_del',
-        update_value: +record.start_price,
+        update_value: 1,
         id: record.id
       })
       this.getData()

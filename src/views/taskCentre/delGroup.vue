@@ -47,7 +47,7 @@ export default {
 
 <style lang='less' scoped>
 /deep/.ant-modal-body {
-    padding: 32px 32px 24px;
+    padding: 32px 24px 24px;
 }
 .t1{
   display: flex;

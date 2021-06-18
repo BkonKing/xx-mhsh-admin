@@ -8,25 +8,25 @@
           <a-row>
             <a-col :span="8">
               <div class="item">
-                <span>群ID：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">群ID：</span>
                 <span>{{ baseInfo.id }}</span>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <span>群名称：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">群名称：</span>
                 <span>{{ baseInfo.group_name }}</span>
                 <a-icon type="edit" style="color:#1890ff" @click="editGroup" />
               </div>
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <span>群主：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">群主：</span>
                 <span
                   style="color:#1890ff;marginRight:10px;cursor: pointer;"
                   @click="openUserDetail"
                 >
-                  <span>{{ baseInfo.owner_name }}</span> &nbsp;&nbsp;&nbsp;
+                  <span style="paddingRight:12px">{{ baseInfo.owner_name }}</span>
                   <span>{{ baseInfo.group_mobile }}</span>
                 </span>
               </div>
@@ -35,19 +35,19 @@
           <a-row class="row">
             <a-col :span="8">
               <div class="item">
-                <span>成员：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">成员：</span>
                 <span>{{ baseInfo.group_member }}人</span>
               </div>
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <span>允许加入：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">允许加入：</span>
                 <a-switch v-model="baseInfo.is_open" @change="isOpen" />
               </div>
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <span>创建时间：</span>
+                <span >创建时间：</span>
                 <span>{{ baseInfo.ctime }}</span>
               </div>
             </a-col>
@@ -187,27 +187,27 @@
                     <span v-if="record.is_owner === '1'" style="color:#F5222D"
                       >群主</span
                     >
-                    {{ record.owner_name }}
+                    <span style="color:rgba(0, 0, 0, 0.647058823529412);">{{ record.owner_name }}</span>
                   </div>
                   <div class="t2">{{ record.project_name }}</div>
                 </div>
               </template>
-              <template slot="user_task" slot-scope="user_task">
+              <template slot="user_task" slot-scope="text,record">
                 <div
                   class="task"
-                  style="cursor: pointer;"
-                  @click="$router.push('/taskCentre/task')"
+                  :style="{cursor: record.user_task>0?'pointer':'',color: record.user_task>0?'#1890FF':''}"
+                  @click="if(record.user_task>0)$router.push('/taskCentre/task?mobile='+record.mobile)"
                 >
-                  {{ user_task }}
+                  {{ record.user_task }}
                 </div>
               </template>
-              <template slot="user_group" slot-scope="user_group">
+              <template slot="user_group" slot-scope="text,record">
                 <div
                   class="group"
-                  style="cursor: pointer;"
-                  @click="$router.push('/taskCentre/taskGroup')"
+                  :style="{cursor: record.user_group>0?'pointer':'',color: record.user_group>0?'#1890FF':''}"
+                  @click="if(record.user_group>0)$router.push('/taskCentre/task?mobile='+record.mobile)"
                 >
-                  {{ user_group }}
+                  {{ record.user_group }}
                 </div>
               </template>
               <template slot="opera" slot-scope="text, record">
@@ -562,6 +562,7 @@ export default {
       this.selectedRowKeys = []
       this.selectedRows = []
       this.$message.success('删除成功')
+      this.getGroupBase()
       this.getData()
       this.getRegister()
     },
@@ -695,6 +696,7 @@ export default {
         group_id: this.id
       })
       this.getData()
+      this.getGroupBase()
       this.getRegister()
       this.$message.success('删除成功')
     },

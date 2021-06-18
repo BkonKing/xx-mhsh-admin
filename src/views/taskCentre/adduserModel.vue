@@ -5,9 +5,10 @@
         <div class="left">手机号：</div>
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
+            <!-- onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" -->
             <a-input
               @input="getData(index, $event)"
-              onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+               class="input1"
               v-model="item.mobile"
               :maxLength="11"
               placeholder="手机号"
@@ -97,8 +98,24 @@ export default {
           { id: Math.random() * 999, mobile: '', nickname: '', remark: '' }
         ]
         this.userInfoList = []
+      } else {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            const arr = document.getElementsByClassName('input1')
+            console.log('元素数组', arr)
+            for (let i = 0; i < arr.length; i++) {
+              arr[i].addEventListener('input', function (e) {
+                if (e.target.value.length == 1) { e.target.value = e.target.value.replace(/[^1-9]/g, '') } else { e.target.value = e.target.value.replace(/\D/g, '') }
+                // console.log(e.target)
+              }, false)
+            }
+          })
+        })
       }
     }
+  },
+  mounted () {
+
   },
   methods: {
     // 选择用户
@@ -115,23 +132,7 @@ export default {
       this.currentIndex = index
       console.log('事件对象', e.target)
       this.elm = e.target
-      // if (this.arr[index].mobile.length > 0) {
-      //   if (isNumber(this.arr[index].mobile)) {
-      //     const res = await getUserInfo({
-      //       realname: '',
-      //       mobile: this.arr[index].mobile
-      //     })
-      //     // console.log('用户信息', res)
-      //     this.userInfoList = res.data.list
-      //   } else {
-      //     const res = await getUserInfo({
-      //       realname: this.arr[index].mobile,
-      //       mobile: ''
-      //     })
-      //     // console.log('用户信息', res)
-      //     this.userInfoList = res.data.list
-      //   }
-      // }
+
       if (this.arr[index].mobile.length === 11) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
@@ -202,6 +203,7 @@ export default {
           this.$parent.pagination.currentPage = 1
           this.$message.success('添加成功')
           this.$parent.getData()
+          this.$parent.getGroupBase()
           this.$parent.getRegister()
           // console.log('添加群用户', res2)
         }

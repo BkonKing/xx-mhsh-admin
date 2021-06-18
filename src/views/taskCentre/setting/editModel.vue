@@ -16,11 +16,11 @@
           <a-input
             placeholder="请输入"
             v-model="form.type_name"
-            style="width:326px"
+            style="width:256px"
             :maxLength="10"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item label="参考价" >
+        <a-form-model-item label="参考价" prop="start_price">
 
             <a-row type="flex">
               <a-col flex='1'>

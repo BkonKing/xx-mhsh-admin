@@ -533,6 +533,7 @@ export default {
       border-bottom: 1px solid rgb(233, 233, 233);
     }
     .content {
+      margin-left: 36px;
       padding: 30px;
       display: flex;
       .left {

@@ -332,7 +332,7 @@ export default {
         onChange: this.onSelectChange,
         getCheckboxProps: record => ({
           props: {
-            disabled: ['已终止', '已放弃'].includes(record.progress_desc) // Column configuration not to be checked
+            disabled: ['已放弃'].includes(record.progress_desc) // Column configuration not to be checked
           }
 
         })

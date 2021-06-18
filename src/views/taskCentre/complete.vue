@@ -248,7 +248,7 @@
           </div>
         </div>
       </a-card>
-      <a-card class="card3">
+      <a-card class="card3" v-if="taskDetailInfo.task_status !==4">
         <a-row>
           <a-col :span="8">
             <div class="t1">提问</div>
@@ -273,7 +273,7 @@
           </a-col>
         </a-row>
       </a-card>
-      <a-card class="card4">
+      <a-card class="card4" v-if="taskDetailInfo.task_status !==4">
         <div class="top">
           <div
             class="item"
@@ -930,7 +930,7 @@ export default {
     }
     .imgcon {
       display: flex;
-      margin-left: 114px;
+      margin-left: 100px;
       .img {
         cursor: pointer;
         margin-top: 10px;
@@ -944,8 +944,8 @@ export default {
           object-fit: cover;
         }
       }
-      .img + .img {
-        margin-left: 38px;
+      .img {
+        margin-right: 10px;
       }
     }
   }
@@ -964,6 +964,7 @@ export default {
         border-right: 1px solid rgba(233, 233, 233, 1);
       }
       .t1 {
+        color:rgba(0, 0, 0, 0.447058823529412);
         margin-top: 32px;
       }
       .t2 {
@@ -973,8 +974,11 @@ export default {
         font-style: normal;
         line-height: 32px;
         margin: 10px 0;
+        color: rgba(0, 0, 0, 0.847058823529412);
+}
       }
       .t3 {
+        color:rgba(0, 0, 0, 0.447058823529412);
         span {
           padding: 0 10px;
 
@@ -1075,7 +1079,6 @@ export default {
       }
     }
   }
-}
 .card5 {
   margin-top: 20px;
   // padding-bottom: 20px;
@@ -1141,9 +1144,9 @@ export default {
         object-fit: cover;
       }
     }
-    .img + .img {
-      margin-left: 38px;
-    }
+    .img {
+        margin-right: 10px;
+      }
   }
 }
 .card6 {

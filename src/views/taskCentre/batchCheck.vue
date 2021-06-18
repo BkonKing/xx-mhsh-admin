@@ -40,14 +40,14 @@
           </a-select-option>
         </a-select>
       </a-form-model-item>
-      <a-form-model-item label="审核说明">
+      <a-form-model-item label="审核说明" class="checkItem1">
         <a-textarea
           v-model="form.check_desc"
           placeholder="请输入"
           :auto-size="{ minRows: 3, maxRows: 5 }"
         />
       </a-form-model-item>
-      <a-form-model-item label="图片">
+      <a-form-model-item label="图片" class="checkImg">
         <div class="clearfix">
           <a-upload
           multiple
@@ -208,13 +208,24 @@ export default {
   font-size: 32px;
   color: #999;
 }
-
+/deep/ .ant-modal-body{
+  padding: 16px 24px;
+}
 .ant-upload-select-picture-card .ant-upload-text {
   margin-top: 8px;
   color: #666;
 }
+ /deep/ .ant-form-item{
+  margin-bottom: 14px;
+}
+.checkItem1{
+  margin-bottom: 22px;
+}
+.checkImg{
+  margin-bottom: -14px;
+}
 .selected {
-  margin-top: 10px;
+  margin-bottom: 8px;
   width: 100%;
   height: 40px;
   padding-left: 15px;

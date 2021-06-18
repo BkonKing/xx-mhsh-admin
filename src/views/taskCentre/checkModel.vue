@@ -12,7 +12,7 @@
           <div class="t1" style="color:rgba(0, 0, 0, 0.647058823529412);">{{item.progress_title}}</div>
           <div class="t2" style="color:rgba(0, 0, 0, 0.647058823529412);">{{item.content}}</div>
           <div class="t3" style="color:#1890FF;cursor: pointer;" v-if="item.image_count>0" @click="openImg(item.image_arr)">
-              图片{{item.image_count}}张
+              图片 <span style="paddingLeft:4px">{{item.image_count}}张</span>
           </div>
 
         </div>

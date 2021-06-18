@@ -283,8 +283,8 @@
           </template>
           <template slot="task_user" slot-scope="text, record">
             <div>
-              <div class="t1">{{ record.task_user }}</div>
-              <div class="t2">
+              <div class="t1" style="color:rgba(0, 0, 0, 0.647058823529412);">{{ record.task_user }}</div>
+              <div class="t2" style="color:rgba(0, 0, 0, 0.349019607843137);">
                 {{ record.task_project ? record.task_project : "" }}
               </div>
             </div>
@@ -482,7 +482,8 @@ export default {
       taskStatusList: [], // 任务状态列表
       processStatus: [], // 任务进度状态列表
       projectList: [], // 项目列表
-      areaArr: []
+      areaArr: [],
+      jump_mobile: ''
     }
   },
 
@@ -561,7 +562,8 @@ export default {
         accept_search: this.accept_search,
         ctime: this.ctime,
         project_id: this.project_id,
-        task_user_search: this.task_user_search
+        task_user_search: this.task_user_search,
+        jump_mobile: this.jump_mobile
       })
       this.tableData = res.list
       this.pagination.total = res.data.total
@@ -616,6 +618,7 @@ export default {
     if (this.$route.query.toCheck) {
       this.currentIndex = 0
     }
+    this.jump_mobile = this.$route.query.mobile
     this.getData()
     // 任务-获取任务状态
     const res = await toGetCommonTaskStatus()
