@@ -338,13 +338,13 @@ export default {
           dataIndex: 'content',
           key: 'content',
           scopedSlots: { customRender: 'content' },
-          width: '13%'
+          width: '16%'
         },
         {
           title: '投诉类型',
           dataIndex: 'complaint_type',
           key: 'complaint_type',
-          width: '10%'
+          width: 60
         },
         {
           title: '被投诉人',

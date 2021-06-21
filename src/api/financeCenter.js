@@ -59,7 +59,6 @@ export function getUserInfo (data) {
   return request({
     url: '/recharge/newrecharge/getUserInfo',
     method: 'post',
-
     data
   })
 }

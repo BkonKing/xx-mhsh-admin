@@ -260,7 +260,7 @@ export default {
           dataIndex: 'progress_desc',
           key: 'progress_desc',
           scopedSlots: { customRender: 'progress_desc' },
-          width: '10%'
+          width: 60
         },
         {
           title: '接单方',
@@ -279,29 +279,32 @@ export default {
           title: '奖励(币)',
           dataIndex: 'reward_happiness',
           key: 'reward_happiness',
-          width: '10%',
-          sorter: true
+          width: 50,
+          sorter: true,
+          align: 'center'
         },
         {
           title: '投诉',
           dataIndex: 'complaint_total',
           key: 'complaint_total',
           width: '6%',
-          scopedSlots: { customRender: 'complaint_total' }
+          scopedSlots: { customRender: 'complaint_total' },
+          align: 'center'
         },
         {
           title: '评价',
           dataIndex: 'evaluate ',
           key: 'evaluate ',
-          width: '10%',
+          width: 50,
           sorter: true,
-          scopedSlots: { customRender: 'evaluate' }
+          scopedSlots: { customRender: 'evaluate' },
+          align: 'center'
         },
         {
           title: '最新进度',
           dataIndex: 'progress_content',
           key: 'progress_content',
-          width: '14%',
+          width: '18%',
           scopedSlots: { customRender: 'progress_content' },
           ellipsis: true
         },
@@ -329,13 +332,13 @@ export default {
       const { selectedRowKeys } = this
       return {
         selectedRowKeys,
-        onChange: this.onSelectChange,
-        getCheckboxProps: record => ({
-          props: {
-            disabled: ['已放弃'].includes(record.progress_desc) // Column configuration not to be checked
-          }
+        onChange: this.onSelectChange
+        // getCheckboxProps: record => ({
+        //   props: {
+        //     disabled: ['已放弃'].includes(record.progress_desc) // Column configuration not to be checked
+        //   }
 
-        })
+        // })
 
       }
     }

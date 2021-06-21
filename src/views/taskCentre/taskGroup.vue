@@ -178,47 +178,49 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '11.1111111111%'
+          width: 50
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '任务群',
           dataIndex: 'group_name',
           key: 'group_name',
-          width: '11.1111111111%'
+          width: '16%'
         },
         {
           title: '成员',
           dataIndex: 'group_member',
           key: 'group_member',
           sorter: true,
-          width: '11.1111111111%'
+          width: 50,
+          align: 'center'
         },
         {
           title: '任务',
           dataIndex: 'group_task',
           key: 'group_task',
           sorter: true,
-          width: '11.1111111111%'
+          width: 50,
+          align: 'center'
         },
         {
           title: '群主',
           dataIndex: 'owner_name',
           key: 'owner_name',
-          width: '11.1111111111%',
+          width: '16%',
           scopedSlots: { customRender: 'owner_name' }
         },
         {
           title: '手机号',
           dataIndex: 'group_mobile',
           key: 'group_mobile',
-          width: '11.1111111111%'
+          width: '12%'
         },
         {
           title: '允许加入',
           dataIndex: 'is_open',
           key: 'is_open',
-          width: '11.1111111111%',
+          width: 40,
           scopedSlots: { customRender: 'is_open' }
         },
         {

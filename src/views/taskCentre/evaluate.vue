@@ -225,13 +225,14 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 50
+          width: 50,
+          align: 'left'
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '12%',
+          width: '16%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -239,7 +240,7 @@ export default {
           dataIndex: 'evaluate_stars',
           key: 'evaluate_stars',
           sorter: true,
-          width: '12.555555555%',
+          width: 50,
           align: 'center'
         },
         {
@@ -259,7 +260,7 @@ export default {
           title: '补充内容',
           dataIndex: 'evaluate_supplement',
           key: 'evaluate_supplement',
-          width: '12.555555555%',
+          width: '16%',
           scopedSlots: { customRender: 'evaluate_supplement' }
 
         },
