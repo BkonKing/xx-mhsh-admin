@@ -281,6 +281,11 @@
               {{ task_title }}
             </div>
           </template>
+          <template slot="reward_happiness" slot-scope="reward_happiness">
+            <div style="paddingLeft:18px">
+              {{reward_happiness}}
+            </div>
+          </template>
           <template slot="task_user" slot-scope="text, record">
             <div>
               <div class="t1" style="color:rgba(0, 0, 0, 0.647058823529412);">{{ record.task_user }}</div>
@@ -299,9 +304,21 @@
             </a-tooltip>
           </div>
           <template slot="accept_people" slot-scope="text, record">
-            <span> {{ record.accept_people }}</span
+           <div style="paddingLeft:18px">
+              <span> {{ record.accept_people }}</span
             ><span>/</span>
             <span>{{ record.need_people }}</span>
+           </div>
+          </template>
+          <template slot="complaint_total" slot-scope="complaint_total">
+            <div style="paddingLeft:8px">
+              {{complaint_total}}
+            </div>
+          </template>
+          <template slot="ask_total" slot-scope="ask_total">
+            <div style="paddingLeft:8px">
+              {{ask_total}}
+            </div>
           </template>
           <template slot="opera" slot-scope="text, record">
             <div class="btns">
@@ -389,19 +406,19 @@ export default {
           title: '任务状态',
           dataIndex: 'task_status',
           key: 'task_status',
-          width: '8.333333333%'
+          width: '5%'
         },
         {
           title: '类型',
           dataIndex: 'task_type',
           key: 'task_type',
-          width: 80
+          width: '5%'
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '8.333333333%',
+          width: '15%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -410,7 +427,7 @@ export default {
           key: 'reward_happiness',
           sorter: true,
           width: '8.333333333%',
-          align: 'center'
+          scopedSlots: { customRender: 'reward_happiness' }
         },
         {
           title: '任务方',
@@ -424,8 +441,8 @@ export default {
           key: 'accept_people',
           slots: { title: 'customTitle' },
           scopedSlots: { customRender: 'accept_people' },
-          width: '8.333333333%',
-          align: 'center'
+          width: '8.333333333%'
+
         },
         {
           title: '投诉',
@@ -433,7 +450,7 @@ export default {
           key: 'complaint_total',
           sorter: true,
           width: 50,
-          align: 'center'
+          scopedSlots: { customRender: 'complaint_total' }
         },
         {
           title: '提问',
@@ -441,7 +458,7 @@ export default {
           key: 'ask_total',
           sorter: true,
           width: 50,
-          align: 'center'
+          scopedSlots: { customRender: 'ask_total' }
         },
         {
           title: '创建时间',

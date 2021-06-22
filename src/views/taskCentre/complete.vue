@@ -930,7 +930,7 @@ export default {
     }
     .imgcon {
       display: flex;
-      margin-left: 100px;
+      margin-left: 114px;
       .img {
         cursor: pointer;
         margin-top: 10px;
@@ -970,7 +970,7 @@ export default {
       .t2 {
         font-size: 24px;
         font-family: "MicrosoftYaHei", "Microsoft YaHei";
-        font-weight: 600;
+        // font-weight: 600;
         font-style: normal;
         line-height: 32px;
         margin: 10px 0;

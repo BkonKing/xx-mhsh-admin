@@ -112,16 +112,22 @@
               :style="{
                 cursor: 'pointer',
                 color: record.complaint_total > 0 ? '#1890FF' : ''
+
               }"
               @click="openComplaint(record)"
             >
               {{ record.complaint_total }}
             </div>
           </template>
+          <template slot="reward_happiness" slot-scope="reward_happiness">
+            <div style="paddingLeft:18px">
+              {{reward_happiness}}
+            </div>
+          </template>
           <template slot="evaluate" slot-scope="text, record">
             <span
               v-if="record.evaluate != 0"
-              style="color:#1890FF;cursor: pointer;"
+              style="color:#1890FF;cursor: pointer;paddingLeft:8px"
               @click="openAppraise(record.evaluate_id)"
               >{{ record.evaluate }}星</span
             >
@@ -135,7 +141,7 @@
             </div>
           </template>
           <template slot="opera" slot-scope="text, record">
-            <div class="btns">
+            <div class="opera">
               <a-button style="paddingLeft:0" type="link" @click="check(record.uid)">查看</a-button>
               <a-button
                 type="link"
@@ -281,7 +287,7 @@ export default {
           key: 'reward_happiness',
           width: 50,
           sorter: true,
-          align: 'center'
+          scopedSlots: { customRender: 'reward_happiness' }
         },
         {
           title: '投诉',
@@ -297,8 +303,7 @@ export default {
           key: 'evaluate ',
           width: 50,
           sorter: true,
-          scopedSlots: { customRender: 'evaluate' },
-          align: 'center'
+          scopedSlots: { customRender: 'evaluate' }
         },
         {
           title: '最新进度',
@@ -606,7 +611,7 @@ export default {
     .btns {
       text-align: right;
       button {
-        margin-right: 10px;
+        // margin-right: 10px;
       }
     }
   }
@@ -617,6 +622,8 @@ export default {
     .btns {
       button {
         margin-right: 10px;
+      // padding: 0;
+      // padding-right: 10px;
       }
     }
     .selected {
@@ -678,6 +685,12 @@ export default {
         float: left;
         // margin-left: 20px;
         // margin-right: 300px;
+      }
+    }
+    .opera{
+      button{
+        padding: 0;
+        padding-right: 10px;
       }
     }
   }

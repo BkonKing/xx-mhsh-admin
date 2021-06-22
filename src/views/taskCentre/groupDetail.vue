@@ -47,7 +47,7 @@
             </a-col>
             <a-col :span="8">
               <div class="item">
-                <span >创建时间：</span>
+                <span style="color: rgba(0, 0, 0, 0.847058823529412)">创建时间：</span>
                 <span>{{ baseInfo.ctime }}</span>
               </div>
             </a-col>
@@ -184,12 +184,12 @@
               <template slot="owner_name" slot-scope="text, record">
                 <div class="user">
                   <div class="t1">
-                    <span v-if="record.is_owner === '1'" style="color:#F5222D"
+                    <span v-if="record.is_owner === '1'" style="color:#F5222D;paddingRight:10px"
                       >群主</span
                     >
                     <span style="color:rgba(0, 0, 0, 0.647058823529412);">{{ record.owner_name }}</span>
                   </div>
-                  <div class="t2">{{ record.project_name }}</div>
+                  <div class="t2" style="color:rgba(0, 0, 0, 0.349019607843137);">{{ record.project_name }}</div>
                 </div>
               </template>
               <template slot="user_task" slot-scope="text,record">
@@ -208,6 +208,11 @@
                   @click="if(record.user_group>0)$router.push('/taskCentre/task?mobile='+record.mobile)"
                 >
                   {{ record.user_group }}
+                </div>
+              </template>
+              <template slot="register_time" slot-scope="register_time">
+                <div>
+                  {{register_time?register_time:''}}
                 </div>
               </template>
               <template slot="opera" slot-scope="text, record">
@@ -428,7 +433,8 @@ export default {
           key: 'user_task',
           sorter: true,
           scopedSlots: { customRender: 'user_task' },
-          width: '10%'
+          width: '10%',
+          align: 'center'
         },
         {
           title: '群',
@@ -436,13 +442,15 @@ export default {
           key: 'user_group',
           sorter: true,
           scopedSlots: { customRender: 'user_group' },
-          width: '10%'
+          width: '10%',
+          align: 'center'
         },
         {
           title: '注册时间',
           dataIndex: 'register_time',
           key: 'register_time',
           sorter: true,
+          scopedSlots: { customRender: 'register_time' },
           width: '10%'
         },
         {

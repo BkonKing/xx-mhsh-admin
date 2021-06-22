@@ -140,6 +140,9 @@ export default {
         })
         // console.log('用户信息', res)
         this.userInfoList = res.data.list
+        if (this.userInfoList.length === 1) {
+          this.selectUser(this.userInfoList[0])
+        }
       }
       if (this.arr[index].nickname) {
         const res = await getUserInfo({
@@ -148,6 +151,9 @@ export default {
         })
         // console.log('用户信息', res)
         this.userInfoList = res.data.list
+        if (this.userInfoList.length === 1) {
+          this.selectUser(this.userInfoList[0])
+        }
       }
     },
     // 确定
@@ -165,6 +171,10 @@ export default {
         const list = []
         for (let i = 0; i < this.arr.length; i++) {
           if (this.arr[i].mobile) {
+            if (this.arr[i].mobile.length !== 11) {
+              this.$message.warning('请正确填写手机号')
+              return
+            }
             list.push(this.arr[i])
           }
         }
@@ -189,6 +199,10 @@ export default {
         const list2 = []
         for (let i = 0; i < this.arr.length; i++) {
           if (this.arr[i].mobile) {
+            if (this.arr[i].mobile.length !== 11) {
+              this.$message.warning('请正确填写手机号')
+              return
+            }
             list2.push(this.arr[i])
           }
         }
@@ -259,7 +273,7 @@ export default {
   margin-left: 58px;
   width: 446px;
   max-height: 300px;
-  overflow: scroll;
+  overflow: auto;
   padding: 0 20px;
   box-shadow: 0px 0px 2px 2px #ededed;
   .boxtitle {

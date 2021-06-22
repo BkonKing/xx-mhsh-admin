@@ -16,46 +16,47 @@
           <a-input
             placeholder="请输入"
             v-model="form.type_name"
-            style="width:256px"
+            style="width:320px"
             :maxLength="10"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item label="参考价" prop="start_price">
 
-            <a-row type="flex">
-              <a-col flex='1'>
-            <a-form-model-item prop="start_price">
-            <a-input
-              placeholder="最低价"
-              :maxLength="15"
+        <a-form-model-item label="参考价" >
+          <div class="boxPrice">
+           <span class="point">*</span>
+            <div class="minPrice" >
+              <a-form-model-item prop="start_price">
+                <a-input
+                  placeholder="最低价"
+                  :maxLength="15"
 
-              v-model="form.start_price"
-              oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                  v-model="form.start_price"
+                  oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                ></a-input>
+              </a-form-model-item>
+            </div>
+            <div  style="textAlign: center;padding:0 10px"><span>~</span></div>
+            <div  class="maxPrice">
+              <a-form-model-item prop="end_price">
+                <a-input
+                  placeholder="最高价"
+                  :maxLength="15"
 
-            ></a-input>
-            </a-form-model-item>
-            </a-col>
-            <a-col flex='30px' style="textAlign: center;"><span>~</span></a-col>
-            <a-col flex='1'>
-            <a-form-model-item prop="end_price">
-            <a-input
-
-              placeholder="最高价"
-              :maxLength="15"
-              v-model="form.end_price"
-              oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-            ></a-input>
-            </a-form-model-item>
-            </a-col>
-            </a-row>
+                  v-model="form.end_price"
+                  oninput="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                ></a-input>
+              </a-form-model-item>
+            </div>
+          </div>
 
           <div class="txt">任务参考的幸福币价格，含最低最高价</div>
         </a-form-model-item>
         <a-form-model-item label="备注">
           <a-textarea
+            class="textarea"
             v-model="form.remark"
             placeholder="请输入"
-            :auto-size="{ minRows: 3, maxRows: 100000 }"
+
           />
         </a-form-model-item>
       </a-form-model>
@@ -113,7 +114,7 @@ export default {
               this.$parent.getData()
               this.$message.success('新增成功')
               this.isShow = false
-            // console.log('新增', res)
+              // console.log('新增', res)
             }
           }
         })
@@ -139,19 +140,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .ant-form-item-label{
+/deep/ .ant-form-item-label {
   width: 80px;
 }
-/deep/ .ant-form-item{
+/deep/ .ant-form-item {
   padding-bottom: 16px;
   margin-bottom: 0;
-
 }
 /deep/ .ant-modal-content {
   width: 480px;
   // height: 400px;
   min-height: 400px;
-
 }
 /deep/ .ant-modal-body {
   padding: 20px 20px 16px 20px;
@@ -163,7 +162,7 @@ export default {
 //     margin: 0 10px;
 //   }
 // }
-/deep/ .ant-modal-footer{
+/deep/ .ant-modal-footer {
   padding: 16px;
 }
 .txt {
@@ -173,5 +172,32 @@ export default {
   font-style: normal;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.447058823529412);
+}
+.textarea {
+  overflow-y: visible;
+  min-height: 100px;
+  width: 320px;
+}
+/deep/ .ant-input{
+  max-width: none;
+}
+.boxPrice{
+  display: flex;
+  position: relative;
+}
+.minPrice{
+  width: 146px;
+  flex-shrink: 0;
+}
+
+.maxPrice{
+  width: 146px;
+  flex-shrink: 0;
+}
+.point{
+  position: absolute;
+  top: 0;
+  left: -66px;
+  color: red;
 }
 </style>
