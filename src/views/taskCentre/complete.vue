@@ -190,7 +190,7 @@
                 </a-col>
                 <a-col :span="8">
                   <a-form-model-item label="任务编号">
-                    {{ taskDetailInfo.task_number }}
+                    <span>{{ taskDetailInfo.task_number }}</span>
                     <img
                       style="marginLeft:8px;width:20px;height:20;margin-top: -3px"
                       preview="1"
