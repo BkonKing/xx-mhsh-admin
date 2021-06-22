@@ -2,7 +2,7 @@
   <div class="importFile">
     <a-modal v-model="isShow" title="导入文件" @ok="submit" :destroyOnClose='true'>
       <div class="form">
-        <div class="leftForm"><span style="color:red">*</span> 选择文件：</div>
+        <div class="leftForm textFile" ><span style="color:red">*</span> <span >选择文件：</span></div>
         <div class="rightForm">
           <label for="filein">
             <div class="fileUpload">
@@ -174,6 +174,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.textFile{
+  white-space: nowrap;
+}
 .form {
   display: flex;
   .leftForm {
@@ -249,5 +252,8 @@ export default {
     width: 345px;
     height: 140px;
   }
+}
+/deep/ .ant-modal-footer{
+  padding: 10px 24px;
 }
 </style>

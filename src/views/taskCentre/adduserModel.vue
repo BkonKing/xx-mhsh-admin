@@ -178,14 +178,21 @@ export default {
             list.push(this.arr[i])
           }
         }
-        await toAddWhiteUser({
+        const res = await toAddWhiteUser({
           user_list: list
         })
         // console.log('添加白名单', res)
-        this.isShow = false
-        this.$parent.pagination.currentPage = 1
-        this.$parent.getData()
-        this.$message.success('添加成功')
+        if (res.code === '201') {
+          this.$message.error(res.message)
+        } else {
+          this.isShow = false
+          this.$parent.pagination.currentPage = 1
+          this.$message.success('添加成功')
+          this.$parent.getData()
+          // this.$parent.getGroupBase()
+          // this.$parent.getRegister()
+          // console.log('添加群用户', res2)
+        }
       } else {
         // const list2 = this.arr.map(item => {
         //   if (item.mobile) {
