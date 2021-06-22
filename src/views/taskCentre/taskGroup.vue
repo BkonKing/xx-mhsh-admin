@@ -103,6 +103,16 @@
                 <div class="t2" style="color:rgba(0, 0, 0, 0.349019607843137);">{{ record.project_name }}</div>
               </div>
             </template>
+            <template slot="group_member" slot-scope="group_member">
+              <div style="paddingLeft:8px">
+                {{group_member}}
+              </div>
+            </template>
+            <template slot="group_task" slot-scope="group_task">
+              <div style="paddingLeft:8px">
+                {{group_task}}
+              </div>
+            </template>
             <template slot="is_open" slot-scope="text, record">
               <div>
                 <a-switch
@@ -193,7 +203,7 @@ export default {
           key: 'group_member',
           sorter: true,
           width: 50,
-          align: 'center'
+          scopedSlots: { customRender: 'group_member' }
         },
         {
           title: '任务',
@@ -201,7 +211,7 @@ export default {
           key: 'group_task',
           sorter: true,
           width: 50,
-          align: 'center'
+          scopedSlots: { customRender: 'group_task' }
         },
         {
           title: '群主',

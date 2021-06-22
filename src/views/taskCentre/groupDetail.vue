@@ -195,7 +195,7 @@
               <template slot="user_task" slot-scope="text,record">
                 <div
                   class="task"
-                  :style="{cursor: record.user_task>0?'pointer':'',color: record.user_task>0?'#1890FF':''}"
+                  :style="{cursor: record.user_task>0?'pointer':'',color: record.user_task>0?'#1890FF':'',paddingLeft:'8px'}"
                   @click="if(record.user_task>0)$router.push('/taskCentre/task?mobile='+record.mobile)"
                 >
                   {{ record.user_task }}
@@ -433,8 +433,7 @@ export default {
           key: 'user_task',
           sorter: true,
           scopedSlots: { customRender: 'user_task' },
-          width: '10%',
-          align: 'center'
+          width: '10%'
         },
         {
           title: '群',
