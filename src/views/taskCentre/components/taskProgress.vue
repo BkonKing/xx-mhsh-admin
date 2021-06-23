@@ -352,12 +352,10 @@ export default {
 
     selectedRows: {
       handler () {
-        if (this.selectedRows.length === 0) {
-          this.isAward = false
-          this.isWeek = false
-          return
-        }
-        this.selectedRows.forEach(item => {
+        this.isAward = false
+        this.isWeek = false
+
+        this.selectedRows.map(item => {
           if (item.is_reward === 0) {
             console.log('isAward')
             this.isAward = true

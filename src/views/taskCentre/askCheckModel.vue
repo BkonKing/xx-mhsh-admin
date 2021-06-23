@@ -55,7 +55,7 @@
           <a-select
             v-model="form.violation_type"
             placeholder="请选择"
-            style="width: 254px"
+            style="width: 340px"
           >
             <a-select-option
               v-for="(item, index) in reasonList"
@@ -66,14 +66,14 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="审核说明">
+        <a-form-model-item label="审核说明" class="checkExp">
           <a-textarea
             v-model="form.check_desc"
             placeholder="请输入"
             :auto-size="{ minRows: 3, maxRows: 5 }"
           />
         </a-form-model-item>
-        <a-form-model-item label="图片">
+        <a-form-model-item label="图片" class="imgItem">
           <a-upload
           multiple
             :data="uploadData"
@@ -280,13 +280,25 @@ export default {
   color: #666;
 }
 /deep/ .ant-modal-body {
-  padding: 42px;
+  padding: 14px 24px 0px 24px;
 }
 .line {
-  margin: 10px 0;
+  margin: 14px 0;
   border-bottom: 2px dashed #efefef;
 }
 /deep/ .ant-form-item {
   margin-bottom: 0;
+}
+.checkExp{
+  margin-top: 16px;
+}
+.imgItem{
+  margin-top: 24px;
+}
+/deep/ .ant-col-14 {
+    width: 72.333333%;
+}
+/deep/ .ant-modal-footer{
+  padding: 14px 26px;
 }
 </style>

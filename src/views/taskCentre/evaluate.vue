@@ -94,17 +94,7 @@
                     </a-select>
                   </a-form-model-item>
                 </a-col>
-                <a-col :md="8" :sm="24" v-if="cardBol">
-                  <a-form-model-item>
-                    <div class="btns">
-                      <a-button type="primary" @click="search">查询</a-button>
-                      <a-button @click="reset">重置</a-button>
-                      <a-button type="link" @click="close">
-                        收起 <a-icon type="up" />
-                      </a-button>
-                    </div>
-                  </a-form-model-item>
-                </a-col>
+
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="是否有效">
                     <a-select placeholder="请选择" v-model="is_valid">
@@ -137,6 +127,17 @@
                     />
                   </a-form-model-item>
                 </a-col>
+                          <a-col :md="16" :sm="24" v-if="cardBol">
+                  <a-form-model-item>
+                    <div class="btns">
+                      <a-button type="primary" @click="search">查询</a-button>
+                      <a-button @click="reset">重置</a-button>
+                      <a-button type="link" @click="close">
+                        收起 <a-icon type="up" />
+                      </a-button>
+                    </div>
+                  </a-form-model-item>
+                </a-col>
               </template>
             </a-row>
           </a-form-model>
@@ -154,9 +155,15 @@
           :pagination="false"
           @change="tableChange"
         >
-          <template slot="task_title" slot-scope="task_title">
-            <div class="task_title" style="color:#1890FF">
-              {{ task_title }}
+          <template slot="task_title" slot-scope="text,record">
+            <!-- $router.push('/taskCentre/complete?id='+record.task_id) -->
+            <div class="task_title" style="color:#1890FF;cursor: pointer;" @click="openDetail(record.task_id)">
+              {{ record.task_title }}
+            </div>
+          </template>
+          <template slot="evaluate_stars" slot-scope="evaluate_stars">
+            <div style="paddingLeft:8px">
+              {{evaluate_stars}}
             </div>
           </template>
           <template slot="evaluate_supplement" slot-scope="evaluate_supplement">
@@ -173,7 +180,7 @@
             </div>
           </template>
           <template slot="opera" slot-scope="text, record">
-            <div>
+            <div class="opera">
               <a-button type="link" @click="lookOver(record)">查看</a-button>
             </div>
           </template>
@@ -225,14 +232,14 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: 50,
+          // width: 50,
           align: 'left'
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '16%',
+          width: '20%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -240,8 +247,8 @@ export default {
           dataIndex: 'evaluate_stars',
           key: 'evaluate_stars',
           sorter: true,
-          width: 50,
-          align: 'center'
+          width: '6%',
+          scopedSlots: { customRender: 'evaluate_stars' }
         },
         {
           title: '标签',
@@ -254,7 +261,7 @@ export default {
           dataIndex: 'owner_name',
           key: 'owner_name',
           scopedSlots: { customRender: 'owner_name' },
-          width: '13.555555555%'
+          width: '15%'
         },
         {
           title: '补充内容',
@@ -297,6 +304,10 @@ export default {
     }
   },
   methods: {
+    // 新窗口打开任务详情
+    openDetail (id) {
+      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete?id=${id}`, '_blank')
+    },
     // 排序
     tableChange (pagination, filters, sorter, { currentDataSource }) {
       console.log('sorter', sorter)
@@ -474,6 +485,11 @@ export default {
       }
       /deep/ .ant-pagination-total-text {
         float: left;
+      }
+    }
+    .opera{
+      button{
+        padding-left: 0;
       }
     }
   }

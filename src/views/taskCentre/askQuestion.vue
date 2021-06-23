@@ -211,14 +211,16 @@
                 <div class="t2">{{ record.project_name }}</div>
               </div>
             </template>
-            <template slot="task_title" slot-scope="task_title">
-              <div style="color:#1890FF">{{ task_title }}</div>
+            <template slot="task_title" slot-scope="text,record">
+              <!-- $router.push('/taskCentre/complete?id='+record.task_id) -->
+              <div style="color:#1890FF;cursor: pointer;" @click="openDetail(record.task_id)">{{ record.task_title }}</div>
             </template>
             <template slot="complaint_total" slot-scope="text, record">
               <div
                 :style="{
                   cursor: 'pointer',
-                  color: record.complaint_total > 0 ? '#1890FF' : ''
+                  color: record.complaint_total > 0 ? '#1890FF' : '',
+                  paddingLeft:'8px'
                 }"
                 @click="openComplaint(record)"
               >
@@ -357,8 +359,7 @@ export default {
           key: 'complaint_total',
           scopedSlots: { customRender: 'complaint_total' },
           sorter: true,
-          width: 50,
-          align: 'center'
+          width: 50
         },
         {
           title: '任务',
@@ -407,6 +408,10 @@ export default {
     // this.$refs.card.$el.style.height = '88px'
   },
   methods: {
+    // 新窗口打开任务详情
+    openDetail (id) {
+      window.open(`/zht/task/task/getTaskInfo?url=%2Ffilm%2Findex.html%23%2FtaskCentre%2Fcomplete?id=${id}`, '_blank')
+    },
     // 编辑
     edit (record) {
       console.log(record)
@@ -629,7 +634,7 @@ export default {
   .card2 {
     margin-top: 20px;
     .selected {
-      margin-top: 10px;
+      margin-top: 16px;
       width: 100%;
       height: 40px;
       padding-left: 15px;
@@ -653,7 +658,7 @@ export default {
       }
     }
     .table {
-      margin-top: 20px;
+      margin-top: 16px;
       .content {
         text-overflow: -o-ellipsis-lastline;
         overflow: hidden;
@@ -680,6 +685,10 @@ export default {
     .btn {
       white-space: nowrap;
       display: flex;
+      button{
+        padding-left: 0;
+        padding-right: 5px;
+      }
     }
   }
   /deep/ .ant-card-body {

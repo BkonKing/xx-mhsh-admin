@@ -265,10 +265,7 @@
           :columns="columns"
           :data-source="tableData"
           :pagination="false"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
-          }"
+          :row-selection="rowSelection"
           @change="tableChange"
         >
           <template slot="check_time_desc" slot-scope="text, record">
@@ -503,7 +500,21 @@ export default {
       jump_mobile: ''
     }
   },
+  computed: {
+    rowSelection () {
+      const { selectedRowKeys } = this
+      return {
+        selectedRowKeys,
+        onChange: this.onSelectChange,
+        getCheckboxProps: record => ({
+          props: {
+            disabled: record.task_status !== '未通过' // Column configuration not to be checked
+          }
+        })
 
+      }
+    }
+  },
   methods: {
     // 切换tab栏
     changeTab (type) {

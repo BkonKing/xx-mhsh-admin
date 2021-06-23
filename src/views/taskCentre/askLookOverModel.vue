@@ -39,7 +39,9 @@
           >{{ lookOverInfo.violation_reason }}</a-form-model-item
         >
         <a-form-model-item label="审核说明">
-          {{ lookOverInfo.check_desc?lookOverInfo.check_desc:'--' }}
+          <div style="lineHeight:22px;paddingTop:9px">
+            {{ lookOverInfo.check_desc?lookOverInfo.check_desc:'--' }}
+          </div>
         </a-form-model-item>
         <div class="imgcon">
           <div
@@ -127,13 +129,18 @@ export default {
   border-bottom: 2px dashed #efefef;
 }
 .imgcon {
+  margin-top: 10px;
   display: flex;
-  margin-left: 39px;
+  margin-left: 63px;
+  // width: 400px;
+  flex-wrap: wrap;
   .img {
     cursor: pointer;
-    margin-left: 38px;
+    margin-left: 10px;
     margin-top: 10px;
     width: 104px;
+    flex-shrink: 0;
+
     height: 104px;
     padding: 10px;
     border: 2px dashed #dedede;
@@ -145,6 +152,6 @@ export default {
   }
 }
 /deep/.ant-modal-body {
-  padding: 42px;
+  padding: 16px 24px 24px 24px;
 }
 </style>

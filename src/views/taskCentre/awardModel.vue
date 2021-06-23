@@ -14,7 +14,7 @@
         {{taskDetailInfo.reward_happiness}}幸福币
       </a-form-model-item>
       <a-form-model-item label="奖励" prop="credits">
-        <a-input v-model="form.credits" placeholder="请输入" addon-after="币" />
+        <a-input v-model="form.credits" :maxLength='10' placeholder="请输入" addon-after="币" />
         <div class="txt" v-if="selectedRowKeys.length<=1 && selectedRows.length===0" style="marginTop:-10px">还可以奖励{{taskDetailInfo.every_reward-reward_happiness}}幸福币</div>
         <div class="txt" v-if="selectedRowKeys.length<=1 && selectedRows.length===1" style="marginTop:-10px">还可以奖励{{taskDetailInfo.every_reward- selectedRows[0].reward_happiness}}幸福币</div>
         <div class="txt3" v-if="selectedRowKeys.length>=2" style="marginTop:-10px">还可以奖励{{taskDetailInfo.happy_reward-taskDetailInfo.reward_happiness}}幸福币</div>
@@ -68,7 +68,6 @@ export default {
         })
         if (+res.code === 201) {
           this.$message.error(res.message)
-          this.isShow = false
         } else if (+res.code === 200) {
           this.$parent.getTaskSpeedData()
           this.$listeners.getTaskLog()

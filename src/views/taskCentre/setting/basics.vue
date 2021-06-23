@@ -46,7 +46,7 @@
             step="1"
             min="0"
             onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+            onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
           ></a-input>
           <span>天后关闭交易，不可再进行投诉、评价、任务方幸福币冻结</span>
         </div>
@@ -57,7 +57,7 @@
             step="1"
             min="0"
             onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
-                onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+            onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
             style="width:87px;textAlign: center;"
           ></a-input>
           <span>人</span>
@@ -65,17 +65,14 @@
         <div class="bottom">
           <span>任务处理客服：</span>
           <a-input
-          :maxLength='11'
+            :maxLength="11"
             v-model="customer_service"
             onkeyup="value=value.replace(/[\u4E00-\u9FA5]|[A-Za-z]/g,'')"
             style="width:440px;marginLeft:10px"
           ></a-input>
         </div>
         <div class="btn">
-          <a-button
-type="primary"
-:disabled="btnBol"
-@click="basicsSubmit"
+          <a-button type="primary" :disabled="btnBol" @click="basicsSubmit"
             >提交</a-button
           >
         </div>
@@ -90,19 +87,20 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
-              v-model="item.good_tag_name"
-              placeholder="标签"
-              style="width:160px"
-              :maxLength='20'
-            ></a-input>
-            <a-input
-            :maxLength='20'
+              :maxLength="20"
               v-model="item.bad_tag_name"
               placeholder="标签"
               style="width:160px"
             ></a-input>
             <a-input
-            :maxLength='20'
+              v-model="item.good_tag_name"
+              placeholder="标签"
+              style="width:160px"
+              :maxLength="20"
+            ></a-input>
+
+            <a-input
+              :maxLength="20"
               v-model="item.order_sort"
               placeholder="排序"
               style="width:104px"
@@ -130,29 +128,22 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr2" :key="item.id">
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addWeedOut" />
-            <a-icon
-              class="close"
-              type="close"
-              @click="delWeedOut(index)"
-            />
+            <a-icon class="close" type="close" @click="delWeedOut(index)" />
           </div>
           <div class="btn">
-            <a-button
-type="primary"
-:disabled="card4Bol"
-@click="weedOut"
+            <a-button type="primary" :disabled="card4Bol" @click="weedOut"
               >提交</a-button
             >
           </div>
@@ -166,30 +157,22 @@ type="primary"
         <div class="right">
           <div class="item" v-for="(item, index) in arr3" :key="item.id">
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.reason"
               placeholder="原因"
               style="width:302px"
             ></a-input>
             <a-input
-            :maxLength='30'
+              :maxLength="30"
               v-model="item.order_sort"
               placeholder="排序"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addGiveUp" />
-            <a-icon
-              class="close"
-              type="close"
-              @click="delGiveUp(index)"
-
-            />
+            <a-icon class="close" type="close" @click="delGiveUp(index)" />
           </div>
           <div class="btn">
-            <a-button
-type="primary"
-:disabled="card5Bol"
-@click="giveUp"
+            <a-button type="primary" :disabled="card5Bol" @click="giveUp"
               >提交</a-button
             >
           </div>
@@ -285,7 +268,7 @@ export default {
       this.$nextTick(() => {
         this.card5Bol = true
       })
-    // console.log('获取放弃原因列表', res4)
+      // console.log('获取放弃原因列表', res4)
     },
     // 获取淘汰原因列表
     async getWeekOutReasonList () {
@@ -296,7 +279,7 @@ export default {
       this.$nextTick(() => {
         this.card4Bol = true
       })
-    // console.log('获取淘汰原因列表', res3)
+      // console.log('获取淘汰原因列表', res3)
     },
     // 获取评价标签
     async GetLabelList () {
@@ -316,7 +299,7 @@ export default {
       this.$nextTick(() => {
         this.card3Bol = true
       })
-    //  console.log('基础-获取评价标签', res2)
+      //  console.log('基础-获取评价标签', res2)
     },
     // 放弃提交
     async giveUp () {
@@ -399,7 +382,9 @@ export default {
       // })
       for (let i = 0; i < this.arr.length; i++) {
         if (
-          (this.arr[i].good_tag_name === '' || this.arr[i].bad_tag_name === '') && (this.arr[i].good_tag_name != '' || this.arr[i].bad_tag_name != '')
+          (this.arr[i].good_tag_name === '' ||
+            this.arr[i].bad_tag_name === '') &&
+          (this.arr[i].good_tag_name != '' || this.arr[i].bad_tag_name != '')
         ) {
           this.$message.error('请填写完整一行')
           return

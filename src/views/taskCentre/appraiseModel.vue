@@ -26,9 +26,9 @@
         info.evaluate_tags
       }}
       </a-form-model-item>
-      <a-form-model-item label="补充内容">
+      <a-form-model-item label="补充内容" class="subbleContent">
         {{
-        info.evaluate_supplement
+        info.evaluate_supplement?info.evaluate_supplement:'--'
       }}
       </a-form-model-item>
     </a-form-model>
@@ -152,18 +152,26 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-modal-body{
+  padding: 18px 24px 24px 24px;
+}
+.subbleContent{
+  padding-bottom: 33px;
+}
 .title {
   color: #1890ff;
   cursor: pointer;
 }
 .btn {
+  margin-top: 16px;
   margin-left: 74px;
 }
 .bottom {
   display: flex;
+  margin-top: -2px;
   margin-left: 10px;
   border-top: 2px dashed #999;
-  padding-top: 20px;
+  padding-top: 26px;
   .left {
     width: 70px;
   }
@@ -172,14 +180,25 @@ export default {
   }
 }
 /deep/ .ant-form-item {
-  margin-bottom: 15px;
+  height: 20px;
+  line-height: 20px;
+}
+/deep/ .ant-form-item-label{
+  height: 20px;
+  line-height: 40px;
+  overflow: initial;
+}
+/deep/ .ant-form-item-control-wrapper{
+  height: 20px;
+  line-height: 40px;
 }
 .btn2 {
   margin-left: 80px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 .info {
   border-top: 2px dashed #eaeaea;
+  padding-top: 16px;
   .item {
     display: flex;
     margin: 10px 8px;
