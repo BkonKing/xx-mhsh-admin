@@ -107,7 +107,7 @@
                         class="piker-time"
                        :ranges="{
                         Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
-                        'This Month': [moment('00:00:00', 'HH:mm:ss'), moment().endOf('month')]
+                        'This Month': [moment().startOf('month'), moment().endOf('month')]
                       }"
                          :show-time="{
                         defaultValue: [
@@ -205,7 +205,7 @@
                 <div
                   class="group"
                   :style="{cursor: record.user_group>0?'pointer':'',color: record.user_group>0?'#1890FF':''}"
-                  @click="if(record.user_group>0)$router.push('/taskCentre/task?mobile='+record.mobile)"
+                  @click="if(record.user_group>0)$router.push('/taskCentre/groupDetail?mobile='+record.mobile)"
                 >
                   {{ record.user_group }}
                 </div>

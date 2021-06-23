@@ -59,7 +59,7 @@
                 <div class="t1" style="color: rgba(0, 0, 0, 0.847058823529412)">被投诉次数：</div>
                 <div
                   class="t2"
-                  style="color:#1890FF;cursor: pointer;"
+                  :style="{color: detailInfo.complaint_total>1?'#1890FF':'',cursor: 'pointer'}"
                   @click="$router.push('/taskCentre/complain?task_id='+detailInfo.task_id)"
                 >
                   {{ detailInfo.complaint_total }}
@@ -563,7 +563,7 @@ export default {
     }
     .bottom {
       margin-top: 10px;
-      margin-left: 85px;
+      margin-left: 100px;
       display: flex;
       .item {
         margin-right: 10px;

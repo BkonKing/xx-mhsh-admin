@@ -359,7 +359,7 @@
                       class="piker-time"
                      :ranges="{
                         Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
-                        'This Month': [moment('00:00:00', 'HH:mm:ss'), moment().endOf('month')]
+                        'This Month': [moment().startOf('month'), moment().endOf('month')]
                       }"
                        :show-time="{
                         defaultValue: [

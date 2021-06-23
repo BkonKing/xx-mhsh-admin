@@ -87,10 +87,15 @@
                     v-model="createTime"
                     class="piker-time"
                     :ranges="{
-                      Today: [moment(), moment()],
-                      'This Month': [moment(), moment().endOf('month')]
+                      Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
+                      'This Month': [moment().startOf('month'), moment().endOf('month')]
                     }"
-                    show-time
+                     :show-time="{
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('00:00:00', 'HH:mm:ss')
+                        ]
+                      }"
                     format="YYYY-MM-DD HH:mm:ss"
                     @change="onChange"
                   />

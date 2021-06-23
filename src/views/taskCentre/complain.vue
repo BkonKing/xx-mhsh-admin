@@ -154,7 +154,7 @@ type="down"
                       class="piker-time"
                       :ranges="{
                         Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
-                        'This Month': [moment('00:00:00', 'HH:mm:ss'), moment().endOf('month')]
+                        'This Month': [moment().startOf('month'), moment().endOf('month')]
                       }"
                        :show-time="{
                         defaultValue: [
@@ -580,7 +580,7 @@ export default {
     .complaintItem {
       display: flex;
       .select {
-        max-width: 82px;
+        max-width: 100px;
       }
       .input {
         flex: 1;
@@ -642,6 +642,12 @@ export default {
       }
       /deep/ .ant-pagination-total-text {
         float: left;
+      }
+    }
+    .opera{
+      button{
+        padding: 0;
+        padding-right: 16px;
       }
     }
   }
