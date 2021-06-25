@@ -304,7 +304,7 @@
             提问
           </div>
         </div>
-        <taskProgress @changeTab='selectCard4Title' v-if="currentIndex===''" :id='id' :taskDetailInfo="taskDetailInfo" @getTaskSpeedData='getTaskSpeedData' @getTaskLog='getTaskLog'></taskProgress>
+        <taskProgress @changeTab='selectCard4Title' @getTaskDetailInfo='getTaskDetailInfo' v-if="currentIndex===''" :id='id' :taskDetailInfo="taskDetailInfo"  @getTaskLog='getTaskLog'></taskProgress>
         <complainTable v-else-if="currentIndex===1" :task_id='id'></complainTable>
         <evaluateTable v-else-if="currentIndex===2" :task_id='id'></evaluateTable>
         <askQuestionTable v-else :task_id='id'></askQuestionTable>
@@ -457,13 +457,12 @@ import evaluateTable from './components/evaluateTable'
 import askQuestionTable from './components/askQuestionTable'
 import {
   getTaskDetail,
-  toGetTaskSpeed,
   toGetProcessStatus,
   toGetProject,
   toTaskCode,
-  toOptTask,
   toGetLog
 } from '@/api/taskCentre'
+
 export default {
   components: {
     complainTable,
@@ -644,92 +643,92 @@ export default {
       this.pagination2.total = res.data.total
       // console.log('任务日志', res)
     },
-    // 下架任务
-    async soldOut (type) {
-      const res = await toOptTask({
-        task_id: +this.id,
-        opt_type: type
-      })
-      if (res.code === '201') {
-        this.$message.error(res.message)
-      } else {
-        this.$message.success('下架成功')
-      }
-      this.getTaskDetailInfo()
-      // this.getButtonInfo()
-      // console.log('下架任务', res)
-    },
-    // 终止任务
-    async terminate (type) {
-      const res = await toOptTask({
-        task_id: +this.id,
-        opt_type: type
-      })
-      if (res.code === '201') {
-        this.$message.error(res.message)
-      } else {
-        this.$message.success('终止成功')
-      }
-      this.getTaskDetailInfo()
-      // this.getButtonInfo()
-    },
-    // 停止接单
-    async stop (type) {
-      const res = await toOptTask({
-        task_id: +this.id,
-        opt_type: type
-      })
-      if (res.code === '201') {
-        this.$message.error(res.message)
-      } else {
-        this.$message.success('停止成功')
-      }
-      this.getTaskDetailInfo()
-      // this.getButtonInfo()
-      // console.log('停止接单', res)
-    },
+    // // 下架任务
+    // async soldOut (type) {
+    //   const res = await toOptTask({
+    //     task_id: +this.id,
+    //     opt_type: type
+    //   })
+    //   if (res.code === '201') {
+    //     this.$message.error(res.message)
+    //   } else {
+    //     this.$message.success('下架成功')
+    //   }
+    //   this.getTaskDetailInfo()
+    //   // this.getButtonInfo()
+    //   // console.log('下架任务', res)
+    // },
+    // // 终止任务
+    // async terminate (type) {
+    //   const res = await toOptTask({
+    //     task_id: +this.id,
+    //     opt_type: type
+    //   })
+    //   if (res.code === '201') {
+    //     this.$message.error(res.message)
+    //   } else {
+    //     this.$message.success('终止成功')
+    //   }
+    //   this.getTaskDetailInfo()
+    //   // this.getButtonInfo()
+    // },
+    // // 停止接单
+    // async stop (type) {
+    //   const res = await toOptTask({
+    //     task_id: +this.id,
+    //     opt_type: type
+    //   })
+    //   if (res.code === '201') {
+    //     this.$message.error(res.message)
+    //   } else {
+    //     this.$message.success('停止成功')
+    //   }
+    //   this.getTaskDetailInfo()
+    //   // this.getButtonInfo()
+    //   // console.log('停止接单', res)
+    // },
     // 任务流水排序
-    tableChange1 (pagination, filters, sorter, { currentDataSource }) {
-      // console.log('sorter', sorter)
-      this.order_field = sorter.field
-      if (sorter.order === 'ascend') {
-        this.sort_value = 'asc'
-      } else {
-        this.sort_value = 'desc'
-      }
-      this.getTaskSpeedData()
-    },
+    // tableChange1 (pagination, filters, sorter, { currentDataSource }) {
+    //   // console.log('sorter', sorter)
+    //   this.order_field = sorter.field
+    //   if (sorter.order === 'ascend') {
+    //     this.sort_value = 'asc'
+    //   } else {
+    //     this.sort_value = 'desc'
+    //   }
+    //   this.getTaskSpeedData()
+    // },
     // 任务流水重置
-    reset1 () {
-      this.order_field = ''
-      this.sort_value = ''
-      this.status = undefined
-      this.user_search = ''
-      this.project_id = undefined
-      this.pagination.currentPage = 1
-      this.getTaskSpeedData()
-    },
-    // 任务流水搜索
-    search1 () {
-      this.pagination.currentPage = 1
-      this.getTaskSpeedData()
-    },
-    // 获取任务流水列表
-    async getTaskSpeedData () {
-      const res = await toGetTaskSpeed({
-        task_id: +this.id,
-        pageindex: this.pagination.currentPage,
-        pagesize: this.pagination.pageSize,
-        order_field: this.order_field,
-        sort_value: this.sort_value,
-        status: this.status,
-        user_search: this.user_search,
-        project_id: this.project_id
-      })
-      this.taskSpeedList = res.list
-      this.pagination.total = res.data.total
-      // console.log('获取任务流水列表', res)
-    },
+    // reset1 () {
+    //   this.order_field = ''
+    //   this.sort_value = ''
+    //   this.status = undefined
+    //   this.user_search = ''
+    //   this.project_id = undefined
+    //   this.pagination.currentPage = 1
+    //   this.getTaskSpeedData()
+    // },
+    // // 任务流水搜索
+    // search1 () {
+    //   this.pagination.currentPage = 1
+    //   this.getTaskSpeedData()
+    // },
+    // // 获取任务流水列表
+    // async getTaskSpeedData () {
+    //   const res = await toGetTaskSpeed({
+    //     task_id: +this.id,
+    //     pageindex: this.pagination.currentPage,
+    //     pagesize: this.pagination.pageSize,
+    //     order_field: this.order_field,
+    //     sort_value: this.sort_value,
+    //     status: this.status,
+    //     user_search: this.user_search,
+    //     project_id: this.project_id
+    //   })
+    //   this.taskSpeedList = res.list
+    //   this.pagination.total = res.data.total
+    //   // console.log('获取任务流水列表', res)
+    // },
     // 打开评价
     openAppraise (id) {
       this.$refs.appraiseModel.isShow = true
@@ -819,7 +818,7 @@ export default {
   },
   async created () {
     this.id = this.$route.query.id
-    this.getTaskSpeedData()
+    // this.getTaskSpeedData()
     this.getTaskLog()
     if (this.id !== '') {
       this.getTaskDetailInfo()

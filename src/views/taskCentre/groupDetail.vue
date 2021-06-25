@@ -205,7 +205,7 @@
                 <div
                   class="group"
                   :style="{cursor: record.user_group>0?'pointer':'',color: record.user_group>0?'#1890FF':''}"
-                  @click="if(record.user_group>0)$router.push('/taskCentre/groupDetail?mobile='+record.mobile)"
+                  @click="if(record.user_group>0)$router.push('/taskCentre/taskGroup?mobile='+record.mobile)"
                 >
                   {{ record.user_group }}
                 </div>

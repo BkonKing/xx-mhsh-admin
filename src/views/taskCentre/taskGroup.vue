@@ -381,6 +381,7 @@ export default {
     }
   },
   created () {
+    this.member_search = this.$route.query.mobile
     this.getData()
   }
 }

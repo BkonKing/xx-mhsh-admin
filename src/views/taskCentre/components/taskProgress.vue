@@ -211,6 +211,7 @@ import {
   toEliminate,
   toGetButtonStatus
 } from '@/api/taskCentre'
+
 import awardModel from '../awardModel'
 import checkModel from '../checkModel'
 import weedOutModel from '../weedOutModel'
@@ -479,10 +480,11 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('下架成功')
+        this.$emit('getTaskDetailInfo')
+        this.getButtonInfo()
         this.getTaskSpeedData()
       }
 
-      this.getButtonInfo()
       // console.log('下架任务', res)
     },
     // 终止任务
@@ -495,10 +497,10 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('终止成功')
+        this.$emit('getTaskDetailInfo')
+        this.getButtonInfo()
         this.getTaskSpeedData()
       }
-
-      this.getButtonInfo()
     },
     // 停止接单
     async stop (type) {
@@ -510,10 +512,11 @@ export default {
         this.$message.error(res.message)
       } else {
         this.$message.success('停止成功')
+        this.$emit('getTaskDetailInfo')
+        this.getButtonInfo()
         this.getTaskSpeedData()
       }
 
-      this.getButtonInfo()
       // console.log('停止接单', res)
     },
     // 展开2
