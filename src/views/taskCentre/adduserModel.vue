@@ -102,10 +102,10 @@ export default {
         this.$nextTick(() => {
           setTimeout(() => {
             const arr = document.getElementsByClassName('input1')
-            console.log('元素数组', arr)
+            // console.log('元素数组', arr)
             for (let i = 0; i < arr.length; i++) {
               arr[i].addEventListener('input', function (e) {
-                if (e.target.value.length == 1) { e.target.value = e.target.value.replace(/[^1-9]/g, '') } else { e.target.value = e.target.value.replace(/\D/g, '') }
+                e.target.value = e.target.value.replace(/[^0-9]/g, '')
                 // console.log(e.target)
               }, false)
             }
@@ -130,9 +130,7 @@ export default {
     // 获取用户信息
     async getData (index, e) {
       this.currentIndex = index
-      console.log('事件对象', e.target)
       this.elm = e.target
-
       if (this.arr[index].mobile.length === 11) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
@@ -147,7 +145,7 @@ export default {
       if (this.arr[index].nickname) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
-          mobile: this.arr[index].phone
+          mobile: this.arr[index].mobile
         })
         // console.log('用户信息', res)
         this.userInfoList = res.data.list

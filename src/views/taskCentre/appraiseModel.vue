@@ -79,7 +79,7 @@ export default {
     return {
       isShow: false,
       labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 20 },
       bol: false,
       showInfo: false,
       label_desc: '', // 标记说明
@@ -157,6 +157,7 @@ export default {
 }
 .subbleContent{
   padding-bottom: 33px;
+
 }
 .title {
   color: #1890ff;
@@ -189,7 +190,7 @@ export default {
   overflow: initial;
 }
 /deep/ .ant-form-item-control-wrapper{
-  height: 20px;
+  // height: 20px;
   line-height: 40px;
 }
 .btn2 {
@@ -202,11 +203,13 @@ export default {
   .item {
     display: flex;
     margin: 10px 8px;
+
     .markMan {
       margin-left: 12px;
     }
     .t1 {
       font-weight: 600;
+      white-space: nowrap;
     }
   }
 }

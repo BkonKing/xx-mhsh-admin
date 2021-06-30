@@ -508,7 +508,7 @@ export default {
         onChange: this.onSelectChange,
         getCheckboxProps: record => ({
           props: {
-            disabled: record.task_status !== '未通过' // Column configuration not to be checked
+            disabled: !['未通过', '待审核'].includes(record.task_status) // Column configuration not to be checked
           }
         })
 

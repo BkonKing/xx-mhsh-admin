@@ -929,7 +929,7 @@ export default {
     }
     .imgcon {
       display: flex;
-      margin-left: 114px;
+      margin-left: 102px;
       .img {
         cursor: pointer;
         margin-top: 10px;

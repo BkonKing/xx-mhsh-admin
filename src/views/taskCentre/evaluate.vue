@@ -146,10 +146,7 @@
       <a-card class="card2">
         <a-table
           rowKey="id"
-          :row-selection="{
-            selectedRowKeys: selectedRowKeys,
-            onChange: onSelectChange
-          }"
+
           :columns="columns"
           :data-source="tableData"
           :pagination="false"
@@ -294,7 +291,7 @@ export default {
       is_valid: undefined, // 否int,//是否有效 1有效 0无效
       project_id: undefined, // 否int评价用户所属项目ID
       ctime: '', // 否int评价时间
-      selectedRowKeys: [],
+
       tagList: [], // 标签下拉列表
       projectList: [],
       evaluateTime: [],
@@ -334,11 +331,11 @@ export default {
       this.getData()
     },
     // 表格复选框 事件
-    onSelectChange (selectedRowKeys, selectedRows) {
-      // console.log('selectedRowKeys changed: ', selectedRowKeys)
-      // console.log('selectedRows', selectedRows)
-      this.selectedRowKeys = selectedRowKeys
-    },
+    // onSelectChange (selectedRowKeys, selectedRows) {
+    //   // console.log('selectedRowKeys changed: ', selectedRowKeys)
+    //   // console.log('selectedRows', selectedRows)
+    //   this.selectedRowKeys = selectedRowKeys
+    // },
     search () {
       this.pagination.currentPage = 1
       this.getData()

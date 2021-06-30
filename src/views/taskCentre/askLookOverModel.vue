@@ -72,7 +72,7 @@ export default {
     return {
       isShow: false,
       labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 20 },
       previewVisible: false,
       previewImage: '',
       info: {},

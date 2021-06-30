@@ -440,7 +440,7 @@ export default {
       .explain {
         display: flex;
         margin-top: 10px;
-        margin-left: 34px;
+        margin-left: 22px;
         margin-bottom: 9px;
         .left {
           width: 70px;
@@ -452,7 +452,7 @@ export default {
       }
       .imgcon {
         display: flex;
-        margin-left: 103px;
+        margin-left: 102px;
         .img {
           cursor: pointer;
           margin-top: 10px;
