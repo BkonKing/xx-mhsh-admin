@@ -324,7 +324,7 @@
               <div class="t2"> <span style="color: rgba(0, 0, 0, 0.847058823529412)">审核人：</span> {{ item.check_user }}</div>
               <div class="t3"><span style="color: rgba(0, 0, 0, 0.847058823529412)">审核时间：</span> {{ item.check_time }}</div>
             </div>
-            <div class="c2" v-if="taskDetailInfo.task_status === 4">
+            <div class="c2" v-if="item.check_status==='未通过'">
               违规原因：{{ item.check_reason }}
             </div>
             <div class="c3">

@@ -519,6 +519,7 @@ export default {
     // 切换tab栏
     changeTab (type) {
       this.currentIndex = type
+      this.pagination.currentPage = 1
       this.getData()
     },
     // 重置
