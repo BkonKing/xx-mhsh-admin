@@ -431,7 +431,7 @@ export default {
       if (record.complaint_total > 0) {
         this.currentIndex = 1
         this.$router.push(
-          `/taskCentre/complain?task_id=${record.task_id}&uid=${record.uid}`
+          `/taskCentre/complain?content_id=${record.id}`
         )
       }
     },

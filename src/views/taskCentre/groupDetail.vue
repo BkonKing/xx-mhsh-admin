@@ -204,8 +204,8 @@
               <template slot="user_group" slot-scope="text,record">
                 <div
                   class="group"
-                  :style="{cursor: record.user_group>0?'pointer':'',color: record.user_group>0?'#1890FF':''}"
-                  @click="if(record.user_group>0)$router.push('/taskCentre/taskGroup?mobile='+record.mobile)"
+                  :style="{cursor: record.user_group>1?'pointer':'',color: record.user_group>1?'#1890FF':''}"
+                  @click="if(record.user_group>1)$router.push('/taskCentre/taskGroup?mobile='+record.mobile)"
                 >
                   {{ record.user_group }}
                 </div>
@@ -399,21 +399,21 @@ export default {
           title: '用户ID',
           dataIndex: 'id',
           key: 'id',
-          width: '10%'
+          width: '6%'
           // scopedSlots: { customRender: 'name' }
         },
         {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
-          width: '10%'
+          width: '8%'
         },
         {
           title: '用户',
           dataIndex: 'owner_name',
           key: 'owner_name',
           scopedSlots: { customRender: 'owner_name' },
-          width: '10%'
+          width: '20%'
         },
         {
           title: '备注',
@@ -433,7 +433,7 @@ export default {
           key: 'user_task',
           sorter: true,
           scopedSlots: { customRender: 'user_task' },
-          width: '10%'
+          width: '6%'
         },
         {
           title: '群',

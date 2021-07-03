@@ -226,7 +226,7 @@ export default {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '12.555555555%',
+          width: '14%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -234,7 +234,7 @@ export default {
           dataIndex: 'evaluate_stars',
           key: 'evaluate_stars',
           sorter: true,
-          width: '12.555555555%'
+          width: '6%'
         },
         {
           title: '标签',
@@ -253,7 +253,7 @@ export default {
           title: '补充内容',
           dataIndex: 'evaluate_supplement',
           key: 'evaluate_supplement',
-          width: '12.555555555%',
+          width: '14%',
           ellipsis: true
         },
         {

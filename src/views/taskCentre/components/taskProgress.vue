@@ -325,7 +325,8 @@ export default {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
-          width: '10%',
+          width: '8%',
+
           scopedSlots: { customRender: 'opera' }
         }
       ],
@@ -612,7 +613,7 @@ export default {
     .btns {
       text-align: right;
       button {
-        // margin-right: 10px;
+        margin-right: 10px;
       }
     }
   }

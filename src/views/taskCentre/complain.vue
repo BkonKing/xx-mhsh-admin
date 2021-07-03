@@ -393,7 +393,8 @@ export default {
       task_id: '', // 任务id
       jump_uid: '', // 用户id
       order_field: '',
-      sort_value: ''
+      sort_value: '',
+      content_id: ''
     }
   },
 
@@ -454,7 +455,8 @@ export default {
         task_id: this.task_id,
         jump_uid: this.jump_uid,
         sort_value: this.sort_value,
-        order_field: this.order_field
+        order_field: this.order_field,
+        content_id: this.content_id
       })
       this.tableData = res.list
       this.pagination.total = +res.data.total
@@ -520,12 +522,10 @@ export default {
     }
     this.task_id = this.$route.query.task_id
     this.jump_uid = this.$route.query.uid
+    this.content_id = this.$route.query.content_id
 
-    if (this.task_id != '' || this.jump_uid != '') {
-      this.getData()
-    } else {
-      this.getData()
-    }
+    this.getData()
+
     // 投诉-获取投诉类型
     const res = await toGetCompalintType()
     this.typeList = res.list

@@ -281,33 +281,33 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '10%'
+          width: '4%'
         },
         {
           title: '处理时间',
           dataIndex: 'handle_desc',
           key: 'handle_desc',
-          width: '10%',
+          width: '6%',
           scopedSlots: { customRender: 'handle_desc' }
         },
         {
           title: '状态',
           dataIndex: 'is_handle',
           key: 'is_handle',
-          width: '10%'
+          width: '6%'
         },
         {
           title: '内容类型',
           dataIndex: 'info_type_desc',
           key: 'info_type_desc',
-          width: '10%'
+          width: '6%'
         },
         {
           title: '被投诉内容',
           dataIndex: 'content',
           key: 'content',
           scopedSlots: { customRender: 'content' },
-          width: '10%'
+          width: '20%'
         },
         {
           title: '投诉类型',
@@ -563,6 +563,7 @@ export default {
     .btns {
       text-align: right;
       button {
+
         margin-right: 10px;
       }
     }
@@ -614,6 +615,21 @@ export default {
       }
       .btns {
         white-space: nowrap;
+
+      }
+      .opera{
+        button{
+          padding-left: 0;
+        }
+      }
+      .content{
+text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
       }
     }
     .pagination {
