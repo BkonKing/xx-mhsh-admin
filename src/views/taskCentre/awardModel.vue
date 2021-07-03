@@ -69,11 +69,11 @@ export default {
         if (+res.code === 201) {
           // this.$message.error(res.message)
           if (this.selectedRowKeys.length <= 1 && this.selectedRows.length === 0) {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.every_reward - this.reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.every_reward - this.reward_happiness) + '幸福币')
           } else if (this.selectedRowKeys.length <= 1 && this.selectedRows.length === 1) {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.every_reward - this.selectedRows[0].reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.every_reward - this.selectedRows[0].reward_happiness) + '幸福币')
           } else {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.happy_reward - this.taskDetailInfo.reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.happy_reward - this.taskDetailInfo.reward_happiness) + '幸福币')
           }
         } else if (+res.code === 200) {
           this.$parent.getTaskSpeedData()
@@ -92,11 +92,11 @@ export default {
         if (+res.code === 201) {
           // this.$message.error(res.message)
           if (this.selectedRowKeys.length <= 1 && this.selectedRows.length === 0) {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.every_reward - this.reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.every_reward - this.reward_happiness) + '幸福币')
           } else if (this.selectedRowKeys.length <= 1 && this.selectedRows.length === 1) {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.every_reward - this.selectedRows[0].reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.every_reward - this.selectedRows[0].reward_happiness) + '幸福币')
           } else {
-            this.$message.warning('还可以奖励' + (this.taskDetailInfo.happy_reward - this.taskDetailInfo.reward_happiness) + '幸福币')
+            this.$message.warning('最多还可以奖励' + (this.taskDetailInfo.happy_reward - this.taskDetailInfo.reward_happiness) + '幸福币')
           }
           // this.isShow = false
         } else if (+res.code === 200) {
