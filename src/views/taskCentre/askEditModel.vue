@@ -37,7 +37,7 @@
           {{ lookOverInfo.content }}
         </a-form-model-item>
         <div class="line"></div>
-        <a-form-model-item label="是否通过" prop="is_check">
+        <a-form-model-item style="marginBottom:12px" label="是否通过" prop="is_check">
           <a-radio-group v-model="form.is_check">
             <a-radio :value="1">
               通过
@@ -66,7 +66,7 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="审核说明">
+        <a-form-model-item label="审核说明" style="marginBottom:12px">
           <a-textarea
             v-model="form.check_desc"
             placeholder="请输入"
@@ -291,7 +291,7 @@ export default {
   color: #666;
 }
 /deep/ .ant-modal-body {
-  padding: 42px;
+  padding: 10px 24px 16px 24px;
 }
 .line {
   margin: 10px 0;

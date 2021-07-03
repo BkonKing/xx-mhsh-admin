@@ -148,6 +148,9 @@ export default {
     margin-left: 10px;
   }
 }
+/deep/.ant-form-item{
+  margin-bottom: 0;
+}
 // .txt3{
 //   margin-top: -12px;
 // }
