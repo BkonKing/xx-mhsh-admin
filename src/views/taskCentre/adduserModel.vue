@@ -19,6 +19,7 @@
                @input="getData(index, $event)"
               :maxLength="10"
               v-model="item.nickname"
+               class="input2"
               placeholder="昵称"
               style="width:104px"
             ></a-input>
@@ -109,6 +110,16 @@ export default {
                 // console.log(e.target)
               }, false)
             }
+
+            const arr2 = document.getElementsByClassName('input2')
+            // console.log('元素数组', arr)
+            for (let i = 0; i < arr2.length; i++) {
+              arr2[i].addEventListener('input', function (e) {
+                // e.target.value = e.target.value.replace(/[^0-9]/g, '')
+                e.target.previousElementSibling.value = e.target.previousElementSibling.value.replace(/[^0-9]/g, '')
+                // console.log(e.target)
+              }, false)
+            }
           })
         })
       }
@@ -131,16 +142,20 @@ export default {
     async getData (index, e) {
       this.currentIndex = index
       this.elm = e.target
-      if (this.arr[index].mobile.length === 11) {
+      if (e.target.value.length < 11 && e.target.nextElementSibling.value) {
+        e.target.nextElementSibling.value = ''
+        this.arr[index].nickname = ''
+      }
+      if (this.arr[index].mobile.length > 5) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
           mobile: this.arr[index].mobile
         })
         // console.log('用户信息', res)
         this.userInfoList = res.data.list
-        if (this.userInfoList.length === 1) {
-          this.selectUser(this.userInfoList[0])
-        }
+        // if (this.userInfoList.length === 1) {
+        //   this.selectUser(this.userInfoList[0])
+        // }
       }
       if (this.arr[index].nickname) {
         const res = await getUserInfo({
@@ -149,9 +164,9 @@ export default {
         })
         // console.log('用户信息', res)
         this.userInfoList = res.data.list
-        if (this.userInfoList.length === 1) {
-          this.selectUser(this.userInfoList[0])
-        }
+        // if (this.userInfoList.length === 1) {
+        //   this.selectUser(this.userInfoList[0])
+        // }
       }
     },
     // 确定

@@ -125,7 +125,7 @@ export default {
 }
 .selected {
   // margin-top: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   width: 100%;
   height: 40px;
   padding-left: 15px;

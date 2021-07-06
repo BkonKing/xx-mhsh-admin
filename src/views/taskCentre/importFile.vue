@@ -113,7 +113,7 @@ export default {
         this.uploadFileInfo = res
         if (res.code === '201') {
           this.isSuccess = false
-
+          this.isFail202 = false
           this.$message.error(res.message)
         } else if (res.code === '202') {
           this.isSuccess = false
@@ -140,7 +140,7 @@ export default {
         this.uploadFileInfo = res2
         if (res2.code === '201') {
           this.isSuccess = false
-
+          this.isFail202 = false
           this.$message.error(res2.message)
         } else if (res2.code === '202') {
           this.isSuccess = false
@@ -152,6 +152,7 @@ export default {
           this.isFail201 = false
           this.isFail202 = false
         }
+        this.isShow = false
         this.isShow2 = true
         this.$parent.getRegister()
       }

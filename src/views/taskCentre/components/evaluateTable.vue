@@ -167,7 +167,7 @@
           </div>
         </template>
         <template slot="opera" slot-scope="text, record">
-          <div>
+          <div class="opera">
             <a-button type="link" @click="lookOver(record)">查看</a-button>
           </div>
         </template>
@@ -220,13 +220,13 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '12.555555555%'
+          width: '6%'
         },
         {
           title: '任务',
           dataIndex: 'task_title',
           key: 'task_title',
-          width: '14%',
+          width: '18%',
           scopedSlots: { customRender: 'task_title' }
         },
         {
@@ -240,7 +240,7 @@ export default {
           title: '标签',
           dataIndex: 'evaluate_tags',
           key: 'evaluate_tags',
-          width: '12.555555555%'
+          width: '18%'
         },
         {
           title: '评价用户',
@@ -253,7 +253,7 @@ export default {
           title: '补充内容',
           dataIndex: 'evaluate_supplement',
           key: 'evaluate_supplement',
-          width: '14%',
+          width: '18%',
           ellipsis: true
         },
         {
@@ -261,14 +261,14 @@ export default {
           dataIndex: 'ctime',
           key: 'ctime',
           sorter: true,
-          width: '12.555555555%'
+          width: '16%'
         },
         {
           title: '操作',
           dataIndex: 'opera',
           key: 'opera',
           scopedSlots: { customRender: 'opera' },
-          width: '12.555555555%'
+          width: '6%'
         }
       ],
       evaluate_starts: undefined, // 否int评价星星数
@@ -497,6 +497,17 @@ export default {
       }
       .btns {
         white-space: nowrap;
+      }
+  /deep/ .ant-table-thead > tr > th.ant-table-selection-column{
+        text-align: left;
+      }
+    /deep/  .ant-table-tbody > tr > td.ant-table-selection-column {
+        text-align: left;
+      }
+      .opera{
+        button{
+          padding: 0;
+        }
       }
     }
     .pagination {

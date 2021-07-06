@@ -156,7 +156,7 @@ export default {
   padding: 18px 24px 24px 24px;
 }
 .subbleContent{
-  padding-bottom: 33px;
+  padding-bottom: 10px;
 
 }
 .title {
@@ -164,7 +164,7 @@ export default {
   cursor: pointer;
 }
 .btn {
-  margin-top: 16px;
+  // margin-top: 16px;
   margin-left: 74px;
 }
 .bottom {
@@ -181,8 +181,9 @@ export default {
   }
 }
 /deep/ .ant-form-item {
-  height: 20px;
+  // height: 20px;
   line-height: 20px;
+  margin-bottom:0;
 }
 /deep/ .ant-form-item-label{
   height: 20px;
@@ -199,7 +200,7 @@ export default {
 }
 .info {
   border-top: 2px dashed #eaeaea;
-  padding-top: 16px;
+  padding-top: 6px;
   .item {
     display: flex;
     margin: 10px 8px;

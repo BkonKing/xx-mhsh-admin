@@ -478,6 +478,7 @@ export default {
       } else {
         this.tab_type = 2
       }
+      this.pagination.currentPage = 1
       this.getData()
     },
     // 查询

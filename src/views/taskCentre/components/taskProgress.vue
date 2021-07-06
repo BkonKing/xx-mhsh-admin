@@ -112,7 +112,6 @@
               :style="{
                 cursor: 'pointer',
                 color: record.complaint_total > 0 ? '#1890FF' : ''
-
               }"
               @click="openComplaint(record)"
             >
@@ -121,7 +120,7 @@
           </template>
           <template slot="reward_happiness" slot-scope="reward_happiness">
             <div style="paddingLeft:18px">
-              {{reward_happiness}}
+              {{ reward_happiness }}
             </div>
           </template>
           <template slot="evaluate" slot-scope="text, record">
@@ -142,7 +141,12 @@
           </template>
           <template slot="opera" slot-scope="text, record">
             <div class="opera">
-              <a-button style="paddingLeft:0" type="link" @click="check(record.uid)">查看</a-button>
+              <a-button
+                style="paddingLeft:0"
+                type="link"
+                @click="check(record.uid)"
+                >查看</a-button
+              >
               <a-button
                 type="link"
                 @click="award(record)"
@@ -196,7 +200,6 @@
       v-on="$listeners"
       ref="weedOutModel"
       :selectedRowKeys="selectedRowKeys"
-
       :id="id"
     ></weedOutModel>
   </div>
@@ -267,7 +270,7 @@ export default {
           dataIndex: 'progress_desc',
           key: 'progress_desc',
           scopedSlots: { customRender: 'progress_desc' },
-          width: 60
+          width: '10%'
         },
         {
           title: '接单方',
@@ -286,7 +289,7 @@ export default {
           title: '奖励(币)',
           dataIndex: 'reward_happiness',
           key: 'reward_happiness',
-          width: 50,
+          width: '6%',
           sorter: true,
           scopedSlots: { customRender: 'reward_happiness' }
         },
@@ -302,7 +305,7 @@ export default {
           title: '评价',
           dataIndex: 'evaluate ',
           key: 'evaluate ',
-          width: 50,
+          width: '6%',
           sorter: true,
           scopedSlots: { customRender: 'evaluate' }
         },
@@ -346,12 +349,10 @@ export default {
         //   }
 
         // })
-
       }
     }
   },
   watch: {
-
     selectedRows: {
       handler () {
         this.isAward = false
@@ -624,8 +625,8 @@ export default {
     .btns {
       button {
         margin-right: 10px;
-      // padding: 0;
-      // padding-right: 10px;
+        // padding: 0;
+        // padding-right: 10px;
       }
     }
     .selected {
@@ -675,6 +676,12 @@ export default {
       .btns {
         white-space: nowrap;
       }
+      /deep/ .ant-table-thead > tr > th.ant-table-selection-column{
+        text-align: left;
+      }
+    /deep/  .ant-table-tbody > tr > td.ant-table-selection-column {
+        text-align: left;
+      }
     }
     .pagination {
       margin-top: 10px;
@@ -689,8 +696,8 @@ export default {
         // margin-right: 300px;
       }
     }
-    .opera{
-      button{
+    .opera {
+      button {
         padding: 0;
         padding-right: 10px;
       }
