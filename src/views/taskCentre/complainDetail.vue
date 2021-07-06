@@ -78,7 +78,7 @@
               >
                 {{ detailInfo.content?detailInfo.content:'--' }}
               </div>
-              <div class="item2" style="cursor: pointer;" v-else @click="lookOver">
+              <div class="item2" style="color:#1890FF;cursor: pointer;" v-else @click="lookOver(detailInfo.content_type,detailInfo.content_id)">
                 {{ detailInfo.content?detailInfo.content:'--'}}
               </div>
             </div>
@@ -234,12 +234,15 @@ style="color: #F5222D;"
         </div>
       </a-card>
     </div>
+    <askLookOverModel ref="askLookOverModel"></askLookOverModel>
+    <!-- <lookOverReplyModel ref="lookOverReplyModel"></lookOverReplyModel> -->
   </div>
 </template>
 
 <script>
 import Cookies from 'js-cookie'
 import { getComplaintDetail, toHandComplaint } from '@/api/taskCentre'
+import askLookOverModel from './askLookOverModel.vue'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -249,6 +252,9 @@ function getBase64 (file) {
   })
 }
 export default {
+  components: {
+    askLookOverModel
+  },
   data () {
     return {
       labelCol: { span: 4 },
@@ -274,7 +280,8 @@ export default {
         Authorization: Cookies.get('access_token')
         // Authorization: '801ea07a89da8ee893176dbdd982627688960d80'
         // Projectid: Cookies.get('project_id')
-      }
+      },
+      info: {}
     }
   },
   mounted () {
@@ -295,8 +302,15 @@ export default {
       console.log('投诉详情', res)
     },
     // 查看 提问/回复详情
-    lookOver () {
-      this.$refs.askLookOverModel.isShow = true
+    lookOver (type, id) {
+      if (type === '提问') {
+        console.log(111)
+        this.$refs.askLookOverModel.isShow = true
+        this.$refs.askLookOverModel.info = JSON.parse(JSON.stringify({ type: 1, id: id }))
+      } else {
+        this.$refs.askLookOverModel.info = JSON.parse(JSON.stringify({ type: 2, id: id }))
+        this.$refs.askLookOverModel.isShow = true
+      }
     },
     // 新窗口打开任务详情
     openDetail () {

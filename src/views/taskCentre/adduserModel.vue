@@ -19,7 +19,6 @@
                @input="getData(index, $event)"
               :maxLength="10"
               v-model="item.nickname"
-               class="input2"
               placeholder="昵称"
               style="width:104px"
             ></a-input>
@@ -110,16 +109,6 @@ export default {
                 // console.log(e.target)
               }, false)
             }
-
-            const arr2 = document.getElementsByClassName('input2')
-            // console.log('元素数组', arr)
-            for (let i = 0; i < arr2.length; i++) {
-              arr2[i].addEventListener('input', function (e) {
-                // e.target.value = e.target.value.replace(/[^0-9]/g, '')
-                e.target.previousElementSibling.value = e.target.previousElementSibling.value.replace(/[^0-9]/g, '')
-                // console.log(e.target)
-              }, false)
-            }
           })
         })
       }
@@ -146,7 +135,7 @@ export default {
         e.target.nextElementSibling.value = ''
         this.arr[index].nickname = ''
       }
-      if (this.arr[index].mobile.length > 5) {
+      if (this.arr[index].mobile.length >= 5) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
           mobile: this.arr[index].mobile
