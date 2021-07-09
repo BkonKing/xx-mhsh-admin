@@ -468,6 +468,27 @@ export default {
     },
     // 切换标签
     changeTab (index) {
+      if (index !== 2) {
+        this.columns.forEach((item, index) => {
+          if (item.title === '审核时间') {
+            this.columns.splice(index, 1)
+          }
+        })
+      } else {
+        const bol = this.columns.some(item => {
+          return item.title === '审核时间'
+        })
+
+        if (!bol) {
+          this.columns.splice(1, 0, {
+            title: '审核时间',
+            dataIndex: 'check_time_desc',
+            key: 'check_time_desc',
+            width: '10%',
+            scopedSlots: { customRender: 'check_time_desc' }
+          })
+        }
+      }
       this.currentIndex = index
       if (index === 1) {
         this.tab_type = ''
@@ -572,6 +593,8 @@ export default {
     if (this.$route.query.toCheck) {
       this.currentIndex = 2
       this.changeTab(2)
+    } else {
+      this.changeTab(1)
     }
     if (this.task_id != '') {
       this.getData()
@@ -588,6 +611,9 @@ export default {
 <style lang="less" scoped>
 /deep/ .ant-form .ant-btn-link {
   padding: 0;
+}
+/deep/.ant-table-selection-column{
+  text-align: left !important;
 }
 .askQuestion {
   padding-bottom: 20px;

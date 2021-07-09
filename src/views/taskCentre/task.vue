@@ -498,6 +498,7 @@ export default {
       projectList: [], // 项目列表
       areaArr: [],
       jump_mobile: ''
+
     }
   },
   computed: {
@@ -518,6 +519,27 @@ export default {
   methods: {
     // 切换tab栏
     changeTab (type) {
+      if (type !== 0) {
+        this.columns.forEach((item, index) => {
+          if (item.title === '审核时间') {
+            this.columns.splice(index, 1)
+          }
+        })
+      } else {
+        const bol = this.columns.some(item => {
+          return item.title === '审核时间'
+        })
+
+        if (!bol) {
+          this.columns.splice(1, 0, {
+            title: '审核时间',
+            dataIndex: 'check_time_desc',
+            key: 'check_time_desc',
+            scopedSlots: { customRender: 'check_time_desc' },
+            width: '8.333333333%'
+          })
+        }
+      }
       this.currentIndex = type
       this.pagination.currentPage = 1
       this.getData()
@@ -643,6 +665,7 @@ export default {
     }
   },
   async created () {
+    this.changeTab('')
     // console.log('this.options', this.options)
     if (this.$route.query.toCheck) {
       this.currentIndex = 0

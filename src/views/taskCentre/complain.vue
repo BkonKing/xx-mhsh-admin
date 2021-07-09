@@ -412,6 +412,27 @@ export default {
     },
     // 切换tab
     changeTab (type) {
+      if (type !== 0) {
+        this.columns.forEach((item, index) => {
+          if (item.title === '处理时间') {
+            this.columns.splice(index, 1)
+          }
+        })
+      } else {
+        const bol = this.columns.some(item => {
+          return item.title === '处理时间'
+        })
+
+        if (!bol) {
+          this.columns.splice(1, 0, {
+            title: '处理时间',
+            dataIndex: 'handle_desc',
+            key: 'handle_desc',
+            width: '10%',
+            scopedSlots: { customRender: 'handle_desc' }
+          })
+        }
+      }
       this.currentIndex = type
       this.pagination.currentPage = 1
       this.getData()
@@ -519,6 +540,8 @@ export default {
     if (this.$route.query.toCheck) {
       this.currentIndex = 0
       this.changeTab(0)
+    } else {
+      this.changeTab('')
     }
     this.task_id = this.$route.query.task_id
     this.jump_uid = this.$route.query.uid
@@ -541,6 +564,9 @@ export default {
 <style lang="less" scoped>
 /deep/ .ant-form .ant-btn-link {
   padding: 0;
+}
+/deep/.ant-table-selection-column{
+  text-align: left !important;
 }
 .complain {
   padding-bottom: 20px;
