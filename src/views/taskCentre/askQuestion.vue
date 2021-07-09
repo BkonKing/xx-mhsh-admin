@@ -317,7 +317,7 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '6%'
+          width: '10%'
         },
         {
           title: '审核时间',
@@ -330,7 +330,7 @@ export default {
           title: '审核状态',
           dataIndex: 'check_status',
           key: 'check_status',
-          width: '8%'
+          width: '10%'
         },
         {
           title: '类型',

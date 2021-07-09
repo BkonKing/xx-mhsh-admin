@@ -311,7 +311,7 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '4%'
+          width: '8%'
         },
         {
           title: '处理时间',
@@ -324,7 +324,7 @@ export default {
           title: '状态',
           dataIndex: 'is_handle',
           key: 'is_handle',
-          width: '6%'
+          width: '10%'
         },
         {
           title: '内容类型',
