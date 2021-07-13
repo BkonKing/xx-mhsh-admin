@@ -102,11 +102,12 @@
             <a-input
               :maxLength="20"
               v-model="item.order_sort"
+              @blur="changeLabelOrder(item)"
               placeholder="排序"
               style="width:104px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addAppraise" />
-            <a-icon class="close" type="close" @click="delAppraise(index)" />
+            <a-icon class="close" type="close" @click="delAppraise(item,index)" />
           </div>
           <div class="btn">
             <a-button
@@ -136,11 +137,12 @@
             <a-input
               :maxLength="30"
               v-model="item.order_sort"
+              @blur="changeOrder(item)"
               placeholder="排序"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addWeedOut" />
-            <a-icon class="close" type="close" @click="delWeedOut(index)" />
+            <a-icon class="close" type="close" @click="delWeedOut(item,index)" />
           </div>
           <div class="btn">
             <a-button type="primary" :disabled="card4Bol" @click="weedOut"
@@ -166,10 +168,11 @@
               :maxLength="30"
               v-model="item.order_sort"
               placeholder="排序"
+               @blur="changeOrder(item)"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addGiveUp" />
-            <a-icon class="close" type="close" @click="delGiveUp(index)" />
+            <a-icon class="close" type="close" @click="delGiveUp(item,index)" />
           </div>
           <div class="btn">
             <a-button type="primary" :disabled="card5Bol" @click="giveUp"
@@ -191,7 +194,9 @@ import {
   gainGetLabel,
   addSetReason,
   gainGetReason,
-  gainGetBasic
+  gainGetBasic,
+  toUpdateFt,
+  toUpdateEvaluate
 } from '@/api/taskCentre'
 export default {
   data () {
@@ -203,20 +208,23 @@ export default {
       btnBol: true,
       arr: [
         {
-          id: Math.random() * 999,
+          id: 0,
           good_tag_name: '',
           bad_tag_name: '',
           order_sort: ''
         }
       ], // 评价列表数组
-      arr2: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 淘汰原因数组
-      arr3: [{ id: Math.random() * 999, reason: '', order_sort: '' }], // 放弃原因数组
+      arr2: [{ id: 0, reason: '', order_sort: '' }], // 淘汰原因数组
+      arr3: [{ id: 0, reason: '', order_sort: '' }], // 放弃原因数组
       card3Bol: true,
       card4Bol: true,
       card5Bol: true,
       allCheck: true,
-      whiteCheck: true
+      whiteCheck: true,
+      weebOutIds: [], // 删除淘汰的Id数组
       // switchInfo: '' // 开关信息
+      giveUpIds: [], // 删除放弃的Id数组
+      tagIds: [] // 删除标签ids数组
     }
   },
   watch: {
@@ -259,6 +267,25 @@ export default {
     // }
   },
   methods: {
+    changeLabelOrder (item) {
+      const ids = []
+      ids.push(+item.id)
+      toUpdateEvaluate({
+        ids: ids,
+        update_field: 'order_sort',
+        update_value: item.order_sort
+      })
+    },
+    // 修改标签的排序
+    changeOrder (item) {
+      const ids = []
+      ids.push(+item.id)
+      toUpdateFt({
+        ids: ids,
+        update_field: 'order_sort',
+        update_value: item.order_sort
+      })
+    },
     // 获取放弃原因列表
     async getGiveOutReasonList () {
       const res4 = await gainGetReason({
@@ -289,7 +316,7 @@ export default {
       if (res2.list.length === 0) {
         this.arr = [
           {
-            id: Math.random() * 999,
+            id: 0,
             good_tag_name: '',
             bad_tag_name: '',
             order_sort: ''
@@ -303,9 +330,13 @@ export default {
     },
     // 放弃提交
     async giveUp () {
+      if (this.giveUpIds.length > 0) {
+        toUpdateFt({ ids: this.giveUpIds, update_field: 'is_del', update_value: 1 })
+      }
       const arrTest = this.arr3.map(item => {
         if (item.reason != '') {
           return {
+            id: item.id,
             reason: item.reason,
             sort: item.order_sort
           }
@@ -326,12 +357,13 @@ export default {
     },
     // 添加 放弃
     addGiveUp () {
-      this.arr3.push({ id: Math.random() * 999, reason: '', order_sort: '' })
+      this.arr3.push({ id: 0, reason: '', order_sort: '' })
     },
     // 删除 放弃
-    delGiveUp (index) {
+    delGiveUp (item, index) {
+      this.giveUpIds.push(+item.id)
       if (this.arr3.length === 1) {
-        this.arr3 = [{ id: Math.random() * 999, reason: '', order_sort: '' }]
+        this.arr3 = [{ id: 0, reason: '', order_sort: '' }]
         return
       }
       // console.log(index)
@@ -339,9 +371,13 @@ export default {
     },
     // 淘汰提交
     async weedOut () {
+      if (this.weebOutIds.length > 0) {
+        toUpdateFt({ ids: this.weebOutIds, update_field: 'is_del', update_value: 1 })
+      }
       const arrTest = this.arr2.map(item => {
         if (item.reason != '') {
           return {
+            id: item.id,
             reason: item.reason,
             sort: item.order_sort
           }
@@ -362,13 +398,14 @@ export default {
     },
     // 添加淘汰
     addWeedOut () {
-      this.arr2.push({ id: Math.random() * 999, reason: '', order_sort: '' })
+      this.arr2.push({ id: 0, reason: '', order_sort: '' })
     },
     // 删除淘汰
-    delWeedOut (index) {
-      // console.log(index)
+    delWeedOut (item, index) {
+      console.log(item)
+      this.weebOutIds.push(+item.id)
       if (this.arr2.length === 1) {
-        this.arr2 = [{ id: Math.random() * 999, reason: '', order_sort: '' }]
+        this.arr2 = [{ id: 0, reason: '', order_sort: '' }]
         return
       }
       this.arr2.splice(index, 1)
@@ -380,6 +417,13 @@ export default {
       //     this.$message.error('请填写完整一行')
       //   }
       // })
+      if (this.tagIds.length > 0) {
+        toUpdateEvaluate({
+          ids: this.tagIds,
+          update_field: 'is_del',
+          update_value: 1
+        })
+      }
       for (let i = 0; i < this.arr.length; i++) {
         if (
           (this.arr[i].good_tag_name === '' ||
@@ -393,6 +437,7 @@ export default {
       const arrTest = this.arr.map(item => {
         if (item.good_tag_name !== '' && item.bad_tag_name !== '') {
           return {
+            id: item.id,
             good_tag_name: item.good_tag_name,
             bad_tag_name: item.bad_tag_name,
             sort: +item.order_sort
@@ -414,19 +459,20 @@ export default {
     // 添加评价标签
     addAppraise () {
       this.arr.push({
-        id: Math.random() * 999,
+        id: 0,
         good_tag_name: '',
         bad_tag_name: '',
         order_sort: ''
       })
     },
     // 删除评价标签
-    delAppraise (index) {
+    delAppraise (item, index) {
       // console.log(index)
+      this.tagIds.push(+item.id)
       if (this.arr.length === 1) {
         this.arr = [
           {
-            id: Math.random() * 999,
+            id: 0,
             good_tag_name: '',
             bad_tag_name: '',
             order_sort: ''

@@ -61,7 +61,10 @@ const taskCentreApi = {
   optTask: '/linli/task/optTask',
   violationReason: '/linli/common/violationReason',
   eliminate: '/linli/task/eliminate',
-  delQuestion: '/linli/question/delQuestion'
+  delQuestion: '/linli/question/delQuestion',
+  updateFt: '/linli/basicsetting/updateFt',
+  updateEvaluate: '/linli/evaluate/updateEvaluate',
+  updateComlaintType: '/linli/basicsetting/updateComlaintType'
 }
 
 // 基础-设置全部用户、白名单开关
@@ -555,6 +558,30 @@ export function toEliminate (data) {
 export function toDelQuestion (data) {
   return request({
     url: taskCentreApi.delQuestion,
+    method: 'post',
+    data
+  })
+}
+// 修改淘汰放弃字段（2021.07.12增加）
+export function toUpdateFt (data) {
+  return request({
+    url: taskCentreApi.updateFt,
+    method: 'post',
+    data
+  })
+}
+// 修改评价(2021.07.12增加)
+export function toUpdateEvaluate (data) {
+  return request({
+    url: taskCentreApi.updateEvaluate,
+    method: 'post',
+    data
+  })
+}
+// 修改任务提问投扩类型字段（2021.07.13增加）
+export function toUpdateComlaintType (data) {
+  return request({
+    url: taskCentreApi.updateComlaintType,
     method: 'post',
     data
   })

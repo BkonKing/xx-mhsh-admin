@@ -98,9 +98,18 @@
           @change="tableChange"
         >
           <template slot="owner_name" slot-scope="text, record">
-            <div class="user">
-              <div class="t1">{{ record.owner_name }}</div>
-              <div class="t2">{{ record.project_name }}</div>
+            <div class="user" v-if="record.owner_name">
+              <div class="t1" style="color:rgba(0, 0, 0, 0.647058823529412);">
+                {{ record.owner_name }}
+              </div>
+              <div class="t2" style="color:rgba(0, 0, 0, 0.349019607843137);">
+                {{ record.project_name }}
+              </div>
+            </div>
+          </template>
+          <template slot="user_task" slot-scope="text,record">
+            <div :style="{paddingLeft:'10px',cursor: 'pointer',color:record.user_task>0?'#1890FF':''}" @click="toTask(record)">
+              {{ record.user_task }}
             </div>
           </template>
           <template slot="register_time" slot-scope="register_time">
@@ -195,7 +204,8 @@ export default {
           key: 'user_task',
           sorter: true,
           width: '11.111111%',
-          align: 'center'
+          scopedSlots: { customRender: 'user_task' }
+          // align: 'center'
         },
         {
           title: '注册时间',
@@ -239,6 +249,11 @@ export default {
     // console.log(this.$refs.card.$el.offsetHeight) // 146
   },
   methods: {
+    // 跳转到任务列表
+    toTask (record) {
+      console.log('record', record)
+      this.$router.push('/taskCentre/task?mobile=' + record.mobile)
+    },
     // 排序
     tableChange (pagination, filters, sorter, { currentDataSource }) {
       // console.log('sorter', sorter)
@@ -375,6 +390,7 @@ export default {
     .btns {
       button {
         margin-right: 10px;
+
       }
     }
     .selected {

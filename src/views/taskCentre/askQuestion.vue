@@ -58,7 +58,7 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="审核状态">
-                  <a-select v-model="check_type" placeholder="请选择">
+                  <a-select :disabled='tabBol' v-model="check_type" placeholder="请选择">
                     <a-select-option value="0">
                       待审核
                     </a-select-option>
@@ -406,6 +406,11 @@ export default {
   mounted () {
     // console.log(this.$refs.card.$el.offsetHeight)
     // this.$refs.card.$el.style.height = '88px'
+  },
+  computed: {
+    tabBol () {
+      return this.currentIndex !== 1
+    }
   },
   methods: {
     // 新窗口打开任务详情

@@ -165,7 +165,7 @@ type="primary"
             <a-icon
               class="close"
               type="close"
-              @click="delTaskComplain(index)"
+              @click="delTaskComplain(item,index)"
             />
           </div>
           <div class="btn">
@@ -200,7 +200,7 @@ type="primary"
               style="width:128px"
             ></a-input>
             <a-icon class="plus" type="plus" @click="addAskComplain" />
-            <a-icon class="close" type="close" @click="delAskComplain(index)" />
+            <a-icon class="close" type="close" @click="delAskComplain(item,index)" />
           </div>
           <div class="btn">
             <a-button
@@ -224,7 +224,8 @@ import {
   gainGetBasic,
   toSetComplaint,
   toSetComplaintType,
-  gainGetComplaintType
+  gainGetComplaintType,
+  toUpdateComlaintType
 } from '@/api/taskCentre'
 export default {
   data () {
@@ -237,10 +238,12 @@ export default {
       card2Bol: true,
       complaint_time: 24, // 投诉处理时效
       card3Bol: true,
-      arr: [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }], // 任务投诉列表
-      arr2: [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }], // 提问投诉列表
+      arr: [{ id: 0, complaint_type: '', order_sort: '' }], // 任务投诉列表
+      arr2: [{ id: 0, complaint_type: '', order_sort: '' }], // 提问投诉列表
       card4Bol: true,
-      card5Bol: true
+      card5Bol: true,
+      taskComplainIds: [],
+      askComplainIds: []
     }
   },
   watch: {
@@ -280,7 +283,7 @@ export default {
       })
       this.arr2 = res4.list
       if (res4.list.length === 0) {
-        this.arr2 = [{ id: Math.random() * 999, complaint_type: '', order_sort: '' }]
+        this.arr2 = [{ id: 0, complaint_type: '', order_sort: '' }]
       }
       this.$nextTick(() => {
         this.card5Bol = true
@@ -295,7 +298,7 @@ export default {
       this.arr = res3.list
       if (res3.list.length === 0) {
         this.arr = [
-          { id: Math.random() * 999, complaint_type: '', order_sort: '' }
+          { id: 0, complaint_type: '', order_sort: '' }
         ]
       }
       this.$nextTick(() => {
@@ -305,9 +308,13 @@ export default {
     },
     // 提问投诉提交
     async askComplain () {
+      if (this.askComplainIds.length > 0) {
+        toUpdateComlaintType({ ids: this.askComplainIds, update_field: 'is_del', update_value: 1 })
+      }
       const arrTest = this.arr2.map(item => {
         if (item.complaint_type != '') {
           return {
+            id: +item.id,
             complaint_type: item.complaint_type,
             sort: +item.order_sort
           }
@@ -329,18 +336,19 @@ export default {
     // 添加
     addAskComplain () {
       this.arr2.push({
-        id: Math.random() * 999,
+        id: 0,
         complaint_type: '',
         order_sort: ''
       })
     },
-    // 删除
-    delAskComplain (index) {
+    // 删除提问投诉
+    delAskComplain (item, index) {
       // console.log(index)
+      this.askComplainIds.push(+item.id)
       if (this.arr2.length === 1) {
         this.arr2 = [
           {
-            id: Math.random() * 999,
+            id: 0,
             complaint_type: '',
             order_sort: ''
           }
@@ -351,9 +359,13 @@ export default {
     },
     // 任务投诉提交
     async taskComplain () {
+      if (this.taskComplainIds.length > 0) {
+        toUpdateComlaintType({ ids: this.taskComplainIds, update_field: 'is_del', update_value: 1 })
+      }
       const arrTest = this.arr.map(item => {
         if (item.complaint_type != '') {
           return {
+            id: +item.id,
             complaint_type: item.complaint_type,
             sort: +item.order_sort
           }
@@ -375,17 +387,18 @@ export default {
     // 添加任务投诉
     addTaskComplain () {
       this.arr.push({
-        id: Math.random() * 999,
+        id: 0,
         complaint_type: '',
         order_sort: ''
       })
     },
     // 删除任务投诉
-    delTaskComplain (index) {
+    delTaskComplain (item, index) {
       // console.log(index)
+      this.taskComplainIds.push(+item.id)
       if (this.arr.length === 1) {
         this.arr = [
-          { id: Math.random() * 999, complaint_type: '', order_sort: '' }
+          { id: 0, complaint_type: '', order_sort: '' }
         ]
         return
       }

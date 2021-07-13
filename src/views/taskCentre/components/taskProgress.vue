@@ -153,16 +153,9 @@
                 v-if="record.button === 1"
                 >奖励</a-button
               >
-              <a-popconfirm
-                v-if="record.button === 2"
-                title="你确定要淘汰这个用户吗?"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="confirm(record.uid)"
-                @cancel="cancel"
-              >
-                <a-button type="link">淘汰</a-button>
-              </a-popconfirm>
+
+                <a-button type="link" @click="openWeedOut(record)">淘汰</a-button>
+
             </div>
           </template>
         </a-table>
@@ -202,6 +195,7 @@
       :selectedRowKeys="selectedRowKeys"
       :id="id"
     ></weedOutModel>
+    <weebOut ref="weebOut"  :id="id" :selectedRowKeys="selectedRowKeys"></weebOut>
   </div>
 </template>
 
@@ -211,7 +205,7 @@ import {
   toGetProject,
   toGetTaskSpeed,
   toOptTask,
-  toEliminate,
+  // toEliminate,
   toGetButtonStatus
 } from '@/api/taskCentre'
 
@@ -220,13 +214,15 @@ import checkModel from '../checkModel'
 import weedOutModel from '../weedOutModel'
 import appraiseModel from '../appraiseModel'
 import bus from '@/utils/bus'
+import weebOut from './weebOut.vue'
 export default {
   props: ['id', 'taskDetailInfo'],
   components: {
     awardModel,
     checkModel,
     weedOutModel,
-    appraiseModel
+    appraiseModel,
+    weebOut
   },
   data () {
     return {
@@ -373,6 +369,11 @@ export default {
     }
   },
   methods: {
+    openWeedOut (record) {
+      console.log('record', record)
+      this.$refs.weebOut.info = JSON.parse(JSON.stringify(record))
+      this.$refs.weebOut.isShow = true
+    },
     // 获取按钮状态
     async getButtonInfo () {
       const res4 = await toGetButtonStatus({
@@ -402,22 +403,22 @@ export default {
       this.getTaskSpeedData()
     },
     // 淘汰 确定
-    async confirm (uid) {
-      const arr = []
-      arr.push(uid)
-      await toEliminate({
-        ids: arr,
-        task_id: this.id
-      })
-      this.getTaskSpeedData()
-      this.$parent.getTaskLog()
-      this.$message.success('处理成功')
-    },
+    // async confirm (uid) {
+    //   const arr = []
+    //   arr.push(uid)
+    //   await toEliminate({
+    //     ids: arr,
+    //     task_id: this.id
+    //   })
+    //   this.getTaskSpeedData()
+    //   this.$parent.getTaskLog()
+    //   this.$message.success('处理成功')
+    // },
     // 淘汰 取消
-    cancel (e) {
-      console.log(e)
-      // this.$message.error('Click on No')
-    },
+    // cancel (e) {
+    //   console.log(e)
+    //   // this.$message.error('Click on No')
+    // },
     // 奖励
     award (record) {
       console.log('record', record)

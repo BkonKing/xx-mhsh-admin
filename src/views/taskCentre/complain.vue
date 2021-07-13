@@ -15,7 +15,15 @@
             @click="changeTab(0)"
             :class="{ active: currentIndex === 0 }"
           >
-            待处理 <span style="width:10px;text-align: center;display: inline-block;">{{complaintInfo.pending_total!==0?complaintInfo.pending_total:''}}</span>
+            待处理
+            <span
+              style="width:10px;text-align: center;display: inline-block;"
+              >{{
+                complaintInfo.pending_total !== 0
+                  ? complaintInfo.pending_total
+                  : ""
+              }}</span
+            >
           </div>
           <div
             class="item"
@@ -34,7 +42,11 @@
             <a-row :gutter="36">
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="处理状态">
-                  <a-select placeholder="请选择" v-model="handle_status">
+                  <a-select
+                    :disabled="tabBol"
+                    placeholder="请选择"
+                    v-model="handle_status"
+                  >
                     <a-select-option value="0">
                       待处理
                     </a-select-option>
@@ -46,14 +58,19 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="投诉类型">
-                  <a-select placeholder="请选择" v-model="complaint_type">
-                    <a-select-option
-                      v-for="item in typeList"
-                      :key="item.id"
-                      :value="item.id"
-                    >
-                      {{ item.complaint_type }}
-                    </a-select-option>
+                  <a-select v-model="complaint_type">
+                    <a-select-opt-group label='任务'>
+
+                      <a-select-option v-for="(item) in typeList.task" :value="item.id" :key='item.id'>
+                       {{item.complaint_type}}
+                      </a-select-option>
+
+                    </a-select-opt-group>
+                    <a-select-opt-group label="提问">
+                      <a-select-option v-for="(item) in typeList.question" :value="item.id" :key='item.id' >
+                        {{item.complaint_type}}
+                      </a-select-option>
+                    </a-select-opt-group>
                   </a-select>
                 </a-form-model-item>
               </a-col>
@@ -63,11 +80,8 @@
                     查询
                   </a-button>
                   <a-button @click="reset">重置</a-button>
-                  <a-button
-type="link"
-@click="open"
-                    >展开 <a-icon
-type="down"
+                  <a-button type="link" @click="open"
+                    >展开 <a-icon type="down"
                   /></a-button>
                 </div>
               </a-col>
@@ -153,10 +167,16 @@ type="down"
                       v-model="timeTxt"
                       class="piker-time"
                       :ranges="{
-                        Today: [moment('00:00:00', 'HH:mm:ss'), moment().endOf('day')],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')]
+                        Today: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment().endOf('day')
+                        ],
+                        'This Month': [
+                          moment().startOf('month'),
+                          moment().endOf('month')
+                        ]
                       }"
-                       :show-time="{
+                      :show-time="{
                         defaultValue: [
                           moment('00:00:00', 'HH:mm:ss'),
                           moment('00:00:00', 'HH:mm:ss')
@@ -175,11 +195,8 @@ type="down"
                       查询
                     </a-button>
                     <a-button @click="reset">重置</a-button>
-                    <a-button
-type="link"
-@click="close"
-                      >收起 <a-icon
-type="up"
+                    <a-button type="link" @click="close"
+                      >收起 <a-icon type="up"
                     /></a-button>
                   </div>
                 </a-col>
@@ -197,7 +214,7 @@ type="up"
         </div>
         <div class="table">
           <a-table
-          rowKey="id"
+            rowKey="id"
             :columns="columns"
             :data-source="tableData"
             :row-selection="{
@@ -207,11 +224,11 @@ type="up"
             :pagination="false"
             @change="tableChange"
           >
-          <template slot="handle_desc" slot-scope="text,record">
-            <div :style="{color:record.is_over===1?'red':''}">
-              {{record.handle_desc}}
-            </div>
-          </template>
+            <template slot="handle_desc" slot-scope="text, record">
+              <div :style="{ color: record.is_over === 1 ? 'red' : '' }">
+                {{ record.handle_desc }}
+              </div>
+            </template>
             <template slot="content" slot-scope="content">
               <div class="tableContent">
                 {{ content }}
@@ -241,21 +258,28 @@ type="up"
                 </div>
               </div>
             </template>
-            <template slot="opera" slot-scope="text,record">
+            <template slot="opera" slot-scope="text, record">
               <div class="opera">
                 <a-button
                   type="link"
-                  @click="$router.push('/taskCentre/complainDetail?id='+record.id)"
+                  @click="
+                    $router.push('/taskCentre/complainDetail?id=' + record.id)
+                  "
                   >查看</a-button
                 >
-                <a-button type="link" @click="deal(record)" v-if="record.is_handle==='待处理'">处理</a-button>
+                <a-button
+                  type="link"
+                  @click="deal(record)"
+                  v-if="record.is_handle === '待处理'"
+                  >处理</a-button
+                >
               </div>
             </template>
           </a-table>
         </div>
         <div class="pagination">
           <a-pagination
-          v-model="pagination.currentPage"
+            v-model="pagination.currentPage"
             show-quick-jumper
             show-size-changer
             :page-size-options="pagination.sizes"
@@ -273,7 +297,7 @@ type="up"
         </div>
       </a-card>
     </div>
-    <complainDeal ref="complainDeal" @getData='getData'></complainDeal>
+    <complainDeal ref="complainDeal" @getData="getData"></complainDeal>
     <complainBatchDeal
       ref="complainBatchDeal"
       :selectedRowKeys="selectedRowKeys"
@@ -397,7 +421,11 @@ export default {
       content_id: ''
     }
   },
-
+  computed: {
+    tabBol () {
+      return this.currentIndex !== ''
+    }
+  },
   methods: {
     // 排序
     tableChange (pagination, filters, sorter, { currentDataSource }) {
@@ -565,7 +593,7 @@ export default {
 /deep/ .ant-form .ant-btn-link {
   padding: 0;
 }
-/deep/.ant-table-selection-column{
+/deep/.ant-table-selection-column {
   text-align: left !important;
 }
 .complain {
@@ -613,13 +641,13 @@ export default {
         margin-left: 10px;
       }
     }
-  .btns {
-    padding-bottom: 20px;
-    text-align: right;
-    button + button {
-      margin-left: 10px;
+    .btns {
+      padding-bottom: 20px;
+      text-align: right;
+      button + button {
+        margin-left: 10px;
+      }
     }
-  }
   }
   .card2 {
     margin-top: 20px;
@@ -649,14 +677,14 @@ export default {
     }
     .table {
       margin-top: 20px;
-      .tableContent{
-      text-overflow: -o-ellipsis-lastline;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      -webkit-box-orient: vertical;
+      .tableContent {
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
     }
     .pagination {
@@ -670,8 +698,8 @@ export default {
         float: left;
       }
     }
-    .opera{
-      button{
+    .opera {
+      button {
         padding: 0;
         padding-right: 16px;
       }

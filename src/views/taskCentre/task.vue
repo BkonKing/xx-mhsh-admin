@@ -95,7 +95,7 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-model-item label="任务状态">
-                  <a-select v-model="task_status" placeholder="请选择">
+                  <a-select :disabled='tabBol' v-model="task_status" placeholder="请选择">
                     <a-select-option
                       v-for="(item, index) in taskStatusList"
                       :key="index"
@@ -514,6 +514,9 @@ export default {
         })
 
       }
+    },
+    tabBol () {
+      return this.currentIndex !== ''
     }
   },
   methods: {
