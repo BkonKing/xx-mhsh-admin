@@ -88,8 +88,9 @@
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
+        {{selectedRowKeys}}
         <a-table
-          rowKey="uid"
+           rowKey="uid"
           :row-selection="rowSelection"
           :columns="columns"
           :data-source="taskSpeedList"
@@ -154,7 +155,7 @@
                 >奖励</a-button
               >
 
-                <a-button type="link" @click="openWeedOut(record)">淘汰</a-button>
+                <a-button type="link" v-if="record.button===2" @click="openWeedOut(record)">淘汰</a-button>
 
             </div>
           </template>
@@ -371,6 +372,7 @@ export default {
   methods: {
     openWeedOut (record) {
       console.log('record', record)
+      this.selectedRowKeys = []
       this.$refs.weebOut.info = JSON.parse(JSON.stringify(record))
       this.$refs.weebOut.isShow = true
     },
@@ -402,23 +404,7 @@ export default {
       this.pagination.pageSize = size
       this.getTaskSpeedData()
     },
-    // 淘汰 确定
-    // async confirm (uid) {
-    //   const arr = []
-    //   arr.push(uid)
-    //   await toEliminate({
-    //     ids: arr,
-    //     task_id: this.id
-    //   })
-    //   this.getTaskSpeedData()
-    //   this.$parent.getTaskLog()
-    //   this.$message.success('处理成功')
-    // },
-    // 淘汰 取消
-    // cancel (e) {
-    //   console.log(e)
-    //   // this.$message.error('Click on No')
-    // },
+
     // 奖励
     award (record) {
       console.log('record', record)
@@ -463,7 +449,7 @@ export default {
       }
       // console.log(e.key)
       if (+e.key === 1) {
-        this.$refs.weedOutModel.isShow = true
+        this.$refs.weebOut.isShow = true
       } else {
         this.$refs.awardModel.isShow = true
         if (this.selectedRows.length === 1) {
