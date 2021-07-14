@@ -87,16 +87,16 @@
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <a-input
-              :maxLength="20"
-              v-model="item.bad_tag_name"
-              placeholder="标签"
-              style="width:160px"
-            ></a-input>
-            <a-input
               v-model="item.good_tag_name"
               placeholder="标签"
               style="width:160px"
               :maxLength="20"
+            ></a-input>
+            <a-input
+              :maxLength="20"
+              v-model="item.bad_tag_name"
+              placeholder="标签"
+              style="width:160px"
             ></a-input>
 
             <a-input
