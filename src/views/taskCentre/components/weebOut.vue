@@ -6,7 +6,7 @@
 
     </div>
     <div class="t1" v-if="selectedRowKeys.length === 0">
-      <span>接单方：</span>
+      <span style="marginLeft:20px">接单方：</span>
       <span>{{ info.user }}</span>
     </div>
     <div>
@@ -77,6 +77,9 @@ export default {
 <style lang="less" scoped>
 .t1 {
   margin-bottom: 24px;
+}
+/deep/ .ant-modal-body{
+  padding: 16px 24px 24px 24px;
 }
  .selected {
    margin-bottom: 10px;

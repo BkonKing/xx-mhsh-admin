@@ -88,7 +88,7 @@
         <span class="span2" @click="clear">清空</span>
       </div>
       <div class="table">
-        {{selectedRowKeys}}
+
         <a-table
            rowKey="uid"
           :row-selection="rowSelection"
