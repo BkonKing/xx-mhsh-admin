@@ -33,9 +33,9 @@
                     <a-select-option
                       v-for="(item, index) in tagList"
                       :key="index"
-                      :value="item"
+                      :value="item.index"
                     >
-                      {{ item }}
+                      {{ item.tag_name }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -404,7 +404,7 @@ export default {
     }
     // 评价-评价标签下拉列表
     const res = await toEvaluateList()
-    this.tagList = res.list
+    this.tagList = res
     // console.log('评价标签列表', res)
     // 获取所有项目
     const res2 = await toGetProject()
