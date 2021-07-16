@@ -287,13 +287,13 @@ export default {
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
-          width: '4%'
+          width: '6%'
         },
         {
           title: '处理时间',
           dataIndex: 'handle_desc',
           key: 'handle_desc',
-          width: '8%',
+          width: '10%',
           scopedSlots: { customRender: 'handle_desc' }
         },
         {
