@@ -11,6 +11,7 @@
                class="input1"
               v-model="item.mobile"
               :maxLength="11"
+               v-number-input
               placeholder="手机号"
               style="width:216px"
             ></a-input>
@@ -70,6 +71,7 @@
 <script>
 import { toAddWhiteUser, toAddGroupUser } from '@/api/taskCentre'
 import { getUserInfo } from '@/api/financeCenter.js'
+import numberInput from '@/directives/number-input'
 // function isNumber (value) {
 //   // 验证是否为数字
 //   var patrn = /^(-)?\d+(\.\d+)?$/
@@ -82,6 +84,9 @@ import { getUserInfo } from '@/api/financeCenter.js'
 
 export default {
   props: ['mode', 'id'],
+  directives: {
+    numberInput
+  },
   data () {
     return {
       isShow: false,
