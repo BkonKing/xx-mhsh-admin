@@ -212,7 +212,7 @@
     ></add-form>
     <import-file
       v-model="importVisible"
-      templateUrl=""
+      templateUrl="/library/mb/员工导入模板.xlsx"
       name="staff_file"
       :request="importStaff"
       @submit="submitSuccess"
@@ -488,10 +488,9 @@ export default {
     },
     openTransfer () {
       if (this.selectedRowKeys.length) {
-        console.log(this.$refs, this.$refs.transferForm)
         this.transferForm = {
           credits: '',
-          remark: ''
+          remark: '员工福利'
         }
         this.transferShow = true
       } else {
@@ -507,7 +506,7 @@ export default {
             ...this.transferForm
           }).then(({ success, message }) => {
             if (success) {
-              this.$message.success('转账成功')
+              this.$message.success(message)
               this.transferShow = false
             } else {
               this.$message.error(message)
