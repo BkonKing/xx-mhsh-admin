@@ -11,33 +11,17 @@ export default {
 
       localLoading: false,
       localDataSource: [],
-      // localPagination: this.pagination
       localPagination: Object.assign({
-        defaultCurrent: 1, // 默认当前页数
-        defaultPageSize: this.pageInfo ? this.pageInfo.defaultPageSize : 10, // 默认当前页显示数据的大小
-        total: 0, // 总数，必须先有
-        showSizeChanger: true,
         showQuickJumper: true,
         pageSizeOptions: this.pageInfo ? this.pageInfo.pageSizeOptions : ['10', '20', '30', '50'],
         showTotal: (total) => {
-          console.log('total', total, this.localPagination, this.pageSize)
           let pageTotal = 0
-          if (total % this.localPagination.defaultPageSize > 0) {
-            pageTotal = parseInt(total / this.localPagination.defaultPageSize) + 1
+          if (total % this.localPagination.pagesize > 0) {
+            pageTotal = parseInt(total / this.localPagination.pagesize) + 1
           } else {
-            pageTotal = parseInt(total / this.localPagination.defaultPageSize)
+            pageTotal = parseInt(total / this.localPagination.pagesize)
           }
-          return '共 ' + total + ' 条记录 第 ' + this.localPagination.defaultCurrent + ' / ' + pageTotal + ' 页'
-        },
-        // 改变每页数量时更新显示
-        onShowSizeChange: (current, pageSize) => {
-          this.localPagination.defaultCurrent = current
-          this.localPagination.defaultPageSize = pageSize
-        },
-        // 页面改变
-        onChange: (current, size) => {
-          this.localPagination.defaultCurrent = current
-          this.localPagination.defaultPageSize = size
+          return '共 ' + total + ' 条记录 第 ' + this.localPagination.current + ' / ' + pageTotal + ' 页'
         }
       }, this.pagination)
     }
@@ -106,6 +90,10 @@ export default {
     pageInfo: {
       type: Object,
       default: null
+    },
+    rowSelectionPaging: {
+      type: Boolean,
+      default: false
     }
   }),
   watch: {
@@ -119,8 +107,10 @@ export default {
       })
       // change pagination, reset total data
       this.needTotalList = this.initTotalList(this.columns)
-      this.selectedRowKeys = []
-      this.selectedRows = []
+      if (!this.rowSelectionPaging) {
+        this.selectedRowKeys = []
+        this.selectedRows = []
+      }
     },
     pageNum (val) {
       Object.assign(this.localPagination, {
@@ -147,7 +137,6 @@ export default {
       showSizeChanger: this.showSizeChanger
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
-    console.log('this.localPagination', this.pagination)
     this.loadData()
   },
   methods: {
@@ -157,13 +146,9 @@ export default {
      * @param Boolean bool
      */
     refresh (bool = false) {
-      // bool && (this.localPagination = Object.assign({}, {
-      //   current: 1, pagesize: this.pagesize
-      // }))
-      bool && (this.localPagination = Object.assign({}, this.localPagination, {
-        current: 1, pagesize: this.pagesize, defaultCurrent: 1, defaultPageSize: this.pagesize
+      bool && (this.localPagination = Object.assign({}, {
+        current: 1, pagesize: this.pagesize
       }))
-      console.log(this.localPagination)
       this.loadData()
     },
     /**
@@ -212,7 +197,7 @@ export default {
             // 这里用于判断接口是否有返回 r.total 且 this.showPagination = true 且 pageindex 和 pagesize 存在 且 total 小于等于 pageindex * pagesize 的大小
             // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
             try {
-              if ((['auto', true].includes(this.showPagination) && r.total <= (r.pageindex * this.localPagination.pagesize))) {
+              if ((['auto'].includes(this.showPagination) && r.total <= (r.pageindex * this.localPagination.pagesize))) {
                 this.localPagination.hideOnSinglePage = true
               }
             } catch (e) {
@@ -284,7 +269,6 @@ export default {
       )
     },
     renderAlert () {
-      console.log(this.alert)
       // 绘制统计列数据 totalTitle统计字段文字描述
       const needTotalItems = this.needTotalList.map((item) => {
         return (<span style="margin-right: 12px">
@@ -300,11 +284,11 @@ export default {
       ) : null
 
       // 绘制 alert 组件
-      if (this.selectedRows.length) {
+      if (this.selectedRowKeys.length) {
         return (
           <a-alert showIcon={true} style="margin-bottom: 16px">
             <template slot="message">
-              <span style="margin-right: 12px">已选择: <a style="font-weight: 600">{this.selectedRows.length} </a>项</span>
+              <span style="margin-right: 12px">已选择: <a style="font-weight: 600">{this.selectedRowKeys.length} </a>项</span>
               {needTotalItems}
               {clearItem}
             </template>
@@ -317,7 +301,9 @@ export default {
   },
 
   render () {
-    const props = {}
+    const props = {
+      showHeader: this.$props.showHeader
+    }
     const localKeys = Object.keys(this.$data)
     const showAlert = (typeof this.alert === 'object' && this.alert !== null && this.alert.show) && typeof this.rowSelection.selectedRowKeys !== 'undefined' || this.alert
 

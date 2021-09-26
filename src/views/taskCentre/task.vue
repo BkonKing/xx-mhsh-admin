@@ -498,7 +498,6 @@ export default {
       projectList: [], // 项目列表
       areaArr: [],
       jump_mobile: ''
-
     }
   },
   computed: {
@@ -674,6 +673,7 @@ export default {
       this.currentIndex = 0
     }
     this.jump_mobile = this.$route.query.mobile
+    this.task_user_search = this.$route.query.userMobile
     this.getData()
     // 任务-获取任务状态
     const res = await toGetCommonTaskStatus()

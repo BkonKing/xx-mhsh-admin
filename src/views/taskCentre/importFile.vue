@@ -1,8 +1,15 @@
 <template>
   <div class="importFile">
-    <a-modal v-model="isShow" title="导入文件" @ok="submit" :destroyOnClose='true'>
+    <a-modal
+      v-model="isShow"
+      title="导入文件"
+      @ok="submit"
+      :destroyOnClose="true"
+    >
       <div class="form">
-        <div class="leftForm textFile" ><span style="color:red">*</span> <span >选择文件：</span></div>
+        <div class="leftForm textFile">
+          <span style="color:red">*</span> <span>选择文件：</span>
+        </div>
         <div class="rightForm">
           <label for="filein">
             <div class="fileUpload">
@@ -19,13 +26,7 @@
 
       <a-button class="btn"
         ><a-icon type="vertical-align-bottom" />
-        <a
-          :href="
-            mode === 'whiteUser'
-              ? 'https://test.tosolomo.com/library/mb/mb_whitelist.xlsx'
-              : 'https://test.tosolomo.com/library/mb/mb_group.xlsx'
-          "
-          style="color:rgba(0, 0, 0, 0.647058823529412)"
+        <a :href="temHref" style="color:rgba(0, 0, 0, 0.647058823529412)"
           >下载模板</a
         >
       </a-button>
@@ -40,8 +41,11 @@
           />
           <a-icon type="close-circle" style="color:red" v-else-if="isFail202" />
         </div>
-        <div class="right" v-if="uploadFileInfo.failed_count === 0 && isSuccess">
-          <div class="t1">{{uploadFileInfo.message}}</div>
+        <div
+          class="right"
+          v-if="uploadFileInfo.failed_count === 0 && isSuccess"
+        >
+          <div class="t1">{{ uploadFileInfo.message }}</div>
           <div class="t2">
             共{{ uploadFileInfo.count }}条信息，{{
               uploadFileInfo.success_count
@@ -65,7 +69,7 @@
 </template>
 
 <script>
-import { toImportWhiteUser, toImportGroupUser } from '@/api/taskCentre'
+import { toImportWhiteUser, toImportGroupUser, importOpenUser } from '@/api/taskCentre'
 export default {
   props: ['mode', 'id'],
   data () {
@@ -81,6 +85,20 @@ export default {
       isFail201: false,
       isFail202: false,
       isSuccess: true
+    }
+  },
+  computed: {
+    temHref () {
+      let href = 'https://test.tosolomo.com/library/mb/mb_group.xlsx'
+      switch (this.mode) {
+        case 'whiteUser':
+          href = 'https://test.tosolomo.com/library/mb/mb_whitelist.xlsx'
+          break
+        case 'publicUsers':
+          href = 'https://test.tosolomo.com/library/mb/mb_whitelist.xlsx'
+          break
+      }
+      return href
     }
   },
   watch: {
@@ -107,9 +125,11 @@ export default {
       }
       const fd = new FormData()
       // 上传白名单
-      if (this.mode === 'whiteUser') {
-        fd.append('whitelist_file', this.fileUrl)
-        const res = await toImportWhiteUser(fd)
+      if (['whiteUser', 'publicUsers'].includes(this.mode)) {
+        const api = this.mode === 'whiteUser' ? toImportWhiteUser : importOpenUser
+        const name = this.mode === 'whiteUser' ? 'whitelist_file' : 'openuser_file'
+        fd.append(name, this.fileUrl)
+        const res = await api(fd)
         this.uploadFileInfo = res
         if (res.code === '201') {
           this.isSuccess = false
@@ -154,7 +174,6 @@ export default {
           this.isShow2 = true
         }
         this.isShow = false
-
         this.$parent.getRegister()
       }
 
@@ -174,7 +193,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.textFile{
+.textFile {
   white-space: nowrap;
 }
 .form {
@@ -253,7 +272,7 @@ export default {
     height: 140px;
   }
 }
-/deep/ .ant-modal-footer{
+/deep/ .ant-modal-footer {
   padding: 10px 24px;
 }
 </style>

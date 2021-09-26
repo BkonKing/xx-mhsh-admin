@@ -7,24 +7,23 @@
           <div class="item" v-for="(item, index) in arr" :key="item.id">
             <!-- onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" -->
             <a-input
-              @input="getData(index, $event)"
-               class="input1"
+              @input.native="() => getData(index, $event)"
+              class="input1"
               v-model="item.mobile"
               :maxLength="11"
-               v-number-input
+              v-number-input
               placeholder="手机号"
               style="width:216px"
             ></a-input>
             <a-input
-            :disabled="false"
-               @input="getData(index, $event)"
+              :disabled="false"
+              @input.native="() => getData(index, $event)"
               :maxLength="10"
               v-model="item.nickname"
               placeholder="昵称"
               style="width:104px"
             ></a-input>
             <a-input
-
               :maxLength="10"
               v-model="item.remark"
               placeholder="备注"
@@ -69,24 +68,11 @@
 </template>
 
 <script>
-import { toAddWhiteUser, toAddGroupUser } from '@/api/taskCentre'
+import { toAddWhiteUser, toAddGroupUser, addOpenUser } from '@/api/taskCentre'
 import { getUserInfo } from '@/api/financeCenter.js'
-import numberInput from '@/directives/number-input'
-// function isNumber (value) {
-//   // 验证是否为数字
-//   var patrn = /^(-)?\d+(\.\d+)?$/
-//   if (patrn.exec(value) == null || value == '') {
-//     return false
-//   } else {
-//     return true
-//   }
-// }
 
 export default {
   props: ['mode', 'id'],
-  directives: {
-    numberInput
-  },
   data () {
     return {
       isShow: false,
@@ -119,9 +105,7 @@ export default {
       }
     }
   },
-  mounted () {
-
-  },
+  mounted () {},
   methods: {
     // 选择用户
     selectUser (item) {
@@ -165,30 +149,21 @@ export default {
     },
     // 确定
     async submit () {
-      if (this.mode === 'whiteUser') {
-        // const list = this.arr.map(item => {
-        //   if (item.mobile) {
-        //     return {
-        //       mobile: item.mobile,
-        //       nickname: item.nickname,
-        //       remark: item.remark
-        //     }
-        //   }
-        // })
-        const list = []
-        for (let i = 0; i < this.arr.length; i++) {
-          if (this.arr[i].mobile) {
-            if (this.arr[i].mobile.length !== 11) {
-              this.$message.warning('请正确填写手机号')
-              return
-            }
-            list.push(this.arr[i])
+      const list = []
+      for (let i = 0; i < this.arr.length; i++) {
+        if (this.arr[i].mobile) {
+          if (this.arr[i].mobile.length !== 11) {
+            this.$message.warning('请正确填写手机号')
+            return
           }
+          list.push(this.arr[i])
         }
-        const res = await toAddWhiteUser({
+      }
+      if (['whiteUser', 'publicUsers'].includes(this.mode)) {
+        const api = this.mode === 'whiteUser' ? toAddWhiteUser : addOpenUser
+        const res = await api({
           user_list: list
         })
-        // console.log('添加白名单', res)
         if (res.code === '201') {
           this.$message.error(res.message)
         } else {
@@ -196,32 +171,10 @@ export default {
           this.$parent.pagination.currentPage = 1
           this.$message.success('添加成功')
           this.$parent.getData()
-          // this.$parent.getGroupBase()
-          // this.$parent.getRegister()
-          // console.log('添加群用户', res2)
         }
       } else {
-        // const list2 = this.arr.map(item => {
-        //   if (item.mobile) {
-        //     return {
-        //       mobile: item.mobile,
-        //       nickname: item.nickname,
-        //       remark: item.remark
-        //     }
-        //   }
-        // })
-        const list2 = []
-        for (let i = 0; i < this.arr.length; i++) {
-          if (this.arr[i].mobile) {
-            if (this.arr[i].mobile.length !== 11) {
-              this.$message.warning('请正确填写手机号')
-              return
-            }
-            list2.push(this.arr[i])
-          }
-        }
         const res2 = await toAddGroupUser({
-          user_list: list2,
+          user_list: list,
           group_id: this.id
         })
         if (res2.code === '201') {
@@ -233,7 +186,6 @@ export default {
           this.$parent.getData()
           this.$parent.getGroupBase()
           this.$parent.getRegister()
-          // console.log('添加群用户', res2)
         }
       }
     },
@@ -264,6 +216,7 @@ export default {
   margin: 0 auto;
   .left {
     width: 56px;
+    padding-top: 4px;
   }
   .right {
     flex: 1;

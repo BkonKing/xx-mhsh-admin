@@ -75,5 +75,15 @@ const errorRoute = [{
 
 export default new Router({
   mode: process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'true' ? 'history' : 'hash',
-  routes: asyncRoutes.concat(constantRoutes).concat(errorRoute)
+  routes: asyncRoutes.concat(constantRoutes).concat(errorRoute),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
+  }
 })

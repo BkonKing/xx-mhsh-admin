@@ -21,6 +21,10 @@ const taskCentreApi = {
   addWhiteUser: '/linli/basicsetting/addWhiteUser',
   delWhiteUser: '/linli/basicsetting/delWhiteUser',
   importWhiteUser: '/linli/basicsetting/importWhiteUser',
+  getOpenListUser: '/linli/openuser/getOpenListUser', // 任务公开用户列表
+  addOpenUser: '/linli/openuser/addUser', // 添加公开用户
+  delOpenUser: '/linli/openuser/delOpenUser', // 删除公开用户
+  importOpenUser: '/linli/openuser/importOpenUser', // 导入公开用户
   groupList: '/linli/taskgroup/groupList',
   addGroup: '/linli/taskgroup/addGroup',
   delGroup: '/linli/taskgroup/delGroup',
@@ -235,6 +239,38 @@ export function toDelWhiteUser (data) {
 export function toImportWhiteUser (data) {
   return request({
     url: taskCentreApi.importWhiteUser,
+    method: 'post',
+    data
+  })
+}
+// 任务公开-任务公开列表
+export function getOpenListUser (data) {
+  return request({
+    url: taskCentreApi.getOpenListUser,
+    method: 'post',
+    data
+  })
+}
+// 任务公开-添加用户
+export function addOpenUser (data) {
+  return request({
+    url: taskCentreApi.addOpenUser,
+    method: 'post',
+    data
+  })
+}
+// 任务公开-删除用户
+export function delOpenUser (data) {
+  return request({
+    url: taskCentreApi.delOpenUser,
+    method: 'post',
+    data
+  })
+}
+// 任务公开-导入用户
+export function importOpenUser (data) {
+  return request({
+    url: taskCentreApi.importOpenUser,
     method: 'post',
     data
   })

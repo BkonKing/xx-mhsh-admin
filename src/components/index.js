@@ -10,6 +10,9 @@ import ChartCard from '@/components/Charts/ChartCard'
 import MiniProgress from '@/components/Charts/MiniProgress'
 import Trend from '@/components/Trend'
 
+import AdvancedForm from '@/components/AdvancedForm'
+import PageHeader from '@/components/PageHeader'
+
 export {
   FooterToolbar,
   STable,
@@ -18,5 +21,7 @@ export {
   aLine,
   ChartCard,
   MiniProgress,
-  Trend
+  Trend,
+  AdvancedForm,
+  PageHeader
 }

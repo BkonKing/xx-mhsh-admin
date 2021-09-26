@@ -43,6 +43,15 @@ Vue.filter('timeFormat', function (val) {
   return moment(val).format('YYYY-MM-DD HH:mm:ss')
 })
 
+// 注册全局指令
+const context = require.context('./directives', true, /index\.js$/)
+
+context.keys().forEach((key) => {
+  Object.keys(context(key)).forEach((paramKey) => {
+    Vue.use(context(key)[paramKey])
+  })
+})
+
 new Vue({
   router,
   store,

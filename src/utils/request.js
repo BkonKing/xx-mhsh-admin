@@ -49,7 +49,7 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  console.log('config', config.headers.isLoading)
+  // console.log('config', config.headers.isLoading)
   if (config.headers.isLoading) {
     Vue.prototype.$loading.show()
   }

@@ -37,6 +37,19 @@
               <a-icon style="color:black" type="info-circle" />
             </a-tooltip>
           </div>
+          <div
+            class="item"
+            @click="currentIndex = 5"
+            :class="{ active: currentIndex === 5 }"
+          >
+            公开用户
+            <a-tooltip>
+              <template slot="title">
+                用户发布的任务完成后将公开显示
+              </template>
+              <a-icon style="color:black" type="info-circle" />
+            </a-tooltip>
+          </div>
         </div>
       </template>
     </page-header-wrapper>
@@ -44,7 +57,8 @@
       <basics ref="basics" v-if="currentIndex === 1"></basics>
       <complainCheck v-else-if="currentIndex === 2"></complainCheck>
       <taskType v-else-if="currentIndex === 3"></taskType>
-      <whiteList v-else></whiteList>
+      <whiteList v-else-if="currentIndex === 4"></whiteList>
+      <publicUsers v-else></publicUsers>
     </div>
   </div>
 </template>
@@ -54,12 +68,14 @@ import basics from './basics'
 import complainCheck from './complainCheck'
 import taskType from './taskType'
 import whiteList from './whiteList'
+import publicUsers from './publicUsers'
 export default {
   components: {
     basics,
     complainCheck,
     taskType,
-    whiteList
+    whiteList,
+    publicUsers
   },
   data () {
     return {
