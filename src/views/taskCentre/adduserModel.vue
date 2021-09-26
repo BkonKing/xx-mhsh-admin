@@ -5,21 +5,21 @@
         <div class="left">手机号：</div>
         <div class="right">
           <div class="item" v-for="(item, index) in arr" :key="item.id">
-            <!-- onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" -->
             <a-input
-              @input.native="() => getData(index, $event)"
-              class="input1"
               v-model="item.mobile"
               :maxLength="11"
+              :disabled="item.disabled"
+              @input="(e) => handleMobileInput(e, index)"
               v-number-input
+              class="input1"
               placeholder="手机号"
               style="width:216px"
             ></a-input>
             <a-input
-              :disabled="false"
-              @input.native="() => getData(index, $event)"
-              :maxLength="10"
               v-model="item.nickname"
+              :maxLength="10"
+              :disabled="item.disabled"
+              @input="() => getData(index)"
               placeholder="昵称"
               style="width:104px"
             ></a-input>
@@ -78,8 +78,8 @@ export default {
       isShow: false,
       arr: [{ id: Math.random() * 999, mobile: '', nickname: '', remark: '' }],
       userInfoList: [], // 用户列表
-      currentIndex: 0,
-      elm: '' // dom元素
+      currentIndex: 0
+      // elm: '' // dom元素
     }
   },
   watch: {
@@ -111,40 +111,30 @@ export default {
     selectUser (item) {
       this.arr[this.currentIndex].nickname = item.realname
       this.arr[this.currentIndex].mobile = item.mobile
+      this.arr[this.currentIndex].disabled = true
       this.userInfoList = []
-      this.elm.disabled = true
-      this.elm.nextElementSibling.disabled = true
+      // this.elm.disabled = true
+      // this.elm.nextElementSibling.disabled = true
       // console.log(this.elm)
     },
+    handleMobileInput (e, index) {
+      if (typeof e === 'string') {
+        this.getData(index, 'mobile')
+      }
+    },
     // 获取用户信息
-    async getData (index, e) {
+    async getData (index, type) {
       this.currentIndex = index
-      this.elm = e.target
-      if (e.target.value.length < 11 && e.target.nextElementSibling.value) {
-        e.target.nextElementSibling.value = ''
+      // this.elm = e.target
+      if (type === 'mobile' && this.arr[index].mobile.length < 11 && this.arr[index].nickname) {
         this.arr[index].nickname = ''
       }
-      if (this.arr[index].mobile.length >= 5) {
+      if (this.arr[index].mobile.length >= 5 || this.arr[index].nickname) {
         const res = await getUserInfo({
           realname: this.arr[index].nickname,
           mobile: this.arr[index].mobile
         })
-        // console.log('用户信息', res)
         this.userInfoList = res.data.list
-        // if (this.userInfoList.length === 1) {
-        //   this.selectUser(this.userInfoList[0])
-        // }
-      }
-      if (this.arr[index].nickname) {
-        const res = await getUserInfo({
-          realname: this.arr[index].nickname,
-          mobile: this.arr[index].mobile
-        })
-        // console.log('用户信息', res)
-        this.userInfoList = res.data.list
-        // if (this.userInfoList.length === 1) {
-        //   this.selectUser(this.userInfoList[0])
-        // }
       }
     },
     // 确定
