@@ -39,7 +39,12 @@
     </a-card>
 
     <footer-tool-bar style="width: 100% !important;">
-      <a-button type="primary" @click="submit" :loading="loading">
+      <a-button
+        type="primary"
+        :disabled="isChange"
+        :loading="loading"
+        @click="submit"
+      >
         提交
       </a-button>
     </footer-tool-bar>
@@ -63,6 +68,7 @@ export default {
         employeeSigninReward: false,
         employeeRewardCredits: ''
       },
+      dataBackup: {},
       loading: false,
       routes: [
         {
@@ -80,6 +86,16 @@ export default {
       ]
     }
   },
+  computed: {
+    isChange () {
+      return (
+        this.formData.employeeSigninReward ===
+          this.dataBackup.employeeSigninReward &&
+        parseFloat(this.formData.employeeRewardCredits) ===
+          parseFloat(this.dataBackup.employeeRewardCredits)
+      )
+    }
+  },
   created () {
     this.getStaff()
   },
@@ -88,6 +104,7 @@ export default {
       getStaff().then(({ data }) => {
         data.employeeSigninReward = !!+data.employeeSigninReward
         this.formData = data
+        this.dataBackup = clonedeep(data)
       })
     },
     submit () {
@@ -124,7 +141,10 @@ export default {
           })
           return
         }
-        success && this.$message.success('提交成功')
+        if (success) {
+          this.dataBackup = clonedeep(this.formData)
+          this.$message.success('提交成功')
+        }
       })
     }
   }

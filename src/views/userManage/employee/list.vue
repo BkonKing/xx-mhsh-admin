@@ -421,7 +421,6 @@ export default {
         }
       ],
       selectedRowKeys: [],
-      selectedRows: [],
       transferShow: false, // 转账弹窗
       transferForm: {
         credits: '',
@@ -536,8 +535,6 @@ export default {
           okText: '确定',
           onOk () {
             that.handleRemove(that.selectedRowKeys.join(','))
-            that.selectedRowKeys = []
-            that.selectedRows = []
           },
           onCancel () {}
         })
@@ -549,8 +546,13 @@ export default {
       delStaff({
         staff_ids: id
       }).then(({ success }) => {
-        this.$message.success('删除成功')
-        this.$refs.table.refresh()
+        if (success) {
+          const ids = id.split(',')
+          // 选中selectedRowKeys去除删除的key
+          this.selectedRowKeys = this.selectedRowKeys.filter(obj => !ids.includes(obj))
+          this.$message.success('删除成功')
+          this.$refs.table.refresh()
+        }
       })
     },
     handleEdit (record) {
@@ -601,9 +603,8 @@ export default {
       this.$refs.table.refresh(true)
       this.initOptions()
     },
-    onSelectChange (selectedRowKeys, selectedRows) {
+    onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
     }
   }
 }

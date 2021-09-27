@@ -126,6 +126,14 @@ export default {
       Object.assign(this.localPagination, {
         showSizeChanger: val
       })
+    },
+    // 外部selectedRowKeys变更触发内部重新赋值（主要用于删除）
+    'rowSelection.selectedRowKeys' (val) {
+      this.selectedRowKeys = val
+      // 重新计算selectedRowKeys对应的selectedRows
+      this.selectedRows = this.selectedRows.filter(obj => {
+        return this.selectedRowKeys.includes(obj[this.rowKey])
+      })
     }
   },
   mounted () {
