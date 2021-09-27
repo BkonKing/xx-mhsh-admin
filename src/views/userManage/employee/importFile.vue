@@ -20,7 +20,7 @@
               </div>
             </div>
           </label>
-          <input id="filein" @change="uploadFile" type="file" v-show="false" />
+          <input id="filein" @input="uploadFile" type="file" v-show="false" />
         </div>
       </div>
 
@@ -117,7 +117,6 @@ export default {
       fileSize: 0,
       fileUrl: '',
       uploadFileInfo: {},
-      isFail201: false,
       isFail202: false
     }
   },
@@ -141,8 +140,10 @@ export default {
   methods: {
     uploadFile (e) {
       const file = e.target.files[0]
-      this.fileSize = (file.size / 1024 / 1024).toFixed(3)
-      this.fileUrl = file
+      if (file) {
+        this.fileSize = (file.size / 1024 / 1024).toFixed(3)
+        this.fileUrl = file
+      }
     },
     // 确定
     async submit () {
@@ -150,7 +151,6 @@ export default {
         this.$message.error('请选择文件')
         return
       }
-
       const formData = new FormData()
       formData.append(this.name, this.fileUrl)
 
@@ -167,8 +167,9 @@ export default {
         this.isFail202 = false
       } else if (res.code === '202') {
         this.isFail202 = true
+        this.isShow = false
+        this.$emit('submit')
       } else if (res.code === '200') {
-        this.isFail201 = false
         this.isFail202 = false
         this.isShow = false
         this.$emit('submit')

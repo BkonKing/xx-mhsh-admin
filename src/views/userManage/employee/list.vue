@@ -159,7 +159,7 @@
         >
           <span class="table-action" slot="action" slot-scope="text, record">
             <template>
-              <!-- <a @click="goDetail(record)">查看</a> -->
+              <a :href="`/zht/user/user/getUserList?uid=${record.uid}`" target="_blank">查看</a>
               <a @click="handleEdit(record)">编辑</a>
               <a
                 ><a-popconfirm
@@ -352,8 +352,7 @@ export default {
             )
           },
           dataIndex: 'action',
-          // width: '140px',
-          width: '100px',
+          width: '140px',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -601,14 +600,6 @@ export default {
     importSuccess () {
       this.$refs.table.refresh(true)
       this.initOptions()
-    },
-    goDetail ({ orderId: id }) {
-      this.$router.push({
-        name: 'OrderDetail',
-        query: {
-          id
-        }
-      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

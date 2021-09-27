@@ -108,7 +108,22 @@ export default {
       }
       const params = clonedeep(this.formData)
       params.employeeSigninReward = params.employeeSigninReward ? 1 : 0
-      setStaff(params).then(({ success }) => {
+      setStaff(params).then(({ success, code }) => {
+        if (code === '202') {
+          this.$info({
+            title: '开启签到任务',
+            content: '签到任务未开启，请先开启',
+            icon: () => (
+              <a-icon
+                type="info-circle"
+                style="color: #1890ff"
+                theme="filled"
+              />
+            ),
+            onOk () {}
+          })
+          return
+        }
         success && this.$message.success('提交成功')
       })
     }
