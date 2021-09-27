@@ -13,15 +13,43 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <!-- <a-form-model-item label="公司" prop="company_id">
-        <a-select v-model="form.company_id" placeholder="请选择"></a-select>
+      <a-form-model-item label="公司" prop="company_id">
+        <a-select
+          v-model="form.company_id"
+          placeholder="请选择"
+          @change="handleCompanyChange"
+        >
+          <a-select-option
+            v-for="item in companyOptions"
+            :key="item.id"
+            :value="item.id"
+            >{{ item.company_name }}</a-select-option
+          >
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="部门" prop="division_id">
-        <a-select v-model="form.division_id" placeholder="请选择"></a-select>
+        <a-select
+          v-model="form.division_id"
+          placeholder="请选择"
+          @change="handleDivisionChange"
+          ><a-select-option
+            v-for="item in divisionOptions"
+            :key="item.id"
+            :value="item.id"
+            >{{ item.division_name }}</a-select-option
+          ></a-select
+        >
       </a-form-model-item>
       <a-form-model-item label="职务" prop="post_id">
-        <a-select v-model="form.post_id" placeholder="请选择"></a-select>
-      </a-form-model-item> -->
+        <a-select v-model="form.post_id" placeholder="请选择">
+          <a-select-option
+            v-for="item in postOptions"
+            :key="item.id"
+            :value="item.id"
+            >{{ item.post_name }}</a-select-option
+          >
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item label="员工编号" prop="staff_numb">
         <a-input v-model="form.staff_numb" placeholder="请输入"></a-input>
       </a-form-model-item>
@@ -44,13 +72,17 @@
           placeholder="请选择"
         ></a-date-picker>
       </a-form-model-item>
-      <!-- <a-form-model-item label="工作项目" prop="item_ids">
-        <a-select
-          v-model="form.item_ids"
-          mode="multiple"
-          placeholder="请选择"
-        ></a-select>
-      </a-form-model-item> -->
+      <a-form-model-item label="工作项目" prop="item_ids">
+        <a-select v-model="form.item_ids" mode="multiple" placeholder="请选择" @change="selectProject">
+          <a-select-option key="all" :value="0">全部</a-select-option>
+          <a-select-option
+            v-for="item in projectOptions"
+            :key="item.id"
+            :value="item.id"
+            >{{ item.item_name }}</a-select-option
+          >
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item label="备注" prop="remark">
         <a-textarea
           v-model="form.address"
@@ -65,7 +97,7 @@
 
 <script>
 import clonedeep from 'lodash.clonedeep'
-import { editStaff } from '@/api/userManage'
+import { editStaff, getDivisionList, getPostList } from '@/api/userManage'
 
 const initialForm = {
   company_id: undefined,
@@ -86,11 +118,11 @@ export default {
       type: Boolean,
       default: false
     },
-    companyList: {
+    projectOptions: {
       type: Array,
       default: () => []
     },
-    stageList: {
+    companyOptions: {
       type: Array,
       default: () => []
     }
@@ -101,6 +133,8 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       form: clonedeep(initialForm),
+      divisionOptions: [],
+      postOptions: [],
       rules: {
         mobile: [{ required: true, message: '请输入手机号' }]
       }
@@ -108,17 +142,7 @@ export default {
   },
   computed: {
     title () {
-      return this.id ? '编辑员工' : '新增员工'
-    },
-    options () {
-      return this.companyList.map(option => {
-        return {
-          label: option.companyName,
-          value: option.companyId,
-          disabled:
-            this.form.glStatus && this.form.glStatus.includes(option.companyId)
-        }
-      })
+      return this.form.staff_id ? '编辑员工' : '新增员工'
     }
   },
   watch: {
@@ -129,10 +153,43 @@ export default {
       this.$emit('input', val)
     }
   },
-  mounted () {
-    this.stageList[0] && (this.form.stage = this.stageList[0].stageId)
-  },
   methods: {
+    // 获取部门
+    getDivisionList (companyId) {
+      getDivisionList({
+        company_id: companyId
+      }).then(({ data }) => {
+        this.divisionOptions = data || []
+      })
+    },
+    // 获取职务
+    getPostList (companyId, divisionId) {
+      getPostList({
+        company_id: companyId,
+        division_id: divisionId
+      }).then(({ data }) => {
+        this.postOptions = data || []
+      })
+    },
+    handleCompanyChange () {
+      this.$set(this.form, 'division_id', undefined)
+      this.$set(this.form, 'post_id', undefined)
+      this.getDivisionList(this.form.company_id)
+      this.postOptions = []
+    },
+    handleDivisionChange () {
+      this.$set(this.form, 'post_id', undefined)
+      this.getPostList(this.form.company_id, this.form.division_id)
+    },
+    // 选中工作项目，主要处理选中全部，则自动选中所有值
+    selectProject (value, option) {
+      console.log(value)
+      const index = value.findIndex(obj => obj === 0)
+      // 有选中全部
+      if (index > -1) {
+        this.form.item_ids = this.projectOptions.map(obj => obj.id)
+      }
+    },
     handleSubmit () {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -188,11 +245,14 @@ export default {
     },
     setFieldsValue (data) {
       this.form = data
+      this.form.company_id && this.getDivisionList(this.form.company_id)
+      this.form.division_id && this.getPostList(this.form.company_id, this.form.division_id)
     },
     resetFields () {
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
-      this.stageList[0] && (this.form.stage = this.stageList[0].stageId)
+      this.divisionOptions = []
+      this.postOptions = []
     }
   }
 }

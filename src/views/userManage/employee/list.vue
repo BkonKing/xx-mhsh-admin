@@ -6,12 +6,20 @@
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
             <a-row :gutter="48">
-              <!-- <a-col :md="8" :sm="24">
+              <a-col :md="8" :sm="24">
                 <a-form-item label="公司">
                   <a-select
                     v-model="queryParam.company_id"
                     placeholder="请选择"
-                  ></a-select>
+                    @change="handleCompanyChange"
+                  >
+                    <a-select-option
+                      v-for="item in companyOptions"
+                      :key="item.id"
+                      :value="item.id"
+                      >{{ item.company_name }}</a-select-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
@@ -19,17 +27,29 @@
                   <a-select
                     v-model="queryParam.division_id"
                     placeholder="请选择"
-                  ></a-select>
+                    @change="handleDivisionChange"
+                  >
+                    <a-select-option
+                      v-for="item in divisionOptions"
+                      :key="item.id"
+                      :value="item.id"
+                      >{{ item.division_name }}</a-select-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="职务">
-                  <a-select
-                    v-model="queryParam.post_id"
-                    placeholder="请选择"
-                  ></a-select>
+                  <a-select v-model="queryParam.post_id" placeholder="请选择">
+                    <a-select-option
+                      v-for="item in postOptions"
+                      :key="item.id"
+                      :value="item.id"
+                      >{{ item.post_name }}</a-select-option
+                    >
+                  </a-select>
                 </a-form-item>
-              </a-col> -->
+              </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="员工">
                   <a-input
@@ -59,14 +79,18 @@
                     />
                   </a-form-item>
                 </a-col>
-                <!-- <a-col :md="8" :sm="24">
+                <a-col :md="8" :sm="24">
                   <a-form-item label="工作项目">
-                    <a-select
-                      v-model="queryParam.item_id"
-                      placeholder="请选择"
-                    ></a-select>
+                    <a-select v-model="queryParam.item_id" placeholder="请选择">
+                      <a-select-option
+                        v-for="item in projectOptions"
+                        :key="item.id"
+                        :value="item.id"
+                        >{{ item.item_name }}</a-select-option
+                      >
+                    </a-select>
                   </a-form-item>
-                </a-col> -->
+                </a-col>
                 <a-col :md="8" :sm="24">
                   <a-form-item label="是否注册">
                     <a-select
@@ -94,11 +118,8 @@
               </template>
               <advanced-form
                 v-model="advanced"
-                :md="8"
-                @reset="
-                  queryParam = {};
-                  $refs.table.refresh(true);
-                "
+                :md="24"
+                @reset="resetTable"
                 @search="$refs.table.refresh(true)"
               ></advanced-form>
             </a-row>
@@ -208,6 +229,8 @@
     <add-form
       v-model="addVisible"
       ref="add-form"
+      :company-options="companyOptions"
+      :project-options="projectOptions"
       @submit="submitSuccess"
     ></add-form>
     <import-file
@@ -215,7 +238,7 @@
       templateUrl="/library/mb/员工导入模板.xlsx"
       name="staff_file"
       :request="importStaff"
-      @submit="submitSuccess"
+      @submit="importSuccess"
     ></import-file>
   </div>
 </template>
@@ -229,6 +252,9 @@ import {
   delStaff,
   importStaff,
   getItemList,
+  getCompanyList,
+  getDivisionList,
+  getPostList,
   awardCredits
 } from '@/api/userManage'
 import clonedeep from 'lodash.clonedeep'
@@ -251,57 +277,59 @@ export default {
       // 查询参数
       queryParam: {},
       columns: [
-        // {
-        //   title: '公司',
-        //   dataIndex: 'company_name',
-        //   width: '10%',
-        //   customRender: text => {
-        //     return <div class="two-Multi">{text}</div>
-        //   }
-        // },
-        // {
-        //   title: '部门',
-        //   dataIndex: 'division_name'
-        // },
+        {
+          title: '公司',
+          dataIndex: 'company_name',
+          customRender: text => {
+            return <div class="two-Multi">{text}</div>
+          }
+        },
+        {
+          title: '部门',
+          dataIndex: 'division_name',
+          customRender: text => {
+            return <div class="two-Multi">{text}</div>
+          }
+        },
         {
           title: '员工编号',
           dataIndex: 'staff_numb',
           customRender: text => {
-            return <div class="two-Multi">{text}</div>
+            return text || '--'
           }
         },
         {
           title: '姓名',
           dataIndex: 'realname',
           customRender: text => {
+            return text || '--'
+          }
+        },
+        {
+          title: '职务',
+          dataIndex: 'post_name',
+          customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
-        // {
-        //   title: '职务',
-        //   dataIndex: 'post_name',
-        //   customRender: text => {
-        //     return <div class="two-Multi">{text}</div>
-        //   }
-        // },
         {
           title: '入职日期',
           dataIndex: 'entry_time',
           customRender: text => {
-            return <div class="two-Multi">{text}</div>
+            return text || '--'
           }
         },
         {
           title: '手机号',
           dataIndex: 'mobile'
         },
-        // {
-        //   title: '工作项目',
-        //   dataIndex: 'item_name_text',
-        //   customRender (text) {
-        //     return text || '--'
-        //   }
-        // },
+        {
+          title: '工作项目',
+          dataIndex: 'item_name_text',
+          customRender: text => {
+            return <div class="two-Multi">{text}</div>
+          }
+        },
         {
           title: '添加时间',
           dataIndex: 'ctime',
@@ -400,7 +428,10 @@ export default {
         credits: '',
         remark: ''
       },
-      projectList: [],
+      companyOptions: [],
+      divisionOptions: [],
+      postOptions: [],
+      projectOptions: [],
       importStaff,
       routes: [
         {
@@ -427,13 +458,58 @@ export default {
     }
   },
   created () {
-    this.getItemList()
+    this.initOptions()
   },
   methods: {
+    initOptions () {
+      this.getCompanyList()
+      this.getDivisionList()
+      this.getPostList()
+      this.getItemList()
+    },
+    // 获取公司
+    getCompanyList () {
+      getCompanyList().then(({ data }) => {
+        this.companyOptions = data || []
+      })
+    },
+    // 获取部门
+    getDivisionList (companyId) {
+      getDivisionList({
+        company_id: companyId
+      }).then(({ data }) => {
+        this.divisionOptions = data || []
+      })
+    },
+    // 获取职务
+    getPostList (companyId, divisionId) {
+      getPostList({
+        company_id: companyId,
+        division_id: divisionId
+      }).then(({ data }) => {
+        this.postOptions = data || []
+      })
+    },
+    // 获取项目列表
     getItemList () {
       getItemList().then(({ data }) => {
-        this.projectList = data
+        this.projectOptions = data || []
       })
+    },
+    handleCompanyChange () {
+      this.$set(this.queryParam, 'division_id', undefined)
+      this.$set(this.queryParam, 'post_id', undefined)
+      this.getDivisionList(this.queryParam.company_id)
+      this.postOptions = []
+    },
+    handleDivisionChange () {
+      this.$set(this.queryParam, 'post_id', undefined)
+      this.getPostList(this.queryParam.company_id, this.queryParam.division_id)
+    },
+    resetTable () {
+      this.queryParam = {}
+      this.$refs.table.refresh(true)
+      this.initOptions()
     },
     addEmployee () {
       this.$refs['add-form'].resetFields()
@@ -481,8 +557,10 @@ export default {
     handleEdit (record) {
       const form = clonedeep(record)
       form.staff_id = form.id
+      form.company_id = form.company_id || undefined
+      form.division_id = form.division_id || undefined
+      form.post_id = form.post_id || undefined
       form.item_ids = form.item_ids ? form.item_ids.split(',') : []
-      console.log(form.item_ids)
       this.$refs['add-form'].setFieldsValue(form)
       this.addVisible = true
     },
@@ -519,6 +597,10 @@ export default {
     },
     submitSuccess () {
       this.$refs.table.refresh()
+    },
+    importSuccess () {
+      this.$refs.table.refresh(true)
+      this.initOptions()
     },
     goDetail ({ orderId: id }) {
       this.$router.push({

@@ -3,7 +3,7 @@
     <page-header :routes="routes"></page-header>
     <a-card title="签到奖励" style="margin: 24px;">
       <a-form-model
-        ref="projectForm"
+        ref="form"
         :model="formData"
         :label-col="{ span: 7 }"
         :wrapper-col="{ span: 14 }"
@@ -13,16 +13,22 @@
           prop="employeeSigninReward"
           style="margin-bottom: 0;"
         >
-          <a-switch
-            v-model="formData.employeeSigninReward"
-            @change="setStaff"
-          />
+          <a-switch v-model="formData.employeeSigninReward" />
         </a-form-model-item>
-        <a-form-model-item label="奖励数量" prop="employeeRewardCredits">
+        <a-form-model-item
+          label="奖励数量"
+          prop="employeeRewardCredits"
+          :required="formData.employeeSigninReward"
+          :rules="[
+            {
+              required: formData.employeeSigninReward,
+              message: '请输入奖励数量'
+            }
+          ]"
+        >
           <a-input-number
             v-model="formData.employeeRewardCredits"
             :min="0"
-            @blur="setStaff"
           ></a-input-number
           ><span style="margin-left: 7px;">幸福币/次</span>
           <div class="alert-text">
@@ -31,17 +37,25 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
+
+    <footer-tool-bar style="width: 100% !important;">
+      <a-button type="primary" @click="submit" :loading="loading">
+        提交
+      </a-button>
+    </footer-tool-bar>
   </div>
 </template>
 
 <script>
 import clonedeep from 'lodash.clonedeep'
 import { PageHeader } from '@/components'
+import FooterToolBar from '@/components/FooterToolbar'
 import { getStaff, setStaff } from '@/api/userManage'
 
 export default {
   components: {
-    PageHeader
+    PageHeader,
+    FooterToolBar
   },
   data () {
     return {
@@ -49,6 +63,7 @@ export default {
         employeeSigninReward: false,
         employeeRewardCredits: ''
       },
+      loading: false,
       routes: [
         {
           path: '/zht/user/user/getUserList',
@@ -75,8 +90,20 @@ export default {
         this.formData = data
       })
     },
+    submit () {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.setStaff()
+        } else {
+          return false
+        }
+      })
+    },
     setStaff () {
-      if (!this.formData.employeeRewardCredits) {
+      if (
+        this.formData.employeeSigninReward &&
+        !this.formData.employeeRewardCredits
+      ) {
         this.formData.employeeRewardCredits = 5
       }
       const params = clonedeep(this.formData)
