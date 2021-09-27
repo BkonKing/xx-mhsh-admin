@@ -85,7 +85,7 @@
       </a-form-model-item>
       <a-form-model-item label="备注" prop="remark">
         <a-textarea
-          v-model="form.address"
+          v-model="form.remark"
           :maxLength="300"
           rows="4"
           placeholder="请输入"
