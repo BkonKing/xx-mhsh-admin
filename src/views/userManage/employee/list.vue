@@ -235,7 +235,7 @@
     ></add-form>
     <import-file
       v-model="importVisible"
-      templateUrl="/library/mb/员工导入模板.xlsx"
+      templateUrl="/library/mb/employee.xlsx"
       name="staff_file"
       :request="importStaff"
       @submit="importSuccess"
