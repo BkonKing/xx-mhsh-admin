@@ -11,7 +11,11 @@ const userManageApi = {
   get_item_list: '/staff/staff/get_item_list',
   staff_credits: '/staff/staff/staff_credits',
   save_employee_basic_setting: '/staff/staff/save_employee_basic_setting',
-  employee_basic_setting: '/staff/staff/employee_basic_setting'
+  employee_basic_setting: '/staff/staff/employee_basic_setting',
+  dimension_tag_list: '/user/tag/dimension_tag_list',
+  edit_dimension_tag: '/user/tag/edit_dimension_tag',
+  del_dimension: '/user/tag/del_dimension',
+  del_tag: '/user/tag/del_tag'
 }
 
 // 获取游客列表
@@ -120,6 +124,42 @@ export function setStaff (data) {
 export function getStaff (data) {
   return request({
     url: userManageApi.employee_basic_setting,
+    method: 'post',
+    data
+  })
+}
+
+// 维度标签接口 列表数据 接口
+export function getDimensionList (data) {
+  return request({
+    url: userManageApi.dimension_tag_list,
+    method: 'post',
+    data
+  })
+}
+
+// 标签添加修改接口
+export function editDimension (data) {
+  return request({
+    url: userManageApi.edit_dimension_tag,
+    method: 'post',
+    data
+  })
+}
+
+// 维度删除
+export function delDimension (data) {
+  return request({
+    url: userManageApi.del_dimension,
+    method: 'post',
+    data
+  })
+}
+
+// 标签删除
+export function delTag (data) {
+  return request({
+    url: userManageApi.del_tag,
     method: 'post',
     data
   })
