@@ -47,35 +47,41 @@
       </div>
     </a-card>
 
-    <a-card
-      v-for="(item, index) in labelList"
-      :title="item.dimension_name"
-      :key="index"
-      style="margin-top: 24px;"
-      v-show="filterParams.dimension === item.id || !filterParams.dimension"
-      ><template slot="extra">
-        <a @click="openAddDimension(item)">编辑</a
-        ><a @click="deleteDimension(item, index)">删除</a></template
+    <div>
+      <a-card
+        v-for="(item, index) in labelList"
+        :title="item.dimension_name"
+        :key="item.id"
+        style="margin-top: 24px;"
+        v-show="filterParams.dimension === item.id || !filterParams.dimension"
+        ><template slot="extra">
+          <a @click="openAddDimension(item)">编辑</a
+          ><a v-if="isParent" @click="deleteDimension(item, index)">删除</a></template
+        >
+        <div>
+          <s-tag
+            v-for="(label, index) in item.child"
+            :key="label.id"
+            v-show="
+              label.tag_name.indexOf(filterParams.labelText) > -1 ||
+                !filterParams.labelText
+            "
+            :closable="isParent || !!+label.project_id"
+            :color="item.colour"
+            @close="deleteLabel(label, index, item.child)"
+          >
+            {{ label.tag_name
+            }}{{ label.count ? `(${label.count})` : "" }}</s-tag
+          >
+          <s-tag
+            @click.native="openAddDimension(item)"
+            style="cursor: pointer;"
+          >
+            <a-icon type="plus" /> 新增
+          </s-tag>
+        </div></a-card
       >
-      <div>
-        <s-tag
-          v-for="(label, index) in item.child"
-          :key="label.id"
-          v-show="
-            label.tag_name.indexOf(filterParams.labelText) > -1 ||
-              !filterParams.labelText
-          "
-          :closable="!+label.project_id"
-          color="196,29,127"
-          @close="deleteLabel(label, index, item.child)"
-        >
-          {{ label.tag_name }}{{ label.count ? `(${label.count})` : "" }}</s-tag
-        >
-        <s-tag @click.native="openAddDimension(item)" style="cursor: pointer;">
-          <a-icon type="plus" /> 新增
-        </s-tag>
-      </div></a-card
-    >
+    </div>
 
     <a-modal
       :title="`${dimensionForm.dimension_id ? '编辑' : '新增'}标签`"
@@ -128,12 +134,12 @@
                   v-if="label.error"
                   style="color: #f5222d;line-height: 18px;"
                 >
-                  {{label.error}}
+                  {{ label.error }}
                 </div>
               </template>
               <s-tag
                 v-else
-                :closable="!+label.project_id"
+                :closable="isParent || label.project_id == projectId || !label.id"
                 @click.native="editTag(label, index)"
                 @close="deleteLabel(label, index, dimensionForm.tag_data, true)"
               >
@@ -157,9 +163,10 @@
 
     <import-file
       v-model="importVisible"
-      templateUrl="/library/mb/employee.xlsx"
-      name="staff_file"
-      @submit="importSuccess"
+      templateUrl="/library/mb/dimension_tag_mould.xlsx"
+      name="dimension_tag_file"
+      :request="importDimensionTag"
+      @submit="getDimensionList"
     >
       <!-- :request="importStaff" -->
     </import-file>
@@ -176,7 +183,8 @@ import {
   getDimensionList,
   editDimension,
   delDimension,
-  delTag
+  delTag,
+  importDimensionTag
 } from '@/api/userManage'
 
 export default {
@@ -202,6 +210,8 @@ export default {
     }
     return {
       isParent: !+Cookies.get('project_id'), // 是否为总后台
+      importDimensionTag,
+      projectId: Cookies.get('project_id'),
       filterParams: {},
       queryParam: {},
       dimensionVisible: false,
@@ -222,54 +232,7 @@ export default {
       },
       importVisible: false,
       importStaff: '',
-      labelList: [
-        {
-          id: '1',
-          dimension_name: '兴趣爱好',
-          sort: '0',
-          child: [
-            {
-              id: '2',
-              project_id: '0',
-              dimension_id: '1',
-              tag_name: '吃饭',
-              sort: '0',
-              count: 0
-            },
-            {
-              id: '1',
-              project_id: '0',
-              dimension_id: '1',
-              tag_name: '睡觉',
-              sort: '0',
-              count: 0
-            }
-          ]
-        },
-        {
-          id: '2',
-          dimension_name: '性格',
-          sort: '0',
-          child: [
-            {
-              id: '3',
-              project_id: '0',
-              dimension_id: '2',
-              tag_name: '吃饭',
-              sort: '0',
-              count: 0
-            },
-            {
-              id: '4',
-              project_id: '0',
-              dimension_id: '2',
-              tag_name: '睡觉',
-              sort: '0',
-              count: 0
-            }
-          ]
-        }
-      ]
+      labelList: []
     }
   },
   created () {
@@ -277,9 +240,9 @@ export default {
   },
   methods: {
     getDimensionList () {
-      // getDimensionList().then(({ data }) => {
-      //   this.labelList = data
-      // })
+      getDimensionList().then(({ data }) => {
+        this.labelList = data || []
+      })
     },
     // 提交维度表单
     submitDimension () {
@@ -294,11 +257,13 @@ export default {
     // 编辑维度请求
     editDimension () {
       const params = clonedeep(this.dimensionForm)
-      editDimension(params).then(({ success }) => {
+      editDimension(params).then(({ success, message }) => {
         if (success) {
           this.getDimensionList()
           this.$message.success('提交成功')
           this.dimensionVisible = false
+        } else {
+          this.$message.error(message)
         }
       })
     },
@@ -329,11 +294,19 @@ export default {
         }
       } else {
         this.$refs.dimensionForm && this.$refs.dimensionForm.resetFields()
+        this.dimensionForm = {
+          dimension_name: '',
+          tagText: '',
+          tag_data: []
+        }
       }
       this.dimensionVisible = true
     },
     // 表单中点击标签转换为输入模式
     editTag (label, index) {
+      if (!this.isParent && this.projectId != label.project_id) {
+        return
+      }
       label.editable = true
       // 切换为输入框后自动获取焦点
       this.$nextTick(() => {
@@ -440,10 +413,6 @@ export default {
     },
     handleImport () {
       this.importVisible = true
-    },
-    importSuccess () {
-      this.$refs.table.refresh(true)
-      this.initOptions()
     }
   }
 }
@@ -480,10 +449,14 @@ export default {
   max-width: 130px;
   height: 24px;
   padding: 2px 11px;
+  margin-right: 10px;
   line-height: 20px;
 }
 .tag-box {
   display: flex;
   margin-bottom: 12px;
+}
+/deep/ .ant-pro-grid-content {
+  min-height: inherit;
 }
 </style>

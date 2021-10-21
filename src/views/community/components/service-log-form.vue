@@ -88,26 +88,63 @@
         label="用户标签"
         :class="{ 'form-item-text': editForm.id }"
       >
-        <div v-if="editForm.user_tag_data && editForm.user_tag_data.length">
-          <s-tag v-for="label in editForm.user_tag_data" :key="label.id">
+        <span v-if="editForm.user_tag_data && editForm.user_tag_data.length">
+          <s-tag
+            v-for="label in editForm.user_tag_data"
+            :key="label.id"
+            :color="label.colour"
+          >
             {{ label.tag_name }}
           </s-tag>
-          <a-icon v-if="editForm.owner" type="edit"></a-icon>
-        </div>
+        </span>
         <span v-else>--</span>
+        <a-icon
+          v-if="editForm.owner_id && !isLook"
+          type="edit"
+          @click="editUserTag"
+          style="margin-left: 10px;color: #1890ff;"
+        ></a-icon>
       </a-form-model-item>
       <a-form-model-item class="form-item-text" label="用户满意度">
-        {{ editForm.id ? (editForm.service_satisfied_desc || '--') : "--" }}
+        {{ editForm.id ? editForm.service_satisfied_desc || "--" : "--" }}
       </a-form-model-item>
       <h3>服务内容</h3>
       <a-form-model-item label="服务主题" prop="service_title" required>
-        <template v-if="isLook">{{ editForm.service_title || "--" }}</template>
-        <a-input
-          v-else
-          v-model="editForm.service_title"
-          :maxLength="25"
-          placeholder="请简单概括本次服务"
-        ></a-input>
+        <template v-if="(isLook || isFollow) && !isPreview"
+          >{{ editForm.service_title || "--"
+          }}<a-icon
+            v-if="isFollow"
+            type="edit"
+            @click="
+              isPreview = true;
+              titleCopy = editForm.service_title;
+            "
+            style="margin-left: 10px;color: #1890ff;"
+          ></a-icon
+        ></template>
+        <a-row v-else type="flex">
+          <a-col flex="1">
+            <a-input
+              v-model="editForm.service_title"
+              :maxLength="25"
+              placeholder="请简单概括本次服务"
+              style="width: 100%;"
+            ></a-input>
+          </a-col>
+          <a-col v-if="isPreview" flex="80px">
+            <div>
+              <a @click="isPreview = false;" style="margin-left: 10px;">确定</a
+              ><a
+                @click="
+                  isPreview = false;
+                  editForm.service_title = titleCopy;
+                "
+                style="margin-left: 10px;"
+                >取消</a
+              >
+            </div>
+          </a-col>
+        </a-row>
       </a-form-model-item>
       <!-- 查看 -->
       <template v-if="isLook">
@@ -116,9 +153,9 @@
             <a-timeline-item v-for="(item, index) in records" :key="index">
               <div>
                 <a>{{ item.process_step }}</a> 服务时间：{{ item.service_time
-                }}<a-icon type="edit" @click="$emit('editStep', editForm, item.process_id)"></a-icon>
+                }}<a-icon type="edit" @click="toEditStep(item)"></a-icon>
               </div>
-              <div>{{ item.service_satisfied || "--" }}</div>
+              <div>{{ item.service_satisfied_desc || "--" }}</div>
               <!-- <div class="detai-cont">
                 <div class="text-block">
                   <div
@@ -152,10 +189,7 @@
           进度{{ editForm.id ? editForm.process_step + 1 : 1 }}
         </a-form-model-item>
         <a-form-model-item label="用户满意度" prop="satisfaction">
-          <a-select
-            v-model="editForm.service_satisfied"
-            placeholder="请选择"
-          >
+          <a-select v-model="editForm.service_satisfied" placeholder="请选择">
             <a-select-option
               v-for="item in satisfactionOptions"
               :key="item.value"
@@ -210,9 +244,14 @@ import {
   addSpeedInfo,
   viewRecord
 } from '@/api/community'
+import STag from '../../userManage/components/tag'
+import { getUserTag } from '@/api/userManage'
 
 export default {
   name: 'serviece-log-form',
+  components: {
+    STag
+  },
   props: {
     value: {
       type: Boolean,
@@ -252,6 +291,8 @@ export default {
         service_time: [{ required: true, message: '请选择服务时间' }],
         service_content: [{ required: true, message: '请输入服务内容' }]
       },
+      isPreview: false, // 跟进服务主题预览
+      titleCopy: '', // 跟进服务主题服务主题备份
       isOver: false,
       isDown: false,
       records: [] // 跟进记录
@@ -264,26 +305,34 @@ export default {
         : this.editForm.id
           ? '跟进服务记录'
           : '新增服务记录'
+    },
+    // 跟进服务记录或者编辑已有服务记录
+    isFollow () {
+      return !this.isLook && this.editForm.id
     }
   },
   watch: {
     value (val) {
-      if (val && this.isLook) {
+      if (val) {
         this.$nextTick(() => {
-          this.viewRecord()
+          if (this.isLook) {
+            this.viewRecord()
+          }
         })
       }
       this.editVisible = val
     },
     editVisible (val) {
+      !val && (this.isPreview = false)
       this.$emit('input', val)
     },
     data (val) {
-      // 跟进服务记录
       if (!this.isLook) {
-        if (val.id) {
+        // 跟进服务记录
+        if (val.id && !val.process_id) {
           val.service_time = ''
           val.service_content = ''
+          val.owner_id = val.uid
           val.service_satisfied = val.service_satisfied || undefined
         } else {
           val.service_provider = this.provider
@@ -318,7 +367,9 @@ export default {
     // 添加跟进记录
     addSpeedInfo () {
       const params = clonedeep(this.editForm)
-      params.step = this.editForm.process_id ? params.process_step : (params.process_step + 1)
+      params.step = this.editForm.process_id
+        ? params.process_step
+        : params.process_step + 1
       params.service_id = params.id
       addSpeedInfo(params).then(({ success }) => {
         if (success) {
@@ -331,8 +382,19 @@ export default {
     // 查看跟进记录
     viewRecord () {
       viewRecord({ service_id: this.editForm.id }).then(({ data }) => {
+        this.editForm.service_title = data.service_title || ''
+        this.editForm.service_satisfied_desc =
+          data.service_satisfied_desc || ''
         this.records = data.list || []
       })
+    },
+    toEditStep (item) {
+      const params = clonedeep(this.editForm)
+      params.service_content = item.service_content
+      params.service_provider = item.service_provider
+      params.service_time = item.service_time
+      params.service_satisfied = item.service_satisfied || undefined
+      this.$emit('editStep', { ...params, process_id: item.id })
     },
     // 获取服务者（当前账号）
     getServiceProvider () {
@@ -344,11 +406,13 @@ export default {
     handleBuildChange () {
       this.$set(this.editForm, 'unit_id', undefined)
       this.$set(this.editForm, 'house_id', undefined)
+      this.setUserInfo()
       this.getUnit(this.editForm.build_id)
       this.houseOptions = []
     },
     handleUnitChange () {
       this.$set(this.editForm, 'house_id', undefined)
+      this.setUserInfo()
       this.getHouse(this.editForm.build_id, this.editForm.unit_id)
     },
     getUnit () {
@@ -373,9 +437,33 @@ export default {
         unit_id: this.editForm.unit_id,
         house_id: this.editForm.house_id
       }).then(({ data }) => {
-        this.$set(this.editForm, 'owner', data.owner_name)
-        this.$set(this.editForm, 'mobile', data.mobile)
-        this.$set(this.editForm, 'owner_id', data.owner_id)
+        data.owner_id && this.getUserTag(data.owner_id)
+        this.setUserInfo(data.owner_name, data.mobile, data.owner_id)
+      })
+    },
+    // 获取用户标签
+    getUserTag (uid) {
+      getUserTag({
+        uid: uid || this.editForm.uid
+      }).then(({ data }) => {
+        this.$set(this.editForm, 'user_tag_data', data)
+      })
+    },
+    // 设置用户信息
+    setUserInfo (name = '', mobile = '', ownerId = '', nickname = '') {
+      this.$set(this.editForm, 'owner', name)
+      this.$set(this.editForm, 'mobile', mobile)
+      this.$set(this.editForm, 'owner_id', ownerId)
+      this.$set(this.editForm, 'nickname', nickname)
+    },
+    editUserTag () {
+      this.$emit('editUserTag', {
+        userInfo: {
+          uid: this.editForm.owner_id,
+          nickname: this.editForm.nickname,
+          realname: this.editForm.owner
+        }
+        // userTags: this.editForm.user_tag_data || []
       })
     }
   }

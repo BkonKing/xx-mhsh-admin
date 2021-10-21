@@ -15,7 +15,10 @@ const userManageApi = {
   dimension_tag_list: '/user/tag/dimension_tag_list',
   edit_dimension_tag: '/user/tag/edit_dimension_tag',
   del_dimension: '/user/tag/del_dimension',
-  del_tag: '/user/tag/del_tag'
+  del_tag: '/user/tag/del_tag',
+  import_dimension_tag: '/user/tag/import_dimension_tag',
+  editUserTag: '/user/tag/edit_user_tag',
+  getUserTag: '/user/tag/user_tag_data'
 }
 
 // 获取游客列表
@@ -160,6 +163,33 @@ export function delDimension (data) {
 export function delTag (data) {
   return request({
     url: userManageApi.del_tag,
+    method: 'post',
+    data
+  })
+}
+
+// 批量导入员工EXCEL 接口
+export function importDimensionTag (data) {
+  return request({
+    url: userManageApi.import_dimension_tag,
+    method: 'post',
+    data
+  })
+}
+
+// 修改用户 标签 接口
+export function editUserTag (data) {
+  return request({
+    url: userManageApi.editUserTag,
+    method: 'post',
+    data
+  })
+}
+
+// 用户已有标签 数据 接口
+export function getUserTag (data) {
+  return request({
+    url: userManageApi.getUserTag,
     method: 'post',
     data
   })

@@ -70,18 +70,25 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="用户标签">
-                  <a-select
+                  <a-tree-select
                     v-model="queryParam.user_tag"
+                    style="width: 100%"
+                    multiple
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                    :tree-data="lebelOptions"
+                    :dropdownMatchSelectWidth="false"
+                    :showCheckedStrategy="SHOW_ALL"
+                    :maxTagCount="3"
                     placeholder="请选择"
-                    @change="handleBuildChange"
+                    :replaceFields="{
+                      key: 'id',
+                      value: 'id',
+                      title: 'tag_name',
+                      children: 'child'
+                    }"
+                    tree-default-expand-all
                   >
-                    <a-select-option
-                      v-for="item in buildOptions"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.company_name }}</a-select-option
-                    >
-                  </a-select>
+                  </a-tree-select>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
@@ -168,101 +175,29 @@
     <!-- 编辑服务记录 -->
     <service-log-form
       v-model="editVisible"
+      ref="edit-log"
       :data="editForm"
       :buildOptions="buildOptions"
       :satisfactionOptions="satisfactionOptions"
-      @success="$refs.table.refresh()"
+      :zIndex="1003"
+      @editUserTag="editUserTag"
+      @success="editSuccess"
     ></service-log-form>
     <!-- 查看跟进 -->
     <service-log-form
       v-model="lookVisible"
+      ref="look-log"
       :data="editForm"
       isLook
       :footer="null"
+      @editStep="openEditModal"
     ></service-log-form>
-    <a-modal
+    <check-user-tag
       v-model="tagVisible"
-      title="编辑标签"
-      :width="800"
-      @ok="awardCredits"
-      :destroyOnClose="true"
-    >
-      <div style="padding: 0 24px 24px 0;border-bottom: 1px solid #eee;">
-        <div>用户昵称(姓名)：</div>
-        <div>
-          <s-tag
-            v-for="(label, index) in tagChecked"
-            :key="label.id"
-            :closable="!+label.project_id"
-            color="196,29,127"
-            @close="resetTable"
-          >
-            {{ label.tag_name }}</s-tag
-          >
-        </div>
-      </div>
-      <div class="table-page-search-wrapper">
-        <a-form layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="维度">
-                <a-select v-model="tagParams.dimension" placeholder="请选择">
-                  <a-select-option
-                    v-for="option in labelList"
-                    :value="option.id"
-                    :key="option.id"
-                  >
-                    {{ option.dimension_name }}
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="标签">
-                <a-input
-                  v-model="tagParams.labelText"
-                  placeholder="请输入"
-                ></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <span
-                class="table-page-search-submitButtons"
-                style="text-align: right;"
-              >
-                <a-button type="primary" @click="search">查询</a-button>
-                <a-button style="margin-left: 8px" @click="reset"
-                  >重置</a-button
-                >
-              </span>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
-      <div>
-        <a-checkbox-group v-model="tagChecked">
-          <div
-            v-for="item in labelList"
-            :key="item.id"
-            v-show="filterParams.dimension === item.id || !filterParams.dimension"
-          >
-            <div>{{ item.dimension_name }}</div>
-            <div>
-              <a-checkbox
-                v-for="(label, index) in item.child"
-                :value="label.id"
-                :key="label.id"
-                v-show="
-                  label.tag_name.indexOf(filterParams.labelText) > -1 ||
-                    !filterParams.labelText
-                "
-                >{{ label.tag_name }}</a-checkbox
-              >
-            </div>
-          </div>
-        </a-checkbox-group>
-      </div>
-    </a-modal>
+      :tags="labelList"
+      :userInfo="userInfo"
+      @success="checkTagSuccess"
+    ></check-user-tag>
   </page-header-view>
 </template>
 
@@ -270,23 +205,31 @@
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { STable, AdvancedForm } from '@/components'
 import moment from 'moment'
-import { getBuild, getUnit, getHouse, getServiceRecord } from '@/api/community'
-import STag from '../userManage/components/tag'
+import { getBuild, getUnit, getServiceRecord } from '@/api/community'
+import { TreeSelect } from 'ant-design-vue'
+import { getDimensionList } from '@/api/userManage'
 import serviceLogForm from './components/service-log-form'
+import checkUserTag from './components/check-user-tag'
+import STag from '../userManage/components/tag'
 import clonedeep from 'lodash.clonedeep'
+
+const { SHOW_ALL } = TreeSelect
 
 export default {
   components: {
     PageHeaderView,
     STable,
-    STag,
     AdvancedForm,
-    serviceLogForm
+    serviceLogForm,
+    checkUserTag,
+    STag
   },
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      SHOW_ALL,
       advanced: false,
+      userInfo: {},
       queryParam: {},
       columns: [
         {
@@ -379,65 +322,23 @@ export default {
       lookVisible: false,
       editVisible: false,
       tagVisible: false,
-      labelList: [
-        {
-          id: '1',
-          dimension_name: '兴趣爱好',
-          sort: '0',
-          child: [
-            {
-              id: '2',
-              project_id: '0',
-              dimension_id: '1',
-              tag_name: '吃饭',
-              sort: '0',
-              count: 0
-            },
-            {
-              id: '1',
-              project_id: '0',
-              dimension_id: '1',
-              tag_name: '睡觉',
-              sort: '0',
-              count: 0
-            }
-          ]
-        },
-        {
-          id: '2',
-          dimension_name: '性格',
-          sort: '0',
-          child: [
-            {
-              id: '3',
-              project_id: '0',
-              dimension_id: '2',
-              tag_name: '吃饭',
-              sort: '0',
-              count: 0
-            },
-            {
-              id: '4',
-              project_id: '0',
-              dimension_id: '2',
-              tag_name: '睡觉',
-              sort: '0',
-              count: 0
-            }
-          ]
-        }
-      ],
-      editForm: {},
-      tagForm: {
-        child: []
-      },
-      tagParams: {},
-      filterParams: {},
-      tagChecked: []
+      labelList: [],
+      lebelOptions: [],
+      editForm: {
+        build_id: '',
+        unit_id: '',
+        house_id: '',
+        service_title: '',
+        service_provider: '',
+        service_satisfied: '',
+        service_time: '',
+        service_content: ''
+      }
     }
   },
   created () {
     this.getBuild()
+    this.getDimensionList()
   },
   methods: {
     getBuild () {
@@ -445,8 +346,15 @@ export default {
         this.buildOptions = list || []
       })
     },
-    addLog () {},
-    awardCredits () {},
+    getDimensionList () {
+      getDimensionList().then(({ data }) => {
+        this.labelList = clonedeep(data) || []
+        data.forEach(obj => {
+          obj.tag_name = obj.dimension_name
+        })
+        this.lebelOptions = data || []
+      })
+    },
     handleBuildChange () {
       this.$set(this.queryParam, 'unit_id', undefined)
       this.$set(this.queryParam, 'house_id', undefined)
@@ -458,13 +366,6 @@ export default {
       }).then(({ data }) => {
         this.unitOptions = data || []
       })
-    },
-    reset () {
-      this.tagParams = {}
-      this.filterParams = {}
-    },
-    search () {
-      this.filterParams = clonedeep(this.tagParams)
     },
     resetTable () {
       this.queryParam = {}
@@ -482,6 +383,20 @@ export default {
         this.$refs.editForm && this.$refs.editForm.resetFields()
       }
       this.editVisible = true
+    },
+    editUserTag ({ userInfo }) {
+      this.userInfo = userInfo
+      this.tagVisible = true
+    },
+    editSuccess () {
+      if (this.editForm.process_id) {
+        this.$refs['look-log'].viewRecord()
+      }
+      this.$refs.table.refresh()
+    },
+    checkTagSuccess () {
+      this.$refs['edit-log'].getUserTag()
+      this.$refs.table.refresh()
     }
   }
 }
@@ -508,5 +423,8 @@ h3 {
   /deep/ .ant-form-item-label {
     line-height: 24px;
   }
+}
+/deep/ .ant-pro-grid-content {
+  min-height: inherit;
 }
 </style>
