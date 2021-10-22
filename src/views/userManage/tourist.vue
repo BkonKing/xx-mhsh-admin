@@ -24,7 +24,7 @@
             <a-col :md="8" :sm="24" v-if="btnBol">
               <a-form-model-item label="注册时间">
                 <a-range-picker
-                v-model="createTime"
+                  v-model="createTime"
                   class="piker-time"
                   :ranges="{
                     Today: [moment(), moment()],
@@ -36,14 +36,15 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :md="btnBol ? 24:8" :sm="24" :lg="btnBol ? 24:8">
+            <a-col :md="btnBol ? 24 : 8" :sm="24" :lg="btnBol ? 24 : 8">
               <div class="btns">
                 <a-button class="btn1" type="primary" @click="toSearch"
                   >查询</a-button
                 >
                 <a-button @click="reset">重置</a-button>
-                <a-button type="link" @click="toggle"
-                  > {{!btnBol?'展开':'收起'}} <a-icon :type="!btnBol?'down':'up'"
+                <a-button type="link" @click="toggle">
+                  {{ !btnBol ? "展开" : "收起" }}
+                  <a-icon :type="!btnBol ? 'down' : 'up'"
                 /></a-button>
               </div>
             </a-col>
@@ -52,42 +53,47 @@
       </div>
     </a-card>
     <a-card class="card2">
-       <a-table rowKey="id"  :columns="columns" :data-source="tableData" :pagination='false'>
-         <template  slot="user_type" slot-scope="user_type">
-           <div>
-             <span v-if="user_type===0">游客定位</span>
-             <span v-if="user_type===5">游客未认证业主</span>
-           </div>
-         </template>
-    <template  slot="avatar" slot-scope="avatar">
-      <div class="avator" v-html="avatar">
-
+      <a-table
+        rowKey="id"
+        :columns="columns"
+        :data-source="tableData"
+        :pagination="false"
+      >
+        <template slot="user_type" slot-scope="user_type">
+          <div>
+            <span v-if="user_type === 0">游客-定位</span>
+            <span v-if="user_type === 5">游客-未认证业主</span>
+          </div>
+        </template>
+        <template slot="avatar" slot-scope="avatar">
+          <div class="avator" v-html="avatar"></div>
+        </template>
+        <template slot="opera" slot-scope="text, record">
+          <div class="opera">
+            <a-button type="link" @click="openUserDetail(record.id)"
+              >查看</a-button
+            >
+          </div>
+        </template>
+      </a-table>
+      <div class="pagination">
+        <a-pagination
+          v-model="pagination.currentPage"
+          show-quick-jumper
+          show-size-changer
+          :page-size-options="pagination.sizes"
+          :total="pagination.total"
+          :page-size.sync="pagination.pageSize"
+          :show-total="
+            (total, range) =>
+              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                total / pagination.pageSize
+              )}页`
+          "
+          @change="onChangePage"
+          @showSizeChange="sizeChange"
+        />
       </div>
-    </template>
-    <template  slot="opera" slot-scope="text,record">
-      <div class="opera">
-        <a-button type="link" @click="openUserDetail(record.id)">查看</a-button>
-      </div>
-    </template>
-  </a-table>
-  <div class="pagination">
-          <a-pagination
-            v-model="pagination.currentPage"
-            show-quick-jumper
-            show-size-changer
-            :page-size-options="pagination.sizes"
-            :total="pagination.total"
-            :page-size.sync="pagination.pageSize"
-            :show-total="
-              (total, range) =>
-                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                  total / pagination.pageSize
-                )}页`
-            "
-            @change="onChangePage"
-            @showSizeChange="sizeChange"
-          />
-        </div>
     </a-card>
   </div>
 </template>
@@ -133,21 +139,18 @@ export default {
           dataIndex: 'nickname',
           key: 'nickname',
           width: '12.5%'
-
         },
         {
           title: '姓名',
           dataIndex: 'realname',
           key: 'realname',
           width: '12.5%'
-
         },
         {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
           width: '12.5%'
-
         },
         {
           title: '注册时间',
@@ -166,7 +169,7 @@ export default {
       tableData: [], // 表格列表
       createTime: [],
       search: '',
-      type: undefined// 类型
+      type: undefined // 类型
     }
   },
   methods: {
@@ -175,7 +178,7 @@ export default {
       window.open(`/xmht/household/member/getMemberList?uid=${uid}`, '_blank')
     },
     // 获取游客列表
-    async  getData () {
+    async getData () {
       const res = await toGetList({
         pageindex: this.pagination.currentPage,
         pagesize: this.pagination.pageSize,
@@ -237,33 +240,33 @@ export default {
     .piker-time {
       width: 100% !important;
     }
-    .btns{
+    .btns {
       text-align: right;
-      button{
+      button {
         margin-left: 10px;
       }
     }
   }
-  .card2{
+  .card2 {
     margin-top: 20px;
-    img{
-      width:32px;
+    img {
+      width: 32px;
       height: 32px;
       border-radius: 50%;
     }
-     .pagination {
-        margin-top: 10px;
-        /deep/ .ant-pagination {
-          padding-top: 10px;
-          padding-bottom: 20px;
-          text-align: right;
-        }
-        /deep/ .ant-pagination-total-text {
-          float: left;
-          // margin-left: 20px;
-          // margin-right: 300px;
-        }
+    .pagination {
+      margin-top: 10px;
+      /deep/ .ant-pagination {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        text-align: right;
       }
+      /deep/ .ant-pagination-total-text {
+        float: left;
+        // margin-left: 20px;
+        // margin-right: 300px;
+      }
+    }
   }
 }
 </style>

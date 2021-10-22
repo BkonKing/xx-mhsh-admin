@@ -68,7 +68,7 @@
               label.tag_name.indexOf(filterParams.labelText) > -1 ||
                 !filterParams.labelText
             "
-            :closable="isParent || !!+label.project_id"
+            :closable="isParent || label.project_id == projectId"
             :color="item.colour"
             @close="deleteLabel(label, index, item.child)"
           >

@@ -91,6 +91,7 @@
         <span v-if="editForm.user_tag_data && editForm.user_tag_data.length">
           <s-tag
             v-for="label in editForm.user_tag_data"
+            v-show="label.sy_project_id == projectId"
             :key="label.id"
             :color="label.colour"
             style="margin-bottom: 5px;"
@@ -107,7 +108,7 @@
         ></a-icon>
       </a-form-model-item>
       <a-form-model-item class="form-item-text" label="用户满意度">
-        {{ editForm.id ? editForm.service_satisfied_desc || "--" : "--" }}
+        {{ editForm.service_satisfied_desc || "--" }}
       </a-form-model-item>
       <h3>服务内容</h3>
       <a-form-model-item label="服务主题" prop="service_title" required>
@@ -134,7 +135,7 @@
           </a-col>
           <a-col v-if="isPreview" flex="80px">
             <div>
-              <a @click="isPreview = false;" style="margin-left: 10px;">确定</a
+              <a @click="isPreview = false" style="margin-left: 10px;">确定</a
               ><a
                 @click="
                   isPreview = false;
@@ -189,7 +190,7 @@
         <a-form-model-item class="form-item-text" label="服务进度">
           进度{{ editForm.id ? editForm.process_step + 1 : 1 }}
         </a-form-model-item>
-        <a-form-model-item label="用户满意度" prop="satisfaction">
+        <a-form-model-item label="用户满意度" prop="service_satisfied">
           <a-select v-model="editForm.service_satisfied" placeholder="请选择">
             <a-select-option
               v-for="item in satisfactionOptions"
@@ -236,6 +237,7 @@
 <script>
 import moment from 'moment'
 import clonedeep from 'lodash.clonedeep'
+import Cookies from 'js-cookie'
 import {
   getUnit,
   getHouse,
@@ -278,6 +280,7 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      projectId: Cookies.get('project_id'),
       editVisible: this.value,
       provider: '', // 当前用户名称
       unitOptions: [],
@@ -441,12 +444,28 @@ export default {
         house_id: this.editForm.house_id
       }).then(({ data }) => {
         data.owner_id && this.getUserTag(data.owner_id)
-        this.setUserInfo(data.owner_name, data.mobile, data.owner_id, data.nickname)
+        parseInt(data.satisfied) > 1 &&
+          this.$set(
+            this.editForm,
+            'service_satisfied',
+            parseInt(data.satisfied)
+          )
+        data.satisfied_name &&
+          this.$set(
+            this.editForm,
+            'service_satisfied_desc',
+            data.satisfied_name
+          )
+        this.setUserInfo(
+          data.owner_name,
+          data.mobile,
+          data.owner_id,
+          data.nickname
+        )
       })
     },
     // 获取用户标签
     getUserTag (uid) {
-      console.log(this.editForm)
       getUserTag({
         uid: uid || this.editForm.owner_id
       }).then(({ data }) => {

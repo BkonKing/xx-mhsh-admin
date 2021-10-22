@@ -7,7 +7,8 @@ const realtyLog = {
   importHouse: '/property/house/importHouse',
   addHouse: '/property/house/addHouse',
   updateHouse: '/property/house/updateHouse',
-  enabledHouse: '/property/house/enabledHouse'
+  enabledHouse: '/property/house/enabledHouse',
+  mobile_user_info: '/property/house/mobile_user_info'
 }
 
 // 获取房屋列表
@@ -61,5 +62,14 @@ export function setEnabledHouse (data) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
+  })
+}
+
+// 根据手机号获取用户信息
+export function getUserInfoByMobile (data) {
+  return request({
+    url: realtyLog.mobile_user_info,
+    method: 'post',
+    data
   })
 }

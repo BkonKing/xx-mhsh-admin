@@ -72,10 +72,11 @@
                     style="width: 100%"
                     multiple
                     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                    :tree-data="lebelOptions"
-                    :dropdownMatchSelectWidth="false"
-                    :showCheckedStrategy="SHOW_ALL"
+                    :tree-data="labelOptions"
+                    :treeCheckable="true"
+                    :showCheckedStrategy="SHOW_PARENT"
                     :maxTagCount="3"
+                    treeNodeFilterProp="title"
                     placeholder="请选择"
                     :replaceFields="{
                       key: 'id',
@@ -101,10 +102,7 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="满意度">
-                  <a-select
-                    v-model="queryParam.service_satisfied"
-                    placeholder="请选择"
-                  >
+                  <a-select v-model="queryParam.satisfied" placeholder="请选择">
                     <a-select-option
                       v-for="item in satisfactionOptions"
                       :key="item.value"
@@ -153,12 +151,15 @@
             {{ label.tag_name }}
           </s-tag>
         </template>
+        <template slot="userType" slot-scope="text">
+          {{ text | userType }}
+        </template>
         <div slot="avatar" slot-scope="text">
-          <img class="avatar" :src="text" alt="" />
+          <a-avatar v-if="text" :size="40" :src="text" />
         </div>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="openLogModal(record)"
+            <a style="margin-right: 10px;" @click="check(record)"
               >查看</a
             >
             <a style="margin-right: 10px;" @click="openTagModal(record)"
@@ -206,7 +207,7 @@
           <span v-if="userInfo.user_tag_data && userInfo.user_tag_data.length">
             <s-tag
               v-for="label in userInfo.user_tag_data"
-              :key="label.id"
+              :key="label.tag_id"
               :color="label.colour"
             >
               {{ label.tag_name }}
@@ -254,6 +255,7 @@
 
 <script>
 import { STable, AdvancedForm } from '@/components'
+import { TreeSelect } from 'ant-design-vue'
 import chekcDrawer from './checkDrawer'
 import STag from './components/tag'
 import checkUserTag from '../community/components/check-user-tag'
@@ -265,6 +267,9 @@ import {
   editUserTag
 } from '@/api/userManage'
 import { getProjectList } from '@/api/financeCenter'
+
+const { SHOW_PARENT } = TreeSelect
+
 export default {
   components: {
     chekcDrawer,
@@ -276,6 +281,7 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      SHOW_PARENT,
       advanced: false,
       queryParam: {},
       userTypeOptions: [
@@ -340,6 +346,7 @@ export default {
         {
           title: '类型',
           dataIndex: 'user_type',
+          scopedSlots: { customRender: 'userType' },
           width: 100
         },
         {
@@ -370,25 +377,28 @@ export default {
         },
         {
           title: '注册时间',
-          dataIndex: 'ctime'
+          dataIndex: 'ctime',
+          width: 160
         },
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: { customRender: 'action' },
+          width: 140
         }
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const params = cloneDeep(this.queryParam)
         if (params.user_tag && params.user_tag.length) {
-          params.tag_id_text = params.user_tag.join(',')
+          params.tag_id_text = this.setTagTreeData(params.user_tag).join(',')
         }
-        // const time = params.service_time
+        const time = params.service_time
         // const ctime = params.ctime
-        // if (time && time.length) {
-        //   params.service_time = `${time[0]}~${time[1]}`
-        // }
+        if (time && time.length) {
+          params.service_stime = time[0]
+          params.service_etime = time[1]
+        }
         // if (ctime && ctime.length) {
         //   params.ctime = `${ctime[0]}~${ctime[1]}`
         // }
@@ -403,7 +413,8 @@ export default {
       tagVisible: false,
       tagMulVisible: false,
       userList: [],
-      labelList: []
+      labelList: [],
+      labelOptions: []
     }
   },
   computed: {
@@ -448,11 +459,25 @@ export default {
     getDimensionList () {
       getDimensionList().then(({ data }) => {
         this.labelList = cloneDeep(data) || []
-        data.forEach(obj => {
+        data.forEach((obj, index) => {
           obj.tag_name = obj.dimension_name
+          obj.id = `dimension|${index}`
         })
-        this.lebelOptions = data || []
+        this.labelOptions = data || []
       })
+    },
+    setTagTreeData (data) {
+      let arr = data.map(obj => {
+        const ids = obj.split('dimension|')
+        if (ids[1]) {
+          const newTag = this.labelOptions[+ids[1]].child.map(obj => obj.id)
+          return newTag
+        } else {
+          return obj
+        }
+      })
+      arr = arr.reduce((acc, val) => acc.concat(val), [])
+      return arr
     },
     openEditModal (userInfo) {
       this.userInfo = cloneDeep(userInfo)
@@ -480,7 +505,9 @@ export default {
       this.$set(this.userInfo, 'user_tag_data', tagData)
     },
     editUserTag () {
-      const tagChecked = cloneDeep(this.userInfo.user_tag_data).map(obj => obj.id).join(',')
+      const tagChecked = cloneDeep(this.userInfo.user_tag_data)
+        .map(obj => (obj.id || obj.tag_id))
+        .join(',')
       editUserTag({
         uid: this.userInfo.uid,
         tag_id_text: tagChecked,
@@ -536,12 +563,15 @@ export default {
 }
 .appUser {
   .avatar {
-    width: 16px;
-    height: 16px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
   }
 }
 /deep/ .ant-table-tbody .tag {
   margin-bottom: 5px;
+}
+.appUser {
+  margin-bottom: 24px;
 }
 </style>

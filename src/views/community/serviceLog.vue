@@ -75,10 +75,11 @@
                     style="width: 100%"
                     multiple
                     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                    :tree-data="lebelOptions"
-                    :dropdownMatchSelectWidth="false"
-                    :showCheckedStrategy="SHOW_ALL"
+                    :tree-data="labelOptions"
+                    :treeCheckable="true"
+                    :showCheckedStrategy="SHOW_PARENT"
                     :maxTagCount="3"
+                    treeNodeFilterProp="title"
                     placeholder="请选择"
                     :replaceFields="{
                       key: 'id',
@@ -136,7 +137,7 @@
         </a-form>
       </div>
     </a-card>
-    <a-card style="margin-top: 24px" :bordered="false">
+    <a-card style="margin-top: 24px;margin-bottom: 24px;" :bordered="false">
       <div class="table-operator">
         <a-button type="primary" @click="openEditModal">
           新增记录
@@ -158,7 +159,7 @@
           <template v-else>无</template>
         </template>
         <template slot="tags" slot-scope="text">
-          <s-tag v-for="label in text" :key="label.id" :color="label.colour" style="margin-bottom: 5px;">
+          <s-tag v-for="label in text" :key="label.id" v-show="label.sy_project_id == projectId" :color="label.colour" style="margin-bottom: 5px;">
             {{ label.tag_name }}
           </s-tag>
         </template>
@@ -178,7 +179,7 @@
       ref="edit-log"
       :data="editForm"
       :buildOptions="buildOptions"
-      :satisfactionOptions="satisfactionOptions"
+      :satisfactionOptions="satisfactionEditOptions"
       :zIndex="1003"
       @editUserTag="editUserTag"
       @success="editSuccess"
@@ -212,8 +213,9 @@ import serviceLogForm from './components/service-log-form'
 import checkUserTag from './components/check-user-tag'
 import STag from '../userManage/components/tag'
 import clonedeep from 'lodash.clonedeep'
+import Cookies from 'js-cookie'
 
-const { SHOW_ALL } = TreeSelect
+const { SHOW_PARENT } = TreeSelect
 
 export default {
   components: {
@@ -227,7 +229,8 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
-      SHOW_ALL,
+      projectId: Cookies.get('project_id'),
+      SHOW_PARENT,
       userInfo: {},
       advanced: false,
       queryParam: {},
@@ -239,7 +242,7 @@ export default {
         {
           title: '房产',
           dataIndex: 'house_property',
-          sorter: true,
+          // sorter: true,
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -278,7 +281,7 @@ export default {
         },
         {
           title: '服务时间',
-          sorter: true,
+          // sorter: true,
           dataIndex: 'service_time'
         },
         {
@@ -297,6 +300,9 @@ export default {
         }
         if (ctime && ctime.length) {
           params.ctime = `${ctime[0]}~${ctime[1]}`
+        }
+        if (params.user_tag && params.user_tag.length) {
+          params.user_tag = this.setTagTreeData(params.user_tag)
         }
         return getServiceRecord(Object.assign(parameter, params))
       },
@@ -318,13 +324,27 @@ export default {
           label: '无'
         }
       ], // 满意度
+      satisfactionEditOptions: [
+        {
+          value: 4,
+          label: '满意'
+        },
+        {
+          value: 3,
+          label: '一般'
+        },
+        {
+          value: 2,
+          label: '差'
+        }
+      ],
       buildOptions: [],
       unitOptions: [],
       lookVisible: false,
       editVisible: false,
       tagVisible: false,
       labelList: [],
-      lebelOptions: [],
+      labelOptions: [],
       editForm: {
         build_id: '',
         unit_id: '',
@@ -350,11 +370,25 @@ export default {
     getDimensionList () {
       getDimensionList().then(({ data }) => {
         this.labelList = clonedeep(data) || []
-        data.forEach(obj => {
+        data.forEach((obj, index) => {
           obj.tag_name = obj.dimension_name
+          obj.id = `dimension|${index}`
         })
-        this.lebelOptions = data || []
+        this.labelOptions = data || []
       })
+    },
+    setTagTreeData (data) {
+      let arr = data.map(obj => {
+        const ids = obj.split('dimension|')
+        if (ids[1]) {
+          const newTag = this.labelOptions[+ids[1]].child.map(obj => obj.id)
+          return newTag
+        } else {
+          return obj
+        }
+      })
+      arr = arr.reduce((acc, val) => acc.concat(val), [])
+      return arr
     },
     handleBuildChange () {
       this.$set(this.queryParam, 'unit_id', undefined)

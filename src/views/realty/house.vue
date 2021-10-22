@@ -34,7 +34,7 @@
                 </a-form-item>
               </a-col>
               <template v-if="advanced">
-                <a-col :md="8" :sm="24">
+                <!-- <a-col :md="8" :sm="24">
                   <a-form-item label="房屋">
                     <a-input
                       v-model="queryParam.sSearch"
@@ -49,15 +49,15 @@
                       placeholder="ID、昵称、姓名、手机号"
                     ></a-input>
                   </a-form-item>
-                </a-col>
+                </a-col> -->
                 <a-col :md="8" :sm="24">
                   <a-form-item label="是否启用">
                     <a-select
                       v-model="queryParam.is_enabled"
                       placeholder="请选择"
                     >
-                      <a-select-option value="1">是</a-select-option>
-                      <a-select-option value="0">否</a-select-option>
+                      <a-select-option value="2">是</a-select-option>
+                      <a-select-option value="1">否</a-select-option>
                     </a-select>
                   </a-form-item>
                 </a-col>
@@ -79,9 +79,11 @@
                       style="width: 100%"
                       multiple
                       :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                      :tree-data="lebelOptions"
-                      :dropdownMatchSelectWidth="false"
+                      :tree-data="labelOptions"
+                      :treeCheckable="true"
+                      :showCheckedStrategy="SHOW_PARENT"
                       :maxTagCount="3"
+                      treeNodeFilterProp="title"
                       placeholder="请选择"
                       :replaceFields="{
                         key: 'id',
@@ -123,7 +125,7 @@
               </template>
               <advanced-form
                 v-model="advanced"
-                :md="24"
+                :md="16"
                 @reset="resetTable"
                 @search="$refs.table.refresh(true)"
               ></advanced-form>
@@ -156,10 +158,16 @@
               <a>{{ text }}</a>
               <div>{{ record.owner_mobile }}</div>
             </template>
-            <template v-else>无</template>
+            <template v-else>(无)</template>
           </template>
           <template slot="tags" slot-scope="text">
-            <s-tag v-for="label in text" :key="label.id" :color="label.colour">
+            <s-tag
+              v-for="label in text"
+              :key="label.id"
+              v-show="label.sy_project_id == projectId"
+              :color="label.colour"
+              style="margin-bottom: 5px;"
+            >
               {{ label.tag_name }}
             </s-tag>
           </template>
@@ -182,7 +190,7 @@
       </a-card>
       <a-modal
         v-model="userVisible"
-        :title="`${userForm.id ? '新增' : '编辑'}房屋`"
+        :title="`${userForm.id ? '编辑' : '新增'}房屋`"
         :width="640"
         class="house-edit-modal"
         @ok="saveHouse"
@@ -195,6 +203,7 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
+          <h3>业主信息</h3>
           <a-form-model-item label="房产" required>
             <a-row :gutter="12">
               <a-col :md="8" :sm="24">
@@ -245,28 +254,36 @@
             />
             <div class="alert-text">例：1楼输入“1”</div>
           </a-form-model-item>
-          <a-form-model-item label="业主姓名" prop="floors">
+          <a-form-model-item label="业主姓名" prop="owner_name">
             <a-input
               v-model="userForm.owner_name"
               placeholder="请输入"
               :maxLength="20"
             />
           </a-form-model-item>
-          <a-form-model-item label="业主手机号" prop="floors">
+          <a-form-model-item label="业主手机号" prop="owner_mobile">
             <a-input
               v-model="userForm.owner_mobile"
               placeholder="请输入"
               :maxLength="11"
+              @change="getUserInfo"
             />
           </a-form-model-item>
-          <a-form-model-item v-if="userForm.owner_id" label="用户标签" class="form-item-text" prop="floors">
+          <a-form-model-item
+            v-if="userForm.owner_id"
+            label="用户标签"
+            class="form-item-text"
+            prop="floors"
+          >
             <span
-              v-if="userInfo.user_tag_data && userInfo.user_tag_data.length"
+              v-if="userForm.user_tag_data && userForm.user_tag_data.length"
             >
               <s-tag
-                v-for="label in userInfo.user_tag_data"
+                v-for="label in userForm.user_tag_data"
                 :key="label.id"
+                v-show="label.sy_project_id == projectId || !label.sy_project_id"
                 :color="label.colour"
+                style="margin-bottom: 5px;"
               >
                 {{ label.tag_name }}
               </s-tag>
@@ -279,26 +296,29 @@
             ></a-icon>
           </a-form-model-item>
           <a-form-model-item
-            v-if="userForm.id"
             label="满意度"
-             prop="floors"
+            prop="floors"
             class="form-item-text"
           >
-            {{ userInfo.service_satisfied_desc || "--" }}
+            {{ userForm.service_satisfied || "--" }}
           </a-form-model-item>
           <a-form-model-item
             v-if="userForm.id"
             label="服务记录"
-             prop="floors"
+            prop="floors"
             class="form-item-text"
           >
-            {{ userInfo.service_record || 0 }}条
+            {{ userForm.service_record || 0 }}条
           </a-form-model-item>
-          <a-form-model-item label="是否启用" class="form-item-text" prop="floors">
-            <a-switch v-model="userInfo.is_enabled" />
+          <a-form-model-item
+            label="是否启用"
+            class="form-item-text"
+            prop="floors"
+          >
+            <a-switch v-model="userForm.is_enabled" />
           </a-form-model-item>
           <h3>其他信息</h3>
-          <a-form-model-item label="水费" prop="floors">
+          <a-form-model-item label="水费" prop="water_account_numb">
             <a-row type="flex">
               <a-col flex="1">
                 <a-input
@@ -316,7 +336,7 @@
               </a-col>
             </a-row>
           </a-form-model-item>
-          <a-form-model-item label="电费" prop="floors">
+          <a-form-model-item label="电费" prop="electric_account_numb">
             <a-row type="flex">
               <a-col flex="1">
                 <a-input
@@ -366,7 +386,11 @@
               v-number-input="{ min: 0, max: 9999999999 }"
             />
           </a-form-model-item>
-          <a-form-model-item label="附加面积" prop="additive_area">
+          <a-form-model-item
+            label="附加面积"
+            prop="additive_area"
+            style="margin-bottom: 0;"
+          >
             <a-input
               v-model="userForm.additive_area"
               suffix="㎡"
@@ -389,7 +413,7 @@
       templateUrl="/upload/excel_files/美好生活家园房屋导入模版.xls"
       name="housefile"
       :request="importHouse"
-      @submit="$refs.table.refresh()"
+      @submit="importSuccess"
     >
       <!-- :request="importStaff" -->
     </import-file>
@@ -400,20 +424,26 @@
 // /realty/house
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { STable, AdvancedForm } from '@/components'
+import { TreeSelect } from 'ant-design-vue'
 import STag from '@/views/userManage/components/tag'
 import importFile from '@/views/userManage/employee/importFile'
 import checkUserTag from '@/views/community/components/check-user-tag'
 import cloneDeep from 'lodash.clonedeep'
+import Cookies from 'js-cookie'
 import moment from 'moment'
-import { getDimensionList, editUserTag } from '@/api/userManage'
+import { getDimensionList } from '@/api/userManage'
 import { getBuild, getUnit } from '@/api/community'
 import {
   getHouseList,
   deleteHouse,
   importHouse,
   editHouse,
-  setEnabledHouse
+  setEnabledHouse,
+  getUserInfoByMobile
 } from '@/api/realty'
+
+const { SHOW_PARENT } = TreeSelect
+
 export default {
   components: {
     PageHeaderView,
@@ -426,6 +456,8 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      projectId: Cookies.get('project_id'),
+      SHOW_PARENT,
       advanced: false,
       buildOptions: [],
       unitOptions: [],
@@ -488,7 +520,7 @@ export default {
         {
           title: '楼栋',
           dataIndex: 'building_name',
-          width: 100
+          width: 130
         },
         {
           title: '单元',
@@ -497,12 +529,14 @@ export default {
         },
         {
           title: '房屋',
-          dataIndex: 'house_name'
+          dataIndex: 'house_name',
+          width: 100
         },
         {
           title: '业主',
           dataIndex: 'owner_name',
-          scopedSlots: { customRender: 'userInfo' }
+          scopedSlots: { customRender: 'userInfo' },
+          width: 120
         },
         {
           title: '用户标签',
@@ -511,11 +545,13 @@ export default {
         },
         {
           title: '服务记录',
-          dataIndex: 'service_record'
+          dataIndex: 'service_record',
+          width: 95
         },
         {
           title: '满意度',
-          dataIndex: 'service_satisfied'
+          dataIndex: 'service_satisfied',
+          width: 80
         },
         {
           title: () => {
@@ -532,11 +568,13 @@ export default {
             )
           },
           dataIndex: 'is_enabled',
+          width: 115,
           scopedSlots: { customRender: 'switch' }
         },
         {
           title: '操作',
           dataIndex: 'action',
+          width: 100,
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -544,16 +582,16 @@ export default {
       loadData: parameter => {
         const params = cloneDeep(this.queryParam)
         if (params.user_tag && params.user_tag.length) {
-          params.tag_id_text = params.user_tag.join(',')
+          params.user_tag = this.setTagTreeData(params.user_tag)
         }
-        // const time = params.service_time
-        // const ctime = params.ctime
-        // if (time && time.length) {
-        //   params.service_time = `${time[0]}~${time[1]}`
-        // }
-        // if (ctime && ctime.length) {
-        //   params.ctime = `${ctime[0]}~${ctime[1]}`
-        // }
+        const time = params.service_time
+        const ctime = params.create_time
+        if (time && time.length) {
+          params.service_time = `${time[0]} ~ ${time[1]}`
+        }
+        if (ctime && ctime.length) {
+          params.create_time = `${ctime[0]} ~ ${ctime[1]}`
+        }
         return getHouseList(Object.assign(parameter, params))
       },
       selectedRowKeys: [],
@@ -569,7 +607,7 @@ export default {
         owner_name: '',
         owner_mobile: '',
         user_tag_data: [],
-        service_satisfied_desc: '',
+        service_satisfied: '',
         service_record: '',
         is_enabled: true,
         water_account_numb: '',
@@ -583,9 +621,9 @@ export default {
         additive_area: ''
       },
       userRules: {
-        building_id: { require: true, message: '请选择楼栋' },
-        unit_id: { require: true, message: '请选择单元' },
-        house_name: { require: true, message: '请输入房屋' }
+        building_id: { required: true, message: '请选择楼栋' },
+        unit_id: { required: true, message: '请选择单元' },
+        house_name: { required: true, message: '请输入房屋' }
       },
       tagVisible: false,
       labelList: [],
@@ -625,11 +663,25 @@ export default {
     getDimensionList () {
       getDimensionList().then(({ data }) => {
         this.labelList = cloneDeep(data) || []
-        data.forEach(obj => {
+        data.forEach((obj, index) => {
           obj.tag_name = obj.dimension_name
+          obj.id = `dimension|${index}`
         })
-        this.lebelOptions = data || []
+        this.labelOptions = data || []
       })
+    },
+    setTagTreeData (data) {
+      let arr = data.map(obj => {
+        const ids = obj.split('dimension|')
+        if (ids[1]) {
+          const newTag = this.labelOptions[+ids[1]].child.map(obj => obj.id)
+          return newTag
+        } else {
+          return obj
+        }
+      })
+      arr = arr.reduce((acc, val) => acc.concat(val), [])
+      return arr
     },
     getBuild () {
       getBuild().then(({ list }) => {
@@ -649,7 +701,6 @@ export default {
       }
     },
     getUnit (buildId, isEdit) {
-      console.log(buildId)
       getUnit({
         build_id: buildId
       }).then(({ data }) => {
@@ -665,6 +716,10 @@ export default {
       if (userInfo && userInfo.id) {
         this.userForm = cloneDeep(userInfo)
         this.userForm.uid = userInfo.id
+        this.userForm.is_enabled = !!+userInfo.is_enabled
+        this.userForm.nickname = userInfo.nickname
+        this.userForm.realname = userInfo.owner_name
+        this.getUnit(this.userForm.building_id, true)
       } else {
         this.userForm = {
           id: '',
@@ -675,7 +730,7 @@ export default {
           owner_name: '',
           owner_mobile: '',
           user_tag_data: [],
-          service_satisfied_desc: '',
+          service_satisfied: '',
           service_record: '',
           is_enabled: true,
           water_account_numb: '',
@@ -693,6 +748,28 @@ export default {
     },
     setUserTag (tagData) {
       this.$set(this.userForm, 'user_tag_data', tagData)
+    },
+    getUserInfo () {
+      if (
+        this.userForm.owner_mobile &&
+        this.userForm.owner_mobile.length === 11
+      ) {
+        console.log(123123)
+        getUserInfoByMobile({
+          mobile: this.userForm.owner_mobile
+        }).then(({ success, data }) => {
+          if (success) {
+            this.$set(this.userForm, 'user_tag_data', data.user_tag_data)
+            this.$set(this.userForm, 'owner_id', data.uid)
+            this.$set(this.userForm, 'nickname', data.nickname)
+            // this.$set(this.userForm, 'realname', data.realname)
+            this.$set(this.userForm, 'service_satisfied', data.satisfied_name)
+            if (!this.userForm.owner_name) {
+              this.$set(this.userForm, 'owner_name', data.realname)
+            }
+          }
+        })
+      }
     },
     saveHouse () {
       this.$refs.userForm.validate(result => {
@@ -715,7 +792,10 @@ export default {
     },
     editHouse () {
       const params = cloneDeep(this.userForm)
-      console.log(this.userForm)
+      params.is_enabled = params.is_enabled ? 1 : 0
+      params.tag_id_text = cloneDeep(params.user_tag_data)
+        .map(obj => obj.id)
+        .join(',')
       editHouse(params).then(({ success, message }) => {
         if (success) {
           this.$message.success('提交成功')
@@ -723,22 +803,6 @@ export default {
           this.$refs.table.refresh()
         } else {
           this.$message.error(message)
-        }
-      })
-    },
-    editUserTag () {
-      const tagChecked = cloneDeep(this.userInfo.user_tag_data)
-        .map(obj => obj.id)
-        .join(',')
-      editUserTag({
-        uid: this.userInfo.uid,
-        tag_id_text: tagChecked,
-        remarks: this.userForm.remarks
-      }).then(({ success }) => {
-        if (success) {
-          this.userVisible = false
-          this.$refs.table.refresh()
-          this.$message.success('提交成功')
         }
       })
     },
@@ -759,6 +823,10 @@ export default {
           this.$refs.table.refresh()
         }
       })
+    },
+    importSuccess () {
+      this.$refs.table.refresh()
+      this.getBuild()
     },
     handleImport () {
       this.importVisible = true
@@ -781,6 +849,7 @@ export default {
   }
 }
 .appUser {
+  margin-bottom: 24px;
   .avatar {
     width: 16px;
     height: 16px;
@@ -795,8 +864,27 @@ export default {
 </style>
 
 <style>
-.house-edit-modal .ant-modal-body{
+.house-edit-modal .ant-modal-body {
   max-height: 600px;
   overflow-y: auto;
+}
+.house-edit-modal
+  .ant-modal-body
+  .ant-input-affix-wrapper
+  .ant-input:not(:first-child) {
+  padding-left: 61px;
+}
+.house-edit-modal .ant-form-item-control,
+.house-edit-modal .ant-form-item-label {
+  line-height: 32px;
+}
+.house-edit-modal .ant-modal-body .ant-input-affix-wrapper .ant-input-prefix {
+  height: 100%;
+  border-right: 1px solid #eee;
+  padding-right: 12px;
+}
+.house-edit-modal h3 {
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 </style>

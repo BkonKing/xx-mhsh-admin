@@ -1,23 +1,23 @@
 <template>
   <div class="happyMoney">
     <a-card class="card">
-      <a-table
-:columns="columns"
-               :data-source="data"
-               :pagination='false'>
-
+      <a-table :columns="columns" :data-source="data" :pagination="false">
       </a-table>
       <div class="pagination">
         <a-pagination
-show-quick-jumper
-                      show-size-changer
-                      :default-current="pagination.currentPage"
-                      :page-size-options="pagination.sizes"
-                      :total="pagination.total"
-                      :page-size.sync="pagination.pageSize"
-                      :show-total="(total, range) => `共 ${total} 条记录 第${pagination.currentPage}/80页`"
-                      @change="onChange"
-                      @showSizeChange="sizeChange" />
+          show-quick-jumper
+          show-size-changer
+          :default-current="pagination.currentPage"
+          :page-size-options="pagination.sizes"
+          :total="pagination.total"
+          :page-size.sync="pagination.pageSize"
+          :show-total="
+            (total, range) =>
+              `共 ${total} 条记录 第${pagination.currentPage}/80页`
+          "
+          @change="onChange"
+          @showSizeChange="sizeChange"
+        />
       </div>
     </a-card>
   </div>
@@ -109,7 +109,6 @@ export default {
     }
   },
   methods: {
-
     onChange (page, size) {
       console.log('Page: ', page)
       this.pagination.currentPage = page
@@ -121,7 +120,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .happyMoney {
   .card {
     margin-top: 20px;

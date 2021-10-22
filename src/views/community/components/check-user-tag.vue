@@ -9,7 +9,8 @@
   >
     <div class="header">
       <div class="user-info">
-        <template v-if="multiple">给{{userList.length}}人添加共同标签：</template
+        <template v-if="multiple"
+          >给{{ userList.length }}人添加共同标签：</template
         ><template v-else
           >{{ userInfo.nickname }}({{ userInfo.realname }})：</template
         >
@@ -18,7 +19,7 @@
         <s-tag
           v-for="(label, index) in tagChecked"
           :key="label.id"
-          :closable="!disabledTag.includes(label.id) || isParent"
+          :closable="!disabledTagIds.includes(label.id) || isParent"
           :color="label.colour"
           @close="cancleChecked(index)"
         >
@@ -73,7 +74,7 @@
               v-for="label in item.child"
               :value="label"
               :key="label.id"
-              :disabled="disabledTag.includes(label.id) && !isParent"
+              :disabled="disabledTagIds.includes(label.id) && !isParent"
               v-show="label.tag_name.indexOf(filter.text) > -1 || !filter.text"
               >{{ label.tag_name }}</a-checkbox
             >
@@ -139,7 +140,9 @@ export default {
       tagParams: {},
       filter: {},
       tagChecked: [],
-      disabledTag: []
+      disabledTagIds: [],
+      disabledTag: {},
+      isEmitChange: true
     }
   },
   computed: {
@@ -187,7 +190,11 @@ export default {
       deep: true,
       handler (val) {
         if (val != this.tagChecked) {
-          this.formatCheck(val)
+          if (this.isEmitChange) {
+            this.formatCheck(val)
+          } else {
+            this.isEmitChange = true
+          }
         }
       }
     }
@@ -198,7 +205,22 @@ export default {
     },
     editUserTag () {
       if (this.isGetTag) {
-        this.$emit('getTag', this.tagChecked)
+        if (!this.multiple) {
+          console.log(this.disabledTagIds, this.disabledTag)
+          const data = this.tagChecked.map(obj => {
+            console.log(obj)
+            if (this.disabledTagIds.includes(obj.id)) {
+              console.log('object', this.disabledTag[obj.id])
+              return this.disabledTag[obj.id]
+            }
+            return obj
+          })
+          console.log(data)
+          this.isEmitChange = false
+          this.$emit('getTag', data)
+        } else {
+          this.$emit('getTag', this.tagChecked)
+        }
         this.tagVisible = false
         return
       }
@@ -251,14 +273,17 @@ export default {
     formatCheck (val) {
       const arr = []
       const disabled = []
+      const disabledTag = {}
       val.forEach(obj => {
         if (obj.sy_project_id != this.projectId) {
           disabled.push(obj.tag_id)
+          disabledTag[obj.tag_id] = obj
         }
         arr.push(this.tagObject[obj.dimension_id][obj.tag_id])
       })
       this.tagChecked = arr
-      this.disabledTag = disabled
+      this.disabledTag = disabledTag
+      this.disabledTagIds = disabled
     },
     reset () {
       this.tagParams = {}
@@ -303,6 +328,12 @@ export default {
   }
   .tag-box {
     margin-left: -8px;
+    /deep/ .ant-checkbox-wrapper {
+      width: 143px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 /deep/ .ant-checkbox-wrapper {

@@ -205,6 +205,9 @@ export default {
         padding-left: 15px;
         flex: 1;
         color: #ccc;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .right {
         display: flex;
