@@ -74,7 +74,7 @@
         <div class="right" v-else>
           <div class="t1">无法导入</div>
           <div class="t2" style="color: #f5222d">
-            请查看文档
+            请检查文档
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@
     }"
   >
     <slot></slot>
-    <a-icon v-if="closable" type="close" @click="$emit('close')" />
+    <a-icon v-if="closable" type="close" @click.stop="$emit('close')" />
   </span>
 </template>
 

@@ -4,16 +4,21 @@
     title="编辑标签"
     :width="800"
     :zIndex="1004"
-    @ok="editUserTag"
+    @ok="submit"
     :destroyOnClose="true"
   >
     <div class="header">
-      <div class="user-info">{{userInfo.nickname}}({{userInfo.realname}})：</div>
+      <div class="user-info">
+        <template v-if="multiple">给{{userList.length}}人添加共同标签：</template
+        ><template v-else
+          >{{ userInfo.nickname }}({{ userInfo.realname }})：</template
+        >
+      </div>
       <div>
         <s-tag
           v-for="(label, index) in tagChecked"
           :key="label.id"
-          :closable="!disabledTag.includes(label.id)"
+          :closable="!disabledTag.includes(label.id) || isParent"
           :color="label.colour"
           @close="cancleChecked(index)"
         >
@@ -68,7 +73,7 @@
               v-for="label in item.child"
               :value="label"
               :key="label.id"
-              :disabled="disabledTag.includes(label.id)"
+              :disabled="disabledTag.includes(label.id) && !isParent"
               v-show="label.tag_name.indexOf(filter.text) > -1 || !filter.text"
               >{{ label.tag_name }}</a-checkbox
             >
@@ -83,7 +88,7 @@
 import cloneDeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
 import STag from '../../userManage/components/tag'
-import { getUserTag, editUserTag } from '@/api/userManage'
+import { getUserTag, editUserTag, editBatchUserTag } from '@/api/userManage'
 
 export default {
   name: 'check-user-tag',
@@ -103,7 +108,22 @@ export default {
       type: Array,
       default: () => []
     },
-    userTags: {
+    checkTags: {
+      type: Array,
+      default: () => []
+    },
+    // 获取tag不保存
+    isGetTag: {
+      type: Boolean,
+      default: false
+    },
+    // 批量添加
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    // 用户数组（批量下有效）
+    userList: {
       type: Array,
       default: () => []
     }
@@ -111,6 +131,7 @@ export default {
   data () {
     return {
       projectId: Cookies.get('project_id'),
+      isParent: !+Cookies.get('project_id'),
       tagVisible: this.value,
       tagForm: {
         child: []
@@ -127,7 +148,7 @@ export default {
         const { child, ...info } = obj
         return {
           ...info,
-          child: child.map((label) => {
+          child: child.map(label => {
             return {
               ...label,
               colour: obj.colour
@@ -151,30 +172,68 @@ export default {
   },
   watch: {
     value (val) {
-      if (val && this.userInfo.uid) {
+      if (val && this.userInfo.uid && !this.isGetTag) {
         this.getUserTag()
+      }
+      if (val && this.multiple) {
+        this.tagChecked = []
       }
       this.tagVisible = val
     },
     tagVisible (val) {
       this.$emit('input', val)
+    },
+    checkTags: {
+      deep: true,
+      handler (val) {
+        if (val != this.tagChecked) {
+          this.formatCheck(val)
+        }
+      }
     }
-    // userTags (val) {
-    //   this.formatCheck(val)
-    // }
   },
   methods: {
+    submit () {
+      this.multiple ? this.editBatchUserTag() : this.editUserTag()
+    },
     editUserTag () {
-      const tagChecked = cloneDeep(this.tagChecked).map(obj => obj.id).join(',')
+      if (this.isGetTag) {
+        this.$emit('getTag', this.tagChecked)
+        this.tagVisible = false
+        return
+      }
+      const tagChecked = cloneDeep(this.tagChecked)
+        .map(obj => obj.id)
+        .join(',')
       editUserTag({
         uid: this.userInfo.uid,
         tag_id_text: tagChecked,
         remarks: ''
-      }).then(({ success }) => {
+      }).then(({ success, message }) => {
         if (success) {
           this.tagVisible = false
           this.$message.success('提交成功')
           this.$emit('success')
+        } else {
+          this.$message.error(message)
+        }
+      })
+    },
+    // 批量添加用户便签
+    editBatchUserTag () {
+      const tagChecked = cloneDeep(this.tagChecked)
+        .map(obj => obj.id)
+        .join(',')
+      editBatchUserTag({
+        uid_text: this.userList.join(','),
+        tag_id_text: tagChecked
+      }).then(({ success, message }) => {
+        if (success) {
+          this.tagVisible = false
+          this.$message.success('提交成功')
+          this.$emit('success')
+        } else {
+          this.$message.error(message)
         }
       })
     },
@@ -232,15 +291,21 @@ export default {
   color: #222;
 }
 .tags-container {
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
 }
 .dimension-box {
   margin-bottom: 20px;
   .dimension-name {
+    font-size: 15px;
+    color: #222;
     margin-bottom: 10px;
   }
   .tag-box {
+    margin-left: -8px;
   }
+}
+/deep/ .ant-checkbox-wrapper {
+  margin-left: 8px;
 }
 </style>

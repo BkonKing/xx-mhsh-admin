@@ -158,7 +158,7 @@
           <template v-else>无</template>
         </template>
         <template slot="tags" slot-scope="text">
-          <s-tag v-for="label in text" :key="label.id" :color="label.colour">
+          <s-tag v-for="label in text" :key="label.id" :color="label.colour" style="margin-bottom: 5px;">
             {{ label.tag_name }}
           </s-tag>
         </template>
@@ -228,8 +228,8 @@ export default {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       SHOW_ALL,
-      advanced: false,
       userInfo: {},
+      advanced: false,
       queryParam: {},
       columns: [
         {
@@ -252,6 +252,7 @@ export default {
         {
           title: '用户标签',
           dataIndex: 'user_tag_data',
+          class: '',
           scopedSlots: { customRender: 'tags' }
         },
         {
@@ -404,7 +405,6 @@ export default {
 
 <style lang="less" scoped>
 .table-page-search-wrapper {
-  margin-top: 24px;
   /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
     min-width: 80px;
     flex-shrink: 0;
@@ -426,5 +426,8 @@ h3 {
 }
 /deep/ .ant-pro-grid-content {
   min-height: inherit;
+}
+/deep/ .ant-table-tbody td{
+  padding-bottom: 11px;
 }
 </style>

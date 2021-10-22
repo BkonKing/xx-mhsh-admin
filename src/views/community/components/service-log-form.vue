@@ -93,6 +93,7 @@
             v-for="label in editForm.user_tag_data"
             :key="label.id"
             :color="label.colour"
+            style="margin-bottom: 5px;"
           >
             {{ label.tag_name }}
           </s-tag>
@@ -406,12 +407,14 @@ export default {
     handleBuildChange () {
       this.$set(this.editForm, 'unit_id', undefined)
       this.$set(this.editForm, 'house_id', undefined)
+      this.$set(this.editForm, 'user_tag_data', [])
       this.setUserInfo()
       this.getUnit(this.editForm.build_id)
       this.houseOptions = []
     },
     handleUnitChange () {
       this.$set(this.editForm, 'house_id', undefined)
+      this.$set(this.editForm, 'user_tag_data', [])
       this.setUserInfo()
       this.getHouse(this.editForm.build_id, this.editForm.unit_id)
     },
@@ -438,13 +441,14 @@ export default {
         house_id: this.editForm.house_id
       }).then(({ data }) => {
         data.owner_id && this.getUserTag(data.owner_id)
-        this.setUserInfo(data.owner_name, data.mobile, data.owner_id)
+        this.setUserInfo(data.owner_name, data.mobile, data.owner_id, data.nickname)
       })
     },
     // 获取用户标签
     getUserTag (uid) {
+      console.log(this.editForm)
       getUserTag({
-        uid: uid || this.editForm.uid
+        uid: uid || this.editForm.owner_id
       }).then(({ data }) => {
         this.$set(this.editForm, 'user_tag_data', data)
       })

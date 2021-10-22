@@ -3,7 +3,7 @@
     <!-- actions -->
     <template v-if="isParent" v-slot:extra>
       <a-button @click="handleImport">导入</a-button>
-      <a-button type="primary" @click="openAddDimension">新增</a-button>
+      <a-button type="primary" @click="openAddDimension">新增维度</a-button>
     </template>
 
     <a-card class="search-card" style="margin-top: 24px" :bordered="false">
@@ -52,13 +52,15 @@
         v-for="(item, index) in labelList"
         :title="item.dimension_name"
         :key="item.id"
-        style="margin-top: 24px;"
+        class="dimension-card"
         v-show="filterParams.dimension === item.id || !filterParams.dimension"
         ><template slot="extra">
           <a @click="openAddDimension(item)">编辑</a
-          ><a v-if="isParent" @click="deleteDimension(item, index)">删除</a></template
+          ><a v-if="isParent" @click="deleteDimension(item, index)"
+            >删除</a
+          ></template
         >
-        <div>
+        <div class="dimension-tags">
           <s-tag
             v-for="(label, index) in item.child"
             :key="label.id"
@@ -97,7 +99,7 @@
         ref="dimensionForm"
         :model="dimensionForm"
         :rules="dimensionRules"
-        :label-col="{ span: 7 }"
+        :label-col="{ span: 5 }"
         :wrapper-col="{ span: 14 }"
       >
         <a-form-model-item
@@ -139,10 +141,14 @@
               </template>
               <s-tag
                 v-else
-                :closable="isParent || label.project_id == projectId || !label.id"
+                :closable="
+                  isParent || label.project_id == projectId || !label.id
+                "
+                :color="dimensionForm.colour"
                 @click.native="editTag(label, index)"
                 @close="deleteLabel(label, index, dimensionForm.tag_data, true)"
               >
+                {{ label.colour }}
                 {{ label.tag_name }}{{ label.count ? `(${label.count})` : "" }}
               </s-tag>
             </div>
@@ -257,15 +263,20 @@ export default {
     // 编辑维度请求
     editDimension () {
       const params = clonedeep(this.dimensionForm)
-      editDimension(params).then(({ success, message }) => {
-        if (success) {
-          this.getDimensionList()
-          this.$message.success('提交成功')
-          this.dimensionVisible = false
-        } else {
-          this.$message.error(message)
+      editDimension(params).then(
+        ({ success, message, tag_error_text: error }) => {
+          if (success) {
+            this.getDimensionList()
+            this.$message.success('提交成功')
+            if (error) {
+              this.$message.warning(`已存在相同标签 "${error}" `)
+            }
+            this.dimensionVisible = false
+          } else {
+            this.$message.error(message)
+          }
         }
-      })
+      )
     },
     reset () {
       this.queryParam = {}
@@ -386,30 +397,38 @@ export default {
     // 删除标签
     deleteLabel (label, index, item, noReq) {
       const { tag_name: name, count, id } = label
-      this.$confirm({
-        title: `删除标签 - ${name}`,
-        icon: h => <a-icon theme="filled" type="exclamation-circle" />,
-        content: h => (
-          <div>
-            <span style="color:red;">
-              {count ? `已有${count}人使用此标签` : '该标签会被删除'}
-            </span>
-            ，确定删除吗？
-          </div>
-        ),
-        onOk: () => {
-          // 编辑维度中，删除只为本地删除
-          if (noReq) {
-            item.splice(index, 1)
-            return
+      if (count && +count > 0) {
+        this.$confirm({
+          title: `删除标签 - ${name}`,
+          icon: h => <a-icon theme="filled" type="exclamation-circle" />,
+          content: h => (
+            <div>
+              <span style="color:red;">
+                {count ? `已有${count}人使用此标签` : '该标签会被删除'}
+              </span>
+              ，确定删除吗？
+            </div>
+          ),
+          onOk: () => {
+            this.confirmDeleteLabel(item, index, noReq, id)
           }
-          delTag({ tag_id: id }).then(() => {
-            this.getDimensionList()
-            this.$message.success('删除成功')
-          })
-          item.splice(index, 1)
-        }
+        })
+      } else {
+        this.confirmDeleteLabel(item, index, noReq, id)
+      }
+    },
+    // 确认删除标签
+    confirmDeleteLabel (item, index, noReq, id) {
+      // 编辑维度中，删除只为本地删除
+      if (noReq) {
+        item.splice(index, 1)
+        return
+      }
+      delTag({ tag_id: id }).then(() => {
+        this.getDimensionList()
+        this.$message.success('删除成功')
       })
+      item.splice(index, 1)
     },
     handleImport () {
       this.importVisible = true
@@ -454,9 +473,21 @@ export default {
 }
 .tag-box {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 12px;
 }
 /deep/ .ant-pro-grid-content {
   min-height: inherit;
+}
+.dimension-card {
+  margin-top: 24px;
+  /deep/ .ant-card-body {
+    padding-bottom: 19px;
+  }
+}
+.dimension-tags {
+  /deep/ .tag {
+    margin-bottom: 5px;
+  }
 }
 </style>

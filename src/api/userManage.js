@@ -21,6 +21,11 @@ const userManageApi = {
   getUserTag: '/user/tag/user_tag_data'
 }
 
+const appUser = {
+  getUserList: '/user/user/new_getUserList',
+  editBatchUserTag: '/user/tag/batch_edit_user_tag'
+}
+
 // 获取游客列表
 export function toGetList (data) {
   return request({
@@ -190,6 +195,24 @@ export function editUserTag (data) {
 export function getUserTag (data) {
   return request({
     url: userManageApi.getUserTag,
+    method: 'post',
+    data
+  })
+}
+
+// 获取APP用户列表
+export function getAppUserList (data) {
+  return request({
+    url: appUser.getUserList,
+    method: 'post',
+    data
+  })
+}
+
+// 批量添加用户
+export function editBatchUserTag (data) {
+  return request({
+    url: appUser.editBatchUserTag,
     method: 'post',
     data
   })
