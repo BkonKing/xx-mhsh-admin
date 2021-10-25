@@ -6,7 +6,7 @@
       :visible="isShow"
       :after-visible-change="afterVisibleChange"
       @close="onClose"
-      width="86%"
+      width="100%"
     >
       <template #title>
         <div class="title" @click="onClose">
@@ -14,15 +14,16 @@
         </div>
       </template>
       <a-card class="card">
-        <img
-          class="darImg"
-          src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1760725091,1658242212&fm=26&gp=0.jpg"
-          alt=""
-        />
+        <img class="darImg" :src="userInfo.avatar" alt="" />
         <div class="info">
-          <div class="t1">15655555555</div>
-          <div class="t2">女</div>
-          <div class="t3">15392053198</div>
+          <div class="t1">{{ userInfo.nickname }}</div>
+          <div class="t2">{{ userInfo.realname }}</div>
+          <div class="t2">
+            {{
+              userInfo.gender == 1 ? "男" : userInfo.gender == 2 ? "女" : "--"
+            }}
+          </div>
+          <div class="t2">{{ userInfo.mobile }}</div>
         </div>
       </a-card>
       <div class="changeTitle">
@@ -36,8 +37,18 @@
           {{ item }}
         </div>
       </div>
-      <info ref="info" v-if="currentIndex === 0"></info>
-      <happyMoney v-else ref="happyMoney"></happyMoney>
+      <info
+        ref="info"
+        v-show="currentIndex === 0"
+        :userInfo="userInfo"
+        :addressData="addressData"
+        :houseData="houseData"
+      ></info>
+      <happyMoney
+        ref="happyMoney"
+        v-show="currentIndex === 1"
+        :uid="uid"
+      ></happyMoney>
     </a-drawer>
   </div>
 </template>
@@ -45,7 +56,14 @@
 <script>
 import info from './info'
 import happyMoney from './happyMoney'
+import { getUserInfo } from '@/api/userManage'
 export default {
+  props: {
+    uid: {
+      type: [Number, String],
+      default: ''
+    }
+  },
   components: {
     info,
     happyMoney
@@ -54,10 +72,32 @@ export default {
     return {
       isShow: false,
       titleArr: ['资料', '幸福币'],
-      currentIndex: 0
+      currentIndex: 0,
+      userInfo: {},
+      addressData: [],
+      houseData: []
+    }
+  },
+  watch: {
+    isShow (val) {
+      val && this.init()
     }
   },
   methods: {
+    init () {
+      this.currentIndex = 0
+      this.getUserInfo()
+      this.$nextTick(() => {
+        this.$refs.happyMoney.refresh()
+      })
+    },
+    getUserInfo () {
+      getUserInfo({ uid: this.uid }).then(({ data, address, binding }) => {
+        this.userInfo = data
+        this.addressData = address
+        this.houseData = binding
+      })
+    },
     afterVisibleChange (val) {
       console.log('visible', val)
     },
@@ -71,16 +111,15 @@ export default {
 <style lang="less" scoped>
 .ant-drawer-title {
   .title {
-    color: #c7cace;
+    color: #333;
     cursor: pointer;
   }
 }
 /deep/ .ant-drawer-body {
   background-color: #f0f2f5;
-  height: 100%;
 }
 /deep/ .card {
-  /deep/ .darImg {
+  .darImg {
     float: left;
     width: 120px;
     height: 120px;
@@ -89,8 +128,13 @@ export default {
   }
   .info {
     float: left;
-    div {
-      margin: 5px 0;
+    .t1 {
+      line-height: 36px;
+      font-size: 16px;
+      color: #000;
+    }
+    .t2 {
+      line-height: 28px;
     }
   }
 }

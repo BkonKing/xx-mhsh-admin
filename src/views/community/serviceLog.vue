@@ -110,7 +110,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="业主">
                   <a-input
-                    v-model="queryParam.staff_text"
+                    v-model="queryParam.owner"
                     placeholder="ID、昵称、姓名、手机号"
                   ></a-input>
                 </a-form-item>
@@ -153,13 +153,23 @@
       >
         <template slot="userInfo" slot-scope="text, record">
           <template v-if="text || record.mobile">
-            <a>{{ text }}</a>
+            <a
+              :href="`/xmht/household/member/getMemberList?uid=${record.uid}`"
+              target="_blank"
+              >{{ text }}</a
+            >
             <div>{{ record.mobile }}</div>
           </template>
           <template v-else>无</template>
         </template>
         <template slot="tags" slot-scope="text">
-          <s-tag v-for="label in text" :key="label.id" v-show="label.sy_project_id == projectId" :color="label.colour" style="margin-bottom: 5px;">
+          <s-tag
+            v-for="label in text"
+            :key="label.id"
+            v-show="label.sy_project_id == projectId"
+            :color="label.colour"
+            style="margin-bottom: 5px;"
+          >
             {{ label.tag_name }}
           </s-tag>
         </template>
@@ -237,12 +247,14 @@ export default {
       columns: [
         {
           title: 'ID',
+          width: 78,
           dataIndex: 'id'
         },
         {
           title: '房产',
           dataIndex: 'house_property',
           // sorter: true,
+          width: '12%',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -250,17 +262,18 @@ export default {
         {
           title: '业主',
           dataIndex: 'owner',
+          width: 116,
           scopedSlots: { customRender: 'userInfo' }
         },
         {
           title: '用户标签',
           dataIndex: 'user_tag_data',
-          class: '',
           scopedSlots: { customRender: 'tags' }
         },
         {
           title: '满意度',
           dataIndex: 'service_satisfied_desc',
+          width: 78,
           customRender: text => {
             return text
           }
@@ -268,6 +281,7 @@ export default {
         {
           title: '服务主题',
           dataIndex: 'service_title',
+          width: '12%',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -275,6 +289,7 @@ export default {
         {
           title: '服务者',
           dataIndex: 'service_provider',
+          width: 78,
           customRender: text => {
             return text || '--'
           }
@@ -282,11 +297,12 @@ export default {
         {
           title: '服务时间',
           // sorter: true,
-          dataIndex: 'service_time'
+          dataIndex: 'service_time',
+          width: 160
         },
         {
           title: '操作',
-          width: '100px',
+          width: 100,
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -303,6 +319,7 @@ export default {
         }
         if (params.user_tag && params.user_tag.length) {
           params.user_tag = this.setTagTreeData(params.user_tag)
+          params.tag_id_text = params.user_tag.join(',')
         }
         return getServiceRecord(Object.assign(parameter, params))
       },
@@ -461,7 +478,7 @@ h3 {
 /deep/ .ant-pro-grid-content {
   min-height: inherit;
 }
-/deep/ .ant-table-tbody td{
+/deep/ .ant-table-tbody td {
   padding-bottom: 11px;
 }
 </style>

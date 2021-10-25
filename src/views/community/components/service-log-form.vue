@@ -79,7 +79,11 @@
         :class="{ 'form-item-text': editForm.id }"
       >
         <div v-if="editForm.owner || editForm.mobile">
-          <a style="margin-right: 10px;">{{ editForm.owner }}</a
+          <a
+            :href="`/xmht/household/member/getMemberList?uid=${editForm.uid}`"
+            target="_blank"
+            style="margin-right: 10px;"
+            >{{ editForm.owner }}</a
           ><span>{{ editForm.mobile }}</span>
         </div>
         <div v-else>--</div>
@@ -154,7 +158,8 @@
           <a-timeline>
             <a-timeline-item v-for="(item, index) in records" :key="index">
               <div>
-                <a>{{ item.process_step }}</a> 服务时间：{{ item.service_time
+                <a>进度{{ records.length - index }}</a> 服务时间：{{
+                  item.service_time
                 }}<a-icon type="edit" @click="toEditStep(item)"></a-icon>
               </div>
               <div>{{ item.service_satisfied_desc || "--" }}</div>
@@ -337,6 +342,7 @@ export default {
           val.service_time = ''
           val.service_content = ''
           val.owner_id = val.uid
+          this.getServiceProvider()
           val.service_satisfied = val.service_satisfied || undefined
         } else {
           val.service_provider = this.provider

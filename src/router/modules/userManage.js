@@ -7,27 +7,16 @@ export default {
   name: 'userManage',
   component: PageView,
   meta: {
-    title: '用户管理',
-    icon: 'table'
+    title: '用户管理'
   },
   redirect: '/userManage/appUser',
   children: [
-    {
-      path: '/userManage/appUser',
-      name: 'appUser',
-      component: () => import('@/views/userManage/appUser'),
-      meta: {
-        title: 'APP用户',
-        icon: 'table'
-      }
-    },
     {
       path: '/userManage/weskitUser',
       name: 'weskitUser',
       component: () => import('@/views/userManage/weskitUser'),
       meta: {
-        title: '马甲用户',
-        icon: 'table'
+        title: '马甲用户'
       }
     },
     {
@@ -35,8 +24,7 @@ export default {
       name: 'tourist',
       component: () => import('@/views/userManage/tourist'),
       meta: {
-        title: '游客管理',
-        icon: 'table'
+        title: '游客管理'
       }
     },
     // 员工管理

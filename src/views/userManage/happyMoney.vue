@@ -1,120 +1,105 @@
 <template>
   <div class="happyMoney">
     <a-card class="card">
-      <a-table :columns="columns" :data-source="data" :pagination="false">
-      </a-table>
-      <div class="pagination">
-        <a-pagination
-          show-quick-jumper
-          show-size-changer
-          :default-current="pagination.currentPage"
-          :page-size-options="pagination.sizes"
-          :total="pagination.total"
-          :page-size.sync="pagination.pageSize"
-          :show-total="
-            (total, range) =>
-              `共 ${total} 条记录 第${pagination.currentPage}/80页`
-          "
-          @change="onChange"
-          @showSizeChange="sizeChange"
-        />
-      </div>
+      <s-table
+        ref="table"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        :pagination="true"
+      >
+      </s-table>
     </a-card>
   </div>
 </template>
 
 <script>
+import { STable } from '@/components'
+import { getClogList } from '@/api/userManage'
 export default {
+  components: {
+    STable
+  },
+  props: {
+    uid: {
+      type: [Number, String],
+      default: ''
+    }
+  },
   data () {
     return {
-      pagination: {
-        sizes: ['1', '5', '10', '15'],
-        currentPage: 1,
-        total: 50,
-        pageSize: 1
-      },
-      data: [
-        {
-          key: '1',
-          id: 483,
-          type: '奖励转入',
-          waterNum: 'T0000003',
-          time: '2021-01-14 14:52:52',
-          moneyBalance: 6,
-          balance: 6,
-          remask: '【奖励支出】对方：美好生活家园运营中心'
-        },
-        {
-          key: '2',
-          id: 483,
-          type: '奖励转入',
-          waterNum: 'T0000003',
-          time: '2021-01-14 14:52:52',
-          moneyBalance: 6,
-          balance: 6,
-          remask: '【奖励支出】对方：美好生活家园运营中心'
-        },
-        {
-          key: '3',
-          id: 483,
-          type: '奖励转入',
-          waterNum: 'T0000003',
-          time: '2021-01-14 14:52:52',
-          moneyBalance: 6,
-          balance: 6,
-          remask: '【奖励支出】对方：美好生活家园运营中心'
-        }
-      ],
       columns: [
         {
           title: 'ID',
           dataIndex: 'id',
-          key: 'id',
           width: 80
-          // scopedSlots: { customRender: 'name' }
         },
         {
           title: '类型',
           dataIndex: 'type',
-          key: 'type',
-          width: 100
+          width: 100,
+          customRender: (text, row) => {
+            var value = ''
+            if (row.type == '1') {
+              value = '转入'
+            }
+            if (row.type == '2') {
+              if (row.sub_type == '1') {
+                value = '奖励转出'
+              } else {
+                value = '奖励转入'
+              }
+            }
+            if (row.type == '3') {
+              if (row.sub_type == '1') {
+                value = '转账支出'
+              } else {
+                value = '转账收入'
+              }
+            }
+            if (row.type == '4') {
+              if (row.sub_type == '1') {
+                value = '交易支出'
+              } else {
+                value = '交易收入'
+              }
+            }
+            if (row.type == '5') {
+              value = '提现'
+            }
+            return value
+          }
         },
         {
           title: '流水号',
-          dataIndex: 'waterNum',
-          key: 'waterNum'
+          dataIndex: 'log_no'
         },
         {
           title: '时间',
-          dataIndex: 'time',
-          key: 'time'
+          dataIndex: 'ctime'
         },
         {
           title: '币额',
-          dataIndex: 'moneyBalance',
-          key: 'moneyBalance',
+          dataIndex: 'money',
           width: 100
         },
         {
           title: '余额',
-          dataIndex: 'balance',
-          key: 'balance'
+          dataIndex: 'money_u'
         },
         {
           title: '备注',
-          dataIndex: 'remask',
-          key: 'remask'
+          dataIndex: 'source_var'
         }
-      ]
+      ],
+      loadData: parameter => {
+        return getClogList(Object.assign(parameter, { uid: this.uid }))
+      }
     }
   },
   methods: {
-    onChange (page, size) {
-      console.log('Page: ', page)
-      this.pagination.currentPage = page
-    },
-    sizeChange (current, size) {
-      console.log('size: ', size)
+    refresh () {
+      this.$refs.table.refresh(true)
     }
   }
 }
@@ -123,23 +108,7 @@ export default {
 <style lang="less" scoped>
 .happyMoney {
   .card {
-    margin-top: 20px;
-  }
-  .pagination {
-    margin-top: 10px;
-    /deep/ .ant-pagination {
-      padding: 10px;
-    }
-    /deep/ .ant-pagination-total-text {
-      margin-left: 20px;
-      margin-right: 300px;
-    }
-    /deep/ .ant-pagination-item-active {
-      background-color: #1890ff;
-      a {
-        color: white;
-      }
-    }
+    margin-top: 24px;
   }
 }
 </style>

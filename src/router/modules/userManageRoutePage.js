@@ -12,6 +12,14 @@ export default {
   },
   redirect: '/userManage/appUser',
   children: [
+    {
+      path: '/userManage/appUser',
+      name: 'appUser',
+      component: () => import('@/views/userManage/appUser'),
+      meta: {
+        title: '真实用户'
+      }
+    },
     // 用户标签
     {
       path: '/user/label',

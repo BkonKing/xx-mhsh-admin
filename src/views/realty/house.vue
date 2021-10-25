@@ -103,6 +103,16 @@
                       valueFormat="YYYY-MM-DD HH:mm:ss"
                       :show-time="{ defaultValue: [defaultTime, defaultTime] }"
                       :placeholder="['开始时间', '结束时间']"
+                      :ranges="{
+                        本周: [
+                          moment().startOf('week'),
+                          moment().endOf('week')
+                        ],
+                        本月: [
+                          moment().startOf('month'),
+                          moment().endOf('month')
+                        ]
+                      }"
                       style="width: 100%;"
                     />
                   </a-form-item>
@@ -155,7 +165,11 @@
         >
           <template slot="userInfo" slot-scope="text, record">
             <template v-if="text || record.owner_mobile">
-              <a>{{ text }}</a>
+              <a
+                :href="`/xmht/household/member/getMemberList?uid=${record.owner_id}`"
+                target="_blank"
+                >{{ text }}</a
+              >
               <div>{{ record.owner_mobile }}</div>
             </template>
             <template v-else>(无)</template>
@@ -281,7 +295,9 @@
               <s-tag
                 v-for="label in userForm.user_tag_data"
                 :key="label.id"
-                v-show="label.sy_project_id == projectId || !label.sy_project_id"
+                v-show="
+                  label.sy_project_id == projectId || !label.sy_project_id
+                "
                 :color="label.colour"
                 style="margin-bottom: 5px;"
               >
@@ -660,6 +676,7 @@ export default {
     this.getDimensionList()
   },
   methods: {
+    moment,
     getDimensionList () {
       getDimensionList().then(({ data }) => {
         this.labelList = cloneDeep(data) || []
@@ -754,7 +771,6 @@ export default {
         this.userForm.owner_mobile &&
         this.userForm.owner_mobile.length === 11
       ) {
-        console.log(123123)
         getUserInfoByMobile({
           mobile: this.userForm.owner_mobile
         }).then(({ success, data }) => {
@@ -767,6 +783,11 @@ export default {
             if (!this.userForm.owner_name) {
               this.$set(this.userForm, 'owner_name', data.realname)
             }
+          } else {
+            this.$set(this.userForm, 'user_tag_data', [])
+            this.$set(this.userForm, 'owner_id', '')
+            this.$set(this.userForm, 'nickname', '')
+            this.$set(this.userForm, 'service_satisfied', '')
           }
         })
       }

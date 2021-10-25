@@ -23,7 +23,9 @@ const userManageApi = {
 
 const appUser = {
   getUserList: '/user/user/new_getUserList',
-  editBatchUserTag: '/user/tag/batch_edit_user_tag'
+  editBatchUserTag: '/user/tag/batch_edit_user_tag',
+  getUserInfo: '/zht/ajax/userInfo',
+  getClogList: '/zht/ajax/new_getClogList'
 }
 
 // 获取游客列表
@@ -215,5 +217,28 @@ export function editBatchUserTag (data) {
     url: appUser.editBatchUserTag,
     method: 'post',
     data
+  })
+}
+
+// 获取用户详情信息
+export function getUserInfo (data) {
+  return request({
+    url: appUser.getUserInfo,
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    baseURL: ''
+  })
+}
+
+// 获取用户详情信息
+export function getClogList (data) {
+  return request({
+    url: appUser.getClogList,
+    method: 'post',
+    data,
+    baseURL: ''
   })
 }

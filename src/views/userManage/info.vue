@@ -4,48 +4,123 @@
       <div class="title">基础信息</div>
       <div class="content">
         <a-row class="row">
-          <a-col :span='10'>
-            <div class="t1">生日: <span></span></div>
-            <div class="t2">幸福币：<span>6</span></div>
+          <a-col :span="8">
+            <div class="t1">
+              生日: <span>{{ userInfo.birthday || "--" }}</span>
+            </div>
+            <div class="t2">
+              幸福币：<span>{{ userInfo.credits }}</span>
+            </div>
           </a-col>
-          <a-col :span='10'>
-            <div class="t1">角色：<span>游客</span></div>
-            <div class="t2">注册时间：<span>2021-01-14 14:52:52</span></div>
+          <a-col :span="8">
+            <div class="t1">
+              角色：<span>{{ userInfo.user_type | userType }}</span>
+            </div>
+            <div class="t2">
+              注册时间：<span>{{ userInfo.ctime }}</span>
+            </div>
           </a-col>
-          <a-col :span='4'>消费总额: <span>0.00</span></a-col>
+          <a-col :span="8"
+            >消费总额：<span>{{ userInfo.credits }}</span></a-col
+          >
         </a-row>
       </div>
     </a-card>
     <a-card class="card2">
-      <a-row>
-        <div class="title">
-          <div class="t1">收货地址</div>
-          <div class="t2">收件人</div>
-          <div class="t3">手机号</div>
-        </div>
-        <div class="bottom"></div>
-      </a-row>
+      <a-table
+        rowKey="id"
+        :columns="addressColumns"
+        :data-source="addressData"
+        :pagination="false"
+      ></a-table>
     </a-card>
     <a-card class="card2">
-      <a-row>
-        <div class="title">
-          <div class="t1">房产信息</div>
-          <div class="t2">角色</div>
-          <div class="t3">绑定</div>
-        </div>
-        <div class="bottom"></div>
-      </a-row>
+      <a-table
+        rowKey="id"
+        :columns="houseColumns"
+        :data-source="houseData"
+        :pagination="false"
+      ></a-table>
     </a-card>
   </div>
 </template>
 
 <script>
 export default {
-
+  props: {
+    userInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    addressData: {
+      type: Array,
+      default: () => []
+    },
+    houseData: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      addressColumns: [
+        {
+          title: '收货地址',
+          dataIndex: 'address_detail',
+          width: '60%',
+          customRender: (text, row) => {
+            return text + row.address_name + row.address_house
+          }
+        },
+        {
+          title: '收件人',
+          dataIndex: 'realname',
+          width: '20%'
+        },
+        {
+          title: '手机号',
+          dataIndex: 'mobile',
+          width: '20%'
+        }
+      ],
+      houseColumns: [
+        {
+          title: '房产信息',
+          dataIndex: 'fc_info',
+          width: '60%'
+        },
+        {
+          title: '角色',
+          dataIndex: 'house_role',
+          width: '20%'
+        },
+        {
+          title: '绑定',
+          dataIndex: 'btime',
+          width: '20%'
+        }
+      ]
+    }
+  },
+  filters: {
+    userType (value) {
+      const type = {
+        0: '游客',
+        1: '业主',
+        2: '业主成员',
+        3: '租户',
+        4: '租户成员',
+        5: '游客-未认证业主',
+        6: '游客-定位',
+        7: '游客-未定位'
+      }
+      return type[value]
+    }
+  }
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .info {
   .card {
     margin-top: 20px;
@@ -66,7 +141,7 @@ export default {
           line-height: 40px;
         }
         span {
-          color: #ccc;
+          color: #999;
         }
       }
     }

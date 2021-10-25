@@ -47,43 +47,42 @@
       </div>
     </a-card>
 
-    <div>
-      <a-card
-        v-for="(item, index) in labelList"
-        :title="item.dimension_name"
-        :key="item.id"
-        class="dimension-card"
-        v-show="filterParams.dimension === item.id || !filterParams.dimension"
-        ><template slot="extra">
-          <a @click="openAddDimension(item)">编辑</a
-          ><a v-if="isParent" @click="deleteDimension(item, index)"
-            >删除</a
-          ></template
-        >
-        <div class="dimension-tags">
-          <s-tag
-            v-for="(label, index) in item.child"
-            :key="label.id"
-            v-show="
-              label.tag_name.indexOf(filterParams.labelText) > -1 ||
-                !filterParams.labelText
-            "
-            :closable="isParent || label.project_id == projectId"
-            :color="item.colour"
-            @close="deleteLabel(label, index, item.child)"
-          >
-            {{ label.tag_name
-            }}{{ label.count ? `(${label.count})` : "" }}</s-tag
-          >
-          <s-tag
-            @click.native="openAddDimension(item)"
-            style="cursor: pointer;"
-          >
-            <a-icon type="plus" /> 新增
-          </s-tag>
-        </div></a-card
+    <a-card
+      v-for="(item, index) in labelList"
+      :title="item.dimension_name"
+      :key="item.id"
+      class="dimension-card"
+      v-show="
+        (filterParams.dimension === item.id || !filterParams.dimension) &&
+          isHaveTag(item.child)
+      "
+      ><template slot="extra">
+        <a @click="openAddDimension(item)">编辑</a
+        ><a v-if="isParent" @click="deleteDimension(item, index)"
+          >删除</a
+        ></template
       >
-    </div>
+      <div class="dimension-tags">
+        <s-tag
+          v-for="(label, index) in item.child"
+          :key="label.id"
+          v-show="
+            label.tag_name.indexOf(filterParams.labelText) > -1 ||
+              !filterParams.labelText
+          "
+          :closable="isParent || label.project_id == projectId"
+          :color="item.colour"
+          @close="deleteLabel(label, index, item.child)"
+        >
+          {{ label.tag_name }}{{ label.count ? `(${label.count})` : "" }}</s-tag
+        >
+        <s-tag @click.native="openAddDimension(item)" style="cursor: pointer;">
+          <a-icon type="plus" /> 新增
+        </s-tag>
+      </div></a-card
+    >
+
+    <div style="padding-bottom: 24px;"></div>
 
     <a-modal
       :title="`${dimensionForm.dimension_id ? '编辑' : '新增'}标签`"
@@ -248,6 +247,14 @@ export default {
     getDimensionList () {
       getDimensionList().then(({ data }) => {
         this.labelList = data || []
+      })
+    },
+    isHaveTag (tags) {
+      return tags.some(label => {
+        return (
+          label.tag_name.indexOf(this.filterParams.labelText) > -1 ||
+          !this.filterParams.labelText
+        )
       })
     },
     // 提交维度表单
