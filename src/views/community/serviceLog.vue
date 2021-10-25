@@ -47,6 +47,10 @@
                   valueFormat="YYYY-MM-DD HH:mm:ss"
                   :show-time="{ defaultValue: [defaultTime, defaultTime] }"
                   :placeholder="['开始时间', '结束时间']"
+                  :ranges="{
+                    本周: [moment().startOf('week'), moment().endOf('week')],
+                    本月: [moment().startOf('month'), moment().endOf('month')]
+                  }"
                   style="width: 100%;"
                 />
               </a-form-item>
@@ -154,13 +158,15 @@
         <template slot="userInfo" slot-scope="text, record">
           <template v-if="text || record.mobile">
             <a
+              v-if="record.uid"
               :href="`/xmht/household/member/getMemberList?uid=${record.uid}`"
               target="_blank"
               >{{ text }}</a
             >
+            <span v-else>{{ text }}</span>
             <div>{{ record.mobile }}</div>
           </template>
-          <template v-else>无</template>
+          <template v-else>(无)</template>
         </template>
         <template slot="tags" slot-scope="text">
           <s-tag
@@ -379,6 +385,7 @@ export default {
     this.getDimensionList()
   },
   methods: {
+    moment,
     getBuild () {
       getBuild().then(({ list }) => {
         this.buildOptions = list || []

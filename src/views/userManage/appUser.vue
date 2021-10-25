@@ -103,6 +103,16 @@
                       v-model="queryParam.service_time"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
                       :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                      :ranges="{
+                        本周: [
+                          moment().startOf('week'),
+                          moment().endOf('week')
+                        ],
+                        本月: [
+                          moment().startOf('month'),
+                          moment().endOf('month')
+                        ]
+                      }"
                       :placeholder="['开始时间', '结束时间']"
                       style="width: 100%;"
                     />
@@ -477,6 +487,7 @@ export default {
     }
   },
   methods: {
+    moment,
     getProjectList () {
       getProjectList().then(({ data }) => {
         this.projectOptions = data

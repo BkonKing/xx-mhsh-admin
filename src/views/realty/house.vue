@@ -166,10 +166,12 @@
           <template slot="userInfo" slot-scope="text, record">
             <template v-if="text || record.owner_mobile">
               <a
+                v-if="record.owner_id"
                 :href="`/xmht/household/member/getMemberList?uid=${record.owner_id}`"
                 target="_blank"
                 >{{ text }}</a
               >
+              <span v-else>{{ text }}</span>
               <div>{{ record.owner_mobile }}</div>
             </template>
             <template v-else>(无)</template>
