@@ -102,7 +102,7 @@
                     <a-range-picker
                       v-model="queryParam.service_time"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
-                      :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                      :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                       :ranges="{
                         本周: [
                           moment().startOf('week'),
@@ -302,6 +302,7 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       SHOW_PARENT,
       routes: [
         {

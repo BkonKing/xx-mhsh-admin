@@ -65,7 +65,7 @@
                   <a-range-picker
                     v-model="queryParam.create_time"
                     valueFormat="YYYY-MM-DD HH:mm:ss"
-                    :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                     :placeholder="['开始时间', '结束时间']"
                     style="width: 100%;"
                   />
@@ -101,7 +101,7 @@
                     <a-range-picker
                       v-model="queryParam.service_time"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
-                      :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                      :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                       :placeholder="['开始时间', '结束时间']"
                       :ranges="{
                         本周: [
@@ -472,6 +472,7 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       projectId: Cookies.get('project_id'),
       SHOW_PARENT,
       advanced: false,
@@ -599,6 +600,7 @@ export default {
         const params = cloneDeep(this.queryParam)
         if (params.user_tag && params.user_tag.length) {
           params.user_tag = this.setTagTreeData(params.user_tag)
+          params.tag_id_text = params.user_tag.join(',')
         }
         const time = params.service_time
         const ctime = params.create_time

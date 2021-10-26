@@ -45,7 +45,7 @@
                 <a-range-picker
                   v-model="queryParam.service_time"
                   valueFormat="YYYY-MM-DD HH:mm:ss"
-                  :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                  :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                   :placeholder="['开始时间', '结束时间']"
                   :ranges="{
                     本周: [moment().startOf('week'), moment().endOf('week')],
@@ -124,7 +124,7 @@
                   <a-range-picker
                     v-model="queryParam.ctime"
                     valueFormat="YYYY-MM-DD HH:mm:ss"
-                    :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                     :placeholder="['开始时间', '结束时间']"
                     style="width: 100%;"
                   />
@@ -239,6 +239,7 @@ export default {
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       projectId: Cookies.get('project_id'),
       SHOW_PARENT,
       userInfo: {},
