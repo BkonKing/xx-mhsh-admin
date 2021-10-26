@@ -145,7 +145,7 @@
       </a-card>
       <a-card style="margin-top: 24px" :bordered="false">
         <div class="table-operator">
-          <a-button @click="openEditModal"> 添加房屋 </a-button>
+          <a-button type="primary" @click="openEditModal"> 添加房屋 </a-button>
           <a-dropdown>
             <a-menu slot="overlay">
               <a-menu-item key="1" @click="handleImport">
