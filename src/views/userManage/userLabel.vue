@@ -250,6 +250,9 @@ export default {
       })
     },
     isHaveTag (tags) {
+      if (!this.filterParams.labelText) {
+        return true
+      }
       return tags.some(label => {
         return (
           label.tag_name.indexOf(this.filterParams.labelText) > -1 ||
@@ -393,9 +396,13 @@ export default {
           </div>
         ),
         onOk: () => {
-          delDimension({ dimension_id: id }).then(() => {
-            this.getDimensionList()
-            this.$message.success('删除成功')
+          delDimension({ dimension_id: id }).then(({ success, message }) => {
+            if (success) {
+              this.getDimensionList()
+              this.$message.success('删除成功')
+            } else {
+              this.$message.error(message)
+            }
           })
           this.labelList.splice(index, 1)
         }

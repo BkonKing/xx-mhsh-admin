@@ -33,45 +33,45 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <template v-if="advanced">
-                <!-- <a-col :md="8" :sm="24">
+              <!-- <a-col :md="8" :sm="24">
                   <a-form-item label="房屋">
                     <a-input
                       v-model="queryParam.sSearch"
                       placeholder="请输入"
                     ></a-input>
                   </a-form-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="业主">
-                    <a-input
-                      v-model="queryParam.sSearch"
-                      placeholder="ID、昵称、姓名、手机号"
-                    ></a-input>
-                  </a-form-item>
                 </a-col> -->
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="是否启用">
-                    <a-select
-                      v-model="queryParam.is_enabled"
-                      placeholder="请选择"
-                    >
-                      <a-select-option value="2">是</a-select-option>
-                      <a-select-option value="1">否</a-select-option>
-                    </a-select>
-                  </a-form-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="创建时间">
-                    <a-range-picker
-                      v-model="queryParam.create_time"
-                      valueFormat="YYYY-MM-DD HH:mm:ss"
-                      :show-time="{ defaultValue: [defaultTime, defaultTime] }"
-                      :placeholder="['开始时间', '结束时间']"
-                      style="width: 100%;"
-                    />
-                  </a-form-item>
-                </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="业主">
+                  <a-input
+                    v-model="queryParam.owner"
+                    placeholder="ID、昵称、姓名、手机号"
+                  ></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="是否启用">
+                  <a-select
+                    v-model="queryParam.is_enabled"
+                    placeholder="请选择"
+                  >
+                    <a-select-option value="2">是</a-select-option>
+                    <a-select-option value="1">否</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="创建时间">
+                  <a-range-picker
+                    v-model="queryParam.create_time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
+                </a-form-item>
+              </a-col>
+              <template v-if="advanced">
                 <a-col :md="8" :sm="24">
                   <a-form-item label="用户标签">
                     <a-tree-select
@@ -135,7 +135,7 @@
               </template>
               <advanced-form
                 v-model="advanced"
-                :md="16"
+                :md="8"
                 @reset="resetTable"
                 @search="$refs.table.refresh(true)"
               ></advanced-form>
@@ -164,16 +164,14 @@
           :showPagination="true"
         >
           <template slot="userInfo" slot-scope="text, record">
-            <template v-if="text || record.owner_mobile">
-              <a
-                v-if="record.owner_id"
-                :href="`/xmht/household/member/getMemberList?uid=${record.owner_id}`"
-                target="_blank"
-                >{{ text }}</a
-              >
-              <span v-else>{{ text }}</span>
+            <div
+              v-if="text || record.owner_mobile"
+              @click="openUserInfo(record)"
+              :class="{ 'click-text': record.owner_id }"
+            >
+              <span>{{ text }}</span>
               <div>{{ record.owner_mobile }}</div>
-            </template>
+            </div>
             <template v-else>(无)</template>
           </template>
           <template slot="tags" slot-scope="text">
@@ -309,7 +307,7 @@
             <span v-else>--</span>
             <a-icon
               type="edit"
-              @click="tagVisible = true"
+              @click="openTag"
               style="margin-left: 10px;color: #1890ff;"
             ></a-icon>
           </a-form-model-item>
@@ -780,7 +778,7 @@ export default {
             this.$set(this.userForm, 'user_tag_data', data.user_tag_data)
             this.$set(this.userForm, 'owner_id', data.uid)
             this.$set(this.userForm, 'nickname', data.nickname)
-            // this.$set(this.userForm, 'realname', data.realname)
+            this.$set(this.userForm, 'realname', data.realname)
             this.$set(this.userForm, 'service_satisfied', data.satisfied_name)
             if (!this.userForm.owner_name) {
               this.$set(this.userForm, 'owner_name', data.realname)
@@ -829,6 +827,9 @@ export default {
         }
       })
     },
+    openTag () {
+      this.tagVisible = true
+    },
     // onSelectChange (selectedRowKeys, selectedRows) {
     //   this.selectedRowKeys = selectedRowKeys
     //   this.selectedRows = selectedRows
@@ -853,6 +854,13 @@ export default {
     },
     handleImport () {
       this.importVisible = true
+    },
+    openUserInfo ({ owner_id: uid }) {
+      uid &&
+        window.open(
+          `/xmht/household/member/getMemberList?uid=${uid}`,
+          '_blank'
+        )
     }
   }
 }
@@ -883,6 +891,12 @@ export default {
   color: #00000072;
   line-height: 1;
   padding-top: 7px;
+}
+.click-text {
+  cursor: pointer;
+  span {
+    color: @primary-color;
+  }
 }
 </style>
 

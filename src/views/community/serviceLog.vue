@@ -156,16 +156,10 @@
         :showPagination="true"
       >
         <template slot="userInfo" slot-scope="text, record">
-          <template v-if="text || record.mobile">
-            <a
-              v-if="record.uid"
-              :href="`/xmht/household/member/getMemberList?uid=${record.uid}`"
-              target="_blank"
-              >{{ text }}</a
-            >
-            <span v-else>{{ text }}</span>
+          <div v-if="text || record.mobile" @click="openUserInfo(record)" :class="{'click-text': record.uid}">
+            <span>{{ text }}</span>
             <div>{{ record.mobile }}</div>
-          </template>
+          </div>
           <template v-else>(无)</template>
         </template>
         <template slot="tags" slot-scope="text">
@@ -456,6 +450,12 @@ export default {
     checkTagSuccess () {
       this.$refs['edit-log'].getUserTag()
       this.$refs.table.refresh()
+    },
+    openUserInfo ({ uid }) {
+      uid && window.open(
+        `/xmht/household/member/getMemberList?uid=${uid}`,
+        '_blank'
+      )
     }
   }
 }
@@ -487,5 +487,11 @@ h3 {
 }
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;
+}
+.click-text {
+  cursor: pointer;
+  span {
+    color: @primary-color;
+  }
 }
 </style>
