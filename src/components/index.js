@@ -12,6 +12,7 @@ import Trend from '@/components/Trend'
 
 import AdvancedForm from '@/components/AdvancedForm'
 import PageHeader from '@/components/PageHeader'
+import UploadImage from '@/components/UploadImage'
 
 export {
   FooterToolbar,
@@ -23,5 +24,6 @@ export {
   MiniProgress,
   Trend,
   AdvancedForm,
-  PageHeader
+  PageHeader,
+  UploadImage
 }

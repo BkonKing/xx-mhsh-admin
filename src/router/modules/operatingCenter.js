@@ -25,10 +25,25 @@ export default {
         {
           path: '/operatingCenter/activity/integral', // 完整地址
           name: 'integralActivity',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/operatingCenter/activity/integral'),
+          component: () => import('@/views/operatingCenter/activity/integral'),
           meta: {
-            title: '积分活动',
-            icon: 'table'
+            title: '积分活动'
+          }
+        },
+        {
+          path: '/operatingCenter/activity/invite/index',
+          name: 'inviteActivity',
+          component: () => import('@/views/operatingCenter/activity/invite/index'),
+          meta: {
+            title: '邀请情况'
+          }
+        },
+        {
+          path: '/operatingCenter/activity/invite/setting',
+          name: 'inviteActivitySetting',
+          component: () => import('@/views/operatingCenter/activity/invite/setting'),
+          meta: {
+            title: '邀请设置'
           }
         }
       ]
