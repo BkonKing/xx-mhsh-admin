@@ -88,7 +88,7 @@
 <script>
 import cloneDeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
-import STag from '../../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import { getUserTag, editUserTag, editBatchUserTag } from '@/api/userManage'
 
 export default {

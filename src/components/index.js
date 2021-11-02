@@ -2,6 +2,7 @@
 import FooterToolbar from '@/components/FooterToolbar'
 import STable from '@/components/Table'
 import MultiTab from '@/components/MultiTab'
+import Timewait from '@/components/Timewait'
 
 // chart
 import aLine from '@/components/Charts/Line'
@@ -25,5 +26,6 @@ export {
   Trend,
   AdvancedForm,
   PageHeader,
-  UploadImage
+  UploadImage,
+  Timewait
 }
