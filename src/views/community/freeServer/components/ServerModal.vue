@@ -13,88 +13,93 @@
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 14 }"
     >
-      <a-form-model-item label="服务类型" prop="aa">
+      <a-form-model-item label="服务类型" prop="category_type">
         <a-radio-group
-          v-model="formData.aa"
+          v-model="formData.category_type"
           :options="serviceTypes"
         ></a-radio-group>
       </a-form-model-item>
       <a-form-model-item
         label="服务名称"
         required
-        prop="bb"
+        prop="category"
         :rules="{ required: true, message: '请输入服务名称' }"
       >
         <a-input
-          v-model="formData.bb"
+          v-model="formData.category"
           :maxLength="20"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="服务地点" prop="cc">
-        <a-input v-model="formData.cc" :maxLength="50"></a-input>
+      <a-form-model-item label="服务地点" prop="location">
+        <a-input v-model="formData.location" :maxLength="50"></a-input>
       </a-form-model-item>
-      <a-form-model-item label="服务时间" prop="dd">
-        <a-input v-model="formData.dd" :maxLength="50"></a-input>
+      <a-form-model-item label="服务时间" prop="service_time">
+        <a-input v-model="formData.service_time" :maxLength="50"></a-input>
       </a-form-model-item>
-      <a-form-model-item label="服务状态" prop="ee">
+      <a-form-model-item label="服务状态" prop="status">
         <a-radio-group
-          v-model="formData.ee"
+          v-model="formData.status"
           :options="serviceStatus"
         ></a-radio-group>
       </a-form-model-item>
       <a-form-model-item
-        v-if="formData.aa === '2'"
+        v-if="formData.category_type === '2'"
         label="库存"
         required
-        prop="zz"
+        prop="num"
         :rules="{ required: true, message: '请输入库存' }"
       >
         <a-input-number
-          v-model="formData.zz"
+          v-model="formData.num"
           :min="1"
           :max="9999999999"
         ></a-input-number
         ><span style="margin-left:8px;">个</span>
       </a-form-model-item>
       <a-form-model-item
-        v-if="formData.aa === '2'"
+        v-if="formData.category_type === '2'"
         label="借用时长"
         required
-        prop="yy"
+        prop="duration"
         :rules="{ required: true, message: '请输入借用时长' }"
       >
         <a-input-number
-          v-model="formData.yy"
+          v-model="formData.duration"
           :min="0"
           :max="99999"
         ></a-input-number
         ><span style="margin-left:8px;">小时</span>
       </a-form-model-item>
-      <a-form-model-item label="需要排队" prop="ff">
+      <a-form-model-item label="需要排队" prop="is_lineup">
         <a-radio-group
-          v-model="formData.ff"
+          v-model="formData.is_lineup"
           :options="queueRadio"
         ></a-radio-group>
       </a-form-model-item>
-      <a-form-model-item label="可见用户" prop="oo">
-        <a-checkbox-group v-model="formData.oo" :options="userTypes" />
-      </a-form-model-item>
-      <a-form-model-item label="可预约用户" prop="pp">
+      <a-form-model-item label="可见用户" prop="visible_user">
         <a-checkbox-group
-          v-model="formData.pp"
+          v-model="formData.visible_user"
+          :options="userTypes"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="可预约用户" prop="reserved_users">
+        <a-checkbox-group
+          v-model="formData.reserved_users"
           :options="userTypes"
           @change="handleChange"
         />
       </a-form-model-item>
-      <a-form-model-item label="是否启用" prop="xx">
-        <a-switch v-model="formData.xx"></a-switch>
+      <a-form-model-item label="是否启用" prop="is_open">
+        <a-switch v-model="formData.is_open"></a-switch>
       </a-form-model-item>
     </a-form-model>
   </a-modal>
 </template>
 
 <script>
+import { addFreeCategory } from '@/api/community'
+import cloneDeep from 'lodash.clonedeep'
 export default {
   name: 'CancelReservationModal',
   props: {
@@ -102,29 +107,31 @@ export default {
       type: Boolean,
       default: false
     },
-    selectKeys: {
-      type: [Array, Object],
-      default: () => []
+    data: {
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {
-    isBatch () {
-      return this.selectKeys && this.selectKeys.length
-    },
     title () {
-      return this.isBatch ? '编辑服务' : '新增服务'
+      return this.data && this.data.id ? '编辑服务' : '新增服务'
     }
   },
   data () {
     return {
       visible: this.value,
       formData: {
-        aa: '1',
-        ee: '1',
-        ff: '1',
-        oo: ['1', '2', '3'],
-        pp: ['1', '2', '3'],
-        xx: true
+        category_type: '1',
+        category: '',
+        location: '',
+        service_time: '',
+        status: '0',
+        num: '',
+        duration: '',
+        is_lineup: '0',
+        visible_user: ['1', '2', '3'],
+        reserved_users: ['1', '2', '3'],
+        is_open: true
       },
       causeOptions: [],
       serviceTypes: [
@@ -132,12 +139,12 @@ export default {
         { value: '2', label: '借用服务' }
       ],
       serviceStatus: [
-        { value: '1', label: '正常' },
-        { value: '2', label: '暂停' }
+        { value: '0', label: '正常' },
+        { value: '1', label: '暂停' }
       ],
       queueRadio: [
-        { value: '1', label: '无需排队' },
-        { value: '2', label: '需要排队' }
+        { value: '0', label: '无需排队' },
+        { value: '1', label: '需要排队' }
       ],
       userTypes: [
         { label: '已认证用户', value: '1' },
@@ -148,19 +155,20 @@ export default {
   },
   watch: {
     value (newValue) {
+      if (newValue !== this.visible && newValue) {
+        this.$nextTick(() => {
+          this.setFormData()
+        })
+      }
       this.visible = newValue
     },
     visible (newValue) {
+      if (!newValue) {
+        this.$refs.form && this.$refs.form.resetFields()
+      }
       this.$emit('input', newValue)
     },
-    data (newValue) {
-      if (newValue) {
-        this.formData = newValue
-      } else {
-        this.$refs.form && this.$refs.form.resetField()
-      }
-    },
-    'formData.oo': {
+    'formData.visible_user': {
       handler (newValue, oldValue) {
         // 取消勾选可见：可预约自动取消勾选
         if (newValue.length < oldValue.length) {
@@ -168,28 +176,53 @@ export default {
           oldValue.forEach(value => {
             !newValue.includes(value) && cancelValue.push(value)
           })
-          this.formData.pp.forEach((value, index) => {
-            cancelValue.includes(value) && this.formData.pp.splice(index, 1)
+          this.formData.reserved_users.forEach((value, index) => {
+            cancelValue.includes(value) &&
+              this.formData.reserved_users.splice(index, 1)
           })
         }
       }
     }
   },
   methods: {
+    setFormData () {
+      if (this.data) {
+        const data = cloneDeep(this.data)
+        data.visible_user = data.visible_user
+          ? data.visible_user.split(',')
+          : []
+        data.reserved_users = data.reserved_users
+          ? data.reserved_users.split(',')
+          : []
+        data.is_open = !!+data.is_open
+        this.formData = data
+      }
+    },
     // 可预约必定可见：勾起可预约时，可见自动勾起
     handleChange () {
-      this.formData.pp.forEach(value => {
-        if (!this.formData.oo.includes(value)) {
-          this.formData.oo.push(value)
+      this.formData.reserved_users.forEach(value => {
+        if (!this.formData.visible_user.includes(value)) {
+          this.formData.visible_user.push(value)
         }
       })
     },
     submit () {
       this.$refs.form.validate(valid => {
         if (valid) {
-
+          this.addFreeCategory()
         } else {
           return false
+        }
+      })
+    },
+    addFreeCategory () {
+      const params = cloneDeep(this.formData)
+      params.is_open = params.is_open ? '1' : '0'
+      addFreeCategory().then(({ success }) => {
+        if (success) {
+          this.$message.success('提交成功')
+          this.visible = false
+          this.$emit('success')
         }
       })
     }

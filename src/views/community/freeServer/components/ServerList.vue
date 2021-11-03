@@ -7,7 +7,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="服务类型">
                 <a-select
-                  v-model="queryParam.build_id"
+                  v-model="queryParam.category_type"
                   :options="serviceTypes"
                   placeholder="请选择"
                 >
@@ -17,7 +17,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="运行状态">
                 <a-select
-                  v-model="queryParam.project_id"
+                  v-model="queryParam.is_stop"
                   :options="runningStatus"
                   placeholder="请选择"
                 >
@@ -27,7 +27,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="是否启用">
                 <a-select
-                  v-model="queryParam.project_id"
+                  v-model="queryParam.is_open"
                   :options="switchStatus"
                   placeholder="请选择"
                 >
@@ -37,7 +37,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="服务项目">
                 <a-input
-                  v-model="queryParam.sSearch"
+                  v-model="queryParam.category_search"
                   placeholder="ID、名称"
                 ></a-input>
               </a-form-item>
@@ -58,10 +58,10 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" @click="openEditService">
+        <a-button type="primary" @click="openEditService(null)">
           新增服务
         </a-button>
-        <a-button style="margin-left: 8px">
+        <a-button style="margin-left: 8px" @click="goSetting">
           服务设置
         </a-button>
       </div>
@@ -78,11 +78,14 @@
         <template slot="enable" slot-scope="text, record">
           <a-switch
             :checked="Boolean(+record.is_enabled)"
-            @change="changeEnabled(record)"
+            @change="value => changeEnabled(record, value)"
           ></a-switch>
         </template>
         <template slot="listOrder" slot-scope="text, record">
-          <a-input v-model="record.listOrder" @blur="changeOrder"></a-input>
+          <a-input
+            v-model="record.listOrder"
+            @blur="changeOrder(record)"
+          ></a-input>
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
@@ -101,34 +104,38 @@
         </span>
       </s-table>
     </a-card>
-    <service-modal v-model="editVisible" :data="activeRecord"></service-modal>
+    <server-modal v-model="editVisible" :data="activeRecord"></server-modal>
   </div>
 </template>
 
 <script>
 import { STable } from '@/components'
 import cloneDeep from 'lodash.clonedeep'
-import { getServiceRecord } from '@/api/community'
-import ServiceModal from './ServiceModal.vue'
+import {
+  getFreeCategoryList,
+  updateFieldCategory,
+  deleteFreeCategory
+} from '@/api/community'
+import ServerModal from './ServerModal'
 export default {
   name: 'ServiceList',
   components: {
     STable,
-    ServiceModal
+    ServerModal
   },
   data () {
     return {
       serviceTypes: [
         { label: '人工服务', value: '1' },
-        { label: '借用服务', value: '1' }
+        { label: '借用服务', value: '2' }
       ],
       runningStatus: [
-        { label: '正常', value: '1' },
+        { label: '正常', value: '0' },
         { label: '暂停', value: '1' }
       ],
       switchStatus: [
         { label: '开启', value: '1' },
-        { label: '关闭', value: '1' }
+        { label: '关闭', value: '0' }
       ],
       queryParam: {},
       columns: [
@@ -139,32 +146,31 @@ export default {
         },
         {
           title: '服务类型',
-          dataIndex: 'user_type',
+          dataIndex: 'category_type_desc',
           width: 100
         },
         {
           title: '服务项目',
-          dataIndex: 'project_name',
-          width: 100
+          dataIndex: 'category'
         },
         {
           title: '运行状态',
-          dataIndex: 'avatar',
+          dataIndex: 'is_stop_desc',
           width: 100
         },
         {
           title: '服务配置',
-          dataIndex: 'realname'
+          dataIndex: 'service_config'
         },
         {
           title: '服务地点/时间',
           orter: true,
-          dataIndex: 'user_tag_data',
-          customRender: text => {
+          dataIndex: 'location',
+          customRender: (text, row) => {
             return (
               <div>
                 <div>{text}</div>
-                <div>{text}</div>
+                <div>{row.service_time}</div>
               </div>
             )
           }
@@ -183,9 +189,9 @@ export default {
               </div>
             )
           },
-          dataIndex: 'ctime3',
+          dataIndex: 'is_enabled',
           scopedSlots: { customRender: 'enable' },
-          width: 160
+          width: 110
         },
         {
           title: '排序',
@@ -197,7 +203,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' },
-          width: 140
+          width: 110
         }
       ],
       // 加载数据方法 必须为 Promise 对象
@@ -216,7 +222,7 @@ export default {
         // if (ctime && ctime.length) {
         //   params.ctime = `${ctime[0]}~${ctime[1]}`
         // }
-        return getServiceRecord(Object.assign(parameter, params))
+        return getFreeCategoryList(Object.assign(parameter, params))
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -239,34 +245,54 @@ export default {
     }
   },
   methods: {
-    resetTable () {},
-    openEditService (record = null) {
+    resetTable () {
+      this.queryParam = {}
+      this.$refs.table.refresh(true)
+    },
+    openEditService (record) {
       this.activeRecord = record
       this.editVisible = true
     },
-    changeEnabled (item) {
-      // const { id } = item
-      // setEnabledHouse({
-      //   id
-      // }).then(({ success }) => {
-      //   if (success) {
-      //     item.is_enabled = !+item.is_enabled
-      //     this.$message.success('设置成功')
-      //     // this.$refs.table.refresh()
-      //   }
-      // })
+    changeEnabled (data, value) {
+      const { id } = data
+      updateFieldCategory({
+        id,
+        field_name: 'is_enabled',
+        field_value: value ? '1' : '0'
+      }).then(({ success }) => {
+        if (success) {
+          data.is_enabled = !+data.is_enabled
+          this.$message.success('设置成功')
+        }
+      })
     },
-    changeOrder () {
-      // const { id } = item
-      // setEnabledHouse({
-      //   id
-      // }).then(({ success }) => {
-      //   if (success) {
-      //      this.$refs.table.refresh()
-      //   }
-      // })
+    changeOrder ({ id, listOrder }) {
+      updateFieldCategory({
+        id,
+        field_name: 'list_order',
+        field_value: listOrder
+      }).then(({ success }) => {
+        if (success) {
+          this.$message.success('设置成功')
+          this.$refs.table.refresh()
+        }
+      })
     },
-    deleteService () {}
+    deleteService ({ id }) {
+      deleteFreeCategory({
+        id
+      }).then(({ success }) => {
+        if (success) {
+          this.$message.success('删除成功')
+          this.$refs.table.refresh()
+        }
+      })
+    },
+    goSetting () {
+      this.$router.push({
+        name: 'freeServerSetting'
+      })
+    }
   }
 }
 </script>

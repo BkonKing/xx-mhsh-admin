@@ -15,6 +15,120 @@ const serviceLog = {
   getServiceRecord: '/server/labelserver/getServiceRecord'
 }
 
+// 服务记录
+export const freeServer = {
+  getFreeServerList: '/server/freeServer/getFreeServerList',
+  optReservation: '/server/freeServer/optReservation',
+  getFreeCategoryList: '/server/freeServer/getFreeCategoryList',
+  updateFieldCategory: '/server/freeServer/updateFieldCategory',
+  deleteFreeCategory: '/server/freeServer/deleteFreeCategory',
+  addFreeCategory: '/server/freeServer/addFreeCategory',
+  getReservationInfo: '/server/freeServer/getReservationInfo',
+  setRemark: '/server/freeServer/setRemark',
+  getCancelReason: '/server/freeServer/getCancelReason', // options
+  getCancelReservationReasonList: '/server/freeServer/getCancelReservationReasonList', // setting
+  addCancelReservationReason: '/server/freeServer/addCancelReservationReason'
+}
+
+// 获取服务预约记录列表
+export function getFreeServerList (data) {
+  return request({
+    url: freeServer.getFreeServerList,
+    method: 'post',
+    data
+  })
+}
+
+// 操作预约（设置完成、取消）
+export function optReservation (data) {
+  return request({
+    url: freeServer.optReservation,
+    method: 'post',
+    data
+  })
+}
+
+// 获取服务项目列表
+export function getFreeCategoryList (data) {
+  return request({
+    url: freeServer.getFreeCategoryList,
+    method: 'post',
+    data
+  })
+}
+
+// 根据字段更新服务(设置开关、排序)
+export function updateFieldCategory (data) {
+  return request({
+    url: freeServer.updateFieldCategory,
+    method: 'post',
+    data
+  })
+}
+
+// 删除服务
+export function deleteFreeCategory (data) {
+  return request({
+    url: freeServer.deleteFreeCategory,
+    method: 'post',
+    data
+  })
+}
+
+// 添加更新服务项目
+export function addFreeCategory (data) {
+  return request({
+    url: freeServer.addFreeCategory,
+    method: 'post',
+    data
+  })
+}
+
+// 获取服务详情
+export function getReservationInfo (data) {
+  return request({
+    url: freeServer.getReservationInfo,
+    method: 'post',
+    data
+  })
+}
+
+// 设置备注预约
+export function setRemark (data) {
+  return request({
+    url: freeServer.setRemark,
+    method: 'post',
+    data
+  })
+}
+
+// 获取取消原因
+export function getCancelReason (data) {
+  return request({
+    url: freeServer.getCancelReason,
+    method: 'post',
+    data
+  })
+}
+
+// 获取取消原因(设置页面)
+export function getCancelReasonSettingList (data) {
+  return request({
+    url: freeServer.getCancelReservationReasonList,
+    method: 'post',
+    data
+  })
+}
+
+// 添加更新取消原因
+export function addCancelReason (data) {
+  return request({
+    url: freeServer.addCancelReservationReason,
+    method: 'post',
+    data
+  })
+}
+
 // 获取所有楼栋
 export function getBuild (data) {
   return request({

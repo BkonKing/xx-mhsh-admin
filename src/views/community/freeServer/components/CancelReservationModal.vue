@@ -2,34 +2,34 @@
   <a-modal v-model="visible" :title="title" :destroyOnClose="true" @ok="submit">
     <a-form-model
       class="edit-form"
-      ref="editForm"
+      ref="form"
       :model="editForm"
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 14 }"
     >
       <a-form-model-item v-if="isBatch" class="form-item-text" label="取消预约">
         <span class="alert-text">{{
-          editForm.service_satisfied_desc || "--"
-        }}</span>
+          selectKeys.length || "0"
+        }}个</span>
       </a-form-model-item>
       <a-form-model-item
         label="取消原因"
-        prop="service_content"
+        prop="cancel_id"
         required
         :rules="{ required: true, message: '请选择取消原因' }"
       >
-        <a-select v-model="editForm.service_content" placeholder="请选择">
+        <a-select v-model="editForm.cancel_id" placeholder="请选择">
           <a-select-option
             v-for="option in causeOptions"
             :key="option.id"
             :value="option.id"
-            >{{ option.name }}</a-select-option
+            >{{ option.content }}</a-select-option
           >
         </a-select>
       </a-form-model-item>
-      <a-form-model-item label="补充说明" prop="service_content">
+      <a-form-model-item label="补充说明" prop="note">
         <a-textarea
-          v-model="editForm.service_content"
+          v-model="editForm.note"
           :maxLength="1000"
           :autoSize="{ minRows: 4, maxRows: 4 }"
         ></a-textarea>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { optReservation, getCancelReason } from '@/api/community'
 export default {
   name: 'CancelReservationModal',
   props: {
@@ -53,7 +54,7 @@ export default {
   },
   computed: {
     isBatch () {
-      return this.selectKeys && this.selectKeys.length
+      return this.selectKeys && this.selectKeys.length > 1
     },
     title () {
       return this.isBatch ? '批量取消预约' : '取消预约'
@@ -68,15 +69,44 @@ export default {
   },
   watch: {
     value (newValue) {
+      if (newValue && newValue !== this.visible) {
+        this.getCancelReason()
+      }
       this.visible = newValue
     },
     visible (newValue) {
+      if (!newValue) {
+        this.$refs.form && this.$refs.form.resetFields()
+      }
       this.$emit('input', newValue)
     }
   },
   methods: {
+    getCancelReason () {
+      getCancelReason().then(({ list }) => {
+        this.causeOptions = list || []
+      })
+    },
     submit () {
-
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.cancelService()
+        } else {
+          return false
+        }
+      })
+    },
+    cancelService () {
+      optReservation({
+        type: 2, // 1设置完成 2取消
+        ids: this.selectKeys,
+        ...this.editForm
+      }).then(({ success }) => {
+        if (success) {
+          this.$emit('success')
+          this.visible = false
+        }
+      })
     }
   }
 }

@@ -5,21 +5,22 @@
     @tabChange="handleTabChange"
   >
     <reservation-list v-show="tabActiveKey === '0'"></reservation-list>
-    <service-list v-show="tabActiveKey === '1'"></service-list>
+    <server-list v-show="tabActiveKey === '1'"></server-list>
   </page-header-view>
 </template>
 
 <script>
-/// community/freeService/list
+/// community/freeServer/list
 import PageHeaderView from '@/layouts/PageHeaderView'
 import ReservationList from './components/ReservationList'
-import ServiceList from './components/ServiceList.vue'
+import ServerList from './components/ServerList.vue'
 
 export default {
+  name: 'freeServerList',
   components: {
     PageHeaderView,
     ReservationList,
-    ServiceList
+    ServerList
   },
   data () {
     return {

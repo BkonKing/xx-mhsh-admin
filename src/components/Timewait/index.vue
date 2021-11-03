@@ -13,6 +13,10 @@
 export default {
   name: 'Timewait',
   props: {
+    type: {
+      type: [String, Number],
+      default: 0 // 0倒计时完计时 1倒计时 2计时
+    },
     time: {
       type: [String, Number],
       default: 0
@@ -37,6 +41,10 @@ export default {
     delay: {
       type: Number,
       default: 1000
+    },
+    showSecond: {
+      tpe: Boolean,
+      default: false
     }
   },
   data () {
@@ -61,7 +69,7 @@ export default {
     }
   },
   mounted () {
-    if (this.time > 0) {
+    if ((+this.type === 0 && this.time > 0) || +this.type === 1) {
       this.countDowmTotal = this.time * 1000
       this.setCountDownNumber()
       this.countDowm()
@@ -145,8 +153,10 @@ export default {
   computed: {
     // 倒计时显示
     countString () {
-      const time = `${this.hourString}:${this.minuteString}`
-      return this.day ? this.day + '天' + time : time
+      const time = `${this.hourString}:${this.minuteString}${
+        this.showSecond ? (':' + this.secondString) : ''
+      }`
+      return this.day ? `${this.day}天${time}` : time
     },
     hourString () {
       return this.formatNum(this.hour)
@@ -159,8 +169,12 @@ export default {
     },
     // 计时器显示
     timerString () {
-      const time = `${this.formatNum(this.h)}:${this.formatNum(this.m)}`
-      return this.d ? this.d + '天' + time : time
+      const time = `${this.formatNum(this.h)}:${this.formatNum(
+        this.m
+      )}${
+        this.showSecond ? (':' + this.formatNum(this.s)) : ''
+      }`
+      return this.d ? `${this.d}天${time}` : time
     }
   },
   beforeDestroy () {

@@ -12,11 +12,20 @@ export default {
   children: [
     // 免费服务列表
     {
-      path: '/community/freeService/list',
-      name: 'freeService',
-      component: () => import('@/views/community/freeService/list'),
+      path: '/community/freeServer/list',
+      name: 'freeServerList',
+      component: () => import('@/views/community/freeServer/list'),
       meta: {
         title: '免费服务'
+      }
+    },
+    // 免费服务设置
+    {
+      path: '/community/freeServer/setting',
+      name: 'freeServerSetting',
+      component: () => import('@/views/community/freeServer/setting'),
+      meta: {
+        title: '服务设置'
       }
     },
     // 服务记录
