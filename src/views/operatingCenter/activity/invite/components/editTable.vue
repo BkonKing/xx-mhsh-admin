@@ -9,7 +9,12 @@
         >{{ item.title }}</a-col
       >
     </a-row>
-    <a-form-model ref="tableForm" :model="tableData" class="edit-table-body">
+    <a-form-model
+      v-show="tableData.form && tableData.form.length"
+      ref="tableForm"
+      :model="tableData"
+      class="edit-table-body"
+    >
       <a-row v-for="(record, index) in tableData.form" :key="index" type="flex">
         <a-col flex="1" style="width: 0" class="two-Multi">{{
           record.task_name
@@ -33,11 +38,11 @@
           <a-form-model-item
             :prop="`form.${index}.${item.dataIndex}`"
             :rules="{
-              required: !(item.dataIndex === 'yk_credits' && record.id === '2'),
+              required: !(item.dataIndex === 'yk_credits' && record.task_type === '2'),
               message: '必填'
             }"
           >
-            <span v-if="item.dataIndex === 'yk_credits' && record.id === '2'"
+            <span v-if="item.dataIndex === 'yk_credits' && record.task_type === '2'"
               >———</span
             >
             <a-input
@@ -53,10 +58,12 @@
         </a-col>
       </a-row>
     </a-form-model>
+    <a-row v-if="!(tableData.form && tableData.form.length)"><a-empty :image="simpleImage"/></a-row>
   </div>
 </template>
 
 <script>
+import { Empty } from 'ant-design-vue'
 export default {
   props: {
     data: {
@@ -145,6 +152,9 @@ export default {
         })
       }
     }
+  },
+  beforeCreate () {
+    this.simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
   }
 }
 </script>

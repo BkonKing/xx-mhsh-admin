@@ -68,7 +68,11 @@
             </div>
           </a-form-model-item>
           <a-form-model-item required label="邀请文案">
-            <a-form-model ref="inviteForm" :model="inviteCredits">
+            <a-form-model
+              v-show="inviteCredits.form && inviteCredits.form.length"
+              ref="inviteForm"
+              :model="inviteCredits"
+            >
               <a-row
                 v-for="(item, index) in inviteCredits.form"
                 class="copywriting-row"
@@ -91,9 +95,10 @@
                       :maxLength="15"
                       @change="triggerChange"
                     ></a-input></a-form-model-item
-                ></a-col>
+                ></a-col><a-col>幸福币</a-col>
               </a-row>
             </a-form-model>
+            <div v-if="!(inviteCredits.form && inviteCredits.form.length)">无</div>
           </a-form-model-item>
           <a-form-model-item required prop="poster_url" label="面对面邀请海报">
             <upload-image
@@ -103,7 +108,7 @@
               @change="triggerChange"
             ></upload-image>
             <div style="margin-top: -11px;color: #00000072;">
-              尺寸320*320；支持扩展名：.png .jpg；
+              尺寸750*1207；支持扩展名：.png .jpg；
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -116,13 +121,16 @@
             <a-checkbox-group
               v-model="taskCheckbox"
               @change="changeTaskChecked"
+              class="invite-checkbox"
             >
               <a-checkbox
                 v-for="item in taskData"
                 :key="item.id"
                 :value="item.id"
                 :disabled="!+item.is_enabled"
-                @click="stopReminding(!+item.is_enabled, item.task_name)"
+                @click.native="
+                  stopReminding(!+item.is_enabled, item.task_name)
+                "
                 @change="triggerChange"
               >
                 {{ item.task_name }}
@@ -341,7 +349,7 @@ export default {
       })
     },
     stopReminding (isUnabled, taskName) {
-      isUnabled && this.$toast.warning(`请先开启幸福币任务【${taskName}】`)
+      isUnabled && this.$message.warning(`请先开启幸福币任务【${taskName}】`)
     },
     changeTaskChecked () {
       if (this.taskCheckbox.length > this.inviteCredits.form.length) {
@@ -371,6 +379,10 @@ export default {
       })
     },
     handleSubmit () {
+      if (!this.taskCheckbox || !this.taskCheckbox.length) {
+        this.$message.warning('请选择关联任务')
+        return
+      }
       const editForm = this.$refs.editTable
       Promise.all([
         this.formValidate(this.$refs.BasicForm),
@@ -452,5 +464,29 @@ export default {
 }
 .copywriting-row + .copywriting-row {
   margin-top: 16px;
+}
+.invite-checkbox {
+  /deep/ .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled,
+  /deep/ .ant-checkbox-disabled,
+  /deep/ .ant-checkbox-disabled .ant-checkbox-input,
+  /deep/ .ant-checkbox-disabled + span {
+    cursor: pointer;
+  }
+  /deep/ .ant-checkbox-disabled + span {
+    color: inherit;
+  }
+  /deep/ .ant-checkbox-disabled .ant-checkbox-inner {
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+  }
+  /deep/ .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: @primary-color;
+    border-color: @primary-color !important;
+  }
+  /deep/
+    .ant-checkbox-disabled.ant-checkbox-checked
+    .ant-checkbox-inner::after {
+    border-color: #f5f5f5;
+  }
 }
 </style>
