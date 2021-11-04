@@ -15,19 +15,19 @@ const serviceLog = {
   getServiceRecord: '/server/labelserver/getServiceRecord'
 }
 
-// 服务记录
+// 免费服务
 export const freeServer = {
-  getFreeServerList: '/server/freeServer/getFreeServerList',
-  optReservation: '/server/freeServer/optReservation',
-  getFreeCategoryList: '/server/freeServer/getFreeCategoryList',
-  updateFieldCategory: '/server/freeServer/updateFieldCategory',
-  deleteFreeCategory: '/server/freeServer/deleteFreeCategory',
-  addFreeCategory: '/server/freeServer/addFreeCategory',
-  getReservationInfo: '/server/freeServer/getReservationInfo',
-  setRemark: '/server/freeServer/setRemark',
-  getCancelReason: '/server/freeServer/getCancelReason', // options
-  getCancelReservationReasonList: '/server/freeServer/getCancelReservationReasonList', // setting
-  addCancelReservationReason: '/server/freeServer/addCancelReservationReason'
+  getFreeServerList: '/server/freeserver/getFreeServerList',
+  optReservation: '/server/freeserver/optReservation',
+  getFreeCategoryList: '/server/freeserver/getFreeCategoryList',
+  updateFieldCategory: '/server/freeserver/updateFieldCategory',
+  deleteFreeCategory: '/server/freeserver/deleteFreeCategory',
+  addFreeCategory: '/server/freeserver/addFreeCategory',
+  getReservationInfo: '/server/freeserver/getReservationInfo',
+  setRemark: '/server/freeserver/setRemark',
+  getCancelReason: '/server/freeserver/getCancelReason', // options
+  getCancelReservationReasonList: '/server/freeserver/getCancelReservationReasonList', // setting
+  addCancelReservationReason: '/server/freeserver/addCancelReservationReason'
 }
 
 // 获取服务预约记录列表

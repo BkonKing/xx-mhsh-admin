@@ -83,7 +83,7 @@
         </template>
         <template slot="listOrder" slot-scope="text, record">
           <a-input
-            v-model="record.listOrder"
+            v-model="record.list_order"
             @blur="changeOrder(record)"
           ></a-input>
         </template>
@@ -164,7 +164,6 @@ export default {
         },
         {
           title: '服务地点/时间',
-          orter: true,
           dataIndex: 'location',
           customRender: (text, row) => {
             return (
@@ -195,7 +194,7 @@ export default {
         },
         {
           title: '排序',
-          dataIndex: 'listOrder',
+          dataIndex: 'list_order',
           scopedSlots: { customRender: 'listOrder' },
           width: 160
         },
@@ -266,7 +265,7 @@ export default {
         }
       })
     },
-    changeOrder ({ id, listOrder }) {
+    changeOrder ({ id, list_order: listOrder }) {
       updateFieldCategory({
         id,
         field_name: 'list_order',

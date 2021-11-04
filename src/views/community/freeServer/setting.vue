@@ -134,7 +134,9 @@ export default {
     },
     saveCancelReason () {
       this.loading = true
-      addCancelReason()
+      addCancelReason({
+        reason_list: this.editForm.cancelList
+      })
         .then(({ success }) => {
           if (success) {
             this.isChange = false

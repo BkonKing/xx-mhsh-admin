@@ -5,7 +5,7 @@
     @tabChange="handleTabChange"
   >
     <reservation-list v-show="tabActiveKey === '0'"></reservation-list>
-    <server-list v-show="tabActiveKey === '1'"></server-list>
+    <server-list v-if="!first" v-show="tabActiveKey === '1'"></server-list>
   </page-header-view>
 </template>
 
@@ -28,7 +28,8 @@ export default {
         { key: '0', tab: '预约列表' },
         { key: '1', tab: '服务项目' }
       ],
-      tabActiveKey: '0'
+      tabActiveKey: '0',
+      first: true
     }
   },
   created () {
@@ -36,6 +37,7 @@ export default {
   methods: {
     handleTabChange (key) {
       this.tabActiveKey = key
+      this.first = false
     }
   }
 }

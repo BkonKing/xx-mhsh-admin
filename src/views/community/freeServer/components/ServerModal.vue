@@ -44,7 +44,7 @@
         ></a-radio-group>
       </a-form-model-item>
       <a-form-model-item
-        v-if="formData.category_type === '2'"
+        v-if="formData.category_type === 2"
         label="库存"
         required
         prop="num"
@@ -58,7 +58,7 @@
         ><span style="margin-left:8px;">个</span>
       </a-form-model-item>
       <a-form-model-item
-        v-if="formData.category_type === '2'"
+        v-if="formData.category_type === 2"
         label="借用时长"
         required
         prop="duration"
@@ -121,35 +121,35 @@ export default {
     return {
       visible: this.value,
       formData: {
-        category_type: '1',
+        category_type: 1,
         category: '',
         location: '',
         service_time: '',
-        status: '0',
+        status: 0,
         num: '',
         duration: '',
-        is_lineup: '0',
-        visible_user: ['1', '2', '3'],
-        reserved_users: ['1', '2', '3'],
+        is_lineup: 0,
+        visible_user: [1, 2, 3],
+        reserved_users: [1, 2, 3],
         is_open: true
       },
       causeOptions: [],
       serviceTypes: [
-        { value: '1', label: '人工服务' },
-        { value: '2', label: '借用服务' }
+        { value: 1, label: '人工服务' },
+        { value: 2, label: '借用服务' }
       ],
       serviceStatus: [
-        { value: '0', label: '正常' },
-        { value: '1', label: '暂停' }
+        { value: 0, label: '正常' },
+        { value: 1, label: '暂停' }
       ],
       queueRadio: [
-        { value: '0', label: '无需排队' },
-        { value: '1', label: '需要排队' }
+        { value: 0, label: '无需排队' },
+        { value: 1, label: '需要排队' }
       ],
       userTypes: [
-        { label: '已认证用户', value: '1' },
-        { label: '游客-未认证业主', value: '2' },
-        { label: '游客-定位', value: '3' }
+        { label: '已认证用户', value: 1 },
+        { label: '游客-未认证业主', value: 2 },
+        { label: '游客-定位', value: 3 }
       ]
     }
   },
@@ -217,7 +217,7 @@ export default {
     },
     addFreeCategory () {
       const params = cloneDeep(this.formData)
-      params.is_open = params.is_open ? '1' : '0'
+      params.is_open = params.is_open ? 1 : 0
       addFreeCategory().then(({ success }) => {
         if (success) {
           this.$message.success('提交成功')
