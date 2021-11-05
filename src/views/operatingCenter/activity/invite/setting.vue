@@ -35,6 +35,7 @@
               v-model="form.project_ids"
               mode="multiple"
               placeholder="请选择"
+              :getPopupContainer="triggerNode => triggerNode.parentNode"
               @change="triggerChange"
             >
               <a-select-option
@@ -356,7 +357,11 @@ export default {
         // 新增
         this.taskCheckbox.forEach(id => {
           if (!this.inviteCredits.form.find(obj => obj.id === id)) {
-            this.inviteCredits.form.push(this.taskData[id])
+            const data = this.taskData[id]
+            // this.inviteCredits.form.push(this.taskData[id])
+            let index = this.inviteCredits.form.findIndex(obj => +data.task_type > +obj.task_type)
+            index = index < 0 ? this.inviteCredits.form.length : index
+            this.inviteCredits.form.splice(index, 0, data)
           }
         })
       } else {

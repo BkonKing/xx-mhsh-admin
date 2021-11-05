@@ -38,11 +38,14 @@
           <a-form-model-item
             :prop="`form.${index}.${item.dataIndex}`"
             :rules="{
-              required: !(item.dataIndex === 'yk_credits' && record.task_type === '2'),
+              required: !(
+                item.dataIndex === 'yk_credits' && record.task_type === '2'
+              ),
               message: '必填'
             }"
           >
-            <span v-if="item.dataIndex === 'yk_credits' && record.task_type === '2'"
+            <span
+              v-if="item.dataIndex === 'yk_credits' && record.task_type === '2'"
               >———</span
             >
             <a-input
@@ -58,7 +61,9 @@
         </a-col>
       </a-row>
     </a-form-model>
-    <a-row v-if="!(tableData.form && tableData.form.length)"><a-empty :image="simpleImage"/></a-row>
+    <a-row v-if="!(tableData.form && tableData.form.length)"
+      ><a-empty :image="simpleImage"
+    /></a-row>
   </div>
 </template>
 
@@ -142,7 +147,13 @@ export default {
         // 新增
         val.forEach(id => {
           if (!this.tableData.form.find(obj => obj.id === id)) {
-            this.tableData.form.push(this.taskData[id])
+            const data = this.taskData[id]
+            // this.tableData.form.push(this.taskData[id])
+            let index = this.tableData.form.findIndex(
+              obj => +data.task_type > +obj.task_type
+            )
+            index = index < 0 ? this.tableData.form.length : index
+            this.tableData.form.splice(index, 0, data)
           }
         })
       } else if (val.length < this.tableData.form.length) {

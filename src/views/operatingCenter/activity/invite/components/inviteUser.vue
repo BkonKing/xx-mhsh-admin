@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="用户类型">
-              <a-select v-model="queryParam.user_type" placeholder="请选择">
+              <a-select v-model="queryParam.user_type" :getPopupContainer="triggerNode => triggerNode.parentNode" placeholder="请选择">
                 <a-select-option
                   v-for="item in userTypeOptions"
                   :key="item.value"
@@ -115,7 +115,7 @@ export default {
           sorter: true
         },
         {
-          title: '最好邀请时间',
+          title: '最后邀请时间',
           dataIndex: 'stime',
           customRender: text => {
             return text || '--'

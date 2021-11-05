@@ -13,7 +13,11 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="状态">
-              <a-select v-model="queryParam.is_open" placeholder="请选择">
+              <a-select
+                v-model="queryParam.is_open"
+                :getPopupContainer="triggerNode => triggerNode.parentNode"
+                placeholder="请选择"
+              >
                 <a-select-option :value="1">
                   开启
                 </a-select-option>

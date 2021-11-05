@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="邀请结果">
-              <a-select v-model="queryParam.invite_type" placeholder="请选择">
+              <a-select v-model="queryParam.invite_type" :getPopupContainer="triggerNode => triggerNode.parentNode" placeholder="请选择">
                 <a-select-option
                   v-for="item in resultOptions"
                   :key="item.value"
@@ -19,7 +19,7 @@
             <a-form-item label="用户">
               <a-row type="flex">
                 <a-col flex="100px">
-                  <a-select v-model="queryParam.user_type" placeholder="邀请人">
+                  <a-select v-model="queryParam.user_type" :getPopupContainer="triggerNode => triggerNode.parentNode" placeholder="邀请人">
                     <a-select-option value="1">邀请人</a-select-option>
                     <a-select-option value="2">被邀请人</a-select-option>
                   </a-select>
