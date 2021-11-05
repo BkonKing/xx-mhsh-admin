@@ -47,11 +47,11 @@
         v-if="formData.category_type === 2"
         label="库存"
         required
-        prop="num"
+        prop="nums"
         :rules="{ required: true, message: '请输入库存' }"
       >
         <a-input-number
-          v-model="formData.num"
+          v-model="formData.nums"
           :min="1"
           :max="9999999999"
         ></a-input-number
@@ -90,8 +90,8 @@
           @change="handleChange"
         />
       </a-form-model-item>
-      <a-form-model-item label="是否启用" prop="is_open">
-        <a-switch v-model="formData.is_open"></a-switch>
+      <a-form-model-item label="是否启用" prop="is_enabled">
+        <a-switch v-model="formData.is_enabled"></a-switch>
       </a-form-model-item>
     </a-form-model>
   </a-modal>
@@ -121,17 +121,18 @@ export default {
     return {
       visible: this.value,
       formData: {
+        id: '',
         category_type: 1,
         category: '',
         location: '',
         service_time: '',
         status: 0,
-        num: '',
+        nums: '',
         duration: '',
         is_lineup: 0,
-        visible_user: [1, 2, 3],
-        reserved_users: [1, 2, 3],
-        is_open: true
+        visible_user: ['1', '2', '3'],
+        reserved_users: ['1', '2', '3'],
+        is_enabled: true
       },
       causeOptions: [],
       serviceTypes: [
@@ -147,9 +148,9 @@ export default {
         { value: 1, label: '需要排队' }
       ],
       userTypes: [
-        { label: '已认证用户', value: 1 },
-        { label: '游客-未认证业主', value: 2 },
-        { label: '游客-定位', value: 3 }
+        { label: '已认证用户', value: '1' },
+        { label: '游客-未认证业主', value: '2' },
+        { label: '游客-定位', value: '3' }
       ]
     }
   },
@@ -194,7 +195,8 @@ export default {
         data.reserved_users = data.reserved_users
           ? data.reserved_users.split(',')
           : []
-        data.is_open = !!+data.is_open
+        data.status = data.is_stop
+        data.is_enabled = !!+data.is_enabled
         this.formData = data
       }
     },
@@ -217,8 +219,10 @@ export default {
     },
     addFreeCategory () {
       const params = cloneDeep(this.formData)
-      params.is_open = params.is_open ? 1 : 0
-      addFreeCategory().then(({ success }) => {
+      params.is_enabled = params.is_enabled ? 1 : 0
+      params.visible_user = params.visible_user.join(',')
+      params.reserved_users = params.reserved_users.join(',')
+      addFreeCategory(params).then(({ success }) => {
         if (success) {
           this.$message.success('提交成功')
           this.visible = false

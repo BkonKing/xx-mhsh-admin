@@ -71,7 +71,7 @@
         label="结束时间"
       >
         <div>{{ editForm.etime || "--" }}</div>
-        <div v-if="editForm.status === '3'">
+        <div v-if="editForm.status === 3">
           {{ editForm.cancel_reson }}
         </div>
       </a-form-model-item>
@@ -120,13 +120,13 @@ export default {
       return (curTime - stime) / 1000
     },
     timingText () {
-      return +this.editForm.status === 2 ? '已排队' : '已借'
+      return +this.editForm.category_type === 1 ? '已排队' : '已借'
     },
     isShowOverTime () {
-      return +this.editForm.status === 3 && this.overtime > 0
+      return +this.editForm.status === 1 && +this.editForm.category_type === 2 && this.overtime > 0
     },
     isShowTiming () {
-      return [2, 3].includes(+this.editForm.status)
+      return +this.editForm.status === 1
     }
   },
   watch: {

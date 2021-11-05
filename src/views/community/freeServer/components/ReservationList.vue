@@ -101,7 +101,7 @@
       >
         <template slot="duration" slot-scope="text,row">
           <Timewait
-            v-if="row.status === 3"
+            v-if="+row.status === 1 && +row.category_type === 2"
             :showSecond="true"
             :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000 - row.duration)"
             :delay="1000"
@@ -109,11 +109,11 @@
             type="2"
           ></Timewait>
           <Timewait
-            v-if="[2, 3].includes(+row.status)"
+            v-if="+row.status === 1"
             :showSecond="true"
             :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000)"
             :delay="1000"
-            :upText="+row.status === 2 ? '已排队' : '已借'"
+            :upText="+row.category_type === 1 ? '已排队' : '已借'"
             type="2"
           ></Timewait>
         </template>
@@ -121,13 +121,13 @@
           <template>
             <a style="margin-right: 10px;" @click="openRemark(record)">备注</a>
             <a
-              v-if="[1, 2, 3].includes(record.status)"
+              v-if="[0, 1].includes(record.status)"
               style="margin-right: 10px;"
               @click="finishService([record.id])"
               >完成</a
             >
             <a
-              v-if="[1, 2, 3].includes(record.status)"
+              v-if="[0, 1].includes(record.status)"
               @click="openCancelModal([record.id])"
               >取消</a
             >
