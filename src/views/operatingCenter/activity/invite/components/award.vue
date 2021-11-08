@@ -45,8 +45,8 @@
                 <a-select v-model="queryParam.project_id" placeholder="请选择">
                   <a-select-option
                     v-for="item in projectOptions"
-                    :key="item.id"
-                    :value="item.id"
+                    :key="item.project_id"
+                    :value="item.project_id"
                     >{{ item.project_name }}</a-select-option
                   >
                 </a-select>
