@@ -56,6 +56,10 @@ export default {
     STable
   },
   data () {
+    const sortValue = {
+      ascend: 'asc',
+      descend: 'desc'
+    }
     return {
       // 邀请人选项
       userTypeOptions: [
@@ -124,7 +128,10 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getInviteList(this.queryParam)
+        if (parameter.sortField) {
+          parameter.sortOrder = sortValue[parameter.sortOrder]
+        }
+        return getInviteList({ ...this.queryParam, ...parameter })
       }
     }
   },
