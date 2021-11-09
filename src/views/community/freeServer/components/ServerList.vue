@@ -9,6 +9,7 @@
                 <a-select
                   v-model="queryParam.category_type"
                   :options="serviceTypes"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -19,6 +20,7 @@
                 <a-select
                   v-model="queryParam.is_stop"
                   :options="runningStatus"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -29,6 +31,7 @@
                 <a-select
                   v-model="queryParam.is_open"
                   :options="switchStatus"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -179,12 +182,12 @@ export default {
             return (
               <div>
                 是否启用
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>开启则APP显示服务</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>开启则APP显示服务</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },

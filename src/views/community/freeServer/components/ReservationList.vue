@@ -9,6 +9,7 @@
                 <a-select
                   v-model="queryParam.service_status"
                   placeholder="请选择"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   :options="serviceStatus"
                 >
                 </a-select>
@@ -19,6 +20,7 @@
                 <a-select
                   v-model="queryParam.category_type"
                   placeholder="请选择"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   :options="serviceTypes"
                 >
                 </a-select>
@@ -27,7 +29,7 @@
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="服务项目">
-                  <a-select v-model="queryParam.category" placeholder="请选择">
+                  <a-select v-model="queryParam.category" placeholder="请选择" :getPopupContainer="triggerNode => triggerNode.parentNode">
                     <a-select-option
                       v-for="item in serviceProjects"
                       :key="item.id"
@@ -143,7 +145,7 @@
     <cancel-reservation-modal
       v-model="cancelVisible"
       :selectKeys="cancelIds"
-      @success="refresh"
+      @success="operateSuccess"
     ></cancel-reservation-modal>
   </div>
 </template>
@@ -259,7 +261,7 @@ export default {
         },
         {
           title: '备注',
-          dataIndex: 'remark',
+          dataIndex: 'remarks',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -316,7 +318,7 @@ export default {
         selectedRowKeys: this.selectedRowKeys,
         getCheckboxProps: record => ({
           props: {
-            disabled: ![1, 2, 3].includes(record.status)
+            disabled: ![0, 1].includes(record.status)
           }
         }),
         onChange: this.onSelectChange
@@ -330,6 +332,11 @@ export default {
     },
     refresh (isReset) {
       this.$refs.table.refresh(isReset)
+    },
+    operateSuccess() {
+      this.refresh()
+      this.selectedRows = []
+      this.selectedRowKeys = []
     },
     openRemark (record) {
       this.activeRecord = record
@@ -349,7 +356,7 @@ export default {
         ids
       }).then(({ success }) => {
         if (success) {
-          this.$refs.table.refresh()
+          this.operateSuccess()
         }
       })
     },

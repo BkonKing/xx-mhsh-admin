@@ -10,7 +10,7 @@
 </template>
 
 <script>
-/// community/freeServer/list
+// /community/freeServer/list
 import PageHeaderView from '@/layouts/PageHeaderView'
 import ReservationList from './components/ReservationList'
 import ServerList from './components/ServerList.vue'
