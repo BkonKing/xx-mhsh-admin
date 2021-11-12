@@ -71,7 +71,7 @@
         ></a-input-number
         ><span style="margin-left:8px;">小时</span>
       </a-form-model-item>
-      <a-form-model-item label="需要排队" prop="is_lineup">
+      <a-form-model-item v-if="formData.category_type === 1" label="需要排队" prop="is_lineup">
         <a-radio-group
           v-model="formData.is_lineup"
           :options="queueRadio"

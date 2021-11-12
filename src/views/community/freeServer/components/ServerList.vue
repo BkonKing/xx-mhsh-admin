@@ -107,7 +107,7 @@
         </span>
       </s-table>
     </a-card>
-    <server-modal v-model="editVisible" :data="activeRecord"></server-modal>
+    <server-modal v-model="editVisible" :data="activeRecord" @success="$refs.table.refresh()"></server-modal>
   </div>
 </template>
 
