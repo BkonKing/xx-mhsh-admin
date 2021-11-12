@@ -127,11 +127,11 @@
               class="invite-checkbox"
             >
               <a-checkbox
-                v-for="item in taskData"
+                v-for="item in taskOptions"
                 :key="item.id"
                 :value="item.id"
                 @click="
-                  stopReminding($event, !+item.is_enabled, item.task_name)
+                  stopReminding($event, item)
                 "
                 @change="triggerChange"
               >
@@ -187,7 +187,7 @@ import { getInviteSetting, saveInviteSetting } from '@/api/invite'
 import clonedeep from 'lodash.clonedeep'
 
 export default {
-  name: 'SpecialEdit',
+  name: 'inviteSetting',
   components: {
     FooterToolBar,
     UploadImage,
@@ -264,7 +264,23 @@ export default {
         //   }
         // ]
       },
-      taskCheckbox: [],
+      taskOptions: [
+        {
+          id: '0',
+          task_type: '6',
+          task_name: '下载登录',
+          is_enabled: 0,
+          isExist: false // 是否存在这个任务
+        },
+        {
+          id: '',
+          task_type: '2',
+          task_name: '房间认证',
+          is_enabled: 0,
+          isExist: false
+        }
+      ],
+      taskCheckbox: [], // 值为关联任务的id
       taskData: {},
       inviteCredits: { form: [] },
       inviteTaskData: [],
@@ -297,9 +313,7 @@ export default {
     },
     setTaskData (taskData, inviteTaskData) {
       // 服务端返回数据将邀请奖励任务表格分成了两个数组，需要将他们组合起来
-      const keys = Object.keys(taskData)
-      keys.forEach(key => {
-        // 查找现有的邀请任务中对应的任务
+      Object.entries(taskData).forEach(([key, data]) => {
         let inviteTask = {
           credits: '',
           yk_credits: '',
@@ -308,9 +322,18 @@ export default {
           zh_credits: '',
           zhcy_credits: ''
         }
+        // 查找现有的邀请任务中对应的任务
         const index = inviteTaskData.findIndex(
-          obj => obj.id === taskData[key].invite_task_id
+          obj => obj.id === data.invite_task_id
         )
+        // 查找当前任务是否为下载登录或者房间认证
+        const taskIndex = this.taskOptions.findIndex(option => option.task_type === data.task_type)
+        // 查询选中的是否为关联任务中的一个，有则为其添加id，是否开启
+        if (taskIndex > -1) {
+          this.taskOptions[taskIndex].id = data.id
+          this.taskOptions[taskIndex].is_enabled = data.is_enabled
+          this.taskOptions[taskIndex].isExist = true
+        }
         if (index > -1) {
           const {
             id,
@@ -321,15 +344,15 @@ export default {
           } = inviteTaskData[index]
           inviteTask = inviteTaskValue
         }
-        Object.assign(taskData[key], inviteTask)
-        taskData[key].task_id = taskData[key].id
+        Object.assign(data, inviteTask)
+        data.task_id = data.id
         if (index > -1) {
-          inviteTaskData[index] = clonedeep(taskData[key])
+          inviteTaskData[index] = clonedeep(data)
         }
         // 后台返回的key值为任务类型，为了跟CheckBox值对应将其key改为id
-        const newKey = taskData[key].id
+        const newKey = data.id
         if (newKey !== key) {
-          taskData[newKey] = taskData[key]
+          taskData[newKey] = data
           delete taskData[key]
         }
       })
@@ -350,20 +373,24 @@ export default {
         this.isChange = false
       })
     },
-    stopReminding (event, isUnabled, taskName) {
-      if (isUnabled) {
+    stopReminding (event, { is_enabled: isUnabled, task_name: taskName, isExist }) {
+      if (!isExist || !+isUnabled) {
         event.stopPropagation()
         event.preventDefault()
-        const modal = this.$warning({
-          class: 'warning-toast',
-          maskClosable: true,
-          mask: false,
-          title: `请先开启幸福币任务【${taskName}】`
-        })
-        setTimeout(() => {
-          modal.destroy()
-        }, 1500)
+        const alert = !isExist ? `请先创建【${taskName}】幸福币任务` : `请先开启幸福币任务【${taskName}】`
+        this.taskAlert(alert)
       }
+    },
+    taskAlert (title) {
+      const modal = this.$warning({
+        class: 'warning-toast',
+        maskClosable: true,
+        mask: false,
+        title
+      })
+      setTimeout(() => {
+        modal.destroy()
+      }, 1500)
     },
     changeTaskChecked () {
       if (this.taskCheckbox.length > this.inviteCredits.form.length) {
@@ -401,6 +428,15 @@ export default {
     handleSubmit () {
       if (!this.taskCheckbox || !this.taskCheckbox.length) {
         this.$message.warning('请选择关联任务')
+        return
+      }
+      const isHaveDownLoad = this.taskOptions.some(obj => {
+        if (this.taskCheckbox.includes(obj.id) && obj.task_type === '6') {
+          return true
+        }
+      })
+      if (!isHaveDownLoad) {
+        this.taskAlert('请先关联下载登录任务')
         return
       }
       const editForm = this.$refs.editTable
