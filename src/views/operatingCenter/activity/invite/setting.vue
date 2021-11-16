@@ -35,6 +35,7 @@
               v-model="form.project_ids"
               mode="multiple"
               placeholder="请选择"
+              :getPopupContainer="triggerNode => triggerNode.parentNode"
               @change="triggerChange"
             >
               <a-select-option
@@ -68,7 +69,11 @@
             </div>
           </a-form-model-item>
           <a-form-model-item required label="邀请文案">
-            <a-form-model ref="inviteForm" :model="inviteCredits">
+            <a-form-model
+              ref="inviteForm"
+              v-show="isHaveInviteTask"
+              :model="inviteCredits"
+            >
               <a-row
                 v-for="(item, index) in inviteCredits.form"
                 class="copywriting-row"
@@ -90,10 +95,13 @@
                       v-number-input.int="{ min: 1 }"
                       :maxLength="15"
                       @change="triggerChange"
-                    ></a-input></a-form-model-item
-                ></a-col>
+                    ></a-input></a-form-model-item></a-col
+                ><a-col>幸福币</a-col>
               </a-row>
             </a-form-model>
+            <div v-if="!isHaveInviteTask">
+              无
+            </div>
           </a-form-model-item>
           <a-form-model-item required prop="poster_url" label="面对面邀请海报">
             <upload-image
@@ -103,7 +111,7 @@
               @change="triggerChange"
             ></upload-image>
             <div style="margin-top: -11px;color: #00000072;">
-              尺寸320*320；支持扩展名：.png .jpg；
+              尺寸750*1207；支持扩展名：.png .jpg；
             </div>
           </a-form-model-item>
         </a-form-model>
@@ -116,13 +124,12 @@
             <a-checkbox-group
               v-model="taskCheckbox"
               @change="changeTaskChecked"
+              class="invite-checkbox"
             >
               <a-checkbox
-                v-for="item in taskData"
-                :key="item.id"
-                :value="item.id"
-                :disabled="!+item.is_enabled"
-                @click="stopReminding(!+item.is_enabled, item.task_name)"
+                v-for="item in taskOptions"
+                :key="item.task_type"
+                :value="item.task_type"
                 @change="triggerChange"
               >
                 {{ item.task_name }}
@@ -131,16 +138,73 @@
             <!-- <a @click="openTaskTable">新增</a> -->
           </a-col>
         </a-row>
-        <edit-table
-          ref="editTable"
-          :data="inviteTaskData"
-          :taskData="taskData"
-          :checked="taskCheckbox"
-          @input="triggerChange"
-        ></edit-table>
+        <div class="edit-table">
+          <a-row class="edit-table-header" type="flex">
+            <a-col
+              v-for="item in columns"
+              :flex="item.flex || 1"
+              :key="item.dataIndex"
+              style="width: 0"
+              >{{ item.title }}</a-col
+            >
+          </a-row>
+          <a-form-model
+            v-show="isHaveInviteTask"
+            ref="editTable"
+            :model="inviteCredits"
+            class="edit-table-body"
+          >
+            <a-row
+              v-for="(record, index) in inviteCredits.form"
+              :key="index"
+              type="flex"
+            >
+              <a-col flex="1" style="width: 0" class="two-Multi">{{
+                record.task_name
+              }}</a-col>
+              <a-col
+                v-for="item in inputColumns"
+                :key="item.dataIndex"
+                flex="1"
+                style="width: 0"
+              >
+                <a-form-model-item
+                  :prop="`form.${index}.${item.dataIndex}`"
+                  :rules="{
+                    required: !(
+                      item.dataIndex === 'yk_credits' &&
+                      record.task_type === '2'
+                    ),
+                    message: '必填'
+                  }"
+                >
+                  <span
+                    v-if="
+                      item.dataIndex === 'yk_credits' &&
+                        record.task_type === '2'
+                    "
+                    >———</span
+                  >
+                  <a-input
+                    v-else
+                    v-model="record[item.dataIndex]"
+                    v-number-input.int="{ min: 1 }"
+                    placeholder="请输入"
+                    :maxLength="50"
+                    style="width: 100%;"
+                    @change="triggerChange"
+                  />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </a-form-model>
+          <a-row v-if="!isHaveInviteTask"
+            ><a-empty :image="simpleImage"
+          /></a-row>
+        </div>
       </a-card>
       <div style="height: 56px;"></div>
-      <footer-tool-bar style="width: 100%;">
+      <footer-toolbar style="width: 100%;">
         <a-button @click="$router.go(-1)" style="margin-right: 15px;">
           取消
         </a-button>
@@ -151,7 +215,7 @@
           :disabled="!isChange"
           >提交</a-button
         >
-      </footer-tool-bar>
+      </footer-toolbar>
     </div>
     <a-modal
       title="新增关联任务"
@@ -168,31 +232,55 @@
 
 <script>
 // /operatingCenter/activity/invite/setting
-import { PageHeader, UploadImage } from '@/components'
 import moment from 'moment'
-import FooterToolBar from '@/components/FooterToolbar'
-import taskTable from './components/taskTable'
-import editTable from './components/editTable'
-import { getInviteSetting, saveInviteSetting } from '@/api/invite'
 import clonedeep from 'lodash.clonedeep'
+import { Empty } from 'ant-design-vue'
+import { PageHeader, UploadImage, FooterToolbar } from '@/components'
+import taskTable from './components/taskTable'
+import { getInviteSetting, saveInviteSetting } from '@/api/invite'
 
 export default {
-  name: 'SpecialEdit',
+  name: 'inviteSetting',
   components: {
-    FooterToolBar,
+    FooterToolbar,
     UploadImage,
     PageHeader,
-    taskTable,
-    editTable
+    taskTable
   },
   data () {
-    // const validateTime = (rule, value, callback) => {
-    //   if (this.form.is_open && !value[0]) {
-    //     callback(new Error('请设定开启时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    const textColumns = [
+      {
+        title: '任务类型',
+        dataIndex: 'task_name'
+      }
+    ]
+    const inputColumns = [
+      {
+        title: '业主（币）',
+        dataIndex: 'yz_credits',
+        scopedSlots: { customRender: 'yz_credits' }
+      },
+      {
+        title: '业主成员（币）',
+        dataIndex: 'yzcy_credits',
+        scopedSlots: { customRender: 'yzcy_credits' }
+      },
+      {
+        title: '租户（币）',
+        dataIndex: 'zh_credits',
+        scopedSlots: { customRender: 'zh_credits' }
+      },
+      {
+        title: '租户成员（币）',
+        dataIndex: 'zhcy_credits',
+        scopedSlots: { customRender: 'zhcy_credits' }
+      },
+      {
+        title: '游客（币）',
+        dataIndex: 'yk_credits',
+        scopedSlots: { customRender: 'yk_credits' }
+      }
+    ]
     return {
       routes: [
         {
@@ -248,21 +336,36 @@ export default {
         user_type: [{ required: true, message: '请选择邀请人' }],
         banner_url: [{ required: true, message: '请上传banner图片' }],
         poster_url: [{ required: true, message: '请上传邀请海报' }]
-        // time: [
-        //   {
-        //     validator: validateTime
-        //   }
-        // ]
       },
-      taskCheckbox: [],
-      taskData: {},
+      taskOptions: [
+        {
+          task_type: '6',
+          task_name: '下载登录'
+        },
+        {
+          task_type: '2',
+          task_name: '房间认证'
+        }
+      ],
+      taskCheckbox: [], // 值为关联任务的类型
       inviteCredits: { form: [] },
       inviteTaskData: [],
       visible: false,
       loading: false,
       confirmLoading: false,
-      isChange: false
+      isChange: false,
+      textColumns,
+      inputColumns,
+      columns: [...textColumns, ...inputColumns]
     }
+  },
+  computed: {
+    isHaveInviteTask () {
+      return this.inviteCredits.form && this.inviteCredits.form.length
+    }
+  },
+  beforeCreate () {
+    this.simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
   },
   created () {
     this.getInviteSetting()
@@ -272,58 +375,16 @@ export default {
       getInviteSetting().then(
         ({
           project_list: projectList,
-          task_data: taskData,
           invite_setting_info: settingInfo,
           invite_task_data: inviteTaskData
         }) => {
           this.setForm(settingInfo || {})
           this.projectList = projectList || []
-          this.setTaskData(taskData, inviteTaskData)
           this.inviteTaskData = inviteTaskData
           this.inviteCredits.form = clonedeep(inviteTaskData)
-          this.taskCheckbox = inviteTaskData.map(obj => obj.id)
+          this.taskCheckbox = inviteTaskData.map(obj => obj.task_type)
         }
       )
-    },
-    setTaskData (taskData, inviteTaskData) {
-      // 服务端返回数据将邀请奖励任务表格分成了两个数组，需要将他们组合起来
-      const keys = Object.keys(taskData)
-      keys.forEach(key => {
-        // 查找现有的邀请任务中对应的任务
-        let inviteTask = {
-          credits: '',
-          yk_credits: '',
-          yz_credits: '',
-          yzcy_credits: '',
-          zh_credits: '',
-          zhcy_credits: ''
-        }
-        const index = inviteTaskData.findIndex(
-          obj => obj.id === taskData[key].invite_task_id
-        )
-        if (index > -1) {
-          const {
-            id,
-            task_id,
-            task_name,
-            task_type,
-            ...inviteTaskValue
-          } = inviteTaskData[index]
-          inviteTask = inviteTaskValue
-        }
-        Object.assign(taskData[key], inviteTask)
-        taskData[key].task_id = taskData[key].id
-        if (index > -1) {
-          inviteTaskData[index] = clonedeep(taskData[key])
-        }
-        // 后台返回的key值为任务类型，为了跟CheckBox值对应将其key改为id
-        const newKey = taskData[key].id
-        if (newKey !== key) {
-          taskData[newKey] = taskData[key]
-          delete taskData[key]
-        }
-      })
-      this.taskData = taskData
     },
     // 表单回填
     setForm (data) {
@@ -340,21 +401,49 @@ export default {
         this.isChange = false
       })
     },
-    stopReminding (isUnabled, taskName) {
-      isUnabled && this.$toast.warning(`请先开启幸福币任务【${taskName}】`)
+    taskAlert (title) {
+      const modal = this.$warning({
+        class: 'warning-toast',
+        maskClosable: true,
+        mask: false,
+        title
+      })
+      setTimeout(() => {
+        modal.destroy()
+      }, 1500)
     },
     changeTaskChecked () {
       if (this.taskCheckbox.length > this.inviteCredits.form.length) {
         // 新增
-        this.taskCheckbox.forEach(id => {
-          if (!this.inviteCredits.form.find(obj => obj.id === id)) {
-            this.inviteCredits.form.push(this.taskData[id])
+        this.taskCheckbox.forEach(taskType => {
+          if (
+            this.inviteCredits.form.findIndex(
+              obj => obj.task_type === taskType
+            ) === -1
+          ) {
+            // const index = this.inviteTaskData.findIndex(obj => obj.task_type === taskType)
+            // this.inviteCredits.form.splice(index, 0, this.inviteTaskData[index])
+            const form = {
+              credits: '',
+              yk_credits: '',
+              yz_credits: '',
+              yzcy_credits: '',
+              zh_credits: '',
+              zhcy_credits: ''
+            }
+            const index = this.taskOptions.findIndex(
+              obj => obj.task_type === taskType
+            )
+            this.inviteCredits.form.splice(index, 0, {
+              ...this.taskOptions[index],
+              ...form
+            })
           }
         })
       } else {
         // 删除
         this.inviteCredits.form = this.inviteCredits.form.filter(obj => {
-          return this.taskCheckbox.includes(obj.id)
+          return this.taskCheckbox.includes(obj.task_type)
         })
       }
     },
@@ -371,15 +460,23 @@ export default {
       })
     },
     handleSubmit () {
-      const editForm = this.$refs.editTable
+      const DOWNLOADTASKTYPE = '6'
+      if (!this.taskCheckbox || !this.taskCheckbox.length) {
+        this.$message.warning('请选择关联任务')
+        return
+      }
+      if (!this.taskCheckbox.includes(DOWNLOADTASKTYPE)) {
+        this.taskAlert('请先关联下载登录任务')
+        return
+      }
       Promise.all([
         this.formValidate(this.$refs.BasicForm),
         this.formValidate(this.$refs.inviteForm),
-        this.formValidate(editForm.$refs.tableForm)
+        this.formValidate(this.$refs.editTable)
       ]).then(() => {
         this.saveInviteSetting({
           ...this.form,
-          invite_task_data: clonedeep(editForm.tableData.form)
+          invite_task_data: this.inviteCredits.form
         })
       })
     },
@@ -401,19 +498,12 @@ export default {
         params.poster_url && params.poster_url.length
           ? params.poster_url[0]
           : ''
-      params.invite_task_data = params.invite_task_data.map(obj => {
-        const creditIndex = this.inviteCredits.form.findIndex(
-          item => item.id === obj.id
-        )
-        obj.credits = this.inviteCredits.form[creditIndex].credits
-        obj.id = obj.invite_task_id || '0'
-        return obj
-      })
-      saveInviteSetting(params).then(({ success }) => {
+      saveInviteSetting(params).then(({ success, message }) => {
         if (success) {
           this.$message.success('提交成功')
           this.getInviteSetting()
-          // this.$router.go(-1)
+        } else {
+          this.$message.error(message)
         }
       })
     },
@@ -452,5 +542,17 @@ export default {
 }
 .copywriting-row + .copywriting-row {
   margin-top: 16px;
+}
+</style>
+
+<style lang="less">
+.warning-toast {
+  .ant-modal-body {
+    padding: 12px 32px 4px;
+    background-color: #fffbe6;
+  }
+  .ant-modal-confirm-btns {
+    display: none;
+  }
 }
 </style>

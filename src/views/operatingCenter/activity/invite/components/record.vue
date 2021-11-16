@@ -5,7 +5,11 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="邀请结果">
-              <a-select v-model="queryParam.invite_type" placeholder="请选择">
+              <a-select
+                v-model="queryParam.invite_type"
+                :getPopupContainer="triggerNode => triggerNode.parentNode"
+                placeholder="请选择"
+              >
                 <a-select-option
                   v-for="item in resultOptions"
                   :key="item.value"
@@ -19,7 +23,11 @@
             <a-form-item label="用户">
               <a-row type="flex">
                 <a-col flex="100px">
-                  <a-select v-model="queryParam.user_type" placeholder="邀请人">
+                  <a-select
+                    v-model="queryParam.user_type"
+                    :getPopupContainer="triggerNode => triggerNode.parentNode"
+                    placeholder="邀请人"
+                  >
                     <a-select-option value="1">邀请人</a-select-option>
                     <a-select-option value="2">被邀请人</a-select-option>
                   </a-select>
@@ -34,6 +42,18 @@
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
+            <a-form-item label="结算项目">
+              <a-select v-model="queryParam.project_id" placeholder="请选择">
+                <a-select-option
+                  v-for="item in projectOptions"
+                  :key="item.project_id"
+                  :value="item.project_id"
+                  >{{ item.project_name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="24" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -83,6 +103,7 @@ export default {
           value: '2'
         }
       ],
+      projectOptions: [],
       // 查询参数
       queryParam: {},
       columns: [
@@ -92,16 +113,20 @@ export default {
         },
         {
           title: () => {
-            return <a-tooltip overlayClassName="max-tooltip">
-              <template slot="title">
-                <div>[邀请中] :用户活动页领取后，3天内暂未下载登录APP</div>
-                <div>[邀请失败] :用户活动页领取后，3天内未完成下载登录APP</div>
-                <div>[下载登录] :用户活动页领取后，3天内成功下载登录APP</div>
-                <div>[房间认证] :用户成功完成房间认证任务</div>
-              </template>
-              邀请结果
-              <a-icon type="info-circle" style="margin-left: 3px;" />
-            </a-tooltip>
+            return (
+              <a-tooltip overlayClassName="max-tooltip">
+                <template slot="title">
+                  <div>[邀请中] :用户活动页领取后，3天内暂未下载登录APP</div>
+                  <div>
+                    [邀请失败] :用户活动页领取后，3天内未完成下载登录APP
+                  </div>
+                  <div>[下载登录] :用户活动页领取后，3天内成功下载登录APP</div>
+                  <div>[房间认证] :用户成功完成房间认证任务</div>
+                </template>
+                邀请结果
+                <a-icon type="info-circle" style="margin-left: 3px;" />
+              </a-tooltip>
+            )
           },
           dataIndex: 'invite_type_name'
         },
@@ -109,11 +134,18 @@ export default {
           title: '邀请人',
           dataIndex: 'invite_nickname',
           customRender: (text, record) => {
-            const imgSrc = record.invite_avatar || require('../../../../../assets/imgs/avatar.png')
+            const imgSrc =
+              record.invite_avatar ||
+              require('../../../../../assets/imgs/avatar.png')
             return (
               <div>
                 <img class="avatar" src={imgSrc} />
-                <a href={`/zht/user/user/getUserList?uid=${record.invite_uid}`} target="_blank">{text}</a>
+                <a
+                  href={`/zht/user/user/getUserList?uid=${record.invite_uid}`}
+                  target="_blank"
+                >
+                  {text}
+                </a>
               </div>
             )
           }
@@ -122,8 +154,20 @@ export default {
           title: '被邀请人',
           dataIndex: 'be_invite_nickname',
           customRender: (text, record) => {
-            const imgSrc = record.be_invite_avatar || require('../../../../../assets/imgs/avatar.png')
-            const user = record.be_invite_uid !== '0' ? <a href={`/zht/user/user/getUserList?uid=${record.be_invite_uid}`} target="_blank">{text}</a> : <span>{text}</span>
+            const imgSrc =
+              record.be_invite_avatar ||
+              require('../../../../../assets/imgs/avatar.png')
+            const user =
+              record.be_invite_uid !== '0' ? (
+                <a
+                  href={`/zht/user/user/getUserList?uid=${record.be_invite_uid}`}
+                  target="_blank"
+                >
+                  {text}
+                </a>
+              ) : (
+                <span>{text}</span>
+              )
             return (
               <div>
                 <img class="avatar" src={imgSrc} />
@@ -137,6 +181,10 @@ export default {
           dataIndex: 'be_mobile'
         },
         {
+          title: '结算项目',
+          dataIndex: 'project_name'
+        },
+        {
           title: '领取时间',
           dataIndex: 'ctime'
         },
@@ -147,7 +195,10 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getLogList(this.queryParam)
+        return getLogList({ ...this.queryParam, ...parameter }).then((res) => {
+          this.projectOptions = res.project_data || []
+          return res
+        })
       }
     }
   },

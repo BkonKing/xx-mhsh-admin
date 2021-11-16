@@ -16,10 +16,10 @@ export default {
         pageSizeOptions: this.pageInfo ? this.pageInfo.pageSizeOptions : ['10', '20', '30', '50'],
         showTotal: (total) => {
           let pageTotal = 0
-          if (total % this.localPagination.pagesize > 0) {
-            pageTotal = parseInt(total / this.localPagination.pagesize) + 1
+          if (total % this.localPagination.pageSize > 0) {
+            pageTotal = parseInt(total / this.localPagination.pageSize) + 1
           } else {
-            pageTotal = parseInt(total / this.localPagination.pagesize)
+            pageTotal = parseInt(total / this.localPagination.pageSize)
           }
           return '共 ' + total + ' 条记录 第 ' + this.localPagination.current + ' / ' + pageTotal + ' 页'
         }
@@ -39,7 +39,7 @@ export default {
       type: Number,
       default: 1
     },
-    pagesize: {
+    pageSize: {
       type: Number,
       default: 10
     },
@@ -117,9 +117,9 @@ export default {
         current: val
       })
     },
-    pagesize (val) {
+    pageSize (val) {
       Object.assign(this.localPagination, {
-        pagesize: val
+        pageSize: val
       })
     },
     showSizeChanger (val) {
@@ -141,7 +141,7 @@ export default {
     const localPageNum = this.pageURI && (pageindex && parseInt(pageindex)) || this.pageNum
     this.localPagination = ['auto', true].includes(this.showPagination) && Object.assign({}, this.localPagination, {
       current: localPageNum,
-      pagesize: this.pagesize,
+      pageSize: this.pageSize,
       showSizeChanger: this.showSizeChanger
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
@@ -155,7 +155,7 @@ export default {
      */
     refresh (bool = false) {
       bool && (this.localPagination = Object.assign({}, {
-        current: 1, pagesize: this.pagesize
+        current: 1, pageSize: this.pageSize
       }))
       this.loadData()
     },
@@ -171,7 +171,7 @@ export default {
         pageindex: (pagination && pagination.current) ||
           this.showPagination && this.localPagination.current || this.pageNum,
         pagesize: (pagination && pagination.pageSize) ||
-          this.showPagination && this.localPagination.pageSize || this.pagesize
+          this.showPagination && this.localPagination.pageSize || this.pageSize
       },
       (sorter && sorter.field && {
         sortField: sorter.field
@@ -192,8 +192,8 @@ export default {
               current: parseInt(r.pageindex), // 返回结果中的当前分页数
               total: parseInt(r.total), // 返回结果中的总记录数
               showSizeChanger: this.showSizeChanger,
-              pagesize: parseInt((pagination && pagination.pageSize) ||
-              this.localPagination.pagesize)
+              pageSize: parseInt((pagination && pagination.pageSize) ||
+              this.localPagination.pageSize)
             }) || false
             // 为防止删除数据后导致页面当前页面数据长度为 0 ,自动翻页到上一页
             if (r.list.length === 0 && this.showPagination && this.localPagination.current > 1) {
@@ -202,10 +202,10 @@ export default {
               return
             }
 
-            // 这里用于判断接口是否有返回 r.total 且 this.showPagination = true 且 pageindex 和 pagesize 存在 且 total 小于等于 pageindex * pagesize 的大小
+            // 这里用于判断接口是否有返回 r.total 且 this.showPagination = true 且 pageindex 和 pageSize 存在 且 total 小于等于 pageindex * pageSize 的大小
             // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
             try {
-              if ((['auto'].includes(this.showPagination) && r.total <= (r.pageindex * this.localPagination.pagesize))) {
+              if ((['auto'].includes(this.showPagination) && r.total <= (r.pageindex * this.localPagination.pageSize))) {
                 this.localPagination.hideOnSinglePage = true
               }
             } catch (e) {

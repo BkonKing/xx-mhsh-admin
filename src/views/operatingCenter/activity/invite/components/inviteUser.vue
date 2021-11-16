@@ -5,7 +5,7 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="用户类型">
-              <a-select v-model="queryParam.user_type" placeholder="请选择">
+              <a-select v-model="queryParam.user_type" :getPopupContainer="triggerNode => triggerNode.parentNode" placeholder="请选择">
                 <a-select-option
                   v-for="item in userTypeOptions"
                   :key="item.value"
@@ -56,6 +56,10 @@ export default {
     STable
   },
   data () {
+    const sortValue = {
+      ascend: 'asc',
+      descend: 'desc'
+    }
     return {
       // 邀请人选项
       userTypeOptions: [
@@ -115,7 +119,7 @@ export default {
           sorter: true
         },
         {
-          title: '最好邀请时间',
+          title: '最后邀请时间',
           dataIndex: 'stime',
           customRender: text => {
             return text || '--'
@@ -124,7 +128,10 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getInviteList(this.queryParam)
+        if (parameter.sortField) {
+          parameter.sortOrder = sortValue[parameter.sortOrder]
+        }
+        return getInviteList({ ...this.queryParam, ...parameter })
       }
     }
   },
