@@ -195,7 +195,7 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getLogList(this.queryParam).then((res) => {
+        return getLogList({ ...this.queryParam, ...parameter }).then((res) => {
           this.projectOptions = res.project_data || []
           return res
         })

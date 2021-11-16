@@ -176,3 +176,26 @@ div.ant-pro-grid-content.wide {
 .max-tooltip {
   max-width: 500px;
 }
+
+// 栅格化的伪编辑表格
+.edit-table {
+  &-header {
+    background: #fafafa;
+    border-bottom: 1px solid #e8e8e8;
+    > .ant-col {
+      padding: 12px 4px 12px 8px;
+    }
+  }
+  &-body {
+    > .ant-row-flex {
+      border-bottom: 1px solid #e8e8e8;
+      > .ant-col {
+        padding: 6px 4px 6px 8px;
+      }
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+}
