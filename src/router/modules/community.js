@@ -9,6 +9,7 @@ export default {
   meta: {
     title: '社区服务'
   },
+  redirect: '/community/freeServer/list',
   children: [
     // 免费服务列表
     {
@@ -19,14 +20,25 @@ export default {
         title: '免费服务'
       }
     },
-    // 免费服务设置
     {
-      path: '/community/freeServer/setting',
-      name: 'freeServerSetting',
-      component: () => import('@/views/community/freeServer/setting'),
+      path: '/community/freeServer/list2',
+      name: 'freeServerList',
+      component: RouteView,
       meta: {
-        title: '服务设置'
-      }
+        title: '免费服务'
+      },
+      redirect: '/community/freeServer/list',
+      children: [
+        // 免费服务设置
+        {
+          path: '/community/freeServer/setting',
+          name: 'freeServerSetting',
+          component: () => import('@/views/community/freeServer/setting'),
+          meta: {
+            title: '服务设置'
+          }
+        }
+      ]
     },
     // 服务记录
     {

@@ -29,7 +29,11 @@
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="服务项目">
-                  <a-select v-model="queryParam.category" placeholder="请选择" :getPopupContainer="triggerNode => triggerNode.parentNode">
+                  <a-select
+                    v-model="queryParam.category"
+                    placeholder="请选择"
+                    :getPopupContainer="triggerNode => triggerNode.parentNode"
+                  >
                     <a-select-option
                       v-for="item in serviceProjects"
                       :key="item.id"
@@ -101,17 +105,24 @@
         :alert="{ clear: true }"
         :rowSelection="rowSelection"
       >
-        <template slot="duration" slot-scope="text,row">
+        <template slot="duration" slot-scope="text, row">
+          <div
+            v-if="row.status === 1 && row.service_queue"
+            style="color: #f5222d;"
+          >
+            第{{ row.service_queue }}位
+          </div>
           <Timewait
-            v-if="+row.status === 1 && +row.category_type === 2 && ((new Date().getTime() - new Date(row.stime).getTime()) / 1000 - row.duration) > 0"
-            :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000 - row.duration)"
+            v-if="+row.status === 1 && +row.category_type === 2"
+            :time="row.duration - (new Date().getTime() - new Date(row.stime).getTime()) / 1000"
             :delay="1000"
             upClass="color-red"
-            type="2"
           ></Timewait>
           <Timewait
             v-if="+row.status === 1"
-            :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000)"
+            :time="
+              (new Date().getTime() - new Date(row.stime).getTime()) / 1000
+            "
             :delay="1000"
             :upText="+row.category_type === 1 ? '已排队' : '已借'"
             type="2"
@@ -153,7 +164,11 @@ import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm, Timewait } from '@/components'
 import RemarkModal from './RemarkModal'
 import CancelReservationModal from './CancelReservationModal'
-import { getFreeServerList, optReservation, getCategoryByProductId } from '@/api/community'
+import {
+  getFreeServerList,
+  optReservation,
+  getCategoryByProductId
+} from '@/api/community'
 export default {
   name: 'ReservationList',
   components: {

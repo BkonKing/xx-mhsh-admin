@@ -30,8 +30,6 @@
                 :time="overtime"
                 :delay="1000"
                 upClass="color-red"
-                upText="超时"
-                type="2"
               ></Timewait
             ></a-col>
             <a-col v-if="isShowTiming" :class="{ marginTime: isShowOverTime }"
@@ -105,10 +103,10 @@ export default {
     }
   },
   computed: {
-    // 超时
+    // 借用时长
     overtime () {
       if (+this.editForm.status === 1) {
-        return this.timing - this.editForm.duration
+        return this.editForm.duration - this.timing
       }
       return 0
     },
@@ -125,11 +123,7 @@ export default {
       return +this.editForm.category_type === 1 ? '已排队' : '已借'
     },
     isShowOverTime () {
-      return (
-        +this.editForm.status === 1 &&
-        +this.editForm.category_type === 2 &&
-        this.overtime > 0
-      )
+      return +this.editForm.status === 1 && +this.editForm.category_type === 2
     },
     isShowTiming () {
       return +this.editForm.status === 1
@@ -154,11 +148,13 @@ export default {
       this.spinning = true
       getReservationInfo({
         id: this.id
-      }).then(({ data }) => {
-        this.editForm = data || {}
-      }).finally(() => {
-        this.spinning = false
       })
+        .then(({ data }) => {
+          this.editForm = data || {}
+        })
+        .finally(() => {
+          this.spinning = false
+        })
     },
     submit () {
       this.setRemark()
