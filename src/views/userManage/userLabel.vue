@@ -490,9 +490,6 @@ export default {
   flex-wrap: wrap;
   margin-bottom: 12px;
 }
-/deep/ .ant-pro-grid-content {
-  min-height: inherit;
-}
 .dimension-card {
   margin-top: 24px;
   /deep/ .ant-card-body {

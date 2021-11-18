@@ -5,77 +5,77 @@
     :destroyOnClose="true"
     @ok="submit"
   >
-    <a-form-model
-      class="edit-form"
-      ref="editForm"
-      :model="editForm"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 14 }"
-    >
-      <a-form-model-item label="预约人" class="form-item-text">
-        <a
-          :href="`/xmht/household/member/getMemberList?uid=${editForm.uid}`"
-          target="_blank"
-          style="margin-right: 10px;"
-          >{{ editForm.nickname }}</a
-        ><span>{{ editForm.mobile }}</span>
-      </a-form-model-item>
-      <a-form-model-item class="form-item-text" label="预约服务">
-        <div>{{ editForm.category_type_desc }} - {{ editForm.category }}</div>
-        <a-row type="flex">
-          <span v-if="isShowOverTime || isShowTiming">(</span>
-          <a-col v-if="isShowOverTime"
-            ><Timewait
-              :showSecond="true"
-              :time="overtime"
-              :delay="1000"
-              upClass="color-red"
-              upText="超时"
-              type="2"
-            ></Timewait
-          ></a-col>
-          <a-col v-if="isShowTiming" :class="{ marginTime: isShowOverTime }"
-            ><Timewait
-              :showSecond="true"
-              :time="timing"
-              :delay="1000"
-              :upText="timingText"
-              type="2"
-            ></Timewait></a-col
-          ><span v-if="isShowOverTime || isShowTiming">)</span>
-        </a-row>
-      </a-form-model-item>
-      <a-form-model-item class="form-item-text" label="服务状态">
-        {{ editForm.service_status || "--" }}
-      </a-form-model-item>
-      <a-form-model-item label="备注" prop="service_content">
-        <a-textarea
-          v-model="editForm.remark"
-          :maxLength="1000"
-          :autoSize="{ minRows: 4, maxRows: 4 }"
-        ></a-textarea>
-      </a-form-model-item>
-      <a-form-model-item class="form-item-text" label="预约时间">
-        {{ editForm.ctime || "--" }}
-      </a-form-model-item>
-      <a-form-model-item
-        v-if="editForm.stime"
-        class="form-item-text"
-        label="开始时间"
+    <a-spin :spinning="spinning">
+      <a-form-model
+        class="edit-form"
+        ref="editForm"
+        :model="editForm"
+        :label-col="{ span: 5 }"
+        :wrapper-col="{ span: 14 }"
       >
-        {{ editForm.stime || "--" }}
-      </a-form-model-item>
-      <a-form-model-item
-        v-if="editForm.etime"
-        class="form-item-text"
-        label="结束时间"
-      >
-        <div>{{ editForm.etime || "--" }}</div>
-        <div v-if="editForm.status === 3">
-          {{ editForm.cancel_reson }}
-        </div>
-      </a-form-model-item>
-    </a-form-model>
+        <a-form-model-item label="预约人" class="form-item-text">
+          <a
+            :href="`/xmht/household/member/getMemberList?uid=${editForm.uid}`"
+            target="_blank"
+            style="margin-right: 10px;"
+            >{{ editForm.nickname }}</a
+          ><span>{{ editForm.mobile }}</span>
+        </a-form-model-item>
+        <a-form-model-item class="form-item-text" label="预约服务">
+          <div>{{ editForm.category_type_desc }} - {{ editForm.category }}</div>
+          <a-row type="flex">
+            <span v-if="isShowOverTime || isShowTiming">(</span>
+            <a-col v-if="isShowOverTime"
+              ><Timewait
+                :time="overtime"
+                :delay="1000"
+                upClass="color-red"
+                upText="超时"
+                type="2"
+              ></Timewait
+            ></a-col>
+            <a-col v-if="isShowTiming" :class="{ marginTime: isShowOverTime }"
+              ><Timewait
+                :time="timing"
+                :delay="1000"
+                :upText="timingText"
+                type="2"
+              ></Timewait></a-col
+            ><span v-if="isShowOverTime || isShowTiming">)</span>
+          </a-row>
+        </a-form-model-item>
+        <a-form-model-item class="form-item-text" label="服务状态">
+          {{ editForm.service_status || "--" }}
+        </a-form-model-item>
+        <a-form-model-item label="备注" prop="service_content">
+          <a-textarea
+            v-model="editForm.remark"
+            :maxLength="100"
+            :autoSize="{ minRows: 4, maxRows: 4 }"
+          ></a-textarea>
+        </a-form-model-item>
+        <a-form-model-item class="form-item-text" label="预约时间">
+          {{ editForm.ctime || "--" }}
+        </a-form-model-item>
+        <a-form-model-item
+          v-if="editForm.stime"
+          class="form-item-text"
+          label="开始时间"
+        >
+          {{ editForm.stime || "--" }}
+        </a-form-model-item>
+        <a-form-model-item
+          v-if="editForm.etime"
+          class="form-item-text"
+          label="结束时间"
+        >
+          <div>{{ editForm.etime || "--" }}</div>
+          <div v-if="editForm.status === 3">
+            {{ editForm.cancel_reson }}
+          </div>
+        </a-form-model-item>
+      </a-form-model>
+    </a-spin>
   </a-modal>
 </template>
 
@@ -100,12 +100,14 @@ export default {
   data () {
     return {
       visible: this.value,
-      editForm: {}
+      editForm: {},
+      spinning: false
     }
   },
   computed: {
+    // 超时
     overtime () {
-      if (+this.editForm.status === 3) {
+      if (+this.editForm.status === 1) {
         return this.timing - this.editForm.duration
       }
       return 0
@@ -123,7 +125,11 @@ export default {
       return +this.editForm.category_type === 1 ? '已排队' : '已借'
     },
     isShowOverTime () {
-      return +this.editForm.status === 1 && +this.editForm.category_type === 2 && this.overtime > 0
+      return (
+        +this.editForm.status === 1 &&
+        +this.editForm.category_type === 2 &&
+        this.overtime > 0
+      )
     },
     isShowTiming () {
       return +this.editForm.status === 1
@@ -145,10 +151,13 @@ export default {
   },
   methods: {
     getReservationInfo () {
+      this.spinning = true
       getReservationInfo({
         id: this.id
       }).then(({ data }) => {
         this.editForm = data || {}
+      }).finally(() => {
+        this.spinning = false
       })
     },
     submit () {

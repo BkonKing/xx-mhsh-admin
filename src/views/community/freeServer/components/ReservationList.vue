@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 24px;">
     <a-card class="search-card" style="margin-top: 24px" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -34,7 +34,7 @@
                       v-for="item in serviceProjects"
                       :key="item.id"
                       :value="item.id"
-                      >{{ item.project_name }}</a-select-option
+                      >{{ item.category }}</a-select-option
                     >
                   </a-select>
                 </a-form-item>
@@ -103,8 +103,7 @@
       >
         <template slot="duration" slot-scope="text,row">
           <Timewait
-            v-if="+row.status === 1 && +row.category_type === 2"
-            :showSecond="true"
+            v-if="+row.status === 1 && +row.category_type === 2 && ((new Date().getTime() - new Date(row.stime).getTime()) / 1000 - row.duration) > 0"
             :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000 - row.duration)"
             :delay="1000"
             upClass="color-red"
@@ -112,7 +111,6 @@
           ></Timewait>
           <Timewait
             v-if="+row.status === 1"
-            :showSecond="true"
             :time="((new Date().getTime() - new Date(row.stime).getTime()) / 1000)"
             :delay="1000"
             :upText="+row.category_type === 1 ? '已排队' : '已借'"
@@ -151,11 +149,11 @@
 </template>
 
 <script>
-import { STable, AdvancedForm, Timewait } from '@/components'
 import cloneDeep from 'lodash.clonedeep'
-import { getFreeServerList, optReservation } from '@/api/community'
+import { STable, AdvancedForm, Timewait } from '@/components'
 import RemarkModal from './RemarkModal'
-import CancelReservationModal from './CancelReservationModal.vue'
+import CancelReservationModal from './CancelReservationModal'
+import { getFreeServerList, optReservation, getCategoryByProductId } from '@/api/community'
 export default {
   name: 'ReservationList',
   components: {
@@ -164,6 +162,12 @@ export default {
     RemarkModal,
     CancelReservationModal,
     Timewait
+  },
+  props: {
+    tabActiveKey: {
+      type: [Number, String],
+      default: '0'
+    }
   },
   data () {
     const sortValue = {
@@ -261,7 +265,7 @@ export default {
         },
         {
           title: '备注',
-          dataIndex: 'remarks',
+          dataIndex: 'remark',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -325,7 +329,19 @@ export default {
       }
     }
   },
+  watch: {
+    tabActiveKey (newValue) {
+      newValue === '0' && this.getCategoryByProductId()
+    }
+  },
+  created () {
+    this.getCategoryByProductId()
+  },
   methods: {
+    async getCategoryByProductId () {
+      const { list } = await getCategoryByProductId()
+      this.serviceProjects = list || []
+    },
     resetTable () {
       this.queryParam = {}
       this.refresh(true)
@@ -333,7 +349,7 @@ export default {
     refresh (isReset) {
       this.$refs.table.refresh(isReset)
     },
-    operateSuccess() {
+    operateSuccess () {
       this.refresh()
       this.selectedRows = []
       this.selectedRowKeys = []

@@ -30,7 +30,7 @@
       <a-form-model-item label="补充说明" prop="note">
         <a-textarea
           v-model="editForm.note"
-          :maxLength="1000"
+          :maxLength="100"
           :autoSize="{ minRows: 4, maxRows: 4 }"
         ></a-textarea>
       </a-form-model-item>
@@ -63,7 +63,10 @@ export default {
   data () {
     return {
       visible: this.value,
-      editForm: {},
+      editForm: {
+        cancel_id: '',
+        note: ''
+      },
       causeOptions: []
     }
   },

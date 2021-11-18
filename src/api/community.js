@@ -27,7 +27,8 @@ export const freeServer = {
   setRemark: '/server/freeserver/setRemark',
   getCancelReason: '/server/freeserver/getCancelReason', // options
   getCancelReservationReasonList: '/server/freeserver/getCancelReservationReasonList', // setting
-  addCancelReservationReason: '/server/freeserver/addCancelReservationReason'
+  addCancelReservationReason: '/server/freeserver/addCancelReservationReason',
+  getCategoryByProductId: '/server/freeserver/getCategoryByProductId'
 }
 
 // 获取服务预约记录列表
@@ -124,6 +125,15 @@ export function getCancelReasonSettingList (data) {
 export function addCancelReason (data) {
   return request({
     url: freeServer.addCancelReservationReason,
+    method: 'post',
+    data
+  })
+}
+
+// 获取服务项目下拉框
+export function getCategoryByProductId (data) {
+  return request({
+    url: freeServer.getCategoryByProductId,
     method: 'post',
     data
   })

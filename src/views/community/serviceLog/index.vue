@@ -483,9 +483,6 @@ h3 {
     line-height: 24px;
   }
 }
-/deep/ .ant-pro-grid-content {
-  min-height: inherit;
-}
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;
 }

@@ -4,7 +4,7 @@
     :tab-active-key="tabActiveKey"
     @tabChange="handleTabChange"
   >
-    <reservation-list v-show="tabActiveKey === '0'"></reservation-list>
+    <reservation-list v-show="tabActiveKey === '0'" :tab-active-key="tabActiveKey"></reservation-list>
     <server-list v-if="!first" v-show="tabActiveKey === '1'"></server-list>
   </page-header-view>
 </template>
@@ -13,7 +13,7 @@
 // /community/freeServer/list
 import PageHeaderView from '@/layouts/PageHeaderView'
 import ReservationList from './components/ReservationList'
-import ServerList from './components/ServerList.vue'
+import ServerList from './components/ServerList'
 
 export default {
   name: 'freeServerList',
@@ -42,5 +42,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

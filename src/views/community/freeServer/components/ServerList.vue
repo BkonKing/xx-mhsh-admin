@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 24px;">
     <a-card class="search-card" style="margin-top: 24px" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -9,7 +9,6 @@
                 <a-select
                   v-model="queryParam.category_type"
                   :options="serviceTypes"
-                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -20,7 +19,6 @@
                 <a-select
                   v-model="queryParam.is_stop"
                   :options="runningStatus"
-                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -31,7 +29,6 @@
                 <a-select
                   v-model="queryParam.is_open"
                   :options="switchStatus"
-                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -47,7 +44,7 @@
             </a-col>
             <a-col :md="16" :sm="24">
               <span class="table-page-search-submitButtons">
-                <a-button type="primary" @click="$refs.table.refresh(true)"
+                <a-button type="primary" @click="refreshTable(true)"
                   >查询</a-button
                 >
                 <a-button style="margin-left: 8px" @click="resetTable"
@@ -75,8 +72,6 @@
         :columns="columns"
         :data="loadData"
         :showPagination="true"
-        :alert="{ clear: true }"
-        :rowSelection="rowSelection"
       >
         <template slot="enable" slot-scope="text, record">
           <a-switch
@@ -99,15 +94,25 @@
               title="你确定要删除这行内容吗？"
               ok-text="确定"
               cancel-text="取消"
-              @confirm="deleteService(record)"
+              @confirm="deleteServer(record)"
             >
+              <a-icon
+                slot="icon"
+                type="close-circle"
+                theme="filled"
+                style="color: red"
+              />
               <a>删除</a>
             </a-popconfirm>
           </template>
         </span>
       </s-table>
     </a-card>
-    <server-modal v-model="editVisible" :data="activeRecord" @success="$refs.table.refresh()"></server-modal>
+    <server-modal
+      v-model="editVisible"
+      :data="activeRecord"
+      @success="$refs.table.refresh()"
+    ></server-modal>
   </div>
 </template>
 
@@ -163,7 +168,17 @@ export default {
         },
         {
           title: '服务配置',
-          dataIndex: 'service_config'
+          dataIndex: 'service_config',
+          customRender: (text, row) => {
+            const duration =
+              row.category_type === 2 && row.duration ? `（可借${row.duration}小时）` : ''
+            return (
+              <div>
+                {text}
+                {duration}
+              </div>
+            )
+          }
         },
         {
           title: '服务地点/时间',
@@ -182,12 +197,12 @@ export default {
             return (
               <div>
                 是否启用
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>开启则APP显示服务</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>开启则APP显示服务</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -210,21 +225,7 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        const params = cloneDeep(this.queryParam)
-        if (params.user_tag && params.user_tag.length) {
-          params.user_tag = this.setTagTreeData(params.user_tag)
-          params.tag_id_text = params.user_tag.join(',')
-        }
-        const time = params.service_time
-        // const ctime = params.ctime
-        if (time && time.length) {
-          params.service_stime = time[0]
-          params.service_etime = time[1]
-        }
-        // if (ctime && ctime.length) {
-        //   params.ctime = `${ctime[0]}~${ctime[1]}`
-        // }
-        return getFreeCategoryList(Object.assign(parameter, params))
+        return getFreeCategoryList({ ...this.queryParam, ...parameter })
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -237,11 +238,6 @@ export default {
       return {
         fixed: true,
         selectedRowKeys: this.selectedRowKeys,
-        // getCheckboxProps: record => ({
-        //   props: {
-        //     disabled: +record.status !== 0 || record.auditPermission === 0
-        //   }
-        // }),
         onChange: this.onSelectChange
       }
     }
@@ -249,7 +245,10 @@ export default {
   methods: {
     resetTable () {
       this.queryParam = {}
-      this.$refs.table.refresh(true)
+      this.refreshTable(true)
+    },
+    refreshTable (bool = false) {
+      this.$refs.table.refresh(bool)
     },
     openEditService (record) {
       this.activeRecord = record
@@ -276,17 +275,17 @@ export default {
       }).then(({ success }) => {
         if (success) {
           this.$message.success('设置成功')
-          this.$refs.table.refresh()
+          this.refreshTable()
         }
       })
     },
-    deleteService ({ id }) {
+    deleteServer ({ id }) {
       deleteFreeCategory({
         id
       }).then(({ success }) => {
         if (success) {
           this.$message.success('删除成功')
-          this.$refs.table.refresh()
+          this.refreshTable()
         }
       })
     },

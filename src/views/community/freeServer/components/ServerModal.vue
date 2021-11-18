@@ -173,13 +173,13 @@ export default {
       handler (newValue, oldValue) {
         // 取消勾选可见：可预约自动取消勾选
         if (newValue.length < oldValue.length) {
-          const cancelValue = []
-          oldValue.forEach(value => {
-            !newValue.includes(value) && cancelValue.push(value)
+          const cancelValue = oldValue.filter(value => {
+            return !newValue.includes(value)
           })
-          this.formData.reserved_users.forEach((value, index) => {
-            cancelValue.includes(value) &&
-              this.formData.reserved_users.splice(index, 1)
+          const reservedUser = this.formData.reserved_users
+          cancelValue.forEach(value => {
+            const index = reservedUser.findIndex(obj => obj === value)
+            index > -1 && reservedUser.splice(index, 1)
           })
         }
       }
@@ -202,19 +202,15 @@ export default {
     },
     // 可预约必定可见：勾起可预约时，可见自动勾起
     handleChange () {
-      this.formData.reserved_users.forEach(value => {
-        if (!this.formData.visible_user.includes(value)) {
-          this.formData.visible_user.push(value)
-        }
+      const reservedUser = this.formData.reserved_users
+      const visibleUser = this.formData.visible_user
+      reservedUser.forEach(value => {
+        !visibleUser.includes(value) && visibleUser.push(value)
       })
     },
     submit () {
       this.$refs.form.validate(valid => {
-        if (valid) {
-          this.addFreeCategory()
-        } else {
-          return false
-        }
+        valid && this.addFreeCategory()
       })
     },
     addFreeCategory () {

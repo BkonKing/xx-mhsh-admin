@@ -2,8 +2,8 @@
   <page-header-view>
     <a-card title="取消预约">
       <a-form-model
-        class="edit-form"
         ref="form"
+        class="edit-form"
         :model="editForm"
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 12 }"
@@ -12,8 +12,8 @@
           <a-row
             v-for="(item, index) in editForm.cancelList"
             :key="item.id"
-            type="flex"
             :gutter="20"
+            type="flex"
             style="margin-bottom: 24px;"
           >
             <a-col flex="1"
@@ -33,7 +33,7 @@
                 <a-input
                   v-model="item.list_order"
                   :maxLength="20"
-                  v-number-input
+                  v-number-input.int
                   @blur="changeSort"
                   @change="setChange"
                   placeholder="排序"
@@ -68,14 +68,14 @@
 </template>
 
 <script>
-import FooterToolBar from '@/components/FooterToolbar'
 import PageHeaderView from '@/layouts/PageHeaderView'
+import FooterToolBar from '@/components/FooterToolbar'
 import { addCancelReason, getCancelReasonSettingList } from '@/api/community'
 export default {
   name: 'freeServerSetting',
   components: {
-    FooterToolBar,
-    PageHeaderView
+    PageHeaderView,
+    FooterToolBar
   },
   data () {
     return {
@@ -99,9 +99,11 @@ export default {
       })
     },
     changeSort (e) {
-      this.editForm.cancelList = this.editForm.cancelList.sort((el1, el2) => {
-        return parseInt(el2.list_order) - parseInt(el1.list_order)
-      })
+      this.editForm.cancelList = this.editForm.cancelList.sort(
+        (value, value2) => {
+          return parseInt(value2.list_order) - parseInt(value.list_order)
+        }
+      )
     },
     setChange () {
       this.isChange = true
