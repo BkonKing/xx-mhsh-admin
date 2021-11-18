@@ -132,7 +132,7 @@ const vueConfig = {
         }
       },
       '/apiwsolid': {
-        target: 'http://develop.mhshjy.com/wsolid/spi/v1',
+        target: 'https://develop.mhshjy.com/wsolid/spi/v1',
         // target: 'https://test.tosolomo.com/wsolid/spi/v1',
         pathRewrite: {
           '^/apiwsolid': ''
