@@ -252,7 +252,7 @@ import {
   addSpeedInfo,
   viewRecord
 } from '@/api/community'
-import STag from '../../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import { getUserTag } from '@/api/userManage'
 
 export default {

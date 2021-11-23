@@ -17,7 +17,7 @@ const GridContent = {
 
     const propsContentWidth = layoutContentWidth(contentWidth)
     const classNames = {
-      'ant-pro-grid-content': true,
+      'ant-pro-grid-content': false,
       wide: propsContentWidth
     }
 

@@ -221,7 +221,7 @@ import { TreeSelect } from 'ant-design-vue'
 import { getDimensionList } from '@/api/userManage'
 import serviceLogForm from './components/service-log-form'
 import checkUserTag from './components/check-user-tag'
-import STag from '../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import clonedeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
 
@@ -482,9 +482,6 @@ h3 {
   /deep/ .ant-form-item-label {
     line-height: 24px;
   }
-}
-/deep/ .ant-pro-grid-content {
-  min-height: inherit;
 }
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;

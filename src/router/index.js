@@ -35,11 +35,11 @@ Router.prototype.push = function push (location, onComplete, onAbort) {
       return
     } else {
       // 调用原来的push函数，并捕获异常
-      return routerPush.call(this, location, onComplete, onAbort).catch(error => error)
+      return routerPush.call(this, location, onComplete, onAbort)
     }
   }
   // 调用原来的push函数，并捕获异常
-  return routerPush.call(this, location, onComplete, onAbort).catch(error => error)
+  return routerPush.call(this, location, onComplete, onAbort)
 }
 
 Vue.use(Router)
@@ -76,7 +76,7 @@ const errorRoute = [{
 export default new Router({
   mode: process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'true' ? 'history' : 'hash',
   routes: asyncRoutes.concat(constantRoutes).concat(errorRoute),
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     } else {
