@@ -1,12 +1,12 @@
 <template>
-  <a-col :md="(!advanced && 8) || md" :sm="24">
+  <a-col :md="(!advanced && isAdvanced && 8) || md" :sm="24">
     <span
       class="table-page-search-submitButtons"
       :style="(advanced && { float: 'right', overflow: 'hidden' }) || {}"
     >
       <a-button type="primary" @click="search">查询</a-button>
       <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-      <a @click="advanced = !advanced" style="margin-left: 8px">
+      <a v-if="isAdvanced" @click="advanced = !advanced" style="margin-left: 8px">
         {{ advanced ? "收起" : "展开" }}
         <a-icon :type="advanced ? 'up' : 'down'" />
       </a>
@@ -25,6 +25,10 @@ export default {
     md: {
       type: Number,
       default: 8
+    },
+    isAdvanced: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

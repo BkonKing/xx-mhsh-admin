@@ -28,6 +28,52 @@ export default {
       meta: {
         title: '用户标签'
       }
+    },
+    // 商家管理
+    {
+      path: '/store',
+      name: 'storeManage',
+      component: RouteView,
+      meta: {
+        title: '商家管理'
+      },
+      children: [
+        {
+          path: '/store/list',
+          name: 'storeList',
+          component: () => import('@/views/storeManage/list'),
+          meta: {
+            title: '商家列表'
+          }
+        },
+        {
+          path: '/store/coupon',
+          name: 'storeCoupon',
+          component: () => import('@/views/storeManage/coupon'),
+          meta: {
+            title: '店铺券'
+          }
+        },
+        {
+          path: '/store/coupon2',
+          name: 'storeCoupon2',
+          component: RouteView,
+          redirect: '/store/coupon',
+          meta: {
+            title: '店铺券'
+          },
+          children: [
+            {
+              path: '/store/couponDetail',
+              name: 'storeCouponDetail',
+              component: () => import('@/views/storeManage/couponDetail'),
+              meta: {
+                title: '券详情'
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 
