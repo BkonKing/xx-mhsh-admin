@@ -1,5 +1,5 @@
 <template>
-  <page-header-view :title="info.idv">
+  <page-header-view :title="info.name">
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="面额">
@@ -22,20 +22,9 @@
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button
-        @click="goEdit"
-        >删除</a-button
-      >
-      <a-button
-        type="primary"
-        @click="openCheck"
-        >结束</a-button
-      >
-      <a-button
-        type="primary"
-        @click="openCheck"
-        >发布</a-button
-      >
+      <a-button @click="goEdit">删除</a-button>
+      <a-button type="primary" @click="openCheck">结束</a-button>
+      <a-button type="primary" @click="openCheck">发布</a-button>
     </template>
 
     <template v-slot:extraContent>
@@ -46,26 +35,13 @@
         </div>
       </div>
     </template>
-    <a-card
-      v-if="isPass"
-      v-show="tabActiveKey === '0'"
-      style="margin-top: 24px"
-      :bordered="false"
-    >
+    <a-card :bordered="false" style="margin-top: 24px">
       <a-row type="flex">
         <a-col flex="1">
-          <detail-info
-            title="发行量"
-            :value="info.paid"
-            :bordered="true"
-          />
+          <detail-info title="发行量" :value="info.paid" :bordered="true" />
         </a-col>
         <a-col flex="1">
-          <detail-info
-            title="剩余张数"
-            :value="info.unpaid"
-            :bordered="true"
-          />
+          <detail-info title="剩余张数" :value="info.unpaid" :bordered="true" />
         </a-col>
         <a-col flex="1">
           <detail-info
@@ -87,15 +63,40 @@
       </a-row>
     </a-card>
 
-    <a-card title="基本信息">
-      <a-row type="flex">
-        <a-col>
-          <a-col></a-col>
-          <a-col></a-col>
-        </a-col>
-      </a-row>
+    <a-card title="基本信息" style="margin-top: 24px">
+      <a-descriptions>
+        <a-descriptions-item label="券ID">{{
+          info.order_status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="券类型">{{
+          info.status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="创建时间">{{
+          info.status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="使用场景">{{
+          info.status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="领取方式">
+          付费领取 - 5幸福币</a-descriptions-item
+        >
+        <a-descriptions-item label="可领取用户">{{
+          info.status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="可使用商品">{{
+          info.status
+        }}</a-descriptions-item>
+        <a-descriptions-item label="发布时间"
+          >2021-11-15 00:00:00（定时发布 ）</a-descriptions-item
+        >
+        <a-descriptions-item label="发布时间"
+          ><div>
+            <div>2021-11-30 00:00:00（实际结束）</div>
+            <div>2021-11-30 00:00:00（定时结束）</div>
+          </div></a-descriptions-item
+        >
+      </a-descriptions>
     </a-card>
-
   </page-header-view>
 </template>
 
@@ -117,7 +118,9 @@ export default {
       UpdatePermission: 0,
       tabList: [],
       tabActiveKey: '0',
-      info: {},
+      info: {
+        name: ''
+      },
       visible: false,
       confirmLoading: false
     }
@@ -161,6 +164,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-descriptions-item {
+  vertical-align: top;
+  > span {
+    vertical-align: top;
+  }
+}
 .detail-layout {
   margin-left: 44px;
 }

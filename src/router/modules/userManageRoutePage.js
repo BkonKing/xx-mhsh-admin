@@ -72,6 +72,14 @@ export default {
               }
             }
           ]
+        },
+        {
+          path: '/store/setting',
+          name: 'storeSetting',
+          component: () => import('@/views/storeManage/setting'),
+          meta: {
+            title: '商家设置'
+          }
         }
       ]
     }
