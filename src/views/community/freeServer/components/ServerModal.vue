@@ -100,6 +100,20 @@
 <script>
 import { addFreeCategory } from '@/api/community'
 import cloneDeep from 'lodash.clonedeep'
+const formData = {
+  id: '',
+  category_type: 1,
+  category: '',
+  location: '',
+  service_time: '',
+  status: 0,
+  nums: '',
+  duration: '',
+  is_lineup: 0,
+  visible_user: ['1', '2', '3'],
+  reserved_users: ['1', '2', '3'],
+  is_enabled: true
+}
 export default {
   name: 'CancelReservationModal',
   props: {
@@ -120,20 +134,7 @@ export default {
   data () {
     return {
       visible: this.value,
-      formData: {
-        id: '',
-        category_type: 1,
-        category: '',
-        location: '',
-        service_time: '',
-        status: 0,
-        nums: '',
-        duration: '',
-        is_lineup: 0,
-        visible_user: ['1', '2', '3'],
-        reserved_users: ['1', '2', '3'],
-        is_enabled: true
-      },
+      formData: cloneDeep(formData),
       causeOptions: [],
       serviceTypes: [
         { value: 1, label: '人工服务' },
@@ -165,7 +166,7 @@ export default {
     },
     visible (newValue) {
       if (!newValue) {
-        this.$refs.form && this.$refs.form.resetFields()
+        this.formData = cloneDeep(formData)
       }
       this.$emit('input', newValue)
     },
