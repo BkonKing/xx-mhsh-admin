@@ -106,8 +106,9 @@
         :rowSelection="rowSelection"
       >
         <template slot="duration" slot-scope="text, row">
+          <div v-if="[2,3].includes(row.status)">{{row | timeString}}</div>
           <div
-            v-if="row.status === 1 && row.service_queue"
+            v-else-if="row.status === 1 && row.service_queue"
             style="color: #f5222d;"
           >
             第{{ row.service_queue }}位
@@ -230,7 +231,7 @@ export default {
           dataIndex: 'nickname',
           customRender: (text, row) => {
             return (
-              <a href={`/xmht/household/member/getMemberList?uid=${row.uid}`}>
+              <a href={`/xmht/household/member/getMemberList?uid=${row.uid}`} target="_blank">
                 {text}
               </a>
             )
@@ -347,6 +348,26 @@ export default {
   watch: {
     tabActiveKey (newValue) {
       newValue === '0' && this.getCategoryByProductId()
+    }
+  },
+  filters: {
+    timeString ({ stime, etime, category_type: categoryType }) {
+      if (!stime) {
+        return '--'
+      }
+      const startTime = new Date(stime).getTime()
+      const endTime = new Date(etime).getTime()
+      const time = (endTime - startTime) / 1000
+      const day = Math.floor(time / 86400)
+      let hour = Math.floor((time / 3600) % 24)
+      hour = hour < 10 ? '0' + hour : '' + hour
+      let minute = Math.floor((time / 60) % 60)
+      minute = minute === 0 ? 1 : minute
+      minute = minute < 10 ? '0' + minute : '' + minute
+      const timeString = `${hour}:${minute}`
+      const dayString = day ? `${day}天${timeString}` : timeString
+      const text = categoryType === 1 ? '已排队' : '已借'
+      return `${text}${dayString}`
     }
   },
   created () {

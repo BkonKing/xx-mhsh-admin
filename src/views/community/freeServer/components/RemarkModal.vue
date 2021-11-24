@@ -24,6 +24,7 @@
         <a-form-model-item class="form-item-text" label="预约服务">
           <div>{{ editForm.category_type_desc }} - {{ editForm.category }}</div>
           <a-row type="flex">
+            <template v-if="[2,3].includes(editForm.status)">{{timeString}}</template>
             <span v-if="isShowOverTime || isShowTiming">(</span>
             <a-col v-if="isShowOverTime"
               ><Timewait
@@ -127,6 +128,25 @@ export default {
     },
     isShowTiming () {
       return +this.editForm.status === 1
+    },
+    timeString () {
+      const { stime, etime, category_type: categoryType } = this.editForm
+      if (!stime) {
+        return '--'
+      }
+      const startTime = new Date(stime).getTime()
+      const endTime = new Date(etime).getTime()
+      const time = (endTime - startTime) / 1000
+      const day = Math.floor(time / 86400)
+      let hour = Math.floor((time / 3600) % 24)
+      hour = hour < 10 ? '0' + hour : '' + hour
+      let minute = Math.floor((time / 60) % 60)
+      minute = minute === 0 ? 1 : minute
+      minute = minute < 10 ? '0' + minute : '' + minute
+      const timeString = `${hour}:${minute}`
+      const dayString = day ? `${day}天${timeString}` : timeString
+      const text = categoryType === 1 ? '已排队' : '已借'
+      return `${text}${dayString}`
     }
   },
   watch: {

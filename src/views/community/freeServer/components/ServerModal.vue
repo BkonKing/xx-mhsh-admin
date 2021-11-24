@@ -52,7 +52,7 @@
       >
         <a-input-number
           v-model="formData.nums"
-          :min="1"
+          :min="0"
           :max="9999999999"
         ></a-input-number
         ><span style="margin-left:8px;">个</span>
