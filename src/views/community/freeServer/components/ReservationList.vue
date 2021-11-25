@@ -26,41 +26,41 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="服务项目">
-                  <a-select
-                    v-model="queryParam.category"
-                    placeholder="请选择"
-                    :getPopupContainer="triggerNode => triggerNode.parentNode"
+            <a-col :md="8" :sm="24">
+              <a-form-item label="服务项目">
+                <a-select
+                  v-model="queryParam.category"
+                  placeholder="请选择"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
+                >
+                  <a-select-option
+                    v-for="item in serviceProjects"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.category }}</a-select-option
                   >
-                    <a-select-option
-                      v-for="item in serviceProjects"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.category }}</a-select-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="用户">
-                  <a-input
-                    v-model="queryParam.user_search"
-                    placeholder="ID、昵称、姓名、手机号"
-                  ></a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="创建时间">
-                  <a-range-picker
-                    v-model="queryParam.ctime"
-                    valueFormat="YYYY-MM-DD"
-                    :placeholder="['开始时间', '结束时间']"
-                    style="width: 100%;"
-                  />
-                </a-form-item>
-              </a-col>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="用户">
+                <a-input
+                  v-model="queryParam.user_search"
+                  placeholder="ID、昵称、姓名、手机号"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="创建时间">
+                <a-range-picker
+                  v-model="queryParam.ctime"
+                  valueFormat="YYYY-MM-DD"
+                  :placeholder="['开始时间', '结束时间']"
+                  style="width: 100%;"
+                />
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="完成时间">
                   <a-range-picker
@@ -106,7 +106,7 @@
         :rowSelection="rowSelection"
       >
         <template slot="duration" slot-scope="text, row">
-          <div v-if="[2,3].includes(row.status)">{{row | timeString}}</div>
+          <div v-if="[2, 3].includes(row.status)">{{ row | timeString }}</div>
           <div
             v-else-if="row.status === 1 && row.service_queue"
             style="color: #f5222d;"
@@ -115,7 +115,10 @@
           </div>
           <Timewait
             v-if="+row.status === 1 && +row.category_type === 2"
-            :time="row.duration - (new Date().getTime() - new Date(row.stime).getTime()) / 1000"
+            :time="
+              row.duration -
+                (new Date().getTime() - new Date(row.stime).getTime()) / 1000
+            "
             :delay="1000"
             upClass="color-red"
           ></Timewait>
@@ -204,7 +207,7 @@ export default {
       ],
       serviceProjects: [],
       queryParam: {},
-      advanced: true,
+      advanced: false,
       columns: [
         {
           title: 'ID',
@@ -231,7 +234,10 @@ export default {
           dataIndex: 'nickname',
           customRender: (text, row) => {
             return (
-              <a href={`/xmht/household/member/getMemberList?uid=${row.uid}`} target="_blank">
+              <a
+                href={`/xmht/household/member/getMemberList?uid=${row.uid}`}
+                target="_blank"
+              >
                 {text}
               </a>
             )
@@ -358,15 +364,20 @@ export default {
       const startTime = new Date(stime).getTime()
       const endTime = new Date(etime).getTime()
       const time = (endTime - startTime) / 1000
+      if (time === 0) {
+        return '--'
+      }
       const day = Math.floor(time / 86400)
       let hour = Math.floor((time / 3600) % 24)
-      hour = hour < 10 ? '0' + hour : '' + hour
       let minute = Math.floor((time / 60) % 60)
-      minute = minute === 0 ? 1 : minute
+      const text = categoryType === 1 ? '已排队' : '已借'
+      if (!day && !hour && !minute) {
+        return `${text}00:01`
+      }
+      hour = hour < 10 ? '0' + hour : '' + hour
       minute = minute < 10 ? '0' + minute : '' + minute
       const timeString = `${hour}:${minute}`
       const dayString = day ? `${day}天${timeString}` : timeString
-      const text = categoryType === 1 ? '已排队' : '已借'
       return `${text}${dayString}`
     }
   },

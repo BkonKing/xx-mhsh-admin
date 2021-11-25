@@ -132,20 +132,25 @@ export default {
     timeString () {
       const { stime, etime, category_type: categoryType } = this.editForm
       if (!stime) {
-        return '--'
+        return ''
       }
       const startTime = new Date(stime).getTime()
       const endTime = new Date(etime).getTime()
       const time = (endTime - startTime) / 1000
+      if (time === 0) {
+        return ''
+      }
       const day = Math.floor(time / 86400)
       let hour = Math.floor((time / 3600) % 24)
-      hour = hour < 10 ? '0' + hour : '' + hour
       let minute = Math.floor((time / 60) % 60)
-      minute = minute === 0 ? 1 : minute
+      const text = categoryType === 1 ? '已排队' : '已借'
+      if (!day && !hour && !minute) {
+        return `${text}00:01`
+      }
+      hour = hour < 10 ? '0' + hour : '' + hour
       minute = minute < 10 ? '0' + minute : '' + minute
       const timeString = `${hour}:${minute}`
       const dayString = day ? `${day}天${timeString}` : timeString
-      const text = categoryType === 1 ? '已排队' : '已借'
       return `${text}${dayString}`
     }
   },
