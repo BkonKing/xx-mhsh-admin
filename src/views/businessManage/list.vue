@@ -6,7 +6,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="店铺归属">
-                <a-select v-model="queryParam.item_id" placeholder="请选择">
+                <a-select v-model="queryParam.project_id" placeholder="请选择">
                   <a-select-option
                     v-for="item in projectOptions"
                     :key="item.id"
@@ -212,12 +212,12 @@ export default {
             return (
               <div>
                 操作
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>删除即解除商家身份</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>删除即解除商家身份</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },

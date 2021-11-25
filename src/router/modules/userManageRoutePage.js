@@ -32,7 +32,7 @@ export default {
     // 商家管理
     {
       path: '/store',
-      name: 'storeManage',
+      name: 'businessManage',
       component: RouteView,
       meta: {
         title: '商家管理'
@@ -41,7 +41,7 @@ export default {
         {
           path: '/store/list',
           name: 'storeList',
-          component: () => import('@/views/storeManage/list'),
+          component: () => import('@/views/businessManage/list'),
           meta: {
             title: '商家列表'
           }
@@ -49,7 +49,7 @@ export default {
         {
           path: '/store/coupon',
           name: 'storeCoupon',
-          component: () => import('@/views/storeManage/coupon'),
+          component: () => import('@/views/businessManage/coupon'),
           meta: {
             title: '店铺券'
           }
@@ -66,7 +66,7 @@ export default {
             {
               path: '/store/couponDetail',
               name: 'storeCouponDetail',
-              component: () => import('@/views/storeManage/couponDetail'),
+              component: () => import('@/views/businessManage/couponDetail'),
               meta: {
                 title: '券详情'
               }
@@ -76,7 +76,7 @@ export default {
         {
           path: '/store/setting',
           name: 'storeSetting',
-          component: () => import('@/views/storeManage/setting'),
+          component: () => import('@/views/businessManage/setting'),
           meta: {
             title: '商家设置'
           }

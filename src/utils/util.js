@@ -102,3 +102,17 @@ export function getBase64 (file) {
     reader.onerror = error => reject(error)
   })
 }
+
+// 表单验证
+export function validAForm (ref) {
+  return new Promise((resolve, reject) => {
+    ref.validate(valid => {
+      if (valid) {
+        resolve()
+      } else {
+        reject(new Error(false))
+        return false
+      }
+    })
+  })
+}

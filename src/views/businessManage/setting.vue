@@ -3,20 +3,20 @@
     <a-card title="基础设置" style="margin-top: 24px;">
       <a-form-model
         ref="basicForm"
-        :model="basicForm"
+        :model="formData"
         :label-col="{ span: 7 }"
         :wrapper-col="{ span: 14 }"
       >
-        <a-form-model-item label="APP商家标志" prop="aaa">
+        <a-form-model-item label="APP商家标志" prop="is_reveal">
           <a-radio-group
-            v-model="basicForm.aaa"
-            :options="aaaOptions"
+            v-model="formData.is_reveal"
+            :options="revealOptions"
           ></a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="商家权限" prop="bbb">
+        <a-form-model-item label="商家权限" prop="power">
           <a-checkbox-group
-            v-model="basicForm.bbb"
-            :options="bbbOptions"
+            v-model="formData.power"
+            :options="powerOptions"
           ></a-checkbox-group>
           <div class="alert-text">
             若员工符合多种签到奖励，则奖励其中最高的
@@ -32,37 +32,37 @@
     <a-card title="店铺优惠券" style="margin-top: 24px;">
       <a-form-model
         ref="couponForm"
-        :model="couponForm"
+        :model="formData"
         :label-col="{ span: 7 }"
         :wrapper-col="{ span: 14 }"
       >
-        <a-form-model-item label="券类型" prop="ccc">
+        <a-form-model-item label="券类型" prop="coupon_type">
           <a-checkbox-group
-            v-model="couponForm.ccc"
+            v-model="formData.coupon_type"
             :options="couponTypes"
           ></a-checkbox-group>
         </a-form-model-item>
-        <a-form-model-item label="使用场景" prop="ddd">
+        <a-form-model-item label="使用场景" prop="coupon_scene">
           <a-checkbox-group
-            v-model="couponForm.ddd"
+            v-model="formData.coupon_scene"
             :options="useTypes"
           ></a-checkbox-group>
         </a-form-model-item>
-        <a-form-model-item label="领取方式" prop="eee">
+        <a-form-model-item label="领取方式" prop="coupon_mode">
           <a-checkbox-group
-            v-model="couponForm.eee"
+            v-model="formData.coupon_mode"
             :options="pickupTypes"
           ></a-checkbox-group>
         </a-form-model-item>
-        <a-form-model-item label="可领取用户" prop="fff">
+        <a-form-model-item label="可领取用户" prop="receive_coupon">
           <a-checkbox-group
-            v-model="couponForm.fff"
+            v-model="formData.receive_coupon"
             :options="pickupUsers"
           ></a-checkbox-group>
         </a-form-model-item>
-        <a-form-model-item label="可使用商品" prop="ggg">
+        <a-form-model-item label="可使用商品" prop="coupon_goods_type">
           <a-checkbox-group
-            v-model="couponForm.ggg"
+            v-model="formData.coupon_goods_type"
             :options="useGoods"
           ></a-checkbox-group>
         </a-form-model-item>
@@ -86,7 +86,11 @@
 // /store/setting
 import cloneDeep from 'lodash.clonedeep'
 import FooterToolBar from '@/components/FooterToolbar'
-import { getStaff, setStaff } from '@/api/userManage'
+import { validAForm } from '@/utils/util'
+import {
+  getBusinessSetting,
+  setBusinessSetting
+} from '@/api/userManage/business'
 
 export default {
   name: 'storeSetting',
@@ -95,11 +99,16 @@ export default {
   },
   data () {
     return {
-      basicForm: {
-        aaa: false,
-        bbb: ''
+      formData: {
+        is_reveal: '',
+        power: [],
+        coupon_type: [],
+        coupon_scene: [],
+        coupon_mode: [],
+        receive_coupon: [],
+        coupon_goods_type: []
       },
-      aaaOptions: [
+      revealOptions: [
         {
           label: '展示',
           value: '1'
@@ -109,7 +118,7 @@ export default {
           value: '0'
         }
       ],
-      bbbOptions: [
+      powerOptions: [
         {
           label: '提现申请',
           value: '1'
@@ -123,13 +132,6 @@ export default {
           value: '3'
         }
       ],
-      couponForm: {
-        ccc: '',
-        ddd: '',
-        eee: '',
-        fff: '',
-        ggg: ''
-      },
       couponTypes: [
         {
           label: '满减券',
@@ -137,7 +139,7 @@ export default {
         },
         {
           label: '折扣券',
-          value: '0'
+          value: '2'
         }
       ],
       useTypes: [
@@ -185,64 +187,45 @@ export default {
         }
       ],
       dataBackup: {},
+      isChange: false,
       loading: false
     }
   },
-  computed: {
-    isChange () {
-      return (
-        this.basicForm.aaa === this.dataBackup.aaa &&
-        parseFloat(this.basicForm.bbb) === parseFloat(this.dataBackup.bbb)
-      )
-    }
-  },
   created () {
-    this.getStaff()
+    this.getBusinessSetting()
   },
   methods: {
-    getStaff () {
-      getStaff().then(({ data }) => {
-        data.aaa = !!+data.aaa
-        this.basicForm = data
-        this.dataBackup = cloneDeep(data)
-      })
+    async getBusinessSetting () {
+      const { data } = await getBusinessSetting()
+      data.power = data.power.split(',')
+      data.coupon_type = data.coupon_type.split(',')
+      data.coupon_mode = data.coupon_mode.split(',')
+      data.coupon_scene = data.coupon_scene.split(',')
+      data.receive_coupon = data.receive_coupon.split(',')
+      data.coupon_goods_type = data.coupon_goods_type.split(',')
+      this.formData = data
     },
     submit () {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          this.setStaff()
-        } else {
-          return false
-        }
+      const { basicForm, couponForm } = this.$refs
+      Promise.all([
+        validAForm(basicForm),
+        validAForm(couponForm)
+      ]).then(() => {
+        this.setBusinessSetting()
       })
     },
-    setStaff () {
-      if (this.basicForm.aaa && !this.basicForm.bbb) {
-        this.basicForm.bbb = 5
+    async setBusinessSetting () {
+      const params = cloneDeep(this.formData)
+      params.power = params.power.join(',')
+      params.coupon_type = params.power.join(',')
+      params.coupon_mode = params.power.join(',')
+      params.coupon_scene = params.power.join(',')
+      params.receive_coupon = params.power.join(',')
+      params.coupon_goods_type = params.power.join(',')
+      const { success } = await setBusinessSetting(params)
+      if (success) {
+        this.$message.success('提交成功')
       }
-      const params = cloneDeep(this.basicForm)
-      params.aaa = params.aaa ? 1 : 0
-      setStaff(params).then(({ success, code }) => {
-        if (code === '202') {
-          this.$info({
-            title: '开启签到任务',
-            content: '签到任务未开启，请先开启',
-            icon: () => (
-              <a-icon
-                type="info-circle"
-                style="color: #1890ff"
-                theme="filled"
-              />
-            ),
-            onOk () {}
-          })
-          return
-        }
-        if (success) {
-          this.dataBackup = cloneDeep(this.basicForm)
-          this.$message.success('提交成功')
-        }
-      })
     }
   }
 }
