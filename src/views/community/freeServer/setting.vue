@@ -101,7 +101,7 @@ export default {
     changeSort (e) {
       this.editForm.cancelList = this.editForm.cancelList.sort(
         (value, value2) => {
-          return parseInt(value2.list_order) - parseInt(value.list_order)
+          return parseInt(value2.list_order || 0) - parseInt(value.list_order || 0)
         }
       )
     },
@@ -166,7 +166,7 @@ export default {
   margin-bottom: 0;
 }
 .addBtn {
-  width: 100%;
+  width: calc(100% - 38px);
   height: 32px;
   border-radius: 4px;
   border: 1px dashed #d9d9d9;
