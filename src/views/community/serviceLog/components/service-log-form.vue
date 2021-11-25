@@ -391,6 +391,10 @@ export default {
         }
       })
     },
+    refresh () {
+      this.getTags()
+      this.viewRecord()
+    },
     // 查看跟进记录
     viewRecord () {
       viewRecord({ service_id: this.editForm.id }).then(({ data }) => {

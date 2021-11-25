@@ -445,7 +445,7 @@ export default {
     },
     editSuccess () {
       if (this.editForm.process_id) {
-        this.$refs['look-log'].viewRecord()
+        this.$refs['look-log'].refresh()
       }
       this.$refs.table.refresh()
     },
