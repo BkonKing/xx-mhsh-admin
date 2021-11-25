@@ -6,6 +6,8 @@ const serviceLog = {
   getUnit: '/server/labelserver/getUnit',
   getHouse: '/server/labelserver/getHouse',
   getOwnerInfo: '/server/labelserver/getOwnerInfo',
+  house_tag_data: '/server/labelserver/house_tag_data',
+  setHouseTag: '/server/labelserver/setHouseTag',
   addServiceRecord: '/server/labelserver/addServiceRecord',
   updateServiceTitle: '/server/labelserver/updateServiceTitle',
   getServiceProvider: '/server/labelserver/getServiceProvider',
@@ -168,6 +170,23 @@ export function getHouse (data) {
 export function getOwnerInfo (data) {
   return request({
     url: serviceLog.getOwnerInfo,
+    method: 'post',
+    data
+  })
+}
+// 根据房屋信息获取业主信息
+export function getHouseTagData (data) {
+  console.log(serviceLog.house_tag_data)
+  return request({
+    url: serviceLog.house_tag_data,
+    method: 'post',
+    data
+  })
+}
+// 设置未注册用户标签
+export function setHouseTag (data) {
+  return request({
+    url: serviceLog.setHouseTag,
     method: 'post',
     data
   })

@@ -213,6 +213,7 @@
 </template>
 
 <script>
+// /community/serviceLog
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { STable, AdvancedForm } from '@/components'
 import moment from 'moment'
@@ -449,7 +450,7 @@ export default {
       this.$refs.table.refresh()
     },
     checkTagSuccess () {
-      this.$refs['edit-log'].getUserTag()
+      this.$refs['edit-log'].getTags()
       this.$refs.table.refresh()
     },
     openUserInfo ({ uid }) {

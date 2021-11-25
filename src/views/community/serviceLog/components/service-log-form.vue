@@ -80,11 +80,12 @@
       >
         <div v-if="editForm.owner || editForm.mobile">
           <a
+            v-if="editForm.uid"
             :href="`/xmht/household/member/getMemberList?uid=${editForm.uid}`"
             target="_blank"
             style="margin-right: 10px;"
             >{{ editForm.owner }}</a
-          ><span>{{ editForm.mobile }}</span>
+          ><span v-else style="margin-right: 10px;">{{ editForm.owner }}</span><span>{{ editForm.mobile }}</span>
         </div>
         <div v-else>--</div>
       </a-form-model-item>
@@ -105,7 +106,7 @@
         </span>
         <span v-else>--</span>
         <a-icon
-          v-if="editForm.owner_id && !isLook"
+          v-if="(editForm.owner_id || editForm.house_id) && !isLook"
           type="edit"
           @click="editUserTag"
           style="margin-left: 10px;color: #1890ff;"
@@ -247,6 +248,7 @@ import {
   getUnit,
   getHouse,
   getOwnerInfo,
+  getHouseTagData,
   getServiceProvider,
   addServiceRecord,
   addSpeedInfo,
@@ -449,7 +451,6 @@ export default {
         unit_id: this.editForm.unit_id,
         house_id: this.editForm.house_id
       }).then(({ data }) => {
-        data.owner_id && this.getUserTag(data.owner_id)
         parseInt(data.satisfied) > 1 &&
           this.$set(
             this.editForm,
@@ -468,12 +469,25 @@ export default {
           data.owner_id,
           data.nickname
         )
+        this.getTags()
       })
+    },
+    getTags () {
+      const { owner_id: id } = this.editForm
+      id ? this.getUserTag(id) : this.getHouseTagData()
     },
     // 获取用户标签
     getUserTag (uid) {
       getUserTag({
         uid: uid || this.editForm.owner_id
+      }).then(({ data }) => {
+        this.$set(this.editForm, 'user_tag_data', data)
+      })
+    },
+    // 获取房屋标签
+    getHouseTagData () {
+      getHouseTagData({
+        house_id: this.editForm.house_id
       }).then(({ data }) => {
         this.$set(this.editForm, 'user_tag_data', data)
       })
@@ -489,6 +503,7 @@ export default {
       this.$emit('editUserTag', {
         userInfo: {
           uid: this.editForm.owner_id,
+          house_id: this.editForm.house_id,
           nickname: this.editForm.nickname,
           realname: this.editForm.owner
         }
