@@ -48,7 +48,10 @@
         label="库存"
         required
         prop="nums"
-        :rules="{ required: true, message: '请输入库存' }"
+        :rules="[
+          { required: true, message: '请输入库存' },
+          { validator: validRepertory }
+        ]"
       >
         <a-input-number
           v-model="formData.nums"
@@ -71,7 +74,11 @@
         ></a-input-number
         ><span style="margin-left:8px;">小时</span>
       </a-form-model-item>
-      <a-form-model-item v-if="formData.category_type === 1" label="需要排队" prop="is_lineup">
+      <a-form-model-item
+        v-if="formData.category_type === 1"
+        label="需要排队"
+        prop="is_lineup"
+      >
         <a-radio-group
           v-model="formData.is_lineup"
           :options="queueRadio"
@@ -226,6 +233,16 @@ export default {
           this.$emit('success')
         }
       })
+    },
+    validRepertory (rule, value, callback) {
+      const borrowingNum = +this.formData.borrowings_num
+      if (borrowingNum > value) {
+        callback(
+          new Error(`已借出${borrowingNum}个，库存不能小于${borrowingNum}`)
+        )
+      } else {
+        callback()
+      }
     }
   }
 }

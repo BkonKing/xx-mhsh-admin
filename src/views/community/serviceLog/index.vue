@@ -450,7 +450,8 @@ export default {
       this.$refs.table.refresh()
     },
     checkTagSuccess () {
-      this.$refs['edit-log'].getTags()
+      this.$refs['look-log'] && this.$refs['look-log'].getTags()
+      this.$refs['edit-log'] && this.$refs['edit-log'].getTags()
       this.$refs.table.refresh()
     },
     openUserInfo ({ uid }) {

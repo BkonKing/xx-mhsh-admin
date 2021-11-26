@@ -170,12 +170,27 @@ export default {
           title: '服务配置',
           dataIndex: 'service_config',
           customRender: (text, row) => {
-            const duration =
-              row.category_type === 2 && row.duration ? `（可借${row.duration}小时）` : ''
+            const {
+              category_type: categoryType,
+              duration,
+              nums
+            } = row
+            const borrowingNum = +row.borrowings_num
+            const num =
+              categoryType === 2 && borrowingNum
+                ? `（借出${borrowingNum} 剩余${nums - borrowingNum}）`
+                : ''
+            const durationText =
+              categoryType === 2 && duration ? (
+                <div>{`可借${duration}小时`}</div>
+              ) : (
+                ''
+              )
             return (
               <div>
                 {text}
-                {duration}
+                {num}
+                {durationText}
               </div>
             )
           }
