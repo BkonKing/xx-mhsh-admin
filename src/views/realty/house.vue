@@ -171,7 +171,7 @@
               @click="openUserInfo(record)"
               :class="{ 'click-text': record.owner_id }"
             >
-              <span>{{ text }}</span>
+              <div>{{ text }}</div>
               <div>{{ record.owner_mobile }}</div>
             </div>
             <template v-else>(无)</template>
@@ -576,12 +576,12 @@ export default {
             return (
               <div>
                 是否启用
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>开启则APP显示房屋</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>开启则APP显示房屋</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },
@@ -901,7 +901,7 @@ export default {
 }
 .click-text {
   cursor: pointer;
-  span {
+  div {
     color: @primary-color;
   }
 }

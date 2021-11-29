@@ -157,7 +157,7 @@
       >
         <template slot="userInfo" slot-scope="text, record">
           <div v-if="text || record.mobile" @click="openUserInfo(record)" :class="{'click-text': record.uid}">
-            <span>{{ text }}</span>
+            <div>{{ text }}</div>
             <div>{{ record.mobile }}</div>
           </div>
           <template v-else>(无)</template>
@@ -490,7 +490,7 @@ h3 {
 }
 .click-text {
   cursor: pointer;
-  span {
+  div {
     color: @primary-color;
   }
 }
