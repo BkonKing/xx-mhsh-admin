@@ -794,9 +794,7 @@ export default {
             this.$set(this.userForm, 'user_tag_data', this.userForm.id ? cloneDeep(this.houseUserTags) : [])
             this.$set(this.userForm, 'owner_id', '')
             this.$set(this.userForm, 'nickname', '')
-            this.$set(this.userForm, 'realname', '')
             this.$set(this.userForm, 'service_satisfied', '')
-            this.$set(this.userForm, 'owner_name', '')
           }
         })
       }
