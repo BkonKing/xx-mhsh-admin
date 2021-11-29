@@ -19,7 +19,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="用户">
                 <a-input
-                  v-model="queryParam.staff_text"
+                  v-model="queryParam.user_text"
                   placeholder="ID、昵称、姓名、手机号"
                 ></a-input>
               </a-form-item>
@@ -27,7 +27,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="店铺名称">
                 <a-input
-                  v-model="queryParam.staff_text"
+                  v-model="queryParam.shops_name"
                   placeholder="请输入"
                 ></a-input>
               </a-form-item>
@@ -122,7 +122,7 @@
 <script>
 // /store/list
 import moment from 'moment'
-import clonedeep from 'lodash.clonedeep'
+import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm } from '@/components'
 import storeForm from './components/storeForm'
 import {
@@ -212,12 +212,12 @@ export default {
             return (
               <div>
                 操作
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>删除即解除商家身份</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>删除即解除商家身份</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -228,7 +228,13 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        const params = clonedeep(this.queryParam)
+        const sortText = {
+          ASC: 'asc',
+          DESC: 'desc'
+        }
+        const params = cloneDeep(this.queryParam)
+        params.sort_field = parameter.sortField
+        params.sort_field = sortText[parameter.sortOrder]
         const time = params.time
         let startDate = ''
         let endDate = ''
@@ -318,7 +324,7 @@ export default {
       })
     },
     handleEdit (record) {
-      const form = clonedeep(record)
+      const form = cloneDeep(record)
       form.staff_id = form.id
       form.company_id = form.company_id || undefined
       form.division_id = form.division_id || undefined
