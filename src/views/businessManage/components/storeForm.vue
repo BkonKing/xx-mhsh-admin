@@ -13,19 +13,10 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <template>
-        <h3>商家权限</h3>
-        <a-form-model-item label="权限" prop="permission">
-          <a-checkbox-group
-            v-model="form.permission"
-            :options="permissionOptions"
-          />
-        </a-form-model-item>
-        <h3>商家资料</h3>
-      </template>
-      <a-form-model-item label="商家用户" prop="company_id" required>
+      <h3>商家资料</h3>
+      <a-form-model-item label="商家用户" prop="uid_text" required>
         <a-select
-          v-model="form.company_id"
+          v-model="form.uid_text"
           placeholder="请选择"
           @change="handleCompanyChange"
         >
@@ -36,11 +27,11 @@
             >{{ item.company_name }}</a-select-option
           >
         </a-select>
-        <div class="alert-text">输入用户姓名、手机号、ID、昵称进行搜索</div>
+        <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
       </a-form-model-item>
-      <a-form-model-item label="店铺归属" prop="division_id">
+      <a-form-model-item label="店铺归属" prop="project_id">
         <a-select
-          v-model="form.division_id"
+          v-model="form.project_id"
           placeholder="请选择"
           @change="handleDivisionChange"
           ><a-select-option
@@ -51,54 +42,58 @@
           ></a-select
         >
       </a-form-model-item>
-      <a-form-model-item label="店铺名称" prop="staff_numb">
+      <a-form-model-item label="店铺名称" prop="shops_name">
         <a-input
-          v-model="form.staff_numb"
+          v-model="form.shops_name"
           :maxLength="20"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="营业时间" prop="realname">
+      <a-form-model-item label="营业时间" prop="business_hours">
         <a-input
-          v-model="form.realname"
+          v-model="form.business_hours"
           :maxLength="20"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="联系方式" prop="mobile" required>
+      <a-form-model-item label="联系方式" prop="phone" required>
         <a-input
-          v-model="form.mobile"
+          v-model="form.phone"
           v-number-input
           :maxLength="15"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="店铺公告" prop="remark">
+      <a-form-model-item label="店铺公告" prop="shops_notice">
         <a-textarea
-          v-model="form.remark"
+          v-model="form.shops_notice"
           :maxLength="50"
           rows="4"
           placeholder="请输入"
         />
       </a-form-model-item>
     </a-form-model>
+    <h3>商家权限</h3>
+    <a-form-model-item label="权限" prop="power">
+      <a-checkbox-group v-model="form.power" :options="powerOptions" />
+    </a-form-model-item>
   </a-modal>
 </template>
 
 <script>
 import clonedeep from 'lodash.clonedeep'
-import { editStaff } from '@/api/userManage'
+import { editShops } from '@/api/userManage'
 
 const initialForm = {
-  company_id: undefined,
-  division_id: undefined,
+  uid_text: undefined,
+  project_id: undefined,
   post_id: undefined,
-  staff_numb: '',
-  realname: '',
-  mobile: '',
+  shops_name: '',
+  business_hours: '',
+  phone: '',
   entry_time: '',
   item_ids: [],
-  remark: '',
+  shops_notice: '',
   is_go_on: 0
 }
 export default {
@@ -123,17 +118,30 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       form: clonedeep(initialForm),
-      permissionOptions: [],
+      powerOptions: [
+        {
+          label: '提现申请',
+          value: '1'
+        },
+        {
+          label: '商铺券管理',
+          value: '2'
+        },
+        {
+          label: '扫码核销券',
+          value: '3'
+        }
+      ],
       divisionOptions: [],
       postOptions: [],
       rules: {
-        mobile: [{ required: true, message: '请输入手机号' }]
+        phone: [{ required: true, message: '请输入手机号' }]
       }
     }
   },
   computed: {
     title () {
-      return this.form.staff_id ? `编辑商家 - ${this.form.name}` : '新增商家'
+      return this.form.shops_id ? `编辑商家 - ${this.form.shops_name}` : '新增商家'
     }
   },
   watch: {
@@ -146,35 +154,26 @@ export default {
   },
   methods: {
     handleCompanyChange () {
-      this.$set(this.form, 'division_id', undefined)
+      this.$set(this.form, 'project_id', undefined)
       this.$set(this.form, 'post_id', undefined)
       this.postOptions = []
     },
     handleDivisionChange () {
       this.$set(this.form, 'post_id', undefined)
     },
-    // 选中工作项目，主要处理选中全部，则自动选中所有值
-    selectProject (value, option) {
-      console.log(value)
-      const index = value.findIndex(obj => obj === 0)
-      // 有选中全部
-      if (index > -1) {
-        this.form.item_ids = this.projectOptions.map(obj => obj.id)
-      }
-    },
     handleSubmit () {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.editStaff()
+          this.editShops()
         } else {
           return false
         }
       })
     },
-    editStaff () {
+    editShops () {
       const params = clonedeep(this.form)
       params.item_ids = params.item_ids.join(',')
-      editStaff(params).then(({ success, code, message, user_text }) => {
+      editShops(params).then(({ success, code, message, user_text }) => {
         if (success) {
           this.$message.success('保存成功')
           this.modalShow = false
@@ -210,7 +209,7 @@ export default {
         okText: '确定',
         onOk () {
           that.form.is_go_on = 1
-          that.editStaff()
+          that.editShops()
         },
         onCancel () {}
       })

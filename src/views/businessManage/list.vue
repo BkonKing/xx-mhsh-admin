@@ -60,7 +60,7 @@
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="handleImport">
+            <a-menu-item key="1" @click="batchRemove">
               商家权限
             </a-menu-item>
             <a-menu-item key="2" @click="batchRemove">
@@ -125,12 +125,7 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm } from '@/components'
 import storeForm from './components/storeForm'
-import {
-  getStaffList,
-  delStaff,
-  getItemList,
-  awardCredits
-} from '@/api/userManage'
+import { getShopList } from '@/api/userManage/business'
 
 export default {
   name: 'storeList',
@@ -143,27 +138,27 @@ export default {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
-      editForm: true,
+      editForm: false,
       // 查询参数
       queryParam: {},
       columns: [
         {
           title: '店铺归属',
-          dataIndex: 'company_name',
+          dataIndex: 'project_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '店铺名称',
-          dataIndex: 'division_name',
+          dataIndex: 'shops_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '幸福币',
-          dataIndex: 'staff_numb',
+          dataIndex: 'credits',
           sorter: true,
           customRender: text => {
             return text || 0
@@ -171,7 +166,7 @@ export default {
         },
         {
           title: '店铺券',
-          dataIndex: 'realname',
+          dataIndex: 'coupon_count',
           sorter: true,
           customRender: text => {
             return text || '0'
@@ -179,23 +174,23 @@ export default {
         },
         {
           title: '联系方式',
-          dataIndex: 'post_name'
+          dataIndex: 'phone'
         },
         {
           title: '用户昵称',
-          dataIndex: 'entry_time',
+          dataIndex: 'nickname',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '姓名/手机号',
-          dataIndex: 'mobile',
-          customRender: text => {
+          dataIndex: 'realname',
+          customRender: (text, row) => {
             return (
               <div>
                 <div>{text}</div>
-                <div>{text}</div>
+                <div>{row.mobile}</div>
               </div>
             )
           }
@@ -244,7 +239,7 @@ export default {
         }
         params.entry_stime = startDate
         params.entry_etime = endDate
-        return getStaffList(Object.assign(parameter, params))
+        return getShopList(Object.assign(parameter, params))
       },
       selectedRowKeys: [],
       companyOptions: [],

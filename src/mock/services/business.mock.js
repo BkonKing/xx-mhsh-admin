@@ -43,6 +43,73 @@ export const setBusinessSetting = [
   }
 ]
 
+export const getShopList = [
+  RegExp(businessApi.getShopList),
+  'post',
+  {
+    code: '200',
+    success: true,
+    message: 'OK',
+    data: {
+      pageindex: 1,
+      pagesize: 10,
+      total: '2',
+      list: [
+        {
+          id: '1',
+          project_id: '1',
+          shops_name: '商家1',
+          uid: '100000',
+          phone: '0591-88822114',
+          power: '1,2',
+          business_hours: '09:00~18:00',
+          shops_notice: '公告',
+          coupon_count: '0',
+          is_del: '0',
+          ctime: '2021-11-24 14:37:32',
+          credits: '29746',
+          mobile: '18900251800',
+          realname: '鲁班',
+          nickname: '189****1800',
+          is_logoff: '0',
+          project_name: '五凤兰庭'
+        },
+        {
+          id: '2',
+          project_id: '1',
+          shops_name: '',
+          uid: '100020',
+          phone: '',
+          power: '1',
+          business_hours: '',
+          shops_notice: '',
+          coupon_count: '0',
+          is_del: '0',
+          ctime: '2021-11-24 14:37:32',
+          credits: '235',
+          mobile: '15959063868',
+          realname: '',
+          nickname: '159****3868',
+          is_logoff: '0',
+          project_name: '五凤兰庭'
+        }
+      ]
+    },
+    timestamp: 1637737895918
+  }
+]
+
+export const editShops = [
+  RegExp(businessApi.editShops),
+  'post',
+  {
+    code: '200',
+    success: true,
+    message: '保存成功',
+    timestamp: 1632360617392
+  }
+]
+
 // export const setBusinessSetting = [
 //   RegExp(businessApi.setBusinessSetting),
 //   'post',
