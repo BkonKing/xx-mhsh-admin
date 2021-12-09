@@ -157,7 +157,7 @@
       >
         <template slot="userInfo" slot-scope="text, record">
           <div v-if="text || record.mobile" @click="openUserInfo(record)" :class="{'click-text': record.uid}">
-            <span>{{ text }}</span>
+            <div>{{ text }}</div>
             <div>{{ record.mobile }}</div>
           </div>
           <template v-else>(无)</template>
@@ -213,6 +213,7 @@
 </template>
 
 <script>
+// /community/serviceLog
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { STable, AdvancedForm } from '@/components'
 import moment from 'moment'
@@ -221,7 +222,7 @@ import { TreeSelect } from 'ant-design-vue'
 import { getDimensionList } from '@/api/userManage'
 import serviceLogForm from './components/service-log-form'
 import checkUserTag from './components/check-user-tag'
-import STag from '../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import clonedeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
 
@@ -444,12 +445,13 @@ export default {
     },
     editSuccess () {
       if (this.editForm.process_id) {
-        this.$refs['look-log'].viewRecord()
+        this.$refs['look-log'].refresh()
       }
       this.$refs.table.refresh()
     },
     checkTagSuccess () {
-      this.$refs['edit-log'].getUserTag()
+      this.$refs['look-log'] && this.$refs['look-log'].getTags()
+      this.$refs['edit-log'] && this.$refs['edit-log'].getTags()
       this.$refs.table.refresh()
     },
     openUserInfo ({ uid }) {
@@ -483,15 +485,12 @@ h3 {
     line-height: 24px;
   }
 }
-/deep/ .ant-pro-grid-content {
-  min-height: inherit;
-}
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;
 }
 .click-text {
   cursor: pointer;
-  span {
+  div {
     color: @primary-color;
   }
 }

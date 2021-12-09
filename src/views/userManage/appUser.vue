@@ -278,7 +278,7 @@ import { STable, AdvancedForm, PageHeader } from '@/components'
 import { TreeSelect } from 'ant-design-vue'
 import chekcDrawer from './checkDrawer'
 import STag from './components/tag'
-import checkUserTag from '../community/components/check-user-tag'
+import checkUserTag from '../community/serviceLog/components/check-user-tag'
 import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
 import {

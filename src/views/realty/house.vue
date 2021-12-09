@@ -101,7 +101,9 @@
                     <a-range-picker
                       v-model="queryParam.service_time"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
-                      :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                      :show-time="{
+                        defaultValue: [defaultTime, defaultEndTime]
+                      }"
                       :placeholder="['开始时间', '结束时间']"
                       :ranges="{
                         本周: [
@@ -169,7 +171,7 @@
               @click="openUserInfo(record)"
               :class="{ 'click-text': record.owner_id }"
             >
-              <span>{{ text }}</span>
+              <div>{{ text }}</div>
               <div>{{ record.owner_mobile }}</div>
             </div>
             <template v-else>(无)</template>
@@ -284,7 +286,6 @@
             />
           </a-form-model-item>
           <a-form-model-item
-            v-if="userForm.owner_id"
             label="用户标签"
             class="form-item-text"
             prop="floors"
@@ -443,7 +444,7 @@ import { STable, AdvancedForm } from '@/components'
 import { TreeSelect } from 'ant-design-vue'
 import STag from '@/views/userManage/components/tag'
 import importFile from '@/views/userManage/employee/importFile'
-import checkUserTag from '@/views/community/components/check-user-tag'
+import checkUserTag from '@/views/community/serviceLog/components/check-user-tag'
 import cloneDeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
 import moment from 'moment'
@@ -575,12 +576,12 @@ export default {
             return (
               <div>
                 是否启用
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>开启则APP显示房屋</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>开启则APP显示房屋</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },
@@ -643,6 +644,7 @@ export default {
         unit_id: { required: true, message: '请选择单元' },
         house_name: { required: true, message: '请输入房屋' }
       },
+      houseUserTags: [],
       tagVisible: false,
       labelList: [],
       importVisible: false,
@@ -734,10 +736,12 @@ export default {
     openEditModal (userInfo = {}) {
       if (userInfo && userInfo.id) {
         this.userForm = cloneDeep(userInfo)
-        this.userForm.uid = userInfo.id
+        this.userForm.uid = userInfo.owner_id
         this.userForm.is_enabled = !!+userInfo.is_enabled
         this.userForm.nickname = userInfo.nickname
         this.userForm.realname = userInfo.owner_name
+        this.houseUserTags = cloneDeep(userInfo.user_tag_data) || []
+        console.log(this.houseUserTags)
         this.getUnit(this.userForm.building_id, true)
       } else {
         this.userForm = {
@@ -762,6 +766,7 @@ export default {
           usable_area: '',
           additive_area: ''
         }
+        this.houseUserTags = []
       }
       this.userVisible = true
     },
@@ -786,7 +791,7 @@ export default {
               this.$set(this.userForm, 'owner_name', data.realname)
             }
           } else {
-            this.$set(this.userForm, 'user_tag_data', [])
+            this.$set(this.userForm, 'user_tag_data', this.userForm.id ? cloneDeep(this.houseUserTags) : [])
             this.$set(this.userForm, 'owner_id', '')
             this.$set(this.userForm, 'nickname', '')
             this.$set(this.userForm, 'service_satisfied', '')
@@ -817,7 +822,7 @@ export default {
       const params = cloneDeep(this.userForm)
       params.is_enabled = params.is_enabled ? 1 : 0
       params.tag_id_text = cloneDeep(params.user_tag_data)
-        .map(obj => obj.id)
+        .map(obj => obj.id || obj.tag_id)
         .join(',')
       editHouse(params).then(({ success, message }) => {
         if (success) {
@@ -896,7 +901,7 @@ export default {
 }
 .click-text {
   cursor: pointer;
-  span {
+  div {
     color: @primary-color;
   }
 }

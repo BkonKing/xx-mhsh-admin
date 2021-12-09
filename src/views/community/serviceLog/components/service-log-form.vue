@@ -80,10 +80,12 @@
       >
         <div v-if="editForm.owner || editForm.mobile">
           <a
+            v-if="editForm.uid"
             :href="`/xmht/household/member/getMemberList?uid=${editForm.uid}`"
             target="_blank"
             style="margin-right: 10px;"
             >{{ editForm.owner }}</a
+          ><span v-else style="margin-right: 10px;">{{ editForm.owner }}</span
           ><span>{{ editForm.mobile }}</span>
         </div>
         <div v-else>--</div>
@@ -105,7 +107,7 @@
         </span>
         <span v-else>--</span>
         <a-icon
-          v-if="editForm.owner_id && !isLook"
+          v-if="(editForm.owner_id || editForm.house_id) && !isLook"
           type="edit"
           @click="editUserTag"
           style="margin-left: 10px;color: #1890ff;"
@@ -160,7 +162,7 @@
               <div>
                 <a>进度{{ records.length - index }}</a> 服务时间：{{
                   item.service_time
-                }}<a-icon type="edit" @click="toEditStep(item)"></a-icon>
+                }}<a-icon type="edit" @click="toEditStep(item, records.length - index)"></a-icon>
               </div>
               <div>{{ item.service_satisfied_desc || "--" }}</div>
               <!-- <div class="detai-cont">
@@ -193,7 +195,7 @@
       <!-- 编辑模式 -->
       <template v-else>
         <a-form-model-item class="form-item-text" label="服务进度">
-          进度{{ editForm.id ? editForm.process_step + 1 : 1 }}
+          进度{{editProcessStep}}
         </a-form-model-item>
         <a-form-model-item label="用户满意度" prop="service_satisfied">
           <a-select v-model="editForm.service_satisfied" placeholder="请选择">
@@ -209,7 +211,7 @@
           <a-input
             v-model="editForm.service_provider"
             :maxLength="20"
-            placeholder="请简单概括本次服务"
+            placeholder="请输入"
           ></a-input>
         </a-form-model-item>
         <a-form-model-item label="服务时间" prop="service_time" required>
@@ -247,12 +249,13 @@ import {
   getUnit,
   getHouse,
   getOwnerInfo,
+  getHouseTagData,
   getServiceProvider,
   addServiceRecord,
   addSpeedInfo,
   viewRecord
 } from '@/api/community'
-import STag from '../../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import { getUserTag } from '@/api/userManage'
 
 export default {
@@ -287,6 +290,7 @@ export default {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       projectId: Cookies.get('project_id'),
       editVisible: this.value,
+      isEditLog: false, // 是否编辑已有进度
       provider: '', // 当前用户名称
       unitOptions: [],
       houseOptions: [],
@@ -318,6 +322,13 @@ export default {
     // 跟进服务记录或者编辑已有服务记录
     isFollow () {
       return !this.isLook && this.editForm.id
+    },
+    editProcessStep () {
+      return this.editForm.id
+        ? this.isEditLog
+          ? this.editForm.process_step
+          : this.editForm.process_step + 1
+        : 1
     }
   },
   watch: {
@@ -336,7 +347,9 @@ export default {
       this.$emit('input', val)
     },
     data (val) {
+      console.log(val)
       if (!this.isLook) {
+        this.isEditLog = false
         // 跟进服务记录
         if (val.id && !val.process_id) {
           val.service_time = ''
@@ -346,6 +359,7 @@ export default {
           val.service_satisfied = val.service_satisfied || undefined
         } else {
           val.service_provider = this.provider
+          this.isEditLog = true
         }
       }
       this.editForm = clonedeep(val)
@@ -389,6 +403,10 @@ export default {
         }
       })
     },
+    refresh () {
+      this.getTags()
+      this.viewRecord()
+    },
     // 查看跟进记录
     viewRecord () {
       viewRecord({ service_id: this.editForm.id }).then(({ data }) => {
@@ -398,11 +416,12 @@ export default {
         this.records = data.list || []
       })
     },
-    toEditStep (item) {
+    toEditStep (item, index) {
       const params = clonedeep(this.editForm)
       params.service_content = item.service_content
       params.service_provider = item.service_provider
       params.service_time = item.service_time
+      params.process_step = index
       params.service_satisfied = item.service_satisfied || undefined
       this.$emit('editStep', { ...params, process_id: item.id })
     },
@@ -449,7 +468,6 @@ export default {
         unit_id: this.editForm.unit_id,
         house_id: this.editForm.house_id
       }).then(({ data }) => {
-        data.owner_id && this.getUserTag(data.owner_id)
         parseInt(data.satisfied) > 1 &&
           this.$set(
             this.editForm,
@@ -468,12 +486,25 @@ export default {
           data.owner_id,
           data.nickname
         )
+        this.getTags()
       })
+    },
+    getTags () {
+      const { owner_id: id } = this.editForm
+      id ? this.getUserTag(id) : this.getHouseTagData()
     },
     // 获取用户标签
     getUserTag (uid) {
       getUserTag({
         uid: uid || this.editForm.owner_id
+      }).then(({ data }) => {
+        this.$set(this.editForm, 'user_tag_data', data)
+      })
+    },
+    // 获取房屋标签
+    getHouseTagData () {
+      getHouseTagData({
+        house_id: this.editForm.house_id
       }).then(({ data }) => {
         this.$set(this.editForm, 'user_tag_data', data)
       })
@@ -489,6 +520,7 @@ export default {
       this.$emit('editUserTag', {
         userInfo: {
           uid: this.editForm.owner_id,
+          house_id: this.editForm.house_id,
           nickname: this.editForm.nickname,
           realname: this.editForm.owner
         }

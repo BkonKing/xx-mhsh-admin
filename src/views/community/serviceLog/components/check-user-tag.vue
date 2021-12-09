@@ -8,11 +8,11 @@
     :destroyOnClose="true"
   >
     <div class="header">
-      <div class="user-info">
+      <div v-if="multiple || userName" class="user-info">
         <template v-if="multiple"
           >给{{ userList.length }}人添加共同标签：</template
         ><template v-else
-          >{{ userInfo.nickname }}({{ userInfo.realname }})：</template
+          >{{userName}}</template
         >
       </div>
       <div>
@@ -88,8 +88,9 @@
 <script>
 import cloneDeep from 'lodash.clonedeep'
 import Cookies from 'js-cookie'
-import STag from '../../userManage/components/tag'
+import STag from '@/views/userManage/components/tag'
 import { getUserTag, editUserTag, editBatchUserTag } from '@/api/userManage'
+import { getHouseTagData, setHouseTag } from '@/api/community'
 
 export default {
   name: 'check-user-tag',
@@ -171,12 +172,24 @@ export default {
         tagObj[obj.id] = childObj
       })
       return tagObj
+    },
+    userName () {
+      const { nickname, realname } = this.userInfo
+      if (nickname && realname) {
+        return `${nickname}(${realname})：`
+      } else if (nickname) {
+        return `${nickname}：`
+      } else if (realname) {
+        return `${realname}：`
+      } else {
+        return ''
+      }
     }
   },
   watch: {
     value (val) {
-      if (val && this.userInfo.uid && !this.isGetTag) {
-        this.getUserTag()
+      if (val && !this.isGetTag) {
+        this.getTags()
       }
       if (val && this.multiple) {
         this.tagChecked = []
@@ -201,21 +214,21 @@ export default {
   },
   methods: {
     submit () {
-      this.multiple ? this.editBatchUserTag() : this.editUserTag()
+      this.multiple ? this.editBatchUserTag() : this.setTags()
     },
-    editUserTag () {
+    setTags () {
       if (this.isGetTag) {
         if (!this.multiple) {
-          console.log(this.disabledTagIds, this.disabledTag)
+          // console.log(this.disabledTagIds, this.disabledTag)
           const data = this.tagChecked.map(obj => {
-            console.log(obj)
+            // console.log(obj)
             if (this.disabledTagIds.includes(obj.id)) {
               console.log('object', this.disabledTag[obj.id])
               return this.disabledTag[obj.id]
             }
             return obj
           })
-          console.log(data)
+          // console.log(data)
           this.isEmitChange = false
           this.$emit('getTag', data)
         } else {
@@ -224,14 +237,21 @@ export default {
         this.tagVisible = false
         return
       }
+      this.saveTags()
+    },
+    saveTags () {
       const tagChecked = cloneDeep(this.tagChecked)
         .map(obj => obj.id)
         .join(',')
-      editUserTag({
+      const requestPromise = +this.userInfo.uid ? editUserTag({
         uid: this.userInfo.uid,
         tag_id_text: tagChecked,
         remarks: ''
-      }).then(({ success, message }) => {
+      }) : setHouseTag({
+        house_id: this.userInfo.house_id,
+        tag_id_text: tagChecked
+      })
+      requestPromise.then(({ success, message }) => {
         if (success) {
           this.tagVisible = false
           this.$message.success('提交成功')
@@ -240,6 +260,9 @@ export default {
           this.$message.error(message)
         }
       })
+    },
+    setHouseTag (tagChecked) {
+
     },
     // 批量添加用户便签
     editBatchUserTag () {
@@ -262,10 +285,21 @@ export default {
     cancleChecked (index) {
       this.tagChecked.splice(index, 1)
     },
+    getTags () {
+      +this.userInfo.uid ? this.getUserTag() : this.getHouseTagData()
+    },
     // 获取用户标签
     getUserTag () {
       getUserTag({
         uid: this.userInfo.uid
+      }).then(({ data }) => {
+        this.formatCheck(data || [])
+      })
+    },
+    // 获取房屋标签
+    getHouseTagData () {
+      getHouseTagData({
+        house_id: this.userInfo.house_id
       }).then(({ data }) => {
         this.formatCheck(data || [])
       })
