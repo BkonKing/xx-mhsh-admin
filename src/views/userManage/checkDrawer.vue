@@ -28,11 +28,11 @@
       </a-card>
       <div class="changeTitle">
         <div
-          class="item"
-          @click="currentIndex = index"
-          :class="{ active: currentIndex === index }"
           v-for="(item, index) in titleArr"
           :key="index"
+          class="item"
+          :class="{ active: currentIndex === index }"
+          @click="currentIndex = index"
         >
           {{ item }}
         </div>
@@ -49,13 +49,19 @@
         v-show="currentIndex === 1"
         :uid="uid"
       ></happyMoney>
+      <user-shops
+        ref="userShops"
+        v-show="currentIndex === 2"
+        :uid="uid"
+      ></user-shops>
     </a-drawer>
   </div>
 </template>
 
 <script>
-import info from './info'
-import happyMoney from './happyMoney'
+import info from './components/UserInfo'
+import happyMoney from './components/happyMoney'
+import UserShops from './components/UserShops'
 import { getUserInfo } from '@/api/userManage'
 export default {
   props: {
@@ -66,12 +72,13 @@ export default {
   },
   components: {
     info,
-    happyMoney
+    happyMoney,
+    UserShops
   },
   data () {
     return {
       isShow: false,
-      titleArr: ['资料', '幸福币'],
+      titleArr: ['资料', '幸福币', '商家'],
       currentIndex: 0,
       userInfo: {},
       addressData: [],

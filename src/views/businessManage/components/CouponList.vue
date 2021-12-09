@@ -7,7 +7,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="券状态">
                 <a-select
-                  v-model="queryParam.item_id"
+                  v-model="queryParam.coupon_status"
                   :options="couponStatus"
                   placeholder="请选择"
                 >
@@ -17,7 +17,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="券类型">
                 <a-select
-                  v-model="queryParam.item_id"
+                  v-model="queryParam.coupon_type"
                   :options="couponTypes"
                   placeholder="请选择"
                 >
@@ -28,7 +28,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="券名称">
                   <a-input
-                    v-model="queryParam.staff_text"
+                    v-model="queryParam.coupon_name"
                     placeholder="请输入"
                   ></a-input>
                 </a-form-item>
@@ -36,7 +36,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="使用场景">
                   <a-select
-                    v-model="queryParam.item_id"
+                    v-model="queryParam.coupon_scene"
                     :options="useTypes"
                     placeholder="请选择"
                   >
@@ -46,7 +46,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="领取方式">
                   <a-select
-                    v-model="queryParam.item_id"
+                    v-model="queryParam.coupon_mode"
                     :options="pickupTypes"
                     placeholder="请选择"
                   >
@@ -55,17 +55,21 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="可领用户">
-                  <user-cascader v-model="queryParam.item_id"> </user-cascader>
+                  <user-cascader v-model="queryParam.available_type">
+                  </user-cascader>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="店铺归属">
-                  <a-select v-model="queryParam.item_id" placeholder="请选择">
+                  <a-select
+                    v-model="queryParam.project_id"
+                    placeholder="请选择"
+                  >
                     <a-select-option
                       v-for="item in projectOptions"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.item_name }}</a-select-option
+                      :key="item.project_id"
+                      :value="item.project_id"
+                      >{{ item.project_name }}</a-select-option
                     >
                   </a-select>
                 </a-form-item>
@@ -73,7 +77,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="店铺名称">
                   <a-input
-                    v-model="queryParam.staff_text"
+                    v-model="queryParam.shops_name"
                     placeholder="请输入"
                   ></a-input>
                 </a-form-item>
@@ -81,7 +85,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="创建人">
                   <a-input
-                    v-model="queryParam.staff_text"
+                    v-model="queryParam.user_text"
                     placeholder="ID、昵称、姓名、手机号"
                   ></a-input>
                 </a-form-item>
@@ -112,13 +116,13 @@
       <div class="table-operator">
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="handleImport">
+            <a-menu-item key="1" @click="batchOperate(1)">
               发布
             </a-menu-item>
-            <a-menu-item key="2" @click="handleImport">
+            <a-menu-item key="2" @click="batchOperate(2)">
               结束
             </a-menu-item>
-            <a-menu-item key="3" @click="batchRemove">
+            <a-menu-item key="3" @click="batchOperate(3)">
               删除
             </a-menu-item>
           </a-menu>
@@ -138,53 +142,58 @@
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a
-              :href="`/zht/user/user/getUserList?uid=${record.uid}`"
+            <router-link
+              :to="`/store/couponDetail?id=${record.id}`"
               target="_blank"
-              >查看</a
+              >查看</router-link
             >
-            <a @click="handleEdit(record)">编辑</a>
             <a
-              ><a-popconfirm
-                title="你确定要删除该商家吗？"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="handleRemove(record.id)"
-              >
-                <a-icon
-                  slot="icon"
-                  type="close-circle"
-                  theme="filled"
-                  style="color: red"
-                />
-                <a>删除</a>
-              </a-popconfirm></a
+              v-if="record.coupon_status === '2'"
+              @click="batchPublish([record])"
+              >发布</a
+            >
+            <a
+              v-if="['2', '3'].includes(record.coupon_status)"
+              @click="batchDelete([record.id])"
+              >删除</a
+            >
+            <a
+              v-if="record.coupon_status === '1'"
+              @click="batchFinish([record.id])"
+              >结束</a
             >
           </template>
         </span>
       </s-table>
     </a-card>
+    <publish-modal
+      v-model="publishVisible"
+      :active="activeCoupons"
+      @success="publishSuccess"
+    ></publish-modal>
   </div>
 </template>
 
 <script>
 // /store/list
 import moment from 'moment'
-import clonedeep from 'lodash.clonedeep'
+import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm } from '@/components'
 import UserCascader from './UserCascader'
+import PublishModal from './PublishModal'
 import {
-  getStaffList,
-  delStaff,
-  getItemList,
-  awardCredits
-} from '@/api/userManage'
+  getShopCouponList,
+  getProjectList,
+  finishCoupon,
+  deleteCoupon
+} from '@/api/userManage/business'
 
 export default {
   name: 'CouponList',
   components: {
-    STable,
     AdvancedForm,
+    STable,
+    PublishModal,
     UserCascader
   },
   data () {
@@ -195,11 +204,11 @@ export default {
       couponStatus: [
         {
           label: '未发布',
-          value: '1'
+          value: '2'
         },
         {
           label: '领取中',
-          value: '2'
+          value: '1'
         },
         {
           label: '已结束',
@@ -217,18 +226,18 @@ export default {
         }
       ],
       useTypes: [
-        {
-          label: 'APP使用',
-          value: '1'
-        },
+        // {
+        //   label: 'APP使用',
+        //   value: '0'
+        // },
         {
           label: '线下使用',
-          value: '2'
-        },
-        {
-          label: 'APP及线下',
-          value: '3'
+          value: '1'
         }
+        // {
+        //   label: 'APP及线下',
+        //   value: '2'
+        // }
       ],
       pickupTypes: [
         {
@@ -238,72 +247,85 @@ export default {
         {
           label: '付费领取',
           value: '2'
-        },
-        {
-          label: '系统发放',
-          value: '3'
         }
+        // {
+        //   label: '系统发放',
+        //   value: '3'
+        // }
       ],
       // 查询参数
       queryParam: {},
       columns: [
         {
           title: '券状态',
-          dataIndex: 'company_name'
+          dataIndex: 'coupon_status_name'
         },
         {
           title: '券名称',
-          dataIndex: 'company_name',
+          dataIndex: 'shops_coupon_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '领取方式',
-          dataIndex: 'company_name'
+          dataIndex: 'coupon_mode_name'
         },
         {
           title: '使用场景',
-          dataIndex: 'company_name'
+          dataIndex: 'coupon_scene_name'
         },
         {
           title: '面额',
-          dataIndex: 'company_name',
+          dataIndex: 'denomination',
           sorter: true
         },
         {
           title: '门槛',
-          dataIndex: 'company_name',
+          dataIndex: 'threshold_price',
           sorter: true
         },
         {
           title: '每人限领',
-          dataIndex: 'company_name',
-          sorter: true
+          dataIndex: 'is_limit',
+          sorter: true,
+          customRender: (text, row) => {
+            const num = +text ? row.limit_num : '无限'
+            return num
+          }
         },
         {
           title: '领取/发行',
-          dataIndex: 'company_name',
-          sorter: true
+          dataIndex: 'receive',
+          sorter: true,
+          customRender: (text, row) => {
+            return `${text || '-'}/${row.stock || '-'}`
+          }
         },
         {
           title: '使用',
-          dataIndex: 'company_name',
-          sorter: true
+          dataIndex: 'employ',
+          sorter: true,
+          customRender: text => {
+            return text || '-'
+          }
         },
         {
           title: '使用率',
-          dataIndex: 'company_name',
-          sorter: true
+          dataIndex: 'employ_rate',
+          sorter: true,
+          customRender: (text, row) => {
+            return text ? `${text}%` : '-'
+          }
         },
         {
           title: '用户/店铺',
-          dataIndex: 'mobile',
-          customRender: text => {
+          dataIndex: 'realname',
+          customRender: (text, row) => {
             return (
               <div>
                 <div>{text}</div>
-                <div class="text">{text}</div>
+                <div class="two-Multi">{row.shops_name}</div>
               </div>
             )
           }
@@ -324,27 +346,41 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        const params = clonedeep(this.queryParam)
-        const time = params.time
-        let startDate = ''
-        let endDate = ''
-        if (time && time.length) {
-          startDate = time[0]
-          endDate = time[1]
+        const sortText = {
+          ascend: 'asc',
+          descend: 'desc'
         }
-        params.entry_stime = startDate
-        params.entry_etime = endDate
-        return getStaffList(Object.assign(parameter, params))
+        const params = cloneDeep(this.queryParam)
+        params.sort_field = parameter.sortField
+        params.sort_type = sortText[parameter.sortOrder]
+        const time = params.time
+        if (time && time.length) {
+          params.start_time = time[0]
+          params.end_time = time[1]
+        }
+        const available = params.available_type
+        if (available && available.length) {
+          params.available_type = available[0]
+          params.available_value = available[1]
+        }
+        return getShopCouponList(Object.assign(parameter, params))
       },
       selectedRowKeys: [],
-      companyOptions: [],
-      projectOptions: []
+      selectedRows: [],
+      projectOptions: [],
+      activeCoupons: [],
+      publishVisible: false
     }
   },
   computed: {
     rowSelection () {
       return {
         selectedRowKeys: this.selectedRowKeys,
+        getCheckboxProps: record => ({
+          props: {
+            disabled: record.coupon_status === '3'
+          }
+        }),
         onChange: this.onSelectChange
       }
     }
@@ -354,11 +390,11 @@ export default {
   },
   methods: {
     initOptions () {
-      this.getItemList()
+      this.getProjectList()
     },
     // 获取项目列表
-    getItemList () {
-      getItemList().then(({ data }) => {
+    getProjectList () {
+      getProjectList().then(({ data }) => {
         this.projectOptions = data || []
       })
     },
@@ -369,38 +405,72 @@ export default {
       this.queryParam = {}
       this.refreshTable(true)
     },
-    handleImport () {},
-    addEmployee () {
-      this.$refs['add-form'].resetFields()
+    confirm ({ title, content, fn }) {
+      this.$confirm({
+        title,
+        content,
+        icon: () => (
+          <a-icon
+            type="exclamation-circle"
+            style="color: #faad14"
+            theme="filled"
+          />
+        ),
+        cancelText: '取消',
+        okText: '确定',
+        onOk () {
+          fn()
+        },
+        onCancel () {}
+      })
     },
-    // 批量删除
-    batchRemove () {
+    // 批量操作
+    batchOperate (key) {
       if (this.selectedRowKeys.length) {
-        const that = this
-        this.$confirm({
-          title: '删除商家',
-          content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
-          icon: () => (
-            <a-icon
-              type="exclamation-circle"
-              style="color: #faad14"
-              theme="filled"
-            />
-          ),
-          cancelText: '取消',
-          okText: '确定',
-          onOk () {
-            that.handleRemove(that.selectedRowKeys.join(','))
-          },
-          onCancel () {}
-        })
+        const methodName = {
+          1: 'batchPublish',
+          2: 'batchFinish',
+          3: 'batchDelete'
+        }
+        this[methodName[key]]()
       } else {
         this.$message.warning('请选择后再进行操作')
       }
     },
-    handleRemove (id) {
-      delStaff({
-        staff_ids: id
+    batchPublish (value = this.selectedRows) {
+      this.activeCoupons = value
+      this.publishVisible = true
+    },
+    publishSuccess () {
+      // 选中selectedRowKeys去除删除的key
+      this.selectedRowKeys = this.selectedRowKeys.filter(
+        obj => this.activeCoupons.findIndex(coupon => coupon.id === obj) === -1
+      )
+      this.selectedRows = this.selectedRows.filter(
+        obj => this.activeCoupons.findIndex(coupon => coupon.id === obj) === -1
+      )
+      this.refreshTable()
+    },
+    // 结束操作
+    batchFinish (id = this.selectedRowKeys) {
+      const content =
+        id.length > 1 ? `，确定结束${id.length}个店铺券吗？` : '，确定结束吗？'
+      this.confirm({
+        title: '结束店铺券',
+        content: () => (
+          <div>
+            <span style="color: #f5222d;">结束后将停止领取该券</span>
+            {content}
+          </div>
+        ),
+        fn: () => {
+          this.finishCoupon(id.join(','))
+        }
+      })
+    },
+    finishCoupon (id) {
+      finishCoupon({
+        shops_coupon_id_text: id
       }).then(({ success }) => {
         if (success) {
           const ids = id.split(',')
@@ -408,60 +478,52 @@ export default {
           this.selectedRowKeys = this.selectedRowKeys.filter(
             obj => !ids.includes(obj)
           )
+          this.selectedRows = this.selectedRows.filter(
+            obj => !ids.includes(obj)
+          )
+          this.$message.success('提交成功')
+          this.refreshTable()
+        }
+      })
+    },
+    // 删除操作
+    batchDelete (id = this.selectedRowKeys) {
+      const content =
+        id.length > 1 ? `，确定删除${id.length}个店铺券吗？` : '，确定删除吗？'
+      this.confirm({
+        title: '删除店铺券',
+        content: () => (
+          <div>
+            <span style="color: #f5222d;">优惠券及其相关信息都会被删除</span>
+            {content}
+          </div>
+        ),
+        fn: () => {
+          this.deleteCoupon(this.selectedRowKeys.join(','))
+        }
+      })
+    },
+    deleteCoupon (id) {
+      deleteCoupon({
+        shops_coupon_id_text: id
+      }).then(({ success }) => {
+        if (success) {
+          const ids = id.split(',')
+          // 选中selectedRowKeys去除删除的key
+          this.selectedRowKeys = this.selectedRowKeys.filter(
+            obj => !ids.includes(obj)
+          )
+          this.selectedRows = this.selectedRows.filter(
+            obj => !ids.includes(obj)
+          )
           this.$message.success('删除成功')
           this.refreshTable()
         }
       })
     },
-    handleEdit (record) {
-      const form = clonedeep(record)
-      form.staff_id = form.id
-      form.company_id = form.company_id || undefined
-      form.division_id = form.division_id || undefined
-      form.post_id = form.post_id || undefined
-      form.item_ids = form.item_ids ? form.item_ids.split(',') : []
-      this.$refs['add-form'].setFieldsValue(form)
-    },
-    openTransfer () {
-      if (this.selectedRowKeys.length) {
-        this.transferForm = {
-          credits: '',
-          remark: '员工福利'
-        }
-        this.transferShow = true
-      } else {
-        this.$message.warning('请选择员工')
-      }
-    },
-    // 申请转账
-    awardCredits () {
-      this.$refs.transferForm.validate(valid => {
-        if (valid) {
-          awardCredits({
-            staff_ids: this.selectedRowKeys.join(','),
-            ...this.transferForm
-          }).then(({ success, message }) => {
-            if (success) {
-              this.$message.success(message)
-              this.transferShow = false
-            } else {
-              this.$message.error(message)
-            }
-          })
-        } else {
-          return false
-        }
-      })
-    },
-    submitSuccess () {
-      this.$refs.table.refresh()
-    },
-    importSuccess () {
-      this.$refs.table.refresh(true)
-      this.initOptions()
-    },
-    onSelectChange (selectedRowKeys) {
+    onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     }
   }
 }

@@ -1,33 +1,16 @@
 <template>
-  <a-card :bordered="false" title="审批进度" style="margin-top: 24px;">
+  <a-card :bordered="false" :title="title" style="margin-top: 24px;">
     <a-steps class="check-tab-steps" :current="current" progressDot>
       <a-step v-for="(step, index) in data" :key="index">
         <template v-slot:title>
-          <span>{{ step.leve }}</span>
+          <span>{{ step[titleKey] }}</span>
         </template>
         <template v-slot:description>
-          <div v-if="step.realname">
-            {{ step.realname }}
+          <div v-if="step[description]">
+            {{ step[description] }}
           </div>
-          <div
-            v-else-if="current === index && index !== data.length - 1"
-            style="color: #f5222d;"
-          >
-            暂无审批人员
-          </div>
-          <div v-else></div>
-          <div>{{ step.company }}</div>
-          <div>{{ step.leveTime }}</div>
-          <div
-            v-if="
-              !+step.status &&
-                current === index &&
-                index !== data.length - 1 &&
-                step.realname
-            "
-          >
-            <template v-if="step.hurryUp">已催</template>
-            <a v-else @click="prompt(step)">催一下</a>
+          <div v-if="step[remarkKey]">
+            {{ step[remarkKey] }}
           </div>
         </template>
       </a-step>
@@ -36,41 +19,33 @@
 </template>
 
 <script>
-import { promptMessage } from '@/api/common'
 export default {
-  name: 'OrderSteps',
+  name: 'StatusSteps',
   props: {
+    title: [String],
     data: {
       type: Array,
       default: () => []
     },
-    // 1=订单审核、2=合同审核、3=供应商审核
-    type: {
+    titleKey: {
       type: String,
-      default: '0'
+      default: 'title'
     },
-    id: {
-      type: [String, Number],
-      default: '0'
-    }
-  },
-  computed: {
-    current () {
-      const index = this.data.findIndex(obj => obj.status === 0)
-      return index === -1 ? this.data.length - 1 : index
+    description: {
+      type: String,
+      default: 'description'
+    },
+    remarkKey: {
+      type: String,
+      default: 'remarkKey'
+    },
+    current: {
+      type: [Number, String],
+      default: 0
     }
   },
   methods: {
-    // 催一下
-    prompt (step) {
-      promptMessage({
-        id: this.id,
-        auditType: this.type
-      }).then(res => {
-        step.hurryUp = 1
-        this.$message.success('发送成功')
-      })
-    }
+
   }
 }
 </script>

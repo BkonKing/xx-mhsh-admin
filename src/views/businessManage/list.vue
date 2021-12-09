@@ -9,9 +9,9 @@
                 <a-select v-model="queryParam.project_id" placeholder="请选择">
                   <a-select-option
                     v-for="item in projectOptions"
-                    :key="item.id"
-                    :value="item.id"
-                    >{{ item.item_name }}</a-select-option
+                    :key="item.project_id"
+                    :value="item.project_id"
+                    >{{ item.project_name }}</a-select-option
                   >
                 </a-select>
               </a-form-item>
@@ -55,12 +55,12 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" @click="addEmployee">
+        <a-button type="primary" @click="addShop">
           新增商家
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="batchRemove">
+            <a-menu-item key="1" @click="openShopPower">
               商家权限
             </a-menu-item>
             <a-menu-item key="2" @click="batchRemove">
@@ -112,10 +112,38 @@
     <store-form
       v-model="editForm"
       ref="add-form"
-      :company-options="companyOptions"
       :project-options="projectOptions"
       @submit="submitSuccess"
     ></store-form>
+    <a-modal
+      v-model="permissionVisible"
+      title="设置商家权限"
+      :width="600"
+      @ok="setShopsPower"
+      :destroyOnClose="true"
+    >
+      <div class="permission-modal-row">给3个店铺设置权限：</div>
+      <div class="permission-modal-row">
+        <span
+          v-for="item in selectedRows"
+          :key="item.id"
+          class="permission-modal-span"
+          >{{ item.shops_name }}</span
+        >
+      </div>
+      <div class="permission-modal-line"></div>
+      <div style="margin-bottom: 10px;">商家权限</div>
+      <div>
+        <a-form-model ref="form" :model="powerForm">
+          <a-form-model-item
+            prop="power"
+            :rules="{ required: true, message: '请选择权限' }"
+            style="margin-bottom: 0;"
+            ><a-checkbox-group v-model="powerForm.power" :options="powerOptions"
+          /></a-form-model-item>
+        </a-form-model>
+      </div>
+    </a-modal>
   </page-header-view>
 </template>
 
@@ -124,8 +152,14 @@
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm } from '@/components'
+import { validAForm } from '@/utils/util'
 import storeForm from './components/storeForm'
-import { getShopList } from '@/api/userManage/business'
+import {
+  getShopList,
+  getProjectList,
+  delShops,
+  setShopsPower
+} from '@/api/userManage/business'
 
 export default {
   name: 'storeList',
@@ -224,26 +258,40 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const sortText = {
-          ASC: 'asc',
-          DESC: 'desc'
+          ascend: 'asc',
+          descend: 'desc'
         }
         const params = cloneDeep(this.queryParam)
         params.sort_field = parameter.sortField
-        params.sort_field = sortText[parameter.sortOrder]
+        params.sort_type = sortText[parameter.sortOrder]
         const time = params.time
-        let startDate = ''
-        let endDate = ''
         if (time && time.length) {
-          startDate = time[0]
-          endDate = time[1]
+          params.start_time = time[0]
+          params.end_time = time[1]
         }
-        params.entry_stime = startDate
-        params.entry_etime = endDate
         return getShopList(Object.assign(parameter, params))
       },
       selectedRowKeys: [],
-      companyOptions: [],
-      projectOptions: []
+      selectedRows: [],
+      projectOptions: [],
+      permissionVisible: false,
+      powerForm: {
+        power: []
+      },
+      powerOptions: [
+        {
+          label: '提现申请',
+          value: '1'
+        },
+        {
+          label: '商铺券管理',
+          value: '2'
+        },
+        {
+          label: '扫码核销券',
+          value: '3'
+        }
+      ]
     }
   },
   computed: {
@@ -259,11 +307,11 @@ export default {
   },
   methods: {
     initOptions () {
-      this.getItemList()
+      this.getProjectList()
     },
     // 获取项目列表
-    getItemList () {
-      getItemList().then(({ data }) => {
+    getProjectList () {
+      getProjectList().then(({ data }) => {
         this.projectOptions = data || []
       })
     },
@@ -274,7 +322,7 @@ export default {
       this.queryParam = {}
       this.refreshTable(true)
     },
-    addEmployee () {
+    addShop () {
       this.$refs['add-form'].resetFields()
       this.editForm = true
     },
@@ -304,8 +352,8 @@ export default {
       }
     },
     handleRemove (id) {
-      delStaff({
-        staff_ids: id
+      delShops({
+        shops_id_text: id
       }).then(({ success }) => {
         if (success) {
           const ids = id.split(',')
@@ -324,50 +372,36 @@ export default {
       form.company_id = form.company_id || undefined
       form.division_id = form.division_id || undefined
       form.post_id = form.post_id || undefined
-      form.item_ids = form.item_ids ? form.item_ids.split(',') : []
+      form.power = form.power ? form.power.split(',') : []
       this.$refs['add-form'].setFieldsValue(form)
       this.editForm = true
-    },
-    openTransfer () {
-      if (this.selectedRowKeys.length) {
-        this.transferForm = {
-          credits: '',
-          remark: '员工福利'
-        }
-        this.transferShow = true
-      } else {
-        this.$message.warning('请选择员工')
-      }
-    },
-    // 申请转账
-    awardCredits () {
-      this.$refs.transferForm.validate(valid => {
-        if (valid) {
-          awardCredits({
-            staff_ids: this.selectedRowKeys.join(','),
-            ...this.transferForm
-          }).then(({ success, message }) => {
-            if (success) {
-              this.$message.success(message)
-              this.transferShow = false
-            } else {
-              this.$message.error(message)
-            }
-          })
-        } else {
-          return false
-        }
-      })
     },
     submitSuccess () {
       this.$refs.table.refresh()
     },
-    importSuccess () {
-      this.$refs.table.refresh(true)
-      this.initOptions()
+    openShopPower () {
+      if (this.selectedRowKeys.length) {
+        this.power = []
+        this.permissionVisible = true
+      } else {
+        this.$message.warning('请选择后再进行操作')
+      }
     },
-    onSelectChange (selectedRowKeys) {
+    setShopsPower () {
+      validAForm(this.$refs.form).then(async () => {
+        const { success } = await setShopsPower({
+          shops_id_text: this.selectedRowKeys.join(','),
+          power: this.powerForm.power
+        })
+        if (success) {
+          this.$message.success('提交成功')
+          this.permissionVisible = false
+        }
+      })
+    },
+    onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     }
   }
 }
@@ -391,5 +425,17 @@ export default {
 }
 .table-action a + a {
   margin-left: 10px;
+}
+.permission-modal-row {
+  margin-bottom: 18px;
+}
+.permission-modal-line {
+  width: 100%;
+  height: 1px;
+  margin: 10px 0;
+  background: #eee;
+}
+.permission-modal-span + .permission-modal-span::before {
+  content: "、";
 }
 </style>

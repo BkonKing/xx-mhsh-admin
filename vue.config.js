@@ -146,6 +146,15 @@ const vueConfig = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/zht': {
+        target: 'http://develop.mhshjy.com',
+        // target: 'https://test.tosolomo.com',
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/zht'
+        }
       }
     }
   },

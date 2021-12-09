@@ -7,7 +7,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="使用状态">
                 <a-select
-                  v-model="queryParam.item_id"
+                  v-model="queryParam.c_status"
                   :options="useStatus"
                   placeholder="请选择"
                 >
@@ -17,29 +17,28 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="券名称">
                 <a-input
-                  v-model="queryParam.staff_text"
+                  v-model="queryParam.coupon_name"
                   placeholder="请输入"
                 ></a-input>
               </a-form-item>
             </a-col>
-            <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="券编号">
-                  <a-input
-                    v-model="queryParam.staff_text"
-                    placeholder="请输入"
-                  ></a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="领取用户">
-                  <a-input
-                    v-model="queryParam.staff_text"
-                    placeholder="ID、昵称、姓名、手机号"
-                  ></a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="券编号">
+                <a-input
+                  v-model="queryParam.user_coupon_numb"
+                  placeholder="请输入"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="领取用户">
+                <a-input
+                  v-model="queryParam.user_text"
+                  placeholder="ID、昵称、姓名、手机号"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <!-- <a-col :md="8" :sm="24">
                 <a-form-item label="券状态">
                   <a-select
                     v-model="queryParam.item_id"
@@ -48,29 +47,41 @@
                   >
                   </a-select>
                 </a-form-item>
-              </a-col>
+              </a-col> -->
+            <a-col :md="8" :sm="24">
+              <a-form-item label="领取方式">
+                <a-select
+                  v-model="queryParam.couopn_mode"
+                  :options="pickupTypes"
+                  placeholder="请选择"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="支付订单">
                   <a-input
-                    v-model="queryParam.staff_text"
+                    v-model="queryParam.order_numb"
                     placeholder="请输入"
                   ></a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="领取方式">
-                  <a-select
-                    v-model="queryParam.item_id"
-                    :options="pickupTypes"
-                    placeholder="请选择"
-                  >
-                  </a-select>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="领取时间">
                   <a-range-picker
                     v-model="queryParam.time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="使用/过期">
+                  <a-range-picker
+                    v-model="queryParam.useTime"
                     valueFormat="YYYY-MM-DD HH:mm:ss"
                     :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                     :placeholder="['开始时间', '结束时间']"
@@ -105,153 +116,116 @@
 
 <script>
 // /store/list
-import moment from 'moment'
-import clonedeep from 'lodash.clonedeep'
 import { STable, AdvancedForm } from '@/components'
-import { getStaffList } from '@/api/userManage'
+import CouponRecords from '../mixins/CouponRecords'
+import clonedeep from 'lodash.clonedeep'
+import { getUserCouponList } from '@/api/userManage/business'
 
 export default {
   name: 'CouponRecords',
+  mixins: [CouponRecords],
   components: {
     STable,
     AdvancedForm
   },
   data () {
     return {
-      advanced: false,
-      defaultTime: moment('00:00:00', 'HH:mm:ss'),
-      defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
-      useStatus: [
-        {
-          label: '未使用',
-          value: '1'
-        },
-        {
-          label: '已使用',
-          value: '2'
-        },
-        {
-          label: '已过期',
-          value: '3'
-        }
-      ],
-      couponStatus: [
-        {
-          label: '未发布',
-          value: '1'
-        },
-        {
-          label: '领取中',
-          value: '2'
-        },
-        {
-          label: '已结束',
-          value: '3'
-        }
-      ],
-      pickupTypes: [
-        {
-          label: '免费领取',
-          value: '1'
-        },
-        {
-          label: '付费领取',
-          value: '2'
-        },
-        {
-          label: '系统发放',
-          value: '3'
-        }
-      ],
-      queryParam: {},
       columns: [
         {
           title: '券名称',
-          dataIndex: 'company_name',
-          customRender: text => {
-            return <a class="two-Multi">{text}</a>
+          dataIndex: 'shops_coupon_name',
+          customRender: (text, row) => {
+            return (
+              <a
+                class="two-Multi"
+                href={`/store/couponDetail?id=${row.shops_coupon_id}`}
+              >
+                {text}
+              </a>
+            )
           }
         },
         {
           title: '券编号',
-          dataIndex: 'division_name'
+          dataIndex: 'id'
         },
         {
           title: '使用状态',
-          dataIndex: 'staff_numb'
+          dataIndex: 'c_status_name'
         },
         {
           title: '领取方式',
-          dataIndex: 'post_name'
+          dataIndex: 'couopn_mode_name'
         },
         {
           title: '领取用户',
-          dataIndex: 'entry_time',
-          customRender: text => {
-            return <a class="two-Multi">{text}</a>
+          dataIndex: 'nickname',
+          customRender: (text, row) => {
+            return (
+              <a
+                class="two-Multi"
+                href={`/zht/user/user/getUserList?uid=${row.uid}`}
+              >
+                {text}
+              </a>
+            )
           }
         },
         {
           title: '姓名/手机号',
-          dataIndex: 'mobile',
-          customRender: text => {
+          dataIndex: 'realname',
+          customRender: (text, row) => {
             return (
               <div>
                 <div>{text}</div>
-                <div>{text}</div>
+                <div>{row.mobile}</div>
               </div>
             )
           }
         },
         {
           title: '支付金额',
-          dataIndex: 'post_name',
-          customRender (text) {
-            return text || '--'
-          }
+          dataIndex: 'pay_money'
         },
+        // 文档没有
         {
           title: '支付订单',
-          dataIndex: 'post_name',
-          customRender (text) {
-            return <a>{text}</a> || '--'
+          dataIndex: 'g_etime',
+          customRender: text => {
+            return <a>{text}</a>
           }
         },
         {
           title: '领取时间',
-          dataIndex: 'ctime',
+          dataIndex: 'ptime',
           sorter: true
         },
         {
           title: '使用/过期时间',
-          dataIndex: 'ctime',
-          sorter: true
+          dataIndex: 'sygq_time'
         }
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        const params = clonedeep(this.queryParam)
-        const time = params.time
-        let startDate = ''
-        let endDate = ''
-        if (time && time.length) {
-          startDate = time[0]
-          endDate = time[1]
+        const sortText = {
+          ascend: 'asc',
+          descend: 'desc'
         }
-        params.entry_stime = startDate
-        params.entry_etime = endDate
-        return getStaffList(Object.assign(parameter, params))
+        const params = clonedeep(this.queryParam)
+        params.sort_field = parameter.sortField
+        params.sort_type = sortText[parameter.sortOrder]
+        const time = params.time
+        if (time && time.length) {
+          params.ctime_start_time = time[0]
+          params.ctime_end_time = time[1]
+        }
+        const useTime = params.useTime
+        if (useTime && useTime.length) {
+          params.start_time = useTime[0]
+          params.end_time = useTime[1]
+        }
+        return getUserCouponList(Object.assign(parameter, params))
       }
-    }
-  },
-  created () {},
-  methods: {
-    refreshTable (bool = false) {
-      this.$refs.table.refresh(bool)
-    },
-    resetTable () {
-      this.queryParam = {}
-      this.refreshTable(true)
     }
   }
 }

@@ -14,17 +14,27 @@
       :wrapper-col="wrapperCol"
     >
       <h3>商家资料</h3>
-      <a-form-model-item label="商家用户" prop="uid_text" required>
+      <a-form-model-item
+        v-if="isEdit"
+        label="商家用户"
+      >{{this.form.nickname}}{{realName}} {{this.form.mobile}}</a-form-model-item>
+      <a-form-model-item v-else label="商家用户" prop="uid_text" required>
         <a-select
           v-model="form.uid_text"
+          mode="multiple"
+          label-in-value
           placeholder="请选择"
-          @change="handleCompanyChange"
+          :filter-option="false"
+          :not-found-content="fetching ? undefined : null"
+          @search="fetchUser"
+          @change="handleChangeProject"
         >
+          <a-spin v-if="fetching" slot="notFoundContent" size="small" />
           <a-select-option
-            v-for="item in companyOptions"
+            v-for="item in userOptions"
             :key="item.id"
             :value="item.id"
-            >{{ item.company_name }}</a-select-option
+            >{{ item.nickname }}({{ item.realname }})</a-select-option
           >
         </a-select>
         <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
@@ -32,13 +42,14 @@
       <a-form-model-item label="店铺归属" prop="project_id">
         <a-select
           v-model="form.project_id"
+          show-search
+          :filter-option="filterProject"
           placeholder="请选择"
-          @change="handleDivisionChange"
           ><a-select-option
-            v-for="item in divisionOptions"
-            :key="item.id"
-            :value="item.id"
-            >{{ item.division_name }}</a-select-option
+            v-for="item in projectOptions"
+            :key="item.project_id"
+            :value="item.project_id"
+            >{{ item.project_name }}</a-select-option
           ></a-select
         >
       </a-form-model-item>
@@ -46,6 +57,7 @@
         <a-input
           v-model="form.shops_name"
           :maxLength="20"
+          :disabled="isMulDisabled"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
@@ -53,14 +65,16 @@
         <a-input
           v-model="form.business_hours"
           :maxLength="20"
+          :disabled="isMulDisabled"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="联系方式" prop="phone" required>
+      <a-form-model-item label="联系方式" prop="phone">
         <a-input
           v-model="form.phone"
           v-number-input
           :maxLength="15"
+          :disabled="isMulDisabled"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
@@ -69,20 +83,22 @@
           v-model="form.shops_notice"
           :maxLength="50"
           rows="4"
+          :disabled="isMulDisabled"
           placeholder="请输入"
         />
       </a-form-model-item>
+      <h3>商家权限</h3>
+      <a-form-model-item label="权限" prop="power">
+        <a-checkbox-group v-model="form.power" :options="powerOptions" />
+      </a-form-model-item>
     </a-form-model>
-    <h3>商家权限</h3>
-    <a-form-model-item label="权限" prop="power">
-      <a-checkbox-group v-model="form.power" :options="powerOptions" />
-    </a-form-model-item>
   </a-modal>
 </template>
 
 <script>
 import clonedeep from 'lodash.clonedeep'
-import { editShops } from '@/api/userManage'
+import { debounce } from '@/utils/util'
+import { editShops, getUserList } from '@/api/userManage/business'
 
 const initialForm = {
   uid_text: undefined,
@@ -91,10 +107,8 @@ const initialForm = {
   shops_name: '',
   business_hours: '',
   phone: '',
-  entry_time: '',
-  item_ids: [],
-  shops_notice: '',
-  is_go_on: 0
+  power: [],
+  shops_notice: ''
 }
 export default {
   name: 'RepositoryForm',
@@ -106,18 +120,17 @@ export default {
     projectOptions: {
       type: Array,
       default: () => []
-    },
-    companyOptions: {
-      type: Array,
-      default: () => []
     }
   },
   data () {
+    this.fetchUser = debounce(this.fetchUser, 500)
     return {
       modalShow: this.value,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       form: clonedeep(initialForm),
+      fetching: false,
+      userOptions: [],
       powerOptions: [
         {
           label: '提现申请',
@@ -132,16 +145,27 @@ export default {
           value: '3'
         }
       ],
-      divisionOptions: [],
-      postOptions: [],
       rules: {
-        phone: [{ required: true, message: '请输入手机号' }]
+        uid_text: [{ required: true, message: '请选择商家用户' }],
+        project_id: [{ required: true, message: '请选择店铺归属' }]
       }
     }
   },
   computed: {
     title () {
-      return this.form.shops_id ? `编辑商家 - ${this.form.shops_name}` : '新增商家'
+      return this.isEdit
+        ? `编辑商家 - ${this.form.shops_name}`
+        : '新增商家'
+    },
+    isEdit () {
+      return this.form.id
+    },
+    isMulDisabled () {
+      return this.form.uid_text && this.form.uid_text.length > 1
+    },
+    realName () {
+      const realname = this.form.realname
+      return realname ? `(${realname})` : ''
     }
   },
   watch: {
@@ -153,13 +177,35 @@ export default {
     }
   },
   methods: {
-    handleCompanyChange () {
-      this.$set(this.form, 'project_id', undefined)
-      this.$set(this.form, 'post_id', undefined)
-      this.postOptions = []
+    filterProject (input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      )
     },
-    handleDivisionChange () {
-      this.$set(this.form, 'post_id', undefined)
+    handleChangeProject (value) {
+      if (value && value.length > 1) {
+        this.form.shops_name = ''
+        this.form.business_hours = ''
+        this.form.phone = ''
+        this.form.shops_notice = ''
+      }
+    },
+    fetchUser (value) {
+      const isNumber = /^\d+$/.test(value) && value.length > 5
+      const isChinese = /[\u4e00-\u9fa5]/gm.test(value)
+      if (!isNumber && !isChinese) {
+        return
+      }
+      this.data = []
+      this.fetching = true
+      getUserList({
+        user_text: value
+      }).then(({ data }) => {
+        this.userOptions = data.list
+        this.fetching = false
+      })
     },
     handleSubmit () {
       this.$refs.form.validate(valid => {
@@ -172,72 +218,35 @@ export default {
     },
     editShops () {
       const params = clonedeep(this.form)
-      params.item_ids = params.item_ids.join(',')
-      editShops(params).then(({ success, code, message, user_text }) => {
+      params.power = params.power.join(',')
+      if (!this.isEdit) {
+        params.uid_text = params.uid_text.map(obj => obj.id)
+      }
+      editShops(params).then(({ success, message }) => {
         if (success) {
           this.$message.success('保存成功')
           this.modalShow = false
           this.$emit('submit')
-        } else if (code === '205') {
-          this.mergeUser(message, user_text)
         } else {
           this.$message.error(message)
         }
-      })
-    },
-    // 合并相同手机号商家
-    mergeUser (message, text) {
-      const that = this
-      this.$confirm({
-        title: '合并账号',
-        content: () => {
-          return (
-            <div>
-              <div>{message}</div>
-              <div style="color: #f5222d;margin-top: 5px;">{text}</div>
-            </div>
-          )
-        },
-        icon: () => (
-          <a-icon
-            type="exclamation-circle"
-            style="color: #faad14"
-            theme="filled"
-          />
-        ),
-        cancelText: '取消',
-        okText: '确定',
-        onOk () {
-          that.form.is_go_on = 1
-          that.editShops()
-        },
-        onCancel () {}
       })
     },
     setFieldsValue (data) {
       this.form = data
     },
     resetFields () {
+      this.userOptions = []
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
-      this.divisionOptions = []
-      this.postOptions = []
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.form-title {
-  margin-bottom: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-}
-.companyIds-checkbox {
-  /deep/ .ant-checkbox-wrapper {
-    display: block;
-    margin-top: 5px;
-  }
+h3 {
+  margin-bottom: 24px;
+  font-weight: bold;
 }
 </style>

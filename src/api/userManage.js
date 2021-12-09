@@ -21,8 +21,9 @@ const userManageApi = {
   getUserTag: '/user/tag/user_tag_data'
 }
 
-const appUser = {
+export const appUser = {
   getUserList: '/user/user/new_getUserList',
+  getUserShopInfo: '/user/user/user_shops_info',
   editBatchUserTag: '/user/tag/batch_edit_user_tag',
   getUserInfo: '/zht/ajax/userInfo',
   getClogList: '/zht/ajax/new_getClogList'
@@ -206,6 +207,15 @@ export function getUserTag (data) {
 export function getAppUserList (data) {
   return request({
     url: appUser.getUserList,
+    method: 'post',
+    data
+  })
+}
+
+// 用户 商家信息
+export function getUserShopInfo (data) {
+  return request({
+    url: appUser.getUserShopInfo,
     method: 'post',
     data
   })

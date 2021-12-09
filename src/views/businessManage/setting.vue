@@ -13,13 +13,17 @@
             :options="revealOptions"
           ></a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="商家权限" prop="power">
+        <a-form-model-item
+          label="商家权限"
+          prop="power"
+          style="margin-bottom: 0;"
+        >
           <a-checkbox-group
             v-model="formData.power"
             :options="powerOptions"
           ></a-checkbox-group>
           <div class="alert-text">
-            若员工符合多种签到奖励，则奖励其中最高的
+            勾起代表统一开启，未勾起代表统一关闭
           </div>
         </a-form-model-item>
       </a-form-model>
@@ -66,10 +70,44 @@
             :options="useGoods"
           ></a-checkbox-group>
         </a-form-model-item>
+        <a-form-model-item
+          label="特别提醒"
+          prop="remind"
+          :label-col="{ span: 7 }"
+          :wrapper-col="{ span: 9 }"
+        >
+          <a-textarea v-model="formData.remind" />
+          <div class="alert-text">APP创建店铺券页面进行提示</div>
+        </a-form-model-item>
+        <a-form-model-item
+          label="领券banner"
+          prop="banner"
+          style="margin-bottom: 0;"
+        >
+          <upload-image
+            v-model="formData.banner"
+            maxLength="1"
+            :noHost="true"
+          ></upload-image>
+          <a-form-model-item prop="banner_text" style="margin-bottom: 0;">
+            <a-input
+              v-model="formData.banner_text"
+              addon-before="文案"
+              placeholder="可领$money$元优惠券"
+            >
+            </a-input>
+          </a-form-model-item>
+          <div class="alert-text">APP幸福币页面展示</div>
+        </a-form-model-item>
       </a-form-model>
     </a-card>
 
-    <footer-tool-bar style="width: 100% !important;">
+    <div style="height: 80px;"></div>
+
+    <footer-toolbar style="width: 100% !important;">
+      <!-- <a-button @click="submit">
+        取消
+      </a-button> -->
       <a-button
         type="primary"
         :disabled="isChange"
@@ -78,14 +116,14 @@
       >
         提交
       </a-button>
-    </footer-tool-bar>
+    </footer-toolbar>
   </page-header-view>
 </template>
 
 <script>
 // /store/setting
 import cloneDeep from 'lodash.clonedeep'
-import FooterToolBar from '@/components/FooterToolbar'
+import { UploadImage, FooterToolbar } from '@/components'
 import { validAForm } from '@/utils/util'
 import {
   getBusinessSetting,
@@ -95,7 +133,8 @@ import {
 export default {
   name: 'storeSetting',
   components: {
-    FooterToolBar
+    UploadImage,
+    FooterToolbar
   },
   data () {
     return {
@@ -106,7 +145,10 @@ export default {
         coupon_scene: [],
         coupon_mode: [],
         receive_coupon: [],
-        coupon_goods_type: []
+        coupon_goods_type: [],
+        remind: '',
+        banner: [],
+        banner_text: ''
       },
       revealOptions: [
         {
@@ -187,6 +229,7 @@ export default {
         }
       ],
       dataBackup: {},
+      isFistPage: false,
       isChange: false,
       loading: false
     }
@@ -203,14 +246,12 @@ export default {
       data.coupon_scene = data.coupon_scene.split(',')
       data.receive_coupon = data.receive_coupon.split(',')
       data.coupon_goods_type = data.coupon_goods_type.split(',')
+      data.banner = data.banner ? [data.banner] : []
       this.formData = data
     },
     submit () {
       const { basicForm, couponForm } = this.$refs
-      Promise.all([
-        validAForm(basicForm),
-        validAForm(couponForm)
-      ]).then(() => {
+      Promise.all([validAForm(basicForm), validAForm(couponForm)]).then(() => {
         this.setBusinessSetting()
       })
     },
@@ -222,6 +263,7 @@ export default {
       params.coupon_scene = params.power.join(',')
       params.receive_coupon = params.power.join(',')
       params.coupon_goods_type = params.power.join(',')
+      params.banner = params.banner.length ? params.banner[0] : ''
       const { success } = await setBusinessSetting(params)
       if (success) {
         this.$message.success('提交成功')
@@ -232,6 +274,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 表单行高
+/deep/ .ant-form-item-control,
+/deep/ .ant-form-item-label {
+  line-height: 32px;
+}
 .alert-text {
   color: #00000072;
   line-height: 1;
