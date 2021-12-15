@@ -236,6 +236,7 @@ export default {
       info: {
         log_data: []
       },
+      queryParam: {},
       publishVisible: false,
       columns: [
         {

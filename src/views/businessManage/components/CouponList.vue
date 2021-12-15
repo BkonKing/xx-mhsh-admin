@@ -154,12 +154,12 @@
             >
             <a
               v-if="['2', '3'].includes(record.coupon_status)"
-              @click="batchDelete([record.id])"
+              @click="batchDelete([record])"
               >删除</a
             >
             <a
               v-if="record.coupon_status === '1'"
-              @click="batchFinish([record.id])"
+              @click="batchFinish([record])"
               >结束</a
             >
           </template>
@@ -376,11 +376,6 @@ export default {
     rowSelection () {
       return {
         selectedRowKeys: this.selectedRowKeys,
-        getCheckboxProps: record => ({
-          props: {
-            disabled: record.coupon_status === '3'
-          }
-        }),
         onChange: this.onSelectChange
       }
     }
@@ -438,6 +433,15 @@ export default {
       }
     },
     batchPublish (value = this.selectedRows) {
+      if (value.length > 1) {
+        const status = value.some(record => {
+          return record.coupon_status !== '2'
+        })
+        if (status) {
+          this.$message.warning('已选择的项中包含不可操作')
+          return
+        }
+      }
       this.activeCoupons = value
       this.publishVisible = true
     },
@@ -452,9 +456,18 @@ export default {
       this.refreshTable()
     },
     // 结束操作
-    batchFinish (id = this.selectedRowKeys) {
+    batchFinish (value = this.selectedRows) {
+      if (value.length > 1) {
+        const status = value.some(record => {
+          return record.coupon_status !== '1'
+        })
+        if (status) {
+          this.$message.warning('已选择的项中包含不可操作')
+          return
+        }
+      }
       const content =
-        id.length > 1 ? `，确定结束${id.length}个店铺券吗？` : '，确定结束吗？'
+        value.length > 1 ? `，确定结束${value.length}个店铺券吗？` : '，确定结束吗？'
       this.confirm({
         title: '结束店铺券',
         content: () => (
@@ -464,14 +477,14 @@ export default {
           </div>
         ),
         fn: () => {
-          this.finishCoupon(id.join(','))
+          this.finishCoupon(value.map(obj => obj.id).join(','))
         }
       })
     },
     finishCoupon (id) {
       finishCoupon({
         shops_coupon_id_text: id
-      }).then(({ success }) => {
+      }).then(({ success, message }) => {
         if (success) {
           const ids = id.split(',')
           // 选中selectedRowKeys去除删除的key
@@ -483,13 +496,24 @@ export default {
           )
           this.$message.success('提交成功')
           this.refreshTable()
+        } else {
+          this.$message.error(message)
         }
       })
     },
     // 删除操作
-    batchDelete (id = this.selectedRowKeys) {
+    batchDelete (value = this.selectedRows) {
+      if (value.length > 1) {
+        const status = value.some(record => {
+          return !['2', '3'].includes(record.coupon_status)
+        })
+        if (status) {
+          this.$message.warning('已选择的项中包含不可操作')
+          return
+        }
+      }
       const content =
-        id.length > 1 ? `，确定删除${id.length}个店铺券吗？` : '，确定删除吗？'
+        value.length > 1 ? `，确定删除${value.length}个店铺券吗？` : '，确定删除吗？'
       this.confirm({
         title: '删除店铺券',
         content: () => (
@@ -499,14 +523,14 @@ export default {
           </div>
         ),
         fn: () => {
-          this.deleteCoupon(this.selectedRowKeys.join(','))
+          this.deleteCoupon(value.map(obj => obj.id).join(','))
         }
       })
     },
     deleteCoupon (id) {
       deleteCoupon({
         shops_coupon_id_text: id
-      }).then(({ success }) => {
+      }).then(({ success, message }) => {
         if (success) {
           const ids = id.split(',')
           // 选中selectedRowKeys去除删除的key
@@ -518,6 +542,8 @@ export default {
           )
           this.$message.success('删除成功')
           this.refreshTable()
+        } else {
+          this.$message.error(message)
         }
       })
     },

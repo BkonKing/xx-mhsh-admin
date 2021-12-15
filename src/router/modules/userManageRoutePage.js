@@ -34,6 +34,7 @@ export default {
       path: '/store',
       name: 'businessManage',
       component: RouteView,
+      redirect: '/store/list',
       meta: {
         title: '商家管理'
       },

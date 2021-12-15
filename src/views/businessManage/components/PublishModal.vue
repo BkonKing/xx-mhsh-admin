@@ -17,7 +17,7 @@
           v-for="item in active"
           :key="item.id"
           class="publish-modal-span"
-          >{{ item.coupon_name }}</span
+          >{{ item.coupon_name || '(暂无名称)' }}</span
         >
       </a-form-model-item>
       <a-form-model-item

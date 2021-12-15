@@ -52,7 +52,7 @@ export function getProjectList (data) {
 
 export function editShops (data) {
   return request({
-    url: businessApi.delShops,
+    url: businessApi.editShops,
     method: 'post',
     data
   })

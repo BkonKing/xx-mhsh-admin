@@ -122,13 +122,13 @@
       @ok="setShopsPower"
       :destroyOnClose="true"
     >
-      <div class="permission-modal-row">给3个店铺设置权限：</div>
+      <div class="permission-modal-row">给{{selectedRows.length}}个店铺设置权限：</div>
       <div class="permission-modal-row">
         <span
           v-for="item in selectedRows"
           :key="item.id"
           class="permission-modal-span"
-          >{{ item.shops_name }}</span
+          >{{ item.shops_name || '(暂无名称)' }}</span
         >
       </div>
       <div class="permission-modal-line"></div>
@@ -377,11 +377,11 @@ export default {
       this.editForm = true
     },
     submitSuccess () {
-      this.$refs.table.refresh()
+      this.refreshTable()
     },
     openShopPower () {
       if (this.selectedRowKeys.length) {
-        this.power = []
+        this.powerForm.power = []
         this.permissionVisible = true
       } else {
         this.$message.warning('请选择后再进行操作')
@@ -391,10 +391,11 @@ export default {
       validAForm(this.$refs.form).then(async () => {
         const { success } = await setShopsPower({
           shops_id_text: this.selectedRowKeys.join(','),
-          power: this.powerForm.power
+          power: this.powerForm.power.join(',')
         })
         if (success) {
           this.$message.success('提交成功')
+          this.refreshTable()
           this.permissionVisible = false
         }
       })

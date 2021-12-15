@@ -33,7 +33,6 @@
           <a-select-option
             v-for="item in userOptions"
             :key="item.id"
-            :value="item.id"
             >{{ item.nickname }}({{ item.realname }})</a-select-option
           >
         </a-select>
@@ -107,7 +106,7 @@ const initialForm = {
   shops_name: '',
   business_hours: '',
   phone: '',
-  power: [],
+  power: ['1', '2', '3'],
   shops_notice: ''
 }
 export default {
@@ -220,8 +219,11 @@ export default {
       const params = clonedeep(this.form)
       params.power = params.power.join(',')
       if (!this.isEdit) {
-        params.uid_text = params.uid_text.map(obj => obj.id)
+        params.uid_text = params.uid_text.map(obj => obj.key).join(',')
+      } else {
+        params.uid && (params.uid_text = params.uid)
       }
+      params.id && (params.shops_id = params.id)
       editShops(params).then(({ success, message }) => {
         if (success) {
           this.$message.success('保存成功')
