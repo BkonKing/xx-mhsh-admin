@@ -211,7 +211,7 @@
 import clonedeep from 'lodash.clonedeep'
 import { STable, AdvancedForm, DetailInfo } from '@/components'
 import PublishModal from './components/PublishModal'
-import StatusSteps from './components/StatusSteps'
+import StatusSteps from './components/statusSteps'
 import {
   getShopCouponInfo,
   getUserCouponList,
