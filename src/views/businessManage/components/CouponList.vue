@@ -313,10 +313,10 @@ export default {
         {
           title: '使用率',
           dataIndex: 'employ_rate',
-          sorter: true,
-          customRender: (text, row) => {
-            return text ? `${text}%` : '-'
-          }
+          sorter: true
+          // customRender: (text, row) => {
+          //   return text ? `${text}%` : '-'
+          // }
         },
         {
           title: '用户/店铺',

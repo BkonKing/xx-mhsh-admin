@@ -81,7 +81,7 @@
           />
         </a-col>
         <a-col flex="1">
-          <detail-info title="累计使用量" :value="`${info.employ_rate}%`" />
+          <detail-info title="累计使用量" :value="info.employ_rate" />
         </a-col>
       </a-row>
     </a-card>
@@ -109,7 +109,7 @@
           info.coupon_scene_name
         }}</a-descriptions-item>
         <a-descriptions-item label="领取方式">
-          {{ info.coupon_mode_text }} - 5幸福币</a-descriptions-item
+          {{ info.coupon_mode_text }}</a-descriptions-item
         >
         <a-descriptions-item label="可领取用户">{{
           info.available_text
@@ -277,10 +277,9 @@ export default {
           title: '支付金额',
           dataIndex: 'pay_money'
         },
-        // 文档没有
         {
           title: '支付订单',
-          dataIndex: 'g_etime',
+          dataIndex: 'pay_order_numb',
           customRender: text => {
             return <a>{text}</a>
           }
