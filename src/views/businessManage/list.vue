@@ -112,6 +112,7 @@
     <store-form
       v-model="editForm"
       ref="add-form"
+      :power-options="powerOptions"
       :project-options="projectOptions"
       @submit="submitSuccess"
     ></store-form>
@@ -158,7 +159,8 @@ import {
   getShopList,
   getProjectList,
   delShops,
-  setShopsPower
+  setShopsPower,
+  getBusinessSetting
 } from '@/api/userManage/business'
 
 export default {
@@ -279,10 +281,10 @@ export default {
         power: []
       },
       powerOptions: [
-        {
-          label: '提现申请',
-          value: '1'
-        },
+        // {
+        //   label: '提现申请',
+        //   value: '1'
+        // },
         {
           label: '商铺券管理',
           value: '2'
@@ -308,6 +310,14 @@ export default {
   methods: {
     initOptions () {
       this.getProjectList()
+      this.getBusinessSetting()
+    },
+    async getBusinessSetting () {
+      const { power_name_data: power } = await getBusinessSetting()
+      this.powerOptions = power.map(obj => ({
+        label: obj.text,
+        value: obj.key
+      }))
     },
     // 获取项目列表
     getProjectList () {

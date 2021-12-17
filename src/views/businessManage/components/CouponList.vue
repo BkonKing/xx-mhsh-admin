@@ -262,7 +262,7 @@ export default {
         },
         {
           title: '券名称',
-          dataIndex: 'shops_coupon_name',
+          dataIndex: 'coupon_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }

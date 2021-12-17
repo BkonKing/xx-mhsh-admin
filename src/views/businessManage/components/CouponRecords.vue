@@ -147,7 +147,7 @@ export default {
         },
         {
           title: '券编号',
-          dataIndex: 'id'
+          dataIndex: 'user_coupon_numb'
         },
         {
           title: '使用状态',
@@ -187,10 +187,9 @@ export default {
           title: '支付金额',
           dataIndex: 'pay_money'
         },
-        // 文档没有
         {
           title: '支付订单',
-          dataIndex: 'g_etime',
+          dataIndex: 'pay_order_numb',
           customRender: text => {
             return <a>{text}</a>
           }

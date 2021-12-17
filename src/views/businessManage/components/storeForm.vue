@@ -119,6 +119,10 @@ export default {
     projectOptions: {
       type: Array,
       default: () => []
+    },
+    powerOptions: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -130,20 +134,20 @@ export default {
       form: clonedeep(initialForm),
       fetching: false,
       userOptions: [],
-      powerOptions: [
-        {
-          label: '提现申请',
-          value: '1'
-        },
-        {
-          label: '商铺券管理',
-          value: '2'
-        },
-        {
-          label: '扫码核销券',
-          value: '3'
-        }
-      ],
+      // powerOptions: [
+      //   {
+      //     label: '提现申请',
+      //     value: '1'
+      //   },
+      //   {
+      //     label: '商铺券管理',
+      //     value: '2'
+      //   },
+      //   {
+      //     label: '扫码核销券',
+      //     value: '3'
+      //   }
+      // ],
       rules: {
         uid_text: [{ required: true, message: '请选择商家用户' }],
         project_id: [{ required: true, message: '请选择店铺归属' }]
