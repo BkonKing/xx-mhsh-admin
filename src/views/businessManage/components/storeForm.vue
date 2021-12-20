@@ -128,6 +128,7 @@ export default {
   data () {
     this.fetchUser = debounce(this.fetchUser, 500)
     return {
+      title: '新增商家',
       modalShow: this.value,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
@@ -155,11 +156,6 @@ export default {
     }
   },
   computed: {
-    title () {
-      return this.isEdit
-        ? `编辑商家 - ${this.form.shops_name}`
-        : '新增商家'
-    },
     isEdit () {
       return this.form.id
     },
@@ -173,6 +169,11 @@ export default {
   },
   watch: {
     value (val) {
+      if (val) {
+        this.title = this.isEdit
+          ? `编辑商家 ${this.form.shops_name ? `- ${this.form.shops_name}` : ''}`
+          : '新增商家'
+      }
       this.modalShow = val
     },
     modalShow (val) {
