@@ -243,12 +243,12 @@ export default {
             return (
               <div>
                 操作
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>删除即解除商家身份</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>删除即解除商家身份</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },

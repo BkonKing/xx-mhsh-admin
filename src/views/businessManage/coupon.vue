@@ -4,9 +4,10 @@
     :tab-active-key="tabActiveKey"
     @tabChange="handleTabChange"
   >
-    <coupon-list v-show="tabActiveKey === '0'"></coupon-list>
+    <coupon-list ref="coupon-list" v-show="tabActiveKey === '0'"></coupon-list>
     <coupon-records
       v-if="!first"
+      ref="coupon-records"
       v-show="tabActiveKey === '1'"
     ></coupon-records>
   </page-header-view>
@@ -34,10 +35,16 @@ export default {
     }
   },
   created () {},
+  activated () {
+    this.tabActiveKey === '0' ? this.refreshTable('coupon-list') : this.refreshTable('coupon-records')
+  },
   methods: {
     handleTabChange (key) {
       this.tabActiveKey = key
       this.first = false
+    },
+    refreshTable (ref) {
+      this.$refs[ref] && this.$refs[ref].refreshTable()
     }
   }
 }

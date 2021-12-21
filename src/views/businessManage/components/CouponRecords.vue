@@ -38,16 +38,6 @@
                 ></a-input>
               </a-form-item>
             </a-col>
-            <!-- <a-col :md="8" :sm="24">
-                <a-form-item label="券状态">
-                  <a-select
-                    v-model="queryParam.item_id"
-                    :options="couponStatus"
-                    placeholder="请选择"
-                  >
-                  </a-select>
-                </a-form-item>
-              </a-col> -->
             <a-col :md="8" :sm="24">
               <a-form-item label="领取方式">
                 <a-select
@@ -65,6 +55,29 @@
                     v-model="queryParam.order_numb"
                     placeholder="请输入"
                   ></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="券核销人">
+                  <a-input
+                    v-model="queryParam.shops_user_text"
+                    placeholder="手机号、姓名、昵称、ID"
+                  ></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="所属商户">
+                  <a-select
+                    v-model="queryParam.shops_id"
+                    placeholder="请选择"
+                  >
+                    <a-select-option
+                      v-for="item in shopList"
+                      :key="item.id"
+                      :value="item.id"
+                      >{{ item.shops_name || '暂无名称' }}</a-select-option
+                    >
+                  </a-select>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
@@ -92,7 +105,7 @@
             </template>
             <advanced-form
               v-model="advanced"
-              :md="8"
+              :md="16"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -119,7 +132,7 @@
 import { STable, AdvancedForm } from '@/components'
 import CouponRecords from '../mixins/CouponRecords'
 import clonedeep from 'lodash.clonedeep'
-import { getUserCouponList } from '@/api/userManage/business'
+import { getUserCouponList, getShopOptions } from '@/api/userManage/business'
 
 export default {
   name: 'CouponRecords',
@@ -130,18 +143,19 @@ export default {
   },
   data () {
     return {
+      shopList: [],
       columns: [
         {
           title: '券名称',
           dataIndex: 'shops_coupon_name',
           customRender: (text, row) => {
             return (
-              <a
+              <router-link
                 class="two-Multi"
-                href={`/store/couponDetail?id=${row.shops_coupon_id}`}
+                to={`/store/couponDetail?id=${row.shops_coupon_id}`}
               >
                 {text}
-              </a>
+              </router-link>
             )
           }
         },
@@ -165,6 +179,7 @@ export default {
               <a
                 class="two-Multi"
                 href={`/zht/user/user/getUserList?uid=${row.uid}`}
+                target="_blank"
               >
                 {text}
               </a>
@@ -190,8 +205,17 @@ export default {
         {
           title: '支付订单',
           dataIndex: 'pay_order_numb',
-          customRender: text => {
-            return <a>{text}</a>
+          customRender: (text, row) => {
+            const aDom = (
+              <a
+                class="two-Multi"
+                href={`/zht/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
+                target="_blank"
+              >
+                {text}
+              </a>
+            )
+            return text ? aDom : '--'
           }
         },
         {
@@ -202,6 +226,18 @@ export default {
         {
           title: '使用/过期时间',
           dataIndex: 'sygq_time'
+        },
+        {
+          title: '券核销人',
+          dataIndex: 'shops_realname',
+          customRender: (text, row) => {
+            return (
+              <div>
+                <div>{text}</div>
+                <div>{row.shops_mobile}</div>
+              </div>
+            )
+          }
         }
       ],
       // 加载数据方法 必须为 Promise 对象
@@ -225,6 +261,15 @@ export default {
         }
         return getUserCouponList(Object.assign(parameter, params))
       }
+    }
+  },
+  created () {
+    this.getShopList()
+  },
+  methods: {
+    async getShopList () {
+      const { data } = await getShopOptions()
+      this.shopList = data
     }
   }
 }

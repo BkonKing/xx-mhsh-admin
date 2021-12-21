@@ -15,7 +15,8 @@ export const businessApi = {
   deleteCoupon: '/business/shops_coupon/del_shops_coupon',
   getCouponInfo: '/business/shops_coupon/shops_coupon_info',
   getUserCouponList: '/business/shops_coupon/shops_user_coupon_list',
-  getShopCouponInfo: '/business/shops_coupon/shops_coupon_info'
+  getShopCouponInfo: '/business/shops_coupon/shops_coupon_info',
+  getShopOptions: '/business/shops_coupon/shops_select_list'
 }
 
 export function getBusinessSetting (data) {
@@ -133,6 +134,14 @@ export function getUserCouponList (data) {
 export function getShopCouponInfo (data) {
   return request({
     url: businessApi.getShopCouponInfo,
+    method: 'post',
+    data
+  })
+}
+
+export function getShopOptions (data) {
+  return request({
+    url: businessApi.getShopOptions,
     method: 'post',
     data
   })

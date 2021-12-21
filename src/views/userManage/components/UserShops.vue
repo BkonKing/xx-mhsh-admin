@@ -7,7 +7,7 @@
           {{ info.shops_id || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="店铺归属">
-          {{ info.project_name }}
+          {{ info.project_name || '美好生活家园总部' }}
         </a-descriptions-item>
         <a-descriptions-item label="创建时间">
           {{ info.ctime || "--" }}
@@ -104,6 +104,7 @@
         </a-form>
       </div>
       <s-table
+        v-if="info.shops_id"
         ref="table"
         size="default"
         rowKey="id"
@@ -211,6 +212,7 @@ export default {
       columns: [
         {
           title: '券状态',
+          width: 80,
           dataIndex: 'coupon_status_name'
         },
         {
@@ -252,7 +254,7 @@ export default {
           dataIndex: 'receive',
           sorter: true,
           customRender: (text, row) => {
-            return `${text || '-'}/${row.stock || '-'}`
+            return `${text === '--' ? '-' : text}/${row.stock === '--' ? '-' : row.stock}`
           }
         },
         {
@@ -266,14 +268,12 @@ export default {
         {
           title: '使用率',
           dataIndex: 'employ_rate',
-          sorter: true,
-          customRender: (text, row) => {
-            return text ? `${text}%` : '-'
-          }
+          sorter: true
         },
         {
           title: '创建时间',
           dataIndex: 'ctime',
+          width: 165,
           customRender (text) {
             return text || '--'
           }
@@ -306,7 +306,7 @@ export default {
         }
         return getShopCouponList(
           Object.assign(parameter, params, {
-            user_text: this.uid
+            shops_id: this.info.info
           })
         )
       },
@@ -321,7 +321,6 @@ export default {
       const { data } = await getUserShopInfo({
         uid: this.uid
       })
-      console.log(data)
       this.info = data || {}
     },
     handleDelete (id) {

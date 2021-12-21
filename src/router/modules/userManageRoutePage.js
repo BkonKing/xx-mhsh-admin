@@ -52,6 +52,7 @@ export default {
           name: 'storeCoupon',
           component: () => import('@/views/businessManage/coupon'),
           meta: {
+            keepAlive: true,
             title: '店铺券'
           }
         },

@@ -255,6 +255,7 @@ export default {
               <a
                 class="two-Multi"
                 href={`/zht/user/user/getUserList?uid=${row.uid}`}
+                target="_blank"
               >
                 {text}
               </a>
@@ -280,8 +281,17 @@ export default {
         {
           title: '支付订单',
           dataIndex: 'pay_order_numb',
-          customRender: text => {
-            return <a>{text}</a>
+          customRender: (text, row) => {
+            const aDom = (
+              <a
+                class="two-Multi"
+                href={`/zht/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
+                target="_blank"
+              >
+                {text}
+              </a>
+            )
+            return text ? aDom : '--'
           }
         },
         {
@@ -292,6 +302,18 @@ export default {
         {
           title: '使用/过期时间',
           dataIndex: 'sygq_time'
+        },
+        {
+          title: '券核销人',
+          dataIndex: 'shops_realname',
+          customRender: (text, row) => {
+            return (
+              <div>
+                <div>{text}</div>
+                <div>{row.shops_mobile}</div>
+              </div>
+            )
+          }
         }
       ],
       loadData: parameter => {

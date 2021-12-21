@@ -24,35 +24,35 @@
                 </a-select>
               </a-form-item>
             </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="券名称">
+                <a-input
+                  v-model="queryParam.coupon_name"
+                  placeholder="请输入"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="使用场景">
+                <a-select
+                  v-model="queryParam.coupon_scene"
+                  :options="useTypes"
+                  placeholder="请选择"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="领取方式">
+                <a-select
+                  v-model="queryParam.coupon_mode"
+                  :options="pickupTypes"
+                  placeholder="请选择"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
             <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="券名称">
-                  <a-input
-                    v-model="queryParam.coupon_name"
-                    placeholder="请输入"
-                  ></a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="使用场景">
-                  <a-select
-                    v-model="queryParam.coupon_scene"
-                    :options="useTypes"
-                    placeholder="请选择"
-                  >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="领取方式">
-                  <a-select
-                    v-model="queryParam.coupon_mode"
-                    :options="pickupTypes"
-                    placeholder="请选择"
-                  >
-                  </a-select>
-                </a-form-item>
-              </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="可领用户">
                   <user-cascader v-model="queryParam.available_type">
@@ -142,9 +142,7 @@
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <router-link
-              :to="`/store/couponDetail?id=${record.id}`"
-              target="_blank"
+            <router-link :to="`/store/couponDetail?id=${record.id}`"
               >查看</router-link
             >
             <a
@@ -258,6 +256,7 @@ export default {
       columns: [
         {
           title: '券状态',
+          width: 80,
           dataIndex: 'coupon_status_name'
         },
         {
@@ -299,7 +298,7 @@ export default {
           dataIndex: 'receive',
           sorter: true,
           customRender: (text, row) => {
-            return `${text || '-'}/${row.stock || '-'}`
+            return `${text === '--' ? '-' : text}/${row.stock === '--' ? '-' : row.stock}`
           }
         },
         {
@@ -333,6 +332,7 @@ export default {
         {
           title: '创建时间',
           dataIndex: 'ctime',
+          width: 165,
           customRender (text) {
             return text || '--'
           }
@@ -467,7 +467,9 @@ export default {
         }
       }
       const content =
-        value.length > 1 ? `，确定结束${value.length}个店铺券吗？` : '，确定结束吗？'
+        value.length > 1
+          ? `，确定结束${value.length}个店铺券吗？`
+          : '，确定结束吗？'
       this.confirm({
         title: '结束店铺券',
         content: () => (
@@ -513,7 +515,9 @@ export default {
         }
       }
       const content =
-        value.length > 1 ? `，确定删除${value.length}个店铺券吗？` : '，确定删除吗？'
+        value.length > 1
+          ? `，确定删除${value.length}个店铺券吗？`
+          : '，确定删除吗？'
       this.confirm({
         title: '删除店铺券',
         content: () => (
