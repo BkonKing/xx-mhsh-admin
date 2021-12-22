@@ -189,7 +189,7 @@ export default {
           title: '店铺名称',
           dataIndex: 'shops_name',
           customRender: text => {
-            return <div class="two-Multi">{text}</div>
+            return <div class="two-Multi">{text || '(暂无名称)'}</div>
           }
         },
         {
@@ -234,6 +234,7 @@ export default {
         {
           title: '添加时间',
           dataIndex: 'ctime',
+          sorter: true,
           customRender (text) {
             return text || '--'
           }

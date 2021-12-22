@@ -7,7 +7,7 @@
           {{ info.shops_id || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="店铺归属">
-          {{ info.project_name || '美好生活家园总部' }}
+          {{ info.project_name || "美好生活家园总部" }}
         </a-descriptions-item>
         <a-descriptions-item label="创建时间">
           {{ info.ctime || "--" }}
@@ -140,7 +140,6 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { AdvancedForm, STable } from '@/components'
 import UserCascader from '@/views/businessManage/components/UserCascader'
-import { getUserShopInfo } from '@/api/userManage'
 import { getShopCouponList, deleteCoupon } from '@/api/userManage/business'
 
 export default {
@@ -150,9 +149,9 @@ export default {
     UserCascader
   },
   props: {
-    uid: {
-      type: [Number, String],
-      default: ''
+    info: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -258,7 +257,9 @@ export default {
           dataIndex: 'receive',
           sorter: true,
           customRender: (text, row) => {
-            return `${text === '--' ? '-' : text}/${row.stock === '--' ? '-' : row.stock}`
+            return `${text === '--' ? '-' : text}/${
+              row.stock === '--' ? '-' : row.stock
+            }`
           }
         },
         {
@@ -313,20 +314,10 @@ export default {
             shops_id: this.info.shops_id
           })
         )
-      },
-      info: {}
+      }
     }
   },
-  created () {
-    this.getUserShopInfo()
-  },
   methods: {
-    async getUserShopInfo () {
-      const { data } = await getUserShopInfo({
-        uid: this.uid
-      })
-      this.info = data || {}
-    },
     handleDelete (id) {
       const that = this
       this.$confirm({
@@ -363,7 +354,7 @@ export default {
       })
     },
     refreshTable (bool = false) {
-      this.$refs.table.refresh(bool)
+      this.$refs.table && this.$refs.table.refresh(bool)
     },
     resetTable () {
       this.queryParam = {}

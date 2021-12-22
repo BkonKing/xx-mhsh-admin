@@ -52,7 +52,7 @@
       <user-shops
         ref="userShops"
         v-show="currentIndex === 2"
-        :uid="uid"
+        :info="shopInfo"
       ></user-shops>
     </a-drawer>
   </div>
@@ -62,7 +62,7 @@
 import info from './components/UserInfo'
 import happyMoney from './components/happyMoney'
 import UserShops from './components/UserShops'
-import { getUserInfo } from '@/api/userManage'
+import { getUserInfo, getUserShopInfo } from '@/api/userManage'
 export default {
   props: {
     uid: {
@@ -78,11 +78,21 @@ export default {
   data () {
     return {
       isShow: false,
-      titleArr: ['资料', '幸福币', '商家'],
       currentIndex: 0,
       userInfo: {},
       addressData: [],
-      houseData: []
+      houseData: [],
+      shopInfo: {}
+    }
+  },
+  computed: {
+    titleArr () {
+      const tabTitle = ['资料', '幸福币']
+      if (this.shopInfo.shops_id) {
+        tabTitle.push('商家')
+      }
+      console.log(tabTitle)
+      return tabTitle
     }
   },
   watch: {
@@ -94,8 +104,9 @@ export default {
     init () {
       this.currentIndex = 0
       this.getUserInfo()
+      this.getUserShopInfo()
       this.$nextTick(() => {
-        this.$refs.happyMoney.refresh()
+        this.$refs.happyMoney && this.$refs.happyMoney.refresh()
       })
     },
     getUserInfo () {
@@ -103,6 +114,15 @@ export default {
         this.userInfo = data
         this.addressData = address
         this.houseData = binding
+      })
+    },
+    async getUserShopInfo () {
+      const { data } = await getUserShopInfo({
+        uid: this.uid
+      })
+      this.shopInfo = Array.isArray(data) ? {} : data
+      this.$nextTick(() => {
+        this.$refs.userShops && this.$refs.userShops.refreshTable()
       })
     },
     afterVisibleChange (val) {
