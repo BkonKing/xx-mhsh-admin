@@ -144,25 +144,25 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="券状态">
                 <a-select
-                  v-model="queryParam.item_id"
-                  :options="couponStatus"
+                  v-model="queryParam.c_status"
+                  :options="useStatus"
                   placeholder="请选择"
                 >
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="支付订单">
+              <a-form-item label="券编号">
                 <a-input
-                  v-model="queryParam.order_numb"
+                  v-model="queryParam.user_coupon_numb"
                   placeholder="请输入"
                 ></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="券编号">
+              <a-form-item label="支付订单">
                 <a-input
-                  v-model="queryParam.user_coupon_numb"
+                  v-model="queryParam.order_numb"
                   placeholder="请输入"
                 ></a-input>
               </a-form-item>
@@ -241,7 +241,7 @@ export default {
       columns: [
         {
           title: '券编号',
-          dataIndex: 'id'
+          dataIndex: 'user_coupon_numb'
         },
         {
           title: '使用状态',

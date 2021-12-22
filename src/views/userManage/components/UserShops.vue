@@ -32,6 +32,7 @@
                 <a-select
                   v-model="queryParam.coupon_status"
                   :options="couponStatus"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -42,6 +43,7 @@
                 <a-select
                   v-model="queryParam.coupon_type"
                   :options="couponTypes"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -60,6 +62,7 @@
                 <a-select
                   v-model="queryParam.coupon_scene"
                   :options="useTypes"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -70,6 +73,7 @@
                 <a-select
                   v-model="queryParam.coupon_mode"
                   :options="pickupTypes"
+                  :getPopupContainer="triggerNode => triggerNode.parentNode"
                   placeholder="请选择"
                 >
                 </a-select>
@@ -217,7 +221,7 @@ export default {
         },
         {
           title: '券名称',
-          dataIndex: 'shops_coupon_name',
+          dataIndex: 'coupon_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
@@ -306,7 +310,7 @@ export default {
         }
         return getShopCouponList(
           Object.assign(parameter, params, {
-            shops_id: this.info.info
+            shops_id: this.info.shops_id
           })
         )
       },

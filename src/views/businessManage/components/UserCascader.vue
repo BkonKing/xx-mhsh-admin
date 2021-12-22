@@ -2,6 +2,7 @@
   <a-cascader
     v-model="data"
     :options="options"
+    :getPopupContainer="triggerNode => triggerNode.parentNode"
     change-on-select
     @change="handleChange"
     placeholder="请选择"
@@ -89,6 +90,9 @@ export default {
     // 获取项目列表
     getProjectList () {
       getProjectList().then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          data.shift()
+        }
         this.projectOptions = data || []
       })
     },
