@@ -188,7 +188,8 @@ export default {
       powerOptions: [
         {
           label: '提现申请',
-          value: '1'
+          value: '1',
+          disabled: true
         },
         {
           label: '店铺券管理',

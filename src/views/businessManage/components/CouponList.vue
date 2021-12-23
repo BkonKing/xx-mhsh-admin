@@ -256,7 +256,7 @@ export default {
       columns: [
         {
           title: '券状态',
-          width: 80,
+          width: 64,
           dataIndex: 'coupon_status_name'
         },
         {
@@ -332,7 +332,7 @@ export default {
         {
           title: '创建时间',
           dataIndex: 'ctime',
-          width: 165,
+          width: 149,
           customRender (text) {
             return text || '--'
           }
@@ -340,7 +340,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '140px',
+          width: '124px',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -375,6 +375,7 @@ export default {
   computed: {
     rowSelection () {
       return {
+        columnWidth: 40,
         selectedRowKeys: this.selectedRowKeys,
         onChange: this.onSelectChange
       }
@@ -577,5 +578,9 @@ export default {
 }
 .table-action a + a {
   margin-left: 10px;
+}
+/deep/ .ant-table-thead > tr > th,
+/deep/ .ant-table-tbody > tr > td {
+  padding:  16px 8px;
 }
 </style>

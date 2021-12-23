@@ -18,7 +18,10 @@
         <a-descriptions-item label="所属店铺">
           {{ info.shops_name || "--" }}
         </a-descriptions-item>
-        <a-descriptions-item label="有效期" :span="2">
+        <a-descriptions-item label="每人限领">
+          {{ info.limit_text || "--" }}
+        </a-descriptions-item>
+        <a-descriptions-item label="有效期">
           {{ info.youxiaoqi || "--" }}
         </a-descriptions-item>
       </a-descriptions>
