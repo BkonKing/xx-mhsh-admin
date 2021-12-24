@@ -152,7 +152,7 @@ export default {
             return (
               <a
                 class="two-Multi"
-                href={`/zht/user/store/detail?id=${row.shops_coupon_id}`}
+                href={`/zht/user/shop/detail?id=${row.shops_coupon_id}`}
                 target="_blank"
               >
                 {text}

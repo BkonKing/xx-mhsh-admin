@@ -119,7 +119,7 @@
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a
-              :href="`/zht/user/store/detail?id=${record.id}`"
+              :href="`/zht/user/shop/detail?id=${record.id}`"
               target="_blank"
               >查看</a
             >
@@ -311,7 +311,7 @@ export default {
         }
         return getShopCouponList(
           Object.assign(parameter, params, {
-            shops_id: this.info.shops_id
+            uid: this.info.uid
           })
         )
       }
