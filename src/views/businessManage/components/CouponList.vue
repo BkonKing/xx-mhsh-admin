@@ -322,10 +322,10 @@ export default {
           dataIndex: 'realname',
           customRender: (text, row) => {
             return (
-              <div>
+              <a href={`/zht/user/user/getUserList?uid=${row.uid}`} target="_blank">
                 <div>{text}</div>
                 <div class="two-Multi">{row.shops_name}</div>
-              </div>
+              </a>
             )
           }
         },
@@ -434,10 +434,12 @@ export default {
       }
     },
     batchPublish (value = this.selectedRows) {
-      if (value.length > 1) {
+      console.log(value)
+      if (value.length >= 1) {
         const status = value.some(record => {
           return record.coupon_status !== '2'
         })
+        console.log(status)
         if (status) {
           this.$message.warning('已选择的项中包含不可操作')
           return
@@ -458,7 +460,7 @@ export default {
     },
     // 结束操作
     batchFinish (value = this.selectedRows) {
-      if (value.length > 1) {
+      if (value.length >= 1) {
         const status = value.some(record => {
           return record.coupon_status !== '1'
         })
@@ -506,7 +508,7 @@ export default {
     },
     // 删除操作
     batchDelete (value = this.selectedRows) {
-      if (value.length > 1) {
+      if (value.length >= 1) {
         const status = value.some(record => {
           return !['2', '3'].includes(record.coupon_status)
         })

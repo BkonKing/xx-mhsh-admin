@@ -49,3 +49,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+/deep/ .ant-pro-page-header-wrap-children-content {
+  padding-bottom: 24px;
+}
+</style>

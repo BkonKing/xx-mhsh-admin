@@ -268,8 +268,16 @@ export default {
           value: '3'
         }
       ],
-      isChange: false,
+      isChange: true,
       loading: false
+    }
+  },
+  watch: {
+    formData: {
+      handler () {
+        this.isChange = false
+      },
+      deep: true
     }
   },
   created () {
@@ -286,6 +294,9 @@ export default {
       data.coupon_goods_type = data.coupon_goods_type.split(',')
       data.banner = data.banner ? [data.banner] : []
       this.formData = data
+      this.$nextTick(() => {
+        this.isChange = true
+      })
     },
     submit () {
       const { basicForm, couponForm } = this.$refs
@@ -308,6 +319,7 @@ export default {
       })
       if (success) {
         this.$message.success('提交成功')
+        this.isChange = true
       }
     }
   }

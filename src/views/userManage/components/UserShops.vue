@@ -118,10 +118,10 @@
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <router-link
-              :to="`/store/couponDetail?id=${record.id}`"
+            <a
+              :href="`/zht/user/store/detail?id=${record.id}`"
               target="_blank"
-              >查看</router-link
+              >查看</a
             >
             <a
               v-if="['1', '3'].includes(record.coupon_status)"
@@ -375,5 +375,8 @@ export default {
 }
 .table-action a + a {
   margin-left: 10px;
+}
+h3 {
+  font-weight: bold;
 }
 </style>

@@ -14,10 +14,10 @@
       :wrapper-col="wrapperCol"
     >
       <h3>商家资料</h3>
-      <a-form-model-item
-        v-if="isEdit"
-        label="商家用户"
-      >{{this.form.nickname}}{{realName}} {{this.form.mobile}}</a-form-model-item>
+      <a-form-model-item v-if="isEdit" label="商家用户"
+        >{{ this.form.nickname }}{{ realName }}
+        {{ this.form.mobile }}</a-form-model-item
+      >
       <a-form-model-item v-else label="商家用户" prop="uid_text" required>
         <a-select
           v-model="form.uid_text"
@@ -30,9 +30,7 @@
           @change="handleChangeProject"
         >
           <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-          <a-select-option
-            v-for="item in userOptions"
-            :key="item.id"
+          <a-select-option v-for="item in userOptions" :key="item.id"
             >{{ item.nickname }}({{ item.realname }})</a-select-option
           >
         </a-select>
@@ -106,7 +104,7 @@ const initialForm = {
   shops_name: '',
   business_hours: '',
   phone: '',
-  power: ['1', '2', '3'],
+  power: [],
   shops_notice: ''
 }
 export default {
@@ -171,8 +169,11 @@ export default {
     value (val) {
       if (val) {
         this.title = this.isEdit
-          ? `编辑商家 ${this.form.shops_name ? `- ${this.form.shops_name}` : ''}`
+          ? `编辑商家 ${
+              this.form.shops_name ? `- ${this.form.shops_name}` : ''
+            }`
           : '新增商家'
+        this.setDefaultPower()
       }
       this.modalShow = val
     },
@@ -181,6 +182,11 @@ export default {
     }
   },
   methods: {
+    setDefaultPower () {
+      if (this.isEdit) return
+      const value = this.powerOptions.map(obj => obj.value)
+      this.$set(this.form, 'power', value)
+    },
     filterProject (input, option) {
       return (
         option.componentOptions.children[0].text

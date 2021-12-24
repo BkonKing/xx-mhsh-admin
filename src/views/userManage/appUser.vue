@@ -483,8 +483,9 @@ export default {
   },
   mounted () {
     const uid = this.$route.query.uid
+    const isShop = this.$route.query.isShop
     if (uid) {
-      this.check({ id: uid })
+      this.check({ id: uid, lastPageShop: isShop })
     }
   },
   methods: {
@@ -572,9 +573,14 @@ export default {
       this.$refs.table.refresh(true)
     },
     // 查看
-    check ({ id }) {
+    check ({ id, lastPageShop }) {
       this.activeUid = id
       this.$refs.chekcDrawer.isShow = true
+      if (lastPageShop) {
+        this.$nextTick(() => {
+          this.$refs.chekcDrawer.currentIndex = 2
+        })
+      }
     },
     onChange (page, size) {
       console.log('Page: ', page)

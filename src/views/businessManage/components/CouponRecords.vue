@@ -150,12 +150,13 @@ export default {
           dataIndex: 'shops_coupon_name',
           customRender: (text, row) => {
             return (
-              <router-link
+              <a
                 class="two-Multi"
-                to={`/store/couponDetail?id=${row.shops_coupon_id}`}
+                href={`/zht/user/store/detail?id=${row.shops_coupon_id}`}
+                target="_blank"
               >
                 {text}
-              </router-link>
+              </a>
             )
           }
         },

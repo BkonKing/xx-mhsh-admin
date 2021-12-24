@@ -84,7 +84,7 @@
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a
-              :href="`/zht/user/user/getUserList?uid=${record.uid}`"
+              :href="`/zht/user/user/getUserList?uid=${record.uid}&isShop=1`"
               target="_blank"
               >查看</a
             >
@@ -244,12 +244,12 @@ export default {
             return (
               <div>
                 操作
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>删除即解除商家身份</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>删除即解除商家身份</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -420,6 +420,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-pro-page-header-wrap-children-content {
+  padding-bottom: 24px;
+}
 .table-page-search-wrapper
   /deep/
   .ant-form-inline

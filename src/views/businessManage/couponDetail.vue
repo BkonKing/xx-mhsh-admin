@@ -16,7 +16,7 @@
           {{ info.menkan || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="所属店铺">
-          {{ info.shops_name || "--" }}
+          {{ info.shops_name || "(暂无名称)" }}
         </a-descriptions-item>
         <a-descriptions-item label="每人限领">
           {{ info.limit_text || "--" }}
@@ -84,7 +84,7 @@
           />
         </a-col>
         <a-col flex="1">
-          <detail-info title="累计使用量" :value="info.employ_rate" />
+          <detail-info title="累计使用率" :value="info.employ_rate" />
         </a-col>
       </a-row>
     </a-card>
@@ -463,6 +463,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-pro-page-header-wrap-children-content {
+  padding-bottom: 24px;
+}
 /deep/ .ant-descriptions-item {
   vertical-align: top;
   > span {
