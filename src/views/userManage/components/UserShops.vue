@@ -12,7 +12,10 @@
         <a-descriptions-item label="创建时间">
           {{ info.ctime || "--" }}
         </a-descriptions-item>
-        <a-descriptions-item label="营业时间" :span="3">
+        <a-descriptions-item label="店铺名称">
+          {{ info.shops_name || "--" }}
+        </a-descriptions-item>
+        <a-descriptions-item label="营业时间" :span="2">
           {{ info.business_hours || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="店铺地址" :span="3">

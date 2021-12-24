@@ -324,7 +324,7 @@ export default {
             return (
               <a href={`/zht/user/user/getUserList?uid=${row.uid}`} target="_blank">
                 <div>{text}</div>
-                <div class="two-Multi">{row.shops_name}</div>
+                <div class="text-td-overflow">{row.shops_name}</div>
               </a>
             )
           }

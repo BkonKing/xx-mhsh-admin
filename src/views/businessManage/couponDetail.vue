@@ -120,13 +120,16 @@
         <a-descriptions-item label="可使用商品">{{
           info.goods_text
         }}</a-descriptions-item>
-        <a-descriptions-item label="发布时间">{{
-          info.fb_time
-        }}</a-descriptions-item>
+        <a-descriptions-item label="发布时间">
+          <div>
+            <div>{{ info.fb_time }}</div>
+            <div>{{ info.dsfb_time }}</div>
+          </div></a-descriptions-item
+        >
         <a-descriptions-item label="结束时间"
           ><div>
             <div>{{ info.sj_etime }}</div>
-            <div>{{ info.ds_etime ? `${info.ds_etime}（定时结束）` : '' }}</div>
+            <div>{{ info.ds_etime ? `${info.ds_etime}（定时结束）` : "" }}</div>
           </div></a-descriptions-item
         >
       </a-descriptions>
@@ -211,7 +214,7 @@
 
 <script>
 // /store/couponDetail
-import clonedeep from 'lodash.clonedeep'
+import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm, DetailInfo } from '@/components'
 import PublishModal from './components/PublishModal'
 import StatusSteps from './components/statusSteps'
@@ -222,7 +225,6 @@ import {
   deleteCoupon
 } from '@/api/userManage/business'
 import CouponRecords from './mixins/CouponRecords'
-import cloneDeep from 'lodash.clonedeep'
 
 export default {
   name: 'storeCouponDetail',
@@ -325,7 +327,7 @@ export default {
           ascend: 'asc',
           descend: 'desc'
         }
-        const params = clonedeep(this.queryParam)
+        const params = cloneDeep(this.queryParam)
         params.sort_field = parameter.sortField
         params.sort_type = sortText[parameter.sortOrder]
         const time = params.time

@@ -31,7 +31,7 @@
         >
           <a-spin v-if="fetching" slot="notFoundContent" size="small" />
           <a-select-option v-for="item in userOptions" :key="item.id"
-            >{{ item.nickname }}({{ item.realname }})</a-select-option
+            >{{ item.name_text }}</a-select-option
           >
         </a-select>
         <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
@@ -50,7 +50,7 @@
           ></a-select
         >
       </a-form-model-item>
-      <a-form-model-item label="店铺名称" prop="shops_name">
+      <a-form-model-item label="店铺名称" prop="shops_name" :required="isEdit" :rules="{ required: isEdit, message: '请输入店铺名称' }">
         <a-input
           v-model="form.shops_name"
           :maxLength="20"
@@ -155,7 +155,7 @@ export default {
   },
   computed: {
     isEdit () {
-      return this.form.id
+      return !!this.form.id
     },
     isMulDisabled () {
       return this.form.uid_text && this.form.uid_text.length > 1
