@@ -233,10 +233,11 @@ export default {
           dataIndex: 'shops_realname',
           customRender: (text, row) => {
             return (
-              <div>
+              <a href={`/zht/user/user/getUserList?uid=${row.shops_uid}`}
+                target="_blank">
                 <div>{text}</div>
                 <div>{row.shops_mobile}</div>
-              </div>
+              </a>
             )
           }
         }

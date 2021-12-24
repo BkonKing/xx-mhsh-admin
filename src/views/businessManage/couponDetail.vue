@@ -126,7 +126,7 @@
         <a-descriptions-item label="结束时间"
           ><div>
             <div>{{ info.sj_etime }}</div>
-            <div>{{ info.ds_etime }}</div>
+            <div>{{ info.ds_etime ? `${info.ds_etime}（定时结束）` : '' }}</div>
           </div></a-descriptions-item
         >
       </a-descriptions>
@@ -222,6 +222,7 @@ import {
   deleteCoupon
 } from '@/api/userManage/business'
 import CouponRecords from './mixins/CouponRecords'
+import cloneDeep from 'lodash.clonedeep'
 
 export default {
   name: 'storeCouponDetail',
@@ -355,14 +356,32 @@ export default {
     },
     stepsData () {
       const stepArr = ['创建', '发布', '领取', '结束']
+      const logData = cloneDeep(this.info.log_data)
+      const { ds_etime: dsEndTime } = this.info
+      if (+this.info.coupon_status !== 3 && this.info.ds_etime) {
+        for (let index = logData.length; index < 4; index++) {
+          if (index === 3) {
+            logData.push({
+              ctime: dsEndTime,
+              name: '(定时结束)'
+            })
+            return
+          }
+          logData.push({})
+        }
+      }
       return stepArr.map((obj, index) => ({
         ...this.info.log_data[index],
         title: obj
       }))
     },
     stepCurrent () {
-      const len = this.info.log_data.length
-      return len ? len - 1 : 0
+      const step = {
+        1: 2,
+        2: 1,
+        3: 3
+      }
+      return step[this.info.coupon_status]
     }
   },
   created () {
