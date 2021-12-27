@@ -23,7 +23,8 @@ export function getBusinessSetting (data) {
   return request({
     url: businessApi.getBusinessSetting,
     method: 'post',
-    data
+    data,
+    baseURL: process.env.VUE_APP_API_BASE_URL
   })
 }
 
@@ -47,7 +48,8 @@ export function getProjectList (data) {
   return request({
     url: businessApi.getProjectList,
     method: 'post',
-    data
+    data,
+    baseURL: process.env.VUE_APP_API_BASE_URL
   })
 }
 

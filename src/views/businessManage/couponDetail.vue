@@ -7,7 +7,7 @@
         </a-descriptions-item>
         <a-descriptions-item label="创建人">
           <a
-            :href="`/zht/user/user/getUserList?uid=${info.uid}`"
+            :href="`${userUrl}?uid=${info.uid}`"
             target="_blank"
             >{{ info.nickname }}{{ realname }}</a
           >
@@ -214,6 +214,7 @@
 
 <script>
 // /store/couponDetail
+import { mapGetters } from 'vuex'
 import cloneDeep from 'lodash.clonedeep'
 import { STable, AdvancedForm, DetailInfo } from '@/components'
 import PublishModal from './components/PublishModal'
@@ -260,7 +261,7 @@ export default {
             return (
               <a
                 class="two-Multi"
-                href={`/zht/user/user/getUserList?uid=${row.uid}`}
+                href={`${this.userUrl}?uid=${row.uid}`}
                 target="_blank"
               >
                 {text}
@@ -291,7 +292,7 @@ export default {
             const aDom = (
               <a
                 class="two-Multi"
-                href={`/zht/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
+                href={`${this.baseUrl}/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
                 target="_blank"
               >
                 {text}
@@ -344,6 +345,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isParentProject']),
+    baseUrl () {
+      return this.isParentProject ? '/zht' : '/xmht'
+    },
+    userUrl () {
+      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+    },
     realname () {
       const realname = this.info.realname
       return realname ? `(${realname})` : ''

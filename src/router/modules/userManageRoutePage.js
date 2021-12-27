@@ -20,6 +20,14 @@ export default {
         title: '真实用户'
       }
     },
+    {
+      path: '/userManage/appUserChild',
+      name: 'appUserChild',
+      component: () => import('@/views/userManage/appUserChild'),
+      meta: {
+        title: '成员管理'
+      }
+    },
     // 用户标签
     {
       path: '/user/label',

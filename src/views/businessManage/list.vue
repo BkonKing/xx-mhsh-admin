@@ -4,7 +4,7 @@
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
+            <a-col v-if="isParentProject" :md="8" :sm="24">
               <a-form-item label="店铺归属">
                 <a-select v-model="queryParam.project_id" placeholder="请选择">
                   <a-select-option
@@ -44,7 +44,7 @@
               </a-form-item>
             </a-col>
             <advanced-form
-              :md="16"
+              :md="isParentProject ? 16 : 24"
               :isAdvanced="false"
               @reset="resetTable"
               @search="refreshTable(true)"
@@ -84,7 +84,7 @@
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a
-              :href="`/zht/user/user/getUserList?uid=${record.uid}&isShop=1`"
+              :href="`${userUrl}?uid=${record.uid}&isShop=1`"
               target="_blank"
               >查看</a
             >
@@ -152,6 +152,7 @@
 // /store/list
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
+import { mapGetters } from 'vuex'
 import { STable, AdvancedForm } from '@/components'
 import { validAForm } from '@/utils/util'
 import storeForm from './components/storeForm'
@@ -272,7 +273,10 @@ export default {
           params.start_time = time[0]
           params.end_time = time[1]
         }
-        return getShopList(Object.assign(parameter, params))
+        if (!this.isParentProject) {
+          params.project_id = this.projectId
+        }
+        return getShopList({ ...parameter, ...params })
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -298,6 +302,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
+    userUrl () {
+      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+    },
     rowSelection () {
       return {
         selectedRowKeys: this.selectedRowKeys,

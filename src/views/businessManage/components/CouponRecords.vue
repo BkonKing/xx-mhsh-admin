@@ -129,6 +129,7 @@
 
 <script>
 // /store/list
+import { mapGetters } from 'vuex'
 import { STable, AdvancedForm } from '@/components'
 import CouponRecords from '../mixins/CouponRecords'
 import clonedeep from 'lodash.clonedeep'
@@ -152,7 +153,7 @@ export default {
             return (
               <a
                 class="two-Multi"
-                href={`/zht/user/shop/detail?id=${row.shops_coupon_id}`}
+                href={`${this.baseUrl}/user/shop/detail?id=${row.shops_coupon_id}`}
                 target="_blank"
               >
                 {text}
@@ -179,7 +180,7 @@ export default {
             return (
               <a
                 class="two-Multi"
-                href={`/zht/user/user/getUserList?uid=${row.uid}`}
+                href={`${this.userUrl}?uid=${row.uid}`}
                 target="_blank"
               >
                 {text}
@@ -210,7 +211,7 @@ export default {
             const aDom = (
               <a
                 class="two-Multi"
-                href={`/zht/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
+                href={`${this.baseUrl}/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
                 target="_blank"
               >
                 {text}
@@ -233,7 +234,7 @@ export default {
           dataIndex: 'shops_realname',
           customRender: (text, row) => {
             return (
-              <a href={`/zht/user/user/getUserList?uid=${row.shops_uid}`}
+              <a href={`${this.userUrl}?uid=${row.shops_uid}`}
                 target="_blank">
                 <div>{text}</div>
                 <div>{row.shops_mobile}</div>
@@ -265,12 +266,23 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
+    baseUrl () {
+      return this.isParentProject ? '/zht' : '/xmht'
+    },
+    userUrl () {
+      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+    }
+  },
   created () {
     this.getShopList()
   },
   methods: {
     async getShopList () {
-      const { data } = await getShopOptions()
+      const { data } = await getShopOptions({
+        project_id: this.projectId
+      })
       this.shopList = data
     }
   }

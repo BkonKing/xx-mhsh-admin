@@ -94,6 +94,7 @@
 
 <script>
 import clonedeep from 'lodash.clonedeep'
+import { mapGetters } from 'vuex'
 import { debounce } from '@/utils/util'
 import { editShops, getUserList } from '@/api/userManage/business'
 
@@ -133,20 +134,6 @@ export default {
       form: clonedeep(initialForm),
       fetching: false,
       userOptions: [],
-      // powerOptions: [
-      //   {
-      //     label: '提现申请',
-      //     value: '1'
-      //   },
-      //   {
-      //     label: '商铺券管理',
-      //     value: '2'
-      //   },
-      //   {
-      //     label: '扫码核销券',
-      //     value: '3'
-      //   }
-      // ],
       rules: {
         uid_text: [{ required: true, message: '请选择商家用户' }],
         project_id: [{ required: true, message: '请选择店铺归属' }]
@@ -154,6 +141,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
     isEdit () {
       return !!this.form.id
     },
@@ -252,6 +240,9 @@ export default {
       this.userOptions = []
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
+      if (!this.isParentProject) {
+        this.form.project_id = this.projectId
+      }
     }
   }
 }

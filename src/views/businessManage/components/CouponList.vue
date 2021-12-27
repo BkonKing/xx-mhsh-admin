@@ -59,7 +59,7 @@
                   </user-cascader>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
+              <a-col v-if="isParentProject" :md="8" :sm="24">
                 <a-form-item label="店铺归属">
                   <a-select
                     v-model="queryParam.project_id"
@@ -104,7 +104,7 @@
             </template>
             <advanced-form
               v-model="advanced"
-              :md="16"
+              :md="isParentProject ? 16 : 24"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -176,6 +176,7 @@
 // /store/list
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
+import { mapGetters } from 'vuex'
 import { STable, AdvancedForm } from '@/components'
 import UserCascader from './UserCascader'
 import PublishModal from './PublishModal'
@@ -322,7 +323,7 @@ export default {
           dataIndex: 'realname',
           customRender: (text, row) => {
             return (
-              <a href={`/zht/user/user/getUserList?uid=${row.uid}`} target="_blank">
+              <a href={`${this.userUrl}?uid=${row.uid}`} target="_blank">
                 <div>{text}</div>
                 <div class="text-td-overflow">{row.shops_name}</div>
               </a>
@@ -363,7 +364,10 @@ export default {
           params.available_type = available[0]
           params.available_value = available[1]
         }
-        return getShopCouponList(Object.assign(parameter, params))
+        // if (!this.isParentProject) {
+        //   params.project_id = this.projectId
+        // }
+        return getShopCouponList({ ...parameter, ...params })
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -373,6 +377,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
+    userUrl () {
+      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+    },
     rowSelection () {
       return {
         columnWidth: 40,
