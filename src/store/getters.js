@@ -9,7 +9,9 @@ const getters = {
   welcome: state => state.user.welcome,
   roles: state => state.user.roles,
   userInfo: state => state.user.info,
-  multiTab: state => state.app.multiTab
+  multiTab: state => state.app.multiTab,
+  projectId: state => state.user.projectId,
+  isParentProject: state => !+state.user.projectId
 }
 
 export default getters

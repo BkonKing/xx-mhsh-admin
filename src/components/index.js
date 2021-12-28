@@ -14,6 +14,7 @@ import Trend from '@/components/Trend'
 import AdvancedForm from '@/components/AdvancedForm'
 import PageHeader from '@/components/PageHeader'
 import UploadImage from '@/components/UploadImage'
+import DetailInfo from '@/components/DetailInfo'
 
 export {
   FooterToolbar,
@@ -27,5 +28,6 @@ export {
   AdvancedForm,
   PageHeader,
   UploadImage,
+  DetailInfo,
   Timewait
 }

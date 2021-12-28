@@ -1,36 +1,29 @@
 <template>
   <div class="addWeskitUser">
-    <a-modal
-v-model="isShow"
-             ok-text="保存"
-             cancel-text="关闭"
-             @ok="handleOk">
+    <a-modal v-model="isShow" ok-text="保存" cancel-text="关闭" @ok="handleOk">
       <template #title>
-        <div>
-
-        </div>
+        <div></div>
       </template>
       <a-form-model
-ref="form"
-                    :model='form'
-                    :rules='rules'
-                    :label-col="labelCol"
-                    :wrapper-col="wrapperCol">
-        <a-form-model-item label='头像'>
+        ref="form"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item label="头像">
           <div class="title">建议尺寸200*200;大小不超过2MB</div>
           <a-upload
-          multiple
-                 name="avatar"
-                    list-type="picture-card"
-                    class="avatar-uploader"
-                    :show-upload-list="false"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    :before-upload="beforeUpload"
-                    @change="handleChange">
-            <img
-v-if="imageUrl"
-                 :src="imageUrl"
-                 alt="avatar" />
+            multiple
+            name="avatar"
+            list-type="picture-card"
+            class="avatar-uploader"
+            :show-upload-list="false"
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :before-upload="beforeUpload"
+            @change="handleChange"
+          >
+            <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
             <div v-else>
               <a-icon :type="loading ? 'loading' : 'plus'" />
               <div class="ant-upload-text">
@@ -39,9 +32,7 @@ v-if="imageUrl"
             </div>
           </a-upload>
         </a-form-model-item>
-        <a-form-model-item
-prop='value'
-                           label='昵称'>
+        <a-form-model-item prop="value" label="昵称">
           <a-input v-model="form.value"></a-input>
         </a-form-model-item>
       </a-form-model>
@@ -95,7 +86,8 @@ export default {
       }
     },
     beforeUpload (file) {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isJpgOrPng =
+        file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {
         this.$message.error('You can only upload JPG file!')
       }
@@ -109,7 +101,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 /deep/ .ant-modal-header {
   height: 50px !important;
 }

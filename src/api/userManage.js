@@ -1,4 +1,6 @@
+import Cookies from 'js-cookie'
 import request from '@/utils/request'
+
 const userManageApi = {
   getList: '/user/user/getList',
   getStaffList: '/staff/staff/staff_list',
@@ -21,11 +23,15 @@ const userManageApi = {
   getUserTag: '/user/tag/user_tag_data'
 }
 
-const appUser = {
+export const appUser = {
   getUserList: '/user/user/new_getUserList',
+  getMemberList: '/household/member/getMemberList',
+  getUserShopInfo: '/user/user/user_shops_info',
   editBatchUserTag: '/user/tag/batch_edit_user_tag',
-  getUserInfo: '/zht/ajax/userInfo',
-  getClogList: '/zht/ajax/new_getClogList'
+  getUserInfo: '/ajax/userInfo',
+  getClogList: '/ajax/new_getClogList',
+  getBuilding: '/xmht/ajax/getBuilding',
+  getUnit: '/xmht/ajax/getUnit'
 }
 
 // 获取游客列表
@@ -211,6 +217,24 @@ export function getAppUserList (data) {
   })
 }
 
+// 获取项目后台成员列表
+export function getMemberList (data) {
+  return request({
+    url: appUser.getMemberList,
+    method: 'post',
+    data
+  })
+}
+
+// 用户 商家信息
+export function getUserShopInfo (data) {
+  return request({
+    url: appUser.getUserShopInfo,
+    method: 'post',
+    data
+  })
+}
+
 // 批量添加用户
 export function editBatchUserTag (data) {
   return request({
@@ -220,10 +244,23 @@ export function editBatchUserTag (data) {
   })
 }
 
-// 获取用户详情信息
-export function getUserInfo (data) {
+// 获取楼栋
+export function getBuilding (data) {
   return request({
-    url: appUser.getUserInfo,
+    url: appUser.getBuilding,
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    baseURL: ''
+  })
+}
+
+// 获取单元
+export function getUnit (data) {
+  return request({
+    url: appUser.getUnit,
     method: 'post',
     data,
     headers: {
@@ -234,9 +271,24 @@ export function getUserInfo (data) {
 }
 
 // 获取用户详情信息
-export function getClogList (data) {
+export function getUserInfo (data) {
+  const baseURL = +Cookies.get('project_id') ? '/xmht' : '/zht'
   return request({
-    url: appUser.getClogList,
+    url: `${baseURL}${appUser.getUserInfo}`,
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    baseURL: ''
+  })
+}
+
+// 获取用户详情幸福币信息
+export function getClogList (data) {
+  const baseURL = +Cookies.get('project_id') ? '/xmht' : '/zht'
+  return request({
+    url: `${baseURL}${appUser.getClogList}`,
     method: 'post',
     data,
     baseURL: ''
