@@ -79,7 +79,7 @@ slot="is_openTitle"
             </div>
           </template>
         </a-table>
-        <div class="pagination">
+        <div v-if="+pagination.total" class="pagination">
           <a-pagination
             show-quick-jumper
             show-size-changer

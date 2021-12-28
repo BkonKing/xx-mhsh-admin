@@ -6,9 +6,7 @@
           {{ info.miane || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="创建人">
-          <a
-            :href="`${userUrl}?uid=${info.uid}`"
-            target="_blank"
+          <a :href="`${userUrl}?uid=${info.uid}`" target="_blank"
             >{{ info.nickname }}{{ realname }}</a
           >
         </a-descriptions-item>
@@ -315,10 +313,10 @@ export default {
           dataIndex: 'shops_realname',
           customRender: (text, row) => {
             return (
-              <div>
+              <a href={`${this.userUrl}?uid=${row.shops_uid}`} target="_blank">
                 <div>{text}</div>
                 <div>{row.shops_mobile}</div>
-              </div>
+              </a>
             )
           }
         }
@@ -350,7 +348,9 @@ export default {
       return this.isParentProject ? '/zht' : '/xmht'
     },
     userUrl () {
-      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+      return this.isParentProject
+        ? '/zht/user/user/getUserList'
+        : '/xmht/household/member/getMemberList'
     },
     realname () {
       const realname = this.info.realname
