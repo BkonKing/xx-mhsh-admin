@@ -122,7 +122,7 @@
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a
-              :href="`/zht/user/shop/detail?id=${record.id}`"
+              :href="`${baseUrl}/user/shop/detail?id=${record.id}`"
               target="_blank"
               >查看</a
             >
@@ -139,6 +139,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { AdvancedForm, STable } from '@/components'
@@ -155,6 +156,12 @@ export default {
     info: {
       type: Object,
       default: () => ({})
+    }
+  },
+  computed: {
+    ...mapGetters(['isParentProject']),
+    baseUrl () {
+      return this.isParentProject ? '/zht' : '/xmht'
     }
   },
   data () {
