@@ -1,6 +1,6 @@
 <template>
   <page-header-wrapper>
-    <div>
+    <div style="padding-bottom: 24px;">
       <a-card class="search-card" :bordered="false">
         <div class="table-page-search-wrapper">
           <a-form layout="inline">
@@ -23,7 +23,6 @@
                 <a-col :md="8" :sm="24">
                   <a-form-model-item label="操作时间" prop="releaseDate">
                     <a-range-picker
-                      showTime
                       class="piker-time"
                       :value="publicTime"
                       :placeholder="['开始时间', '结束时间']"
@@ -146,6 +145,7 @@ export default {
     reSet () {
       this.queryParam = {}
       this.publicTime = []
+      this.$refs.table.refresh(true)
     },
     // 刷新表格数据
     loadAllData () {
@@ -177,6 +177,6 @@ export default {
   }
 }
 .ant-card {
-  margin-bottom: 24px;
+  margin-top: 24px;
 }
 </style>
