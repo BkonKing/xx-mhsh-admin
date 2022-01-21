@@ -29,9 +29,84 @@
       </a-form-model>
     </a-card>
 
-    <!-- <a-card title="幸福币提现" style="margin-top: 24px;">
-
-    </a-card> -->
+    <a-card title="幸福币提现" style="margin-top: 24px;">
+      <a-form-model
+        ref="withdrawForm"
+        :model="formData"
+        :rules="formRules"
+        :label-col="{ span: 7 }"
+        :wrapper-col="{ span: 14 }"
+      >
+        <a-form-model-item label="提现项目审核" prop="project_examine_day">
+          <a-input-number
+            v-model="formData.project_examine_day"
+            @focus="saveCopyValue('project_examine_day')"
+            @blur="setNullValue('project_examine_day')"
+          ></a-input-number
+          ><span style="margin-left:8px;">个工作日内</span>
+        </a-form-model-item>
+        <a-form-model-item label="提现总部审核" prop="examine_day">
+          <a-input-number
+            v-model="formData.examine_day"
+            @focus="saveCopyValue('examine_day')"
+            @blur="setNullValue('examine_day')"
+          ></a-input-number
+          ><span style="margin-left:8px;">个工作日内</span>
+        </a-form-model-item>
+        <a-form-model-item label="提现打款处理" prop="handle_day">
+          <a-input-number
+            v-model="formData.handle_day"
+            @focus="saveCopyValue('handle_day')"
+            @blur="setNullValue('handle_day')"
+          ></a-input-number
+          ><span style="margin-left:8px;">个工作日内</span>
+        </a-form-model-item>
+        <a-form-model-item label="单笔提现限额(幸福币)">
+          <a-row type="flex">
+            <a-col flex="1"
+              ><a-form-model-item prop="min_credits" style="margin-bottom: 0;"
+                ><a-input
+                  v-model="formData.min_credits"
+                  addon-before="最低(含)"
+                  placeholder="请输入"
+                  v-number-input.int
+                ></a-input></a-form-model-item
+            ></a-col>
+            <a-col flex="30px" style="text-align: center;"> ~ </a-col>
+            <a-col flex="1"
+              ><a-form-model-item prop="max_credits" style="margin-bottom: 0;"
+                ><a-input
+                  v-model="formData.max_credits"
+                  addon-before="最高(含)"
+                  placeholder="请输入"
+                  v-number-input.int
+                ></a-input></a-form-model-item
+            ></a-col>
+          </a-row>
+          <div class="alert-text">可只填一个，都不填则代表不限额</div>
+        </a-form-model-item>
+        <a-form-model-item label="商家提现服务费" prop="service_fee">
+          <a-input-number
+            v-model="formData.service_fee"
+            :min="0"
+            :max="100"
+            @focus="saveCopyValue('service_fee')"
+            @blur="setNullValue('service_fee')"
+          ></a-input-number
+          ><span style="margin-left:8px;">%</span>
+          <div class="alert-text">商家最终提现到账金额将扣除服务费</div>
+        </a-form-model-item>
+        <a-form-model-item label="商家提现审核流程" prop="procedure">
+          <a-radio-group
+            v-model="formData.procedure"
+            :options="shopAudit"
+          ></a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="项目提现审核流程">
+          <a-radio :default-checked="true">总部审核</a-radio>
+        </a-form-model-item>
+      </a-form-model>
+    </a-card>
 
     <a-card title="店铺优惠券" style="margin-top: 24px;">
       <a-form-model
@@ -82,6 +157,13 @@
             :options="useGoods"
           ></a-checkbox-group>
         </a-form-model-item>
+        <a-form-model-item label="商家删除券" prop="isDel" required>
+          <a-radio-group
+            v-model="formData.isDel"
+            :options="removeCouponPower"
+          ></a-radio-group>
+          <div class="alert-text">APP商家店铺券管理页面的删除按钮是否显示</div>
+        </a-form-model-item>
         <a-form-model-item
           label="特别提醒"
           prop="remind"
@@ -92,18 +174,19 @@
           <a-textarea v-model="formData.remind" />
           <div class="alert-text">APP创建店铺券页面进行提示</div>
         </a-form-model-item>
-        <a-form-model-item class="upload-item" label="领券banner" prop="banner" required>
-          <upload-image
-            v-model="formData.banner"
-            maxLength="1"
-          ></upload-image>
+        <a-form-model-item
+          class="upload-item"
+          label="领券banner"
+          prop="banner"
+          required
+        >
+          <upload-image v-model="formData.banner" maxLength="1"></upload-image>
         </a-form-model-item>
         <a-form-model-item
           class="no-required"
           prop="banner_text"
           label=" "
           :colon="false"
-          style="margin-bottom: 0;"
         >
           <a-input
             v-model="formData.banner_text"
@@ -112,6 +195,17 @@
           >
           </a-input>
           <div class="alert-text">APP幸福币页面展示</div>
+        </a-form-model-item>
+        <a-form-model-item
+          label="店铺券使用说明"
+          prop="aaaaa"
+          :label-col="{ span: 7 }"
+          :wrapper-col="{ span: 9 }"
+          required
+          style="margin-bottom: 0;"
+        >
+          <a-textarea v-model="formData.aaaaa" />
+          <div class="alert-text">APP店铺优惠券的使用说明展示</div>
         </a-form-model-item>
       </a-form-model>
     </a-card>
@@ -161,9 +255,19 @@ export default {
         coupon_mode_type: '1',
         receive_coupon: [],
         coupon_goods_type: [],
+        isDel: '',
         remind: '',
         banner: [],
-        banner_text: ''
+        banner_text: '',
+        aaaaa: '',
+        project_examine_day: '',
+        examine_day: '',
+        handle_day: '',
+        service_fee: '',
+        procedure: '',
+        ggggg: '1',
+        min_credits: '',
+        max_credits: ''
       },
       formRules: {
         coupon_type: { required: true, message: '请选择券类型' },
@@ -173,7 +277,8 @@ export default {
         coupon_goods_type: { required: true, message: '请选择可使用商品' },
         remind: { required: true, message: '请输入特别提醒' },
         banner: { required: true, message: '请上传领券banner' },
-        banner_text: { required: true, message: '请输入文案' }
+        banner_text: { required: true, message: '请输入文案' },
+        aaaaa: { required: true, message: '请输入店铺券使用说明' }
       },
       revealOptions: [
         {
@@ -188,8 +293,7 @@ export default {
       powerOptions: [
         {
           label: '提现申请',
-          value: '1',
-          disabled: true
+          value: '1'
         },
         {
           label: '店铺券管理',
@@ -268,8 +372,29 @@ export default {
           value: '3'
         }
       ],
+      removeCouponPower: [
+        {
+          label: '可删除',
+          value: '1'
+        },
+        {
+          label: '不可删除',
+          value: '2'
+        }
+      ],
+      shopAudit: [
+        {
+          label: '项目审核+总部审核',
+          value: '1'
+        },
+        {
+          label: '总部审核',
+          value: '2'
+        }
+      ],
       isChange: true,
-      loading: false
+      loading: false,
+      copyNum: 0
     }
   },
   watch: {
@@ -297,6 +422,14 @@ export default {
       this.$nextTick(() => {
         this.isChange = true
       })
+    },
+    saveCopyValue (key) {
+      this.copyNum = this.formData[key]
+    },
+    setNullValue (key) {
+      if (!this.formData[key]) {
+        this.formData[key] = this.copyNum
+      }
     },
     submit () {
       const { basicForm, couponForm } = this.$refs
@@ -340,7 +473,7 @@ export default {
 .no-required /deep/ .ant-form-item-required::before {
   content: "";
 }
-.upload-item /deep/ .ant-form-item-control{
+.upload-item /deep/ .ant-form-item-control {
   line-height: 1;
 }
 /deep/ .ant-upload.ant-upload-select-picture-card,

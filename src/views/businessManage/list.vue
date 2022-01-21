@@ -1,5 +1,9 @@
 <template>
-  <page-header-view>
+  <page-header-view
+    :tab-list="tabList"
+    :tab-active-key="tabActiveKey"
+    @tabChange="handleTabChange"
+  >
     <a-card class="search-card" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -83,9 +87,7 @@
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a
-              :href="`${userUrl}?uid=${record.uid}&isShop=1`"
-              target="_blank"
+            <a :href="`${userUrl}?uid=${record.uid}&isShop=1`" target="_blank"
               >查看</a
             >
             <a @click="handleEdit(record)">编辑</a>
@@ -123,13 +125,15 @@
       @ok="setShopsPower"
       :destroyOnClose="true"
     >
-      <div class="permission-modal-row">给{{selectedRows.length}}个店铺设置权限：</div>
+      <div class="permission-modal-row">
+        给{{ selectedRows.length }}个店铺设置权限：
+      </div>
       <div class="permission-modal-row">
         <span
           v-for="item in selectedRows"
           :key="item.id"
           class="permission-modal-span"
-          >{{ item.shops_name || '(暂无名称)' }}</span
+          >{{ item.shops_name || "(暂无名称)" }}</span
         >
       </div>
       <div class="permission-modal-line"></div>
@@ -298,13 +302,23 @@ export default {
           label: '扫码核销券',
           value: '3'
         }
-      ]
+      ],
+      tabList: [
+        { key: '0', tab: '全部' },
+        { key: '1', tab: '待审核' },
+        { key: '2', tab: '已通过' },
+        { key: '3', tab: '未通过' },
+        { key: '4', tab: '未提交' }
+      ],
+      tabActiveKey: '0'
     }
   },
   computed: {
     ...mapGetters(['projectId', 'isParentProject']),
     userUrl () {
-      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+      return this.isParentProject
+        ? '/zht/user/user/getUserList'
+        : '/xmht/household/member/getMemberList'
     },
     rowSelection () {
       return {
@@ -327,6 +341,9 @@ export default {
         label: obj.text,
         value: obj.key
       }))
+    },
+    handleTabChange () {
+
     },
     // 获取项目列表
     getProjectList () {
