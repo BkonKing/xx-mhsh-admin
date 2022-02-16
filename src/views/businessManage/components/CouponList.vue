@@ -212,6 +212,10 @@ export default {
         {
           label: '已结束',
           value: '3'
+        },
+        {
+          label: '已删除',
+          value: '4'
         }
       ],
       couponTypes: [

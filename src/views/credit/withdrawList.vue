@@ -8,6 +8,46 @@
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="提现状态">
+                <a-select
+                  v-model="queryParam.checkStatus"
+                  placeholder="请选择"
+                  :disabled="tabActiveKey !== '0'"
+                >
+                  <a-select-option
+                    v-for="item in tabList"
+                    :key="item.key"
+                    :value="item.key"
+                    >{{ item.tab }}</a-select-option
+                  >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="账户类型">
+                <a-select v-model="queryParam.project_id" placeholder="请选择">
+                  <a-select-option value="1">商家用户</a-select-option>
+                  <a-select-option value="0">项目账户</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="提现用户">
+                <a-input
+                  v-model="queryParam.user_text"
+                  placeholder="昵称、姓名、手机号、银行卡号"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="提现项目">
+                <a-select v-model="queryParam.project_id" placeholder="请选择">
+                  <a-select-option value="1">已认证</a-select-option>
+                  <a-select-option value="0">未认证</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
             <a-col v-if="isParentProject" :md="8" :sm="24">
               <a-form-item label="店铺归属">
                 <a-select v-model="queryParam.project_id" placeholder="请选择">
@@ -20,15 +60,7 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="用户">
-                <a-input
-                  v-model="queryParam.user_text"
-                  placeholder="ID、昵称、姓名、手机号"
-                ></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
+            <a-col v-if="advanced || !isParentProject" :md="8" :sm="24">
               <a-form-item label="店铺名称">
                 <a-input
                   v-model="queryParam.shops_name"
@@ -36,57 +68,33 @@
                 ></a-input>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="认证状态">
-                <a-select
-                  v-model="queryParam.is_attestation"
-                  placeholder="请选择"
-                >
-                  <a-select-option value="1">已认证</a-select-option>
-                  <a-select-option value="2">未认证</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="认证类型">
-                  <a-select v-model="queryParam.a_type" placeholder="请选择">
-                    <a-select-option value="1">个人</a-select-option>
-                    <a-select-option value="2">商户</a-select-option>
-                  </a-select>
+                <a-form-item label="申请时间">
+                  <a-range-picker
+                    v-model="queryParam.time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-item label="审核状态">
-                  <a-select
-                    v-model="queryParam.state_val"
-                    placeholder="请选择"
-                    :disabled="tabActiveKey !== ''"
-                  >
-                    <a-select-option
-                      v-for="item in tabList"
-                      :key="item.key"
-                      :value="item.key"
-                      >{{ item.tab }}</a-select-option
-                    >
-                  </a-select>
+                <a-form-item label="到账时间">
+                  <a-range-picker
+                    v-model="queryParam.time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
                 </a-form-item>
               </a-col>
             </template>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="添加时间">
-                <a-range-picker
-                  v-model="queryParam.time"
-                  valueFormat="YYYY-MM-DD HH:mm:ss"
-                  :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
-                  :placeholder="['开始时间', '结束时间']"
-                  style="width: 100%;"
-                />
-              </a-form-item>
-            </a-col>
             <advanced-form
               v-model="advanced"
-              :md="16"
+              :md="isParentProject ? 8 : 16"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -96,19 +104,19 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" @click="addShop">
-          新增商家
+        <a-button type="primary" @click="addApplication">
+          新增申请
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="openShopPower">
-              商家权限
+              通过
             </a-menu-item>
             <a-menu-item key="3" @click="batchCheck">
-              审核
+              拒绝
             </a-menu-item>
             <a-menu-item key="2" @click="batchRemove">
-              删除
+              已打款
             </a-menu-item>
           </a-menu>
           <a-button> 批量操作 <a-icon type="down" /> </a-button>
@@ -125,105 +133,59 @@
         :rowSelectionPaging="true"
         :showPagination="true"
       >
+        <template v-slot:timeWait="text, row">
+          <Timewait
+            :time="
+              (new Date(row.ctime).getTime() - new Date().getTime()) / 1000
+            "
+            :delay="1000"
+            :showSecond="true"
+            upClass="color-red"
+          ></Timewait>
+        </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a :href="`${userUrl}?uid=${record.uid}&isShop=1`" target="_blank"
               >查看</a
             >
-            <a @click="handleEdit(record)">编辑</a>
-            <a
-              ><a-popconfirm
-                title="你确定要删除该商家吗？"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="handleRemove(record.id)"
-              >
-                <a-icon
-                  slot="icon"
-                  type="close-circle"
-                  theme="filled"
-                  style="color: red"
-                />
-                <a>删除</a>
-              </a-popconfirm></a
-            >
-            <a v-if="+record.a_state === 1" @click="openCheck([record])"
-              >审核</a
-            >
+            <a @click="openCheck(record)">审核</a>
+            <a @click="handleEdit(record)">已打款</a>
           </template>
         </span>
       </s-table>
     </a-card>
-    <store-form
-      v-model="editForm"
+    <application-form-modal
+      v-model="editVisible"
       ref="add-form"
-      :power-options="powerOptions"
-      :project-options="projectOptions"
       @submit="submitSuccess"
-    ></store-form>
-    <a-modal
-      v-model="permissionVisible"
-      title="设置商家权限"
-      :width="600"
-      :destroyOnClose="true"
-      @ok="setShopsPower"
-    >
-      <div class="permission-modal-row">
-        给{{ selectedRows.length }}个店铺设置权限：
-      </div>
-      <div class="permission-modal-row">
-        <span
-          v-for="item in selectedRows"
-          :key="item.id"
-          class="permission-modal-span"
-          >{{ item.shops_name || "(暂无名称)" }}</span
-        >
-      </div>
-      <div class="permission-modal-line"></div>
-      <div style="margin-bottom: 10px;">商家权限</div>
-      <div>
-        <a-form-model ref="form" :model="powerForm">
-          <a-form-model-item
-            prop="power"
-            :rules="{ required: true, message: '请选择权限' }"
-            style="margin-bottom: 0;"
-            ><a-checkbox-group v-model="powerForm.power" :options="powerOptions"
-          /></a-form-model-item>
-        </a-form-model>
-      </div>
-    </a-modal>
-    <check-form
-      v-model="checkVisible"
-      :data="checkData"
-      @submit="submitSuccess"
-    ></check-form>
+    ></application-form-modal>
+    <check-form-modal v-model="checkVisible"></check-form-modal>
   </page-header-view>
 </template>
 
 <script>
-// /store/list
+// /credit/withdrawList
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
-import { STable, AdvancedForm } from '@/components'
-import { validAForm } from '@/utils/util'
-import storeForm from './components/storeForm'
-import CheckForm from './components/CheckForm'
+import { STable, AdvancedForm, Timewait } from '@/components'
+import CheckFormModal from './components/CheckFormModal'
+import ApplicationFormModal from './components/ApplicationFormModal'
 import {
   getShopList,
   getProjectList,
   delShops,
-  setShopsPower,
   getBusinessSetting
 } from '@/api/userManage/business'
 
 export default {
-  name: 'storeList',
+  name: 'withdrawList',
   components: {
     AdvancedForm,
-    CheckForm,
     STable,
-    storeForm
+    Timewait,
+    CheckFormModal,
+    ApplicationFormModal
   },
   data () {
     return {
@@ -233,68 +195,46 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
-        state_val: ''
+        checkStatus: undefined
       },
       columns: [
         {
-          title: '店铺归属',
-          dataIndex: 'project_name',
-          customRender: text => {
-            return <div class="two-Multi">{text}</div>
-          }
+          title: '提现状态',
+          dataIndex: 'project_name'
         },
         {
-          title: '店铺名称',
+          title: '审核时间',
           dataIndex: 'shops_name',
-          customRender: text => {
-            return <div class="two-Multi">{text || '(暂无名称)'}</div>
-          }
+          scopedSlots: { customRender: 'timeWait' }
         },
         {
-          title: '商家认证',
-          dataIndex: 'attestation_text'
+          title: '提现单号',
+          dataIndex: 'shops_name1'
         },
         {
-          title: '幸福币',
+          title: '提现幸福币',
           dataIndex: 'credits',
-          sorter: true,
-          customRender: text => {
-            return text || 0
-          }
+          sorter: true
         },
         {
-          title: '店铺券',
+          title: '提现人民币',
           dataIndex: 'coupon_count',
-          sorter: true,
-          customRender: text => {
-            return text || '0'
-          }
+          sorter: true
         },
         {
-          title: '联系方式',
-          dataIndex: 'phone'
-        },
-        {
-          title: '用户昵称',
-          dataIndex: 'nickname',
-          customRender: text => {
-            return <div class="two-Multi">{text}</div>
-          }
-        },
-        {
-          title: '姓名/手机号',
+          title: '申请人',
           dataIndex: 'realname',
           customRender: (text, row) => {
             return (
-              <div>
+              <a>
                 <div>{text}</div>
                 <div>{row.mobile}</div>
-              </div>
+              </a>
             )
           }
         },
         {
-          title: '添加时间',
+          title: '申请时间',
           dataIndex: 'ctime',
           sorter: true,
           customRender (text) {
@@ -302,21 +242,17 @@ export default {
           }
         },
         {
-          title: () => {
-            return (
-              <div>
-                操作
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>删除即解除商家身份</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
-              </div>
-            )
-          },
+          title: '到账时间',
+          dataIndex: 'ctime1',
+          sorter: true,
+          customRender (text) {
+            return text || '--'
+          }
+        },
+        {
+          title: '操作',
           dataIndex: 'action',
-          width: '180px',
+          width: '100px',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -361,15 +297,16 @@ export default {
         }
       ],
       tabList: [
-        { key: '', tab: '全部' },
-        { key: '1', tab: '待审核' },
-        { key: '3', tab: '已通过' },
-        { key: '2', tab: '未通过' },
-        { key: '0', tab: '未提交' }
+        { key: '0', tab: '全部' },
+        { key: '1', tab: '项目审核' },
+        { key: '2', tab: '总部审核' },
+        { key: '3', tab: '待打款' },
+        { key: '4', tab: '已打款' },
+        { key: '5', tab: '已拒绝' }
       ],
-      tabActiveKey: '',
-      checkVisible: false,
-      checkData: []
+      tabActiveKey: '0',
+      editVisible: false,
+      checkVisible: false
     }
   },
   computed: {
@@ -403,8 +340,7 @@ export default {
     },
     handleTabChange (key) {
       this.tabActiveKey = key
-      this.queryParam.state_val = key
-      this.refreshTable()
+      this.queryParam.checkStatus = key
     },
     // 获取项目列表
     getProjectList () {
@@ -417,13 +353,13 @@ export default {
     },
     resetTable () {
       this.queryParam = {
-        state_val: this.tabActiveKey
+        checkStatus: this.tabActiveKey
       }
       this.refreshTable(true)
     },
-    addShop () {
+    addApplication () {
       this.$refs['add-form'].resetFields()
-      this.editForm = true
+      this.editVisible = true
     },
     // 批量删除
     batchRemove () {
@@ -452,17 +388,12 @@ export default {
     },
     batchCheck () {
       if (this.selectedRowKeys.length) {
-        if (this.selectedRows.every(obj => +obj.a_state === 1)) {
-          this.openCheck()
-        } else {
-          this.$message.warning('已选择的项中包含不可操作')
-        }
+        this.openCheck()
       } else {
         this.$message.warning('请选择后再进行操作')
       }
     },
-    openCheck (data = this.selectedRows) {
-      this.checkData = cloneDeep(data)
+    openCheck (data = this.selectedRowKeys) {
       this.checkVisible = true
     },
     handleRemove (id) {
@@ -500,19 +431,6 @@ export default {
       } else {
         this.$message.warning('请选择后再进行操作')
       }
-    },
-    setShopsPower () {
-      validAForm(this.$refs.form).then(async () => {
-        const { success } = await setShopsPower({
-          shops_id_text: this.selectedRowKeys.join(','),
-          power: this.powerForm.power.join(',')
-        })
-        if (success) {
-          this.$message.success('提交成功')
-          this.refreshTable()
-          this.permissionVisible = false
-        }
-      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

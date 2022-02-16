@@ -7,6 +7,8 @@
     :headers="headers"
     :file-list="fileList"
     multiple
+    :disabled="disabled"
+    :openFileDialogOnClick="openFileDialogOnClick"
     :beforeUpload="beforeUpload"
     :data="
       file => ({
@@ -46,6 +48,14 @@ export default {
     noHost: {
       type: Boolean,
       default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    openFileDialogOnClick: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

@@ -13,14 +13,29 @@
             :options="revealOptions"
           ></a-radio-group>
         </a-form-model-item>
-        <a-form-model-item
-          label="商家权限"
-          prop="power"
-          style="margin-bottom: 0;"
-        >
+        <a-form-model-item label="APP店员标志" prop="is_clerk_reveal">
+          <a-radio-group
+            v-model="formData.is_clerk_reveal"
+            :options="revealOptions"
+          ></a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="商家权限" prop="power">
           <a-checkbox-group
             v-model="formData.power"
             :options="powerOptions"
+          ></a-checkbox-group>
+          <div class="alert-text">
+            勾起代表统一开启，未勾起代表统一关闭
+          </div>
+        </a-form-model-item>
+        <a-form-model-item
+          label="店员权限"
+          prop="clerk_power"
+          style="margin-bottom: 0;"
+        >
+          <a-checkbox-group
+            v-model="formData.clerk_power"
+            :options="staffPowerOptions"
           ></a-checkbox-group>
           <div class="alert-text">
             勾起代表统一开启，未勾起代表统一关闭
@@ -157,9 +172,9 @@
             :options="useGoods"
           ></a-checkbox-group>
         </a-form-model-item>
-        <a-form-model-item label="商家删除券" prop="isDel" required>
+        <a-form-model-item label="商家删除券" prop="is_coupon_del" required>
           <a-radio-group
-            v-model="formData.isDel"
+            v-model="formData.is_coupon_del"
             :options="removeCouponPower"
           ></a-radio-group>
           <div class="alert-text">APP商家店铺券管理页面的删除按钮是否显示</div>
@@ -198,13 +213,13 @@
         </a-form-model-item>
         <a-form-model-item
           label="店铺券使用说明"
-          prop="aaaaa"
+          prop="coupon_instructions"
           :label-col="{ span: 7 }"
           :wrapper-col="{ span: 9 }"
           required
           style="margin-bottom: 0;"
         >
-          <a-textarea v-model="formData.aaaaa" />
+          <a-textarea v-model="formData.coupon_instructions" />
           <div class="alert-text">APP店铺优惠券的使用说明展示</div>
         </a-form-model-item>
       </a-form-model>
@@ -248,24 +263,25 @@ export default {
     return {
       formData: {
         is_reveal: '',
+        is_clerk_reveal: '',
         power: [],
+        clerk_power: [],
         coupon_type: [],
         coupon_scene: [],
         coupon_mode: [],
         coupon_mode_type: '1',
         receive_coupon: [],
         coupon_goods_type: [],
-        isDel: '',
+        is_coupon_del: '',
         remind: '',
         banner: [],
         banner_text: '',
-        aaaaa: '',
+        coupon_instructions: '',
         project_examine_day: '',
         examine_day: '',
         handle_day: '',
         service_fee: '',
         procedure: '',
-        ggggg: '1',
         min_credits: '',
         max_credits: ''
       },
@@ -278,7 +294,7 @@ export default {
         remind: { required: true, message: '请输入特别提醒' },
         banner: { required: true, message: '请上传领券banner' },
         banner_text: { required: true, message: '请输入文案' },
-        aaaaa: { required: true, message: '请输入店铺券使用说明' }
+        coupon_instructions: { required: true, message: '请输入店铺券使用说明' }
       },
       revealOptions: [
         {
@@ -302,6 +318,16 @@ export default {
         {
           label: '扫码核销券',
           value: '3'
+        }
+      ],
+      staffPowerOptions: [
+        {
+          label: '店铺券管理',
+          value: '1'
+        },
+        {
+          label: '扫码核销券',
+          value: '2'
         }
       ],
       couponTypes: [
@@ -379,7 +405,7 @@ export default {
         },
         {
           label: '不可删除',
-          value: '2'
+          value: '0'
         }
       ],
       shopAudit: [
@@ -412,6 +438,7 @@ export default {
     async getBusinessSetting () {
       const { data } = await getBusinessSetting()
       data.power = data.power.split(',')
+      data.clerk_power = data.clerk_power.split(',')
       data.coupon_type = data.coupon_type.split(',')
       data.coupon_mode = data.coupon_mode.split(',')
       data.coupon_scene = data.coupon_scene.split(',')
@@ -440,6 +467,7 @@ export default {
     async setBusinessSetting () {
       const params = cloneDeep(this.formData)
       params.power = params.power.join(',')
+      params.clerk_power = params.clerk_power.join(',')
       params.coupon_type = params.coupon_type.join(',')
       params.coupon_mode = params.coupon_mode.join(',')
       params.coupon_scene = params.coupon_scene.join(',')

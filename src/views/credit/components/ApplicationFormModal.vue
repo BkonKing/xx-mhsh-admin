@@ -1,0 +1,209 @@
+<template>
+  <a-modal
+    v-model="modalShow"
+    :title="title"
+    :width="600"
+    @ok="handleSubmit"
+    :destroyOnClose="true"
+  >
+    <a-form-model
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
+    >
+      <a-form-model-item label="账户类型" prop="power">
+        <a-radio-group v-model="form.power" :options="powerOptions">
+          <a-radio value="1">项目账户</a-radio>
+          <a-radio value="2">商家用户</a-radio>
+        </a-radio-group>
+      </a-form-model-item>
+      <template v-if="form.power === '1'">
+        <a-form-model-item label="提现账户" required
+          ><a-select
+            v-model="form.project_id"
+            :disabled="true"
+            placeholder="请选择"
+            ><a-select-option
+              v-for="item in projectOptions"
+              :key="item.project_id"
+              :value="item.project_id"
+              >{{ item.project_name }}</a-select-option
+            ></a-select
+          ></a-form-model-item
+        >
+        <a-form-model-item label="到账银行卡"
+          >{{ form.nickname }}
+          <div>姓名</div></a-form-model-item
+        >
+      </template>
+      <template v-else>
+        <a-form-model-item label="提现账户" required
+          ><a-select v-model="form.project_id" placeholder="请选择"
+            ><a-select-option
+              v-for="item in projectOptions"
+              :key="item.project_id"
+              :value="item.project_id"
+              >{{ item.project_name }}</a-select-option
+            ></a-select
+          ></a-form-model-item
+        >
+        <a-form-model-item label="到账银行卡" prop="project_id">
+          <a-select
+            v-model="form.project_id"
+            show-search
+            :filter-option="filterProject"
+            placeholder="请选择"
+            ><a-select-option
+              v-for="item in projectOptions"
+              :key="item.project_id"
+              :value="item.project_id"
+              >{{ item.project_name }}</a-select-option
+            ></a-select
+          >
+        </a-form-model-item>
+      </template>
+      <a-form-model-item label="提现幸福币" prop="shops_name" required>
+        <a-input
+          v-model="form.shops_name"
+          v-number-input.int
+          :maxLength="15"
+          placeholder="请输入"
+        ></a-input>
+      </a-form-model-item>
+      <a-form-model-item label="提现人民币">
+        1,000（实际提现<span style="font-size: 22px;color: red;">￥950</span>）
+        <div>服务费5%，本次收取￥50</div>
+      </a-form-model-item>
+      <a-form-model-item label="申请说明" prop="describe">
+        <a-textarea
+          v-model="form.describe"
+          placeholder="请输入"
+          :maxLength="500"
+          :auto-size="{ minRows: 3, maxRows: 5 }"
+          style="max-width: 328px;"
+        />
+      </a-form-model-item>
+    </a-form-model>
+  </a-modal>
+</template>
+
+<script>
+import clonedeep from 'lodash.clonedeep'
+import { mapGetters } from 'vuex'
+import { debounce } from '@/utils/util'
+import { editShops, getUserList } from '@/api/userManage/business'
+
+const initialForm = {
+  uid_text: undefined,
+  project_id: undefined,
+  post_id: undefined,
+  shops_name: '',
+  business_hours: '',
+  phone: '',
+  power: [],
+  shops_notice: ''
+}
+export default {
+  name: 'RepositoryForm',
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    this.fetchUser = debounce(this.fetchUser, 500)
+    return {
+      title: '提现审核',
+      modalShow: this.value,
+      labelCol: { span: 5 },
+      wrapperCol: { span: 14 },
+      form: clonedeep(initialForm),
+      fetching: false,
+      userOptions: [],
+      powerOptions: [],
+      projectOptions: [],
+      rules: {
+        uid_text: [{ required: true, message: '请选择商家用户' }],
+        project_id: [{ required: true, message: '请选择店铺归属' }]
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(['projectId', 'isParentProject'])
+  },
+  watch: {
+    value (val) {
+      this.modalShow = val
+    },
+    modalShow (val) {
+      this.$emit('input', val)
+    }
+  },
+  methods: {
+    filterProject (input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      )
+    },
+    fetchUser (value) {
+      const isNumber = /^\d+$/.test(value) && value.length > 5
+      const isChinese = /[\u4e00-\u9fa5]/gm.test(value)
+      if (!isNumber && !isChinese) {
+        return
+      }
+      this.data = []
+      this.fetching = true
+      getUserList({
+        user_text: value
+      }).then(({ data }) => {
+        this.userOptions = data.list
+        this.fetching = false
+      })
+    },
+    handleSubmit () {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.editShops()
+        } else {
+          return false
+        }
+      })
+    },
+    editShops () {
+      const params = clonedeep(this.form)
+      params.power = params.power.join(',')
+      if (!this.isEdit) {
+        params.uid_text = params.uid_text.map(obj => obj.key).join(',')
+      } else {
+        params.uid && (params.uid_text = params.uid)
+      }
+      params.id && (params.shops_id = params.id)
+      editShops(params).then(({ success, message }) => {
+        if (success) {
+          this.$message.success('保存成功')
+          this.modalShow = false
+          this.$emit('submit')
+        } else {
+          this.$message.error(message)
+        }
+      })
+    },
+    setFieldsValue (data) {
+      this.form = data
+    },
+    resetFields () {
+      this.userOptions = []
+      this.$refs.form && this.$refs.form.resetFields()
+      this.form = clonedeep(initialForm)
+      if (!this.isParentProject) {
+        this.form.project_id = this.projectId
+      }
+    }
+  }
+}
+</script>

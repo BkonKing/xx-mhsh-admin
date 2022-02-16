@@ -9,6 +9,7 @@ export const businessApi = {
   delShops: '/business/shops/del_shops',
   setShopsPower: '/business/shops/edit_shops_power',
   getUserList: '/business/shops/user_screen',
+  setShopAttestation: '/business/shops/affirm_shops_attestation',
   getShopCouponList: '/business/shops_coupon/shops_coupon_list',
   publishCoupon: '/business/shops_coupon/open_shops_coupon',
   finishCoupon: '/business/shops_coupon/close_shops_coupon',
@@ -16,7 +17,12 @@ export const businessApi = {
   getCouponInfo: '/business/shops_coupon/shops_coupon_info',
   getUserCouponList: '/business/shops_coupon/shops_user_coupon_list',
   getShopCouponInfo: '/business/shops_coupon/shops_coupon_info',
-  getShopOptions: '/business/shops_coupon/shops_select_list'
+  getShopOptions: '/business/shops_coupon/shops_select_list',
+  getShopStaffList: '/business/shops_clerk/shops_clerk_list',
+  getShopOption: '/business/shops_clerk/shops_name_clerk_screen',
+  saveShopStaff: '/business/shops_clerk/edit_shops_clerk',
+  setStaffPower: '/business/shops_clerk/batch_edit_shops_clerk_power',
+  delShopStaff: '/business/shops_clerk/del_shops_clerk'
 }
 
 export function getBusinessSetting (data) {
@@ -72,6 +78,14 @@ export function delShops (data) {
 export function setShopsPower (data) {
   return request({
     url: businessApi.setShopsPower,
+    method: 'post',
+    data
+  })
+}
+
+export function setShopAttestation (data) {
+  return request({
+    url: businessApi.setShopAttestation,
     method: 'post',
     data
   })
@@ -144,6 +158,46 @@ export function getShopCouponInfo (data) {
 export function getShopOptions (data) {
   return request({
     url: businessApi.getShopOptions,
+    method: 'post',
+    data
+  })
+}
+
+export function getShopStaffList (data) {
+  return request({
+    url: businessApi.getShopStaffList,
+    method: 'post',
+    data
+  })
+}
+
+export function getShopOption (data) {
+  return request({
+    url: businessApi.getShopOption,
+    method: 'post',
+    data
+  })
+}
+
+export function saveShopStaff (data) {
+  return request({
+    url: businessApi.saveShopStaff,
+    method: 'post',
+    data
+  })
+}
+
+export function setStaffPower (data) {
+  return request({
+    url: businessApi.setStaffPower,
+    method: 'post',
+    data
+  })
+}
+
+export function delShopStaff (data) {
+  return request({
+    url: businessApi.delShopStaff,
     method: 'post',
     data
   })

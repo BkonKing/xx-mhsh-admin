@@ -1,10 +1,10 @@
 <template>
   <a-modal
     v-model="modalShow"
-    :title="title"
+    title="提现审核"
     :width="600"
-    :destroyOnClose="true"
     @ok="handleSubmit"
+    :destroyOnClose="true"
   >
     <a-form-model
       ref="form"
@@ -13,40 +13,12 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <template v-if="isEdit">
-        <h3>商家资料</h3>
-        <a-form-model-item label="商家用户"
-          >{{ form.nickname }}{{ realName }}
-          {{ form.mobile }}</a-form-model-item
-        >
-        <a-form-model-item label="商家认证"
-          >{{ form.attestation_text }}</a-form-model-item
-        >
-      </template>
-      <a-form-model-item v-else label="商家用户" prop="uid_text" required>
-        <a-select
-          v-model="form.uid_text"
-          mode="multiple"
-          label-in-value
-          placeholder="请选择"
-          :filter-option="false"
-          :not-found-content="fetching ? undefined : null"
-          @search="fetchUser"
-          @change="handleChangeProject"
-        >
-          <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-          <a-select-option v-for="item in userOptions" :key="item.id" :disabled="+item.is_shops_clerk">{{
-            item.name_text
-          }}</a-select-option>
-        </a-select>
-        <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
-      </a-form-model-item>
-      <a-form-model-item label="店铺归属" prop="project_id">
+      <a-form-model-item label="店铺" prop="project_id">
         <a-select
           v-model="form.project_id"
           show-search
           :filter-option="filterProject"
-          placeholder="请选择"
+          placeholder="输入名称进行搜索"
           ><a-select-option
             v-for="item in projectOptions"
             :key="item.project_id"
@@ -55,81 +27,34 @@
           ></a-select
         >
       </a-form-model-item>
+      <a-form-model-item label="店员手机号" prop="uid_text" required>
+        <a-select
+          v-model="form.uid_text"
+          placeholder="输入姓名/手机号/ID进行搜索"
+          :filter-option="false"
+          :disabled="isEdit"
+          :not-found-content="fetching ? undefined : null"
+          @search="fetchUser"
+          @change="handleChangeProject"
+        >
+          <a-spin v-if="fetching" slot="notFoundContent" size="small" />
+          <a-select-option v-for="item in userOptions" :key="item.id">{{
+            item.name_text
+          }}</a-select-option>
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item
-        label="店铺名称"
+        label="店员姓名"
         prop="shops_name"
-        :required="isEdit"
-        :rules="{ required: isEdit, message: '请输入店铺名称' }"
+        required
       >
         <a-input
           v-model="form.shops_name"
           :maxLength="20"
-          :disabled="isMulDisabled"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="营业时间" prop="business_hours">
-        <a-input
-          v-model="form.business_hours"
-          :maxLength="20"
-          :disabled="isMulDisabled"
-          placeholder="请输入"
-        ></a-input>
-      </a-form-model-item>
-      <a-form-model-item label="店铺电话" prop="phone">
-        <a-input
-          v-model="form.phone"
-          v-number-input
-          :maxLength="15"
-          :disabled="isMulDisabled"
-          placeholder="请输入"
-        ></a-input>
-      </a-form-model-item>
-      <a-form-model-item label="店铺地址" prop="shops_notice">
-        <a-textarea
-          v-model="form.shops_notice"
-          rows="4"
-          :disabled="isMulDisabled"
-          placeholder="请输入"
-        />
-      </a-form-model-item>
-      <a-form-model-item label="店铺公告" prop="shops_notice">
-        <a-textarea
-          v-model="form.shops_notice"
-          :maxLength="50"
-          rows="4"
-          :disabled="isMulDisabled"
-          placeholder="请输入"
-        />
-      </a-form-model-item>
-      <a-form-model-item label="经营者">
-        <a-row type="flex" align="middle">
-          <a-col flex="1">
-            <a-form-model-item prop="operator_realname" style="margin-bottom: 0;">
-              <a-input
-                v-model="form.operator_realname"
-                :maxLength="20"
-                :disabled="isMulDisabled"
-                placeholder="姓名"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col flex="30px" style="text-align: center;"> -- </a-col>
-          <a-col flex="1">
-            <a-form-model-item prop="operator_mobile" style="margin-bottom: 0;">
-              <a-input
-                v-model="form.operator_mobile"
-                v-number-input
-                :maxLength="15"
-                :disabled="isMulDisabled"
-                placeholder="联系方式"
-              ></a-input>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model-item>
-      <h3>商家权限</h3>
-      <a-form-model-item label="权限" prop="power">
+      <a-form-model-item label="权限" prop="power" required>
         <a-checkbox-group v-model="form.power" :options="powerOptions" />
       </a-form-model-item>
     </a-form-model>
@@ -150,12 +75,10 @@ const initialForm = {
   business_hours: '',
   phone: '',
   power: [],
-  shops_notice: '',
-  operator_realname: '',
-  operator_mobile: ''
+  shops_notice: ''
 }
 export default {
-  name: 'RepositoryForm',
+  name: 'staffForm',
   props: {
     value: {
       type: Boolean,
@@ -173,7 +96,6 @@ export default {
   data () {
     this.fetchUser = debounce(this.fetchUser, 500)
     return {
-      title: '新增商家',
       modalShow: this.value,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
@@ -181,8 +103,10 @@ export default {
       fetching: false,
       userOptions: [],
       rules: {
-        uid_text: [{ required: true, message: '请选择商家用户' }],
-        project_id: [{ required: true, message: '请选择店铺归属' }]
+        project_id: [{ required: true, message: '请选择店铺' }],
+        uid_text: [{ required: true, message: '请选择店员手机号' }],
+        shops_name: [{ required: true, message: '请输入店员姓名' }],
+        power: [{ required: true, message: '请选择权限' }]
       }
     }
   },
@@ -190,13 +114,6 @@ export default {
     ...mapGetters(['projectId', 'isParentProject']),
     isEdit () {
       return !!this.form.id
-    },
-    isMulDisabled () {
-      return this.form.uid_text && this.form.uid_text.length > 1
-    },
-    realName () {
-      const realname = this.form.realname
-      return realname ? `(${realname})` : ''
     }
   },
   watch: {
@@ -298,9 +215,5 @@ export default {
 h3 {
   margin-bottom: 24px;
   font-weight: bold;
-}
-/deep/ .ant-modal-body {
-  max-height: 600px;
-  overflow: auto;
 }
 </style>
