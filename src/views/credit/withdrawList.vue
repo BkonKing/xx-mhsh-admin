@@ -160,6 +160,7 @@
       @submit="submitSuccess"
     ></application-form-modal>
     <check-form-modal v-model="checkVisible"></check-form-modal>
+    <remit-form-modal v-model="remitVisible"></remit-form-modal>
   </page-header-view>
 </template>
 

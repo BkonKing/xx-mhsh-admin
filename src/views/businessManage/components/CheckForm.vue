@@ -15,7 +15,7 @@
     >
       <h3 v-if="isJustOne">商家认证</h3>
       <template v-if="isJustOne">
-        <a-form-model-item label="商家用户"
+        <a-form-model-item v-if="+type === 0" label="商家用户"
           >{{ onlyData.nickname }}({{ onlyData.realname }})
           {{ onlyData.mobile }}</a-form-model-item
         >
@@ -86,9 +86,9 @@
 import clonedeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { UploadImage } from '@/components'
-import { setShopAttestation } from '@/api/userManage/business'
+import { editShopAttestation, setShopAttestation } from '@/api/userManage/business'
 const form = {
-  a_state: 1,
+  a_state: 3,
   explain: ''
 }
 export default {
@@ -97,6 +97,10 @@ export default {
     UploadImage
   },
   props: {
+    type: {
+      type: Number,
+      default: 0
+    },
     value: {
       type: Boolean,
       default: false
@@ -148,12 +152,27 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs.form.validate(valid => {
           if (valid) {
-            this.setShopAttestation()
+            +this.type ? this.amendAttestation() : this.setShopAttestation()
           } else {
             reject(new Error(false))
             return false
           }
         })
+      })
+    },
+    amendAttestation () {
+      const params = clonedeep(this.form)
+      editShopAttestation({
+        ...params,
+        shops_attestation_log_id: this.data[0].id
+      }).then(({ success, message }) => {
+        if (success) {
+          this.$message.success('修改成功')
+          this.modalShow = false
+          this.$emit('submit')
+        } else {
+          this.$message.error(message)
+        }
       })
     },
     setShopAttestation () {

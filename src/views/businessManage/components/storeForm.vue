@@ -234,6 +234,8 @@ export default {
         this.form.business_hours = ''
         this.form.phone = ''
         this.form.shops_notice = ''
+        this.form.operator_realname = ''
+        this.form.operator_mobile = ''
       }
     },
     fetchUser (value) {

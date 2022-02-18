@@ -1,25 +1,36 @@
 <template>
-  <s-table
-    ref="table"
-    size="default"
-    rowKey="id"
-    :columns="columns"
-    :data="loadData"
-    :showPagination="true"
-  >
-    <span class="table-action" slot="action" slot-scope="text, record">
-      <a v-if="+record.is_sh_btn" @click="handleEdit(record)">编辑</a>
-      <a v-if="+record.is_xg_btn" @click="handleEdit(record)">修改</a>
-    </span>
-  </s-table>
+  <div>
+    <s-table
+      ref="table"
+      size="default"
+      rowKey="id"
+      :columns="columns"
+      :data="loadData"
+      :showPagination="true"
+      :scroll="{ y: 270 }"
+    >
+      <span class="table-action" slot="action" slot-scope="text, record">
+        <a v-if="+record.is_sh_btn" @click="handleEdit(record, 0)">审核</a>
+        <a v-if="+record.is_xg_btn" @click="handleEdit(record, 1)">修改</a>
+      </span>
+    </s-table>
+    <check-form
+      v-model="checkVisible"
+      :data="checkData"
+      :type="checkType"
+      @submit="submitSuccess"
+    ></check-form>
+  </div>
 </template>
 
 <script>
 import { STable } from '@/components'
+import CheckForm from '@/views/businessManage/components/CheckForm'
 import { getShopAttestationList } from '@/api/userManage'
 export default {
   name: 'auditTable',
   components: {
+    CheckForm,
     STable
   },
   props: {
@@ -65,12 +76,27 @@ export default {
             shops_id: this.info.shops_id
           })
         )
-      }
+      },
+      checkType: 0,
+      checkVisible: false,
+      checkData: []
     }
   },
   methods: {
     refreshTable (bool = false) {
       this.$refs.table && this.$refs.table.refresh(bool)
+    },
+    handleEdit (data, type) {
+      const info = {
+        ...this.info,
+        id: data.id
+      }
+      this.checkData = [info]
+      this.checkType = type
+      this.checkVisible = true
+    },
+    submitSuccess () {
+
     }
   }
 }

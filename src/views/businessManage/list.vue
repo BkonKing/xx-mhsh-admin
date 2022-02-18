@@ -47,15 +47,15 @@
                 </a-select>
               </a-form-item>
             </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="认证类型">
+                <a-select v-model="queryParam.a_type" placeholder="请选择">
+                  <a-select-option value="1">个人</a-select-option>
+                  <a-select-option value="2">商户</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
             <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="认证类型">
-                  <a-select v-model="queryParam.a_type" placeholder="请选择">
-                    <a-select-option value="1">个人</a-select-option>
-                    <a-select-option value="2">商户</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="审核状态">
                   <a-select
@@ -64,7 +64,7 @@
                     :disabled="tabActiveKey !== ''"
                   >
                     <a-select-option
-                      v-for="item in tabList"
+                      v-for="item in auditStatus"
                       :key="item.key"
                       :value="item.key"
                       >{{ item.tab }}</a-select-option
@@ -72,18 +72,18 @@
                   </a-select>
                 </a-form-item>
               </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="添加时间">
+                  <a-range-picker
+                    v-model="queryParam.time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
+                </a-form-item>
+              </a-col>
             </template>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="添加时间">
-                <a-range-picker
-                  v-model="queryParam.time"
-                  valueFormat="YYYY-MM-DD HH:mm:ss"
-                  :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
-                  :placeholder="['开始时间', '结束时间']"
-                  style="width: 100%;"
-                />
-              </a-form-item>
-            </a-col>
             <advanced-form
               v-model="advanced"
               :md="16"
@@ -226,6 +226,12 @@ export default {
     storeForm
   },
   data () {
+    const auditStatus = [
+      { key: '1', tab: '待审核' },
+      { key: '3', tab: '已通过' },
+      { key: '2', tab: '未通过' },
+      { key: '0', tab: '未提交' }
+    ]
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
@@ -360,12 +366,10 @@ export default {
           value: '3'
         }
       ],
+      auditStatus: cloneDeep(auditStatus),
       tabList: [
         { key: '', tab: '全部' },
-        { key: '1', tab: '待审核' },
-        { key: '3', tab: '已通过' },
-        { key: '2', tab: '未通过' },
-        { key: '0', tab: '未提交' }
+        ...auditStatus
       ],
       tabActiveKey: '',
       checkVisible: false,
