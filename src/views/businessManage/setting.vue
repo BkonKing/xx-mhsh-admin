@@ -219,7 +219,7 @@
           required
           style="margin-bottom: 0;"
         >
-          <a-textarea v-model="formData.coupon_instructions" />
+          <a-textarea v-model="formData.coupon_instructions" :autosize="true" />
           <div class="alert-text">APP店铺优惠券的使用说明展示</div>
         </a-form-model-item>
       </a-form-model>
