@@ -1,5 +1,8 @@
 <template>
-  <page-header-view :title="info.coupon_name">
+  <page-header-view>
+    <template #title>
+      {{info.coupon_name}}<span class="title-span">{{+info.is_visible ? '（APP显示名称）' : '（APP不显示名称）'}}</span>
+    </template>
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="面额">
@@ -500,6 +503,10 @@ export default {
   > span {
     vertical-align: top;
   }
+}
+.title-span {
+  font-size: 14px;
+  font-weight: normal;
 }
 .detail-layout {
   margin-left: 44px;

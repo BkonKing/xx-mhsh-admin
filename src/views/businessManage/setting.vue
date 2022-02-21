@@ -103,7 +103,6 @@
           prop="banner_text"
           label=" "
           :colon="false"
-          style="margin-bottom: 0;"
         >
           <a-input
             v-model="formData.banner_text"
@@ -112,6 +111,17 @@
           >
           </a-input>
           <div class="alert-text">APP幸福币页面展示</div>
+        </a-form-model-item>
+        <a-form-model-item
+          label="店铺券使用说明"
+          prop="coupon_instructions"
+          :label-col="{ span: 7 }"
+          :wrapper-col="{ span: 9 }"
+          required
+          style="margin-bottom: 0;"
+        >
+          <a-textarea v-model="formData.coupon_instructions" :autosize="true" />
+          <div class="alert-text">APP店铺优惠券的使用说明展示</div>
         </a-form-model-item>
       </a-form-model>
     </a-card>
@@ -163,7 +173,8 @@ export default {
         coupon_goods_type: [],
         remind: '',
         banner: [],
-        banner_text: ''
+        banner_text: '',
+        coupon_instructions: ''
       },
       formRules: {
         coupon_type: { required: true, message: '请选择券类型' },
@@ -173,7 +184,8 @@ export default {
         coupon_goods_type: { required: true, message: '请选择可使用商品' },
         remind: { required: true, message: '请输入特别提醒' },
         banner: { required: true, message: '请上传领券banner' },
-        banner_text: { required: true, message: '请输入文案' }
+        banner_text: { required: true, message: '请输入文案' },
+        coupon_instructions: { required: true, message: '请输入店铺券使用说明' }
       },
       revealOptions: [
         {
