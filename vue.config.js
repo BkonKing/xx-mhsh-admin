@@ -3,31 +3,10 @@ const webpack = require('webpack')
 const buildDate = JSON.stringify(new Date().toLocaleString())
 const createThemeColorReplacerPlugin = require('./config/plugin.config')
 const WebpackBundleAnalyzer = require('webpack-bundle-analyzer')
-// const CompressionPlugin = require('compression-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, dir)
 }
-
-// const isProd = process.env.NODE_ENV === 'production'
-
-// const assetsCDN = {
-//   // webpack build externals
-//   externals: {
-//     vue: 'Vue',
-//     'vue-router': 'VueRouter',
-//     vuex: 'Vuex',
-//     axios: 'axios'
-//   },
-//   css: [],
-//   // https://unpkg.com/browse/vue@2.6.10/
-//   js: [
-//     '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
-//     '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
-//     '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
-//     '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
-//   ]
-// }
 
 // vue.config.js
 const vueConfig = {
@@ -42,8 +21,6 @@ const vueConfig = {
         BUILD_DATE: buildDate
       })
     ]
-    // if prod, add externals
-    // externals: isProd ? assetsCDN.externals : {}
   },
 
   chainWebpack: (config) => {
@@ -66,14 +43,6 @@ const vueConfig = {
         name: 'assets/[name].[ext]'
       })
 
-    // if prod is on
-    // assets require on cdn
-    // if (isProd) {
-    //   config.plugin('html').tap(args => {
-    //     args[0].cdn = assetsCDN
-    //     return args
-    //   })
-    // }
     // 只留下Moment的中文包
     config
       .plugin('ContextReplacementPlugin')
@@ -86,8 +55,8 @@ const vueConfig = {
     }
 
     // 清除js版本号
-    // config.output.filename('static/[name].js').end()
-    // config.output.chunkFilename('static/[name].js').end()
+    config.output.filename('static/[name].js').end()
+    config.output.chunkFilename('static/[name].js').end()
 
     if (process.env.NODE_ENV === 'production') {
       // gzip开启
@@ -95,10 +64,10 @@ const vueConfig = {
       //   .plugin('CompressionPlugin')
       //   .use(CompressionPlugin, [])
       // 清除hash css
-      // config.plugin('extract-css').tap(args => [{
-      //     filename: 'static/[name].css',
-      //     chunkFilename: 'static/[name].css'
-      //   }])
+      config.plugin('extract-css').tap(args => [{
+        filename: 'static/[name].css',
+        chunkFilename: 'static/[name].css'
+      }])
     }
   },
 

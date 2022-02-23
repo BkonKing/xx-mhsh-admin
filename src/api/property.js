@@ -27,8 +27,8 @@ const movieApi = {
   adjustmentInfo: '/butler/balance/adjust_json',
   adjustmentSend: '/butler/balance/adjust_balance',
   payDetail: '/butler/balance/pay_log_details_json',
-  logModuleList: 'logs/logs/getModelType',
-  logList: 'logs/logs/getLogList'
+  logModuleList: '/logs/logs/getModelType',
+  logList: '/logs/logs/getLogList'
 }
 
 // 催缴记录列表
@@ -292,7 +292,6 @@ export function getPayDetail (parameter) {
 export function getLogModuleList (parameter) {
   return request({
     url: movieApi.logModuleList,
-    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter
   })
@@ -301,7 +300,6 @@ export function getLogModuleList (parameter) {
 export function getLogList (parameter) {
   return request({
     url: movieApi.logList,
-    baseURL: process.env.VUE_APP_WSOLID_API_BASE_URL,
     method: 'post',
     data: parameter
   })
