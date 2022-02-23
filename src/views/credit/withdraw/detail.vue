@@ -111,18 +111,20 @@
 
     <check-form-modal
       v-model="publishVisible"
-      :active="activeCoupons"
+      :data="checkData"
       @success="publishSuccess"
     ></check-form-modal>
+    <pay-form-modal v-model="payVisible" :data="checkData"></pay-form-modal>
   </page-header-view>
 </template>
 
 <script>
-// /credit/withdrawDetail
+// /credit/withdraw/detail
 import { mapGetters } from 'vuex'
 import cloneDeep from 'lodash.clonedeep'
 import { STable } from '@/components'
 import CheckFormModal from './components/CheckFormModal'
+import PayFormModal from './components/PayFormModal'
 import StatusSteps from '@/views/businessManage/components/statusSteps'
 import {
   getShopCouponInfo,
@@ -132,9 +134,10 @@ import {
 } from '@/api/userManage/business'
 
 export default {
-  name: 'storeCouponDetail',
+  name: 'withdrawDetail',
   components: {
     CheckFormModal,
+    PayFormModal,
     StatusSteps,
     STable
   },
@@ -145,6 +148,7 @@ export default {
         log_data: []
       },
       publishVisible: false,
+      payVisible: false,
       remitColumns: [
         {
           title: '序号',
@@ -170,16 +174,7 @@ export default {
           title: '操作凭证',
           dataIndex: 'pay_order_numb',
           customRender: (text, row) => {
-            const aDom = (
-              <a
-                class="two-Multi"
-                href={`${this.baseUrl}/life/orderProject/getOrderProjectList?project_id=${row.order_project_id}`}
-                target="_blank"
-              >
-                {text}
-              </a>
-            )
-            return text ? aDom : '--'
+            return <span>{text}张 <a onClick={this.openImg(row)}>查看</a></span>
           }
         },
         {
@@ -199,7 +194,6 @@ export default {
           }
         }
       ],
-      // app 4 自测 2 后台 已使用4 后台 3
       remitLoadData: parameter => {
         return getUserCouponList(
           Object.assign(parameter, {
@@ -316,6 +310,11 @@ export default {
         shops_coupon_id: this.id
       }).then(({ data }) => {
         this.info = data
+      })
+    },
+    openImg (arr) {
+      this.$viewerApi({
+        images: arr
       })
     },
     refreshPage () {

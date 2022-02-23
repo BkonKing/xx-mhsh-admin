@@ -13,26 +13,26 @@ export default // 幸福币
   },
   children: [
     {
-      path: '/credit/withdrawList',
+      path: '/credit/withdraw/list',
       name: 'withdrawList',
-      component: () => import('@/views/credit/withdrawList'),
+      component: () => import('@/views/credit/withdraw/list'),
       meta: {
         title: '提现申请'
       }
     },
     {
-      path: '/credit/withdrawList2',
+      path: '/credit/withdraw/list',
       name: 'withdrawList2',
       component: RouteView,
-      redirect: '/credit/withdrawList',
+      redirect: '/credit/withdraw/list',
       meta: {
         title: '提现申请'
       },
       children: [
         {
-          path: '/credit/withdrawDetail',
+          path: '/credit/withdraw/detail',
           name: 'withdrawDetail',
-          component: () => import('@/views/credit/withdrawDetail'),
+          component: () => import('@/views/credit/withdraw/detail'),
           meta: {
             title: '提现详情'
           }

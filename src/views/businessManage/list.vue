@@ -55,23 +55,23 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="审核状态">
-                  <a-select
-                    v-model="queryParam.state_val"
-                    placeholder="请选择"
-                    :disabled="tabActiveKey !== ''"
+            <a-col v-if="!isParentProject || advanced" :md="8" :sm="24">
+              <a-form-item label="审核状态">
+                <a-select
+                  v-model="queryParam.state_val"
+                  placeholder="请选择"
+                  :disabled="tabActiveKey !== ''"
+                >
+                  <a-select-option
+                    v-for="item in auditStatus"
+                    :key="item.key"
+                    :value="item.key"
+                    >{{ item.tab }}</a-select-option
                   >
-                    <a-select-option
-                      v-for="item in auditStatus"
-                      :key="item.key"
-                      :value="item.key"
-                      >{{ item.tab }}</a-select-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
               <a-col :md="8" :sm="24">
                 <a-form-item label="添加时间">
                   <a-range-picker
@@ -86,7 +86,7 @@
             </template>
             <advanced-form
               v-model="advanced"
-              :md="16"
+              :md="isParentProject ? 16 : 24"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -234,7 +234,7 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
-        state_val: ''
+        state_val: undefined
       },
       columns: [
         {
@@ -417,7 +417,7 @@ export default {
     },
     handleTabChange (key) {
       this.tabActiveKey = key
-      this.queryParam.state_val = key
+      this.queryParam.state_val = key || undefined
       this.refreshTable()
     },
     // 获取项目列表
@@ -431,7 +431,7 @@ export default {
     },
     resetTable () {
       this.queryParam = {
-        state_val: this.tabActiveKey
+        state_val: this.tabActiveKey || undefined
       }
       this.refreshTable(true)
     },

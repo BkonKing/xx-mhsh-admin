@@ -4,6 +4,36 @@
     :tab-active-key="tabActiveKey"
     @tabChange="handleTabChange"
   >
+    <template v-slot:extraContent>
+      <div class="status-list">
+        <div>
+          <div class="text">待审核</div>
+          <div class="heading">
+            {{
+              statisticsData.to_be_reviewed
+                ? `￥${statisticsData.to_be_reviewed}`
+                : "--"
+            }}
+          </div>
+        </div>
+        <div>
+          <div class="text">待打款</div>
+          <div class="heading">
+            {{
+              statisticsData.to_be_paid
+                ? `￥${statisticsData.to_be_paid}`
+                : "--"
+            }}
+          </div>
+        </div>
+        <div>
+          <div class="text">已提现</div>
+          <div class="heading">
+            {{ statisticsData.paid ? `￥${statisticsData.paid}` : "--" }}
+          </div>
+        </div>
+      </div>
+    </template>
     <a-card class="search-card" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -11,12 +41,12 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="提现状态">
                 <a-select
-                  v-model="queryParam.checkStatus"
+                  v-model="queryParam.cash_status"
                   placeholder="请选择"
-                  :disabled="tabActiveKey !== '0'"
+                  :disabled="!!tabActiveKey"
                 >
                   <a-select-option
-                    v-for="item in tabList"
+                    v-for="item in cashStatus"
                     :key="item.key"
                     :value="item.key"
                     >{{ item.tab }}</a-select-option
@@ -26,31 +56,48 @@
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="账户类型">
-                <a-select v-model="queryParam.project_id" placeholder="请选择">
-                  <a-select-option value="1">商家用户</a-select-option>
-                  <a-select-option value="0">项目账户</a-select-option>
+                <a-select
+                  v-model="queryParam.account_type"
+                  placeholder="请选择"
+                >
+                  <a-select-option value="2">商家用户</a-select-option>
+                  <a-select-option value="1">项目账户</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="提现用户">
                 <a-input
-                  v-model="queryParam.user_text"
+                  v-model="queryParam.cash_user"
                   placeholder="昵称、姓名、手机号、银行卡号"
                 ></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="提现项目">
-                <a-select v-model="queryParam.project_id" placeholder="请选择">
-                  <a-select-option value="1">已认证</a-select-option>
-                  <a-select-option value="0">未认证</a-select-option>
+                <a-select
+                  v-model="queryParam.cash_project"
+                  show-search
+                  :filter-option="filterOption"
+                  placeholder="请选择"
+                >
+                  <a-select-option
+                    v-for="item in accountProjects"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.account }}</a-select-option
+                  >
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col v-if="isParentProject" :md="8" :sm="24">
               <a-form-item label="店铺归属">
-                <a-select v-model="queryParam.project_id" placeholder="请选择">
+                <a-select
+                  v-model="queryParam.shops_project"
+                  show-search
+                  :filter-option="filterOption"
+                  placeholder="请选择"
+                >
                   <a-select-option
                     v-for="item in projectOptions"
                     :key="item.project_id"
@@ -72,7 +119,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="申请时间">
                   <a-range-picker
-                    v-model="queryParam.time"
+                    v-model="queryParam.applyTime"
                     valueFormat="YYYY-MM-DD HH:mm:ss"
                     :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                     :placeholder="['开始时间', '结束时间']"
@@ -83,7 +130,7 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="到账时间">
                   <a-range-picker
-                    v-model="queryParam.time"
+                    v-model="queryParam.arrivalTime"
                     valueFormat="YYYY-MM-DD HH:mm:ss"
                     :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                     :placeholder="['开始时间', '结束时间']"
@@ -109,13 +156,13 @@
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="openShopPower">
+            <a-menu-item key="1" @click="batchCheck">
               通过
             </a-menu-item>
             <a-menu-item key="3" @click="batchCheck">
               拒绝
             </a-menu-item>
-            <a-menu-item key="2" @click="batchRemove">
+            <a-menu-item key="2" @click="batchCheck(2)">
               已打款
             </a-menu-item>
           </a-menu>
@@ -144,13 +191,15 @@
           ></Timewait>
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
-          <template>
-            <a :href="`${userUrl}?uid=${record.uid}&isShop=1`" target="_blank"
-              >查看</a
-            >
-            <a @click="openCheck(record)">审核</a>
-            <a @click="handleEdit(record)">已打款</a>
-          </template>
+          <router-link :to="`/credit/withdraw/detail?id=${record.id}`"
+            >查看</router-link
+          >
+          <a @click="openCheck([record.id], 1)">审核</a>
+          <a
+            v-if="isParentProject && +record.status === 3"
+            @click="openCheck([record.id], 2)"
+            >已打款</a
+          >
         </span>
       </s-table>
     </a-card>
@@ -159,25 +208,29 @@
       ref="add-form"
       @submit="submitSuccess"
     ></application-form-modal>
-    <check-form-modal v-model="checkVisible"></check-form-modal>
-    <remit-form-modal v-model="remitVisible"></remit-form-modal>
+    <check-form-modal
+      v-model="checkVisible"
+      :data="checkData"
+    ></check-form-modal>
+    <pay-form-modal v-model="payVisible" :data="checkData"></pay-form-modal>
   </page-header-view>
 </template>
 
 <script>
-// /credit/withdrawList
+// /credit/withdraw/list
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { STable, AdvancedForm, Timewait } from '@/components'
 import CheckFormModal from './components/CheckFormModal'
+import PayFormModal from './components/PayFormModal'
 import ApplicationFormModal from './components/ApplicationFormModal'
+import { getProjectList } from '@/api/userManage/business'
 import {
-  getShopList,
-  getProjectList,
-  delShops,
-  getBusinessSetting
-} from '@/api/userManage/business'
+  getAccount,
+  getCashList,
+  getCheckAndPayInfo
+} from '@/api/credit/withdraw'
 
 export default {
   name: 'withdrawList',
@@ -186,6 +239,7 @@ export default {
     STable,
     Timewait,
     CheckFormModal,
+    PayFormModal,
     ApplicationFormModal
   },
   data () {
@@ -196,12 +250,12 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
-        checkStatus: undefined
+        cash_status: undefined
       },
       columns: [
         {
           title: '提现状态',
-          dataIndex: 'project_name'
+          dataIndex: 'cash_status_desc'
         },
         {
           title: '审核时间',
@@ -210,7 +264,7 @@ export default {
         },
         {
           title: '提现单号',
-          dataIndex: 'shops_name1'
+          dataIndex: 'cashout_numb'
         },
         {
           title: '提现幸福币',
@@ -219,7 +273,7 @@ export default {
         },
         {
           title: '提现人民币',
-          dataIndex: 'coupon_count',
+          dataIndex: 'credits_sub',
           sorter: true
         },
         {
@@ -227,7 +281,10 @@ export default {
           dataIndex: 'realname',
           customRender: (text, row) => {
             return (
-              <a>
+              <a
+                href={`${this.userUrl}?uid=${row.uid}&isShop=1`}
+                target="_blank"
+              >
                 <div>{text}</div>
                 <div>{row.mobile}</div>
               </a>
@@ -244,7 +301,7 @@ export default {
         },
         {
           title: '到账时间',
-          dataIndex: 'ctime1',
+          dataIndex: 'payment_time',
           sorter: true,
           customRender (text) {
             return text || '--'
@@ -264,50 +321,47 @@ export default {
           descend: 'desc'
         }
         const params = cloneDeep(this.queryParam)
-        params.sort_field = parameter.sortField
-        params.sort_type = sortText[parameter.sortOrder]
-        const time = params.time
-        if (time && time.length) {
-          params.start_time = time[0]
-          params.end_time = time[1]
+        params.order_field = parameter.sortField
+        params.sort_value = sortText[parameter.sortOrder]
+        const applyTime = params.applyTime
+        if (applyTime && applyTime.length) {
+          params.apply_time = `${applyTime[0]}~${applyTime[1]}`
+        }
+        const arrivalTime = params.arrivalTime
+        if (arrivalTime && arrivalTime.length) {
+          params.arrivalTime = `${arrivalTime[0]}~${arrivalTime[1]}`
         }
         if (!this.isParentProject) {
           params.project_id = this.projectId
         }
-        return getShopList({ ...parameter, ...params })
+        return getCashList({ ...parameter, ...params }).then(res => {
+          const { list, ...statisticsData } = res.data
+          this.statisticsData = statisticsData || {}
+          return res
+        })
       },
       selectedRowKeys: [],
       selectedRows: [],
+      accountProjects: [],
       projectOptions: [],
       permissionVisible: false,
       powerForm: {
         power: []
       },
-      powerOptions: [
-        // {
-        //   label: '提现申请',
-        //   value: '1'
-        // },
-        {
-          label: '商铺券管理',
-          value: '2'
-        },
-        {
-          label: '扫码核销券',
-          value: '3'
-        }
-      ],
-      tabList: [
-        { key: '0', tab: '全部' },
+      cashStatus: [
         { key: '1', tab: '项目审核' },
         { key: '2', tab: '总部审核' },
         { key: '3', tab: '待打款' },
         { key: '4', tab: '已打款' },
         { key: '5', tab: '已拒绝' }
       ],
-      tabActiveKey: '0',
+      statisticsData: {},
+      tabActiveKey: '',
       editVisible: false,
-      checkVisible: false
+      checkVisible: false,
+      payVisible: false,
+      checkData: {},
+      remitVisible: false
     }
   },
   computed: {
@@ -322,6 +376,23 @@ export default {
         selectedRowKeys: this.selectedRowKeys,
         onChange: this.onSelectChange
       }
+    },
+    tabList () {
+      const {
+        project_audit_count: projectCount,
+        headquarters_audit_count: hCount,
+        payment_tobepaid_count: unPaidCount,
+        paid_count: paidCount,
+        rejected_count: rejectedCount
+      } = this.statisticsData
+      return [
+        { key: '', tab: '全部' },
+        { key: '1', tab: `项目审核${projectCount ? `(${projectCount})` : ''}` },
+        { key: '2', tab: `总部审核${hCount ? `(${hCount})` : ''}` },
+        { key: '3', tab: `待打款${unPaidCount ? `(${unPaidCount})` : ''}` },
+        { key: '4', tab: `已打款${paidCount ? `(${paidCount})` : ''}` },
+        { key: '5', tab: `已拒绝${rejectedCount ? `(${rejectedCount})` : ''}` }
+      ]
     }
   },
   created () {
@@ -330,31 +401,48 @@ export default {
   methods: {
     initOptions () {
       this.getProjectList()
-      this.getBusinessSetting()
-    },
-    async getBusinessSetting () {
-      const { power_name_data: power } = await getBusinessSetting()
-      this.powerOptions = power.map(obj => ({
-        label: obj.text,
-        value: obj.key
-      }))
+      this.getAccount()
     },
     handleTabChange (key) {
+      if (['4', '5'].includes(key)) {
+        if (this.columns[1].dataIndex === 'shops_name') {
+          this.columns.splice(1, 1)
+        }
+      } else if (this.columns[1].dataIndex !== 'shops_name') {
+        const tabInfo = {
+          title: '审核时间',
+          dataIndex: 'shops_name',
+          scopedSlots: { customRender: 'timeWait' }
+        }
+        this.columns.splice(1, 0, tabInfo)
+      }
       this.tabActiveKey = key
-      this.queryParam.checkStatus = key
+      this.queryParam.cash_status = key || undefined
     },
-    // 获取项目列表
     getProjectList () {
       getProjectList().then(({ data }) => {
         this.projectOptions = data || []
       })
+    },
+    // 获取对公账户
+    getAccount () {
+      getAccount().then(({ data }) => {
+        this.accountProjects = data || []
+      })
+    },
+    filterOption (input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      )
     },
     refreshTable (bool = false) {
       this.$refs.table.refresh(bool)
     },
     resetTable () {
       this.queryParam = {
-        checkStatus: this.tabActiveKey
+        cash_status: this.tabActiveKey || undefined
       }
       this.refreshTable(true)
     },
@@ -362,55 +450,27 @@ export default {
       this.$refs['add-form'].resetFields()
       this.editVisible = true
     },
-    // 批量删除
-    batchRemove () {
+    batchCheck (type) {
       if (this.selectedRowKeys.length) {
-        const that = this
-        this.$confirm({
-          title: '删除商家',
-          content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
-          icon: () => (
-            <a-icon
-              type="exclamation-circle"
-              style="color: #faad14"
-              theme="filled"
-            />
-          ),
-          cancelText: '取消',
-          okText: '确定',
-          onOk () {
-            that.handleRemove(that.selectedRowKeys.join(','))
-          },
-          onCancel () {}
-        })
+        this.openCheck(this.selectedRowKeys, type)
       } else {
         this.$message.warning('请选择后再进行操作')
       }
     },
-    batchCheck () {
-      if (this.selectedRowKeys.length) {
-        this.openCheck()
-      } else {
-        this.$message.warning('请选择后再进行操作')
-      }
-    },
-    openCheck (data = this.selectedRowKeys) {
-      this.checkVisible = true
-    },
-    handleRemove (id) {
-      delShops({
-        shops_id_text: id
-      }).then(({ success }) => {
-        if (success) {
-          const ids = id.split(',')
-          // 选中selectedRowKeys去除删除的key
-          this.selectedRowKeys = this.selectedRowKeys.filter(
-            obj => !ids.includes(obj)
-          )
-          this.$message.success('删除成功')
-          this.refreshTable()
-        }
+    // type 1：审核 2：打款
+    async openCheck (ids, type) {
+      this.$loading.show()
+      const { data } = await getCheckAndPayInfo({
+        ids,
+        type: 1
       })
+      this.checkData = data
+      this.$loading.hide()
+      if (type === 1) {
+        this.checkVisible = true
+      } else {
+        this.payVisible = true
+      }
     },
     handleEdit (record) {
       const form = cloneDeep(record)
@@ -474,5 +534,14 @@ export default {
 }
 .permission-modal-span + .permission-modal-span::before {
   content: "、";
+}
+.status-list {
+  display: flex;
+  justify-content: flex-end;
+  text-align: left;
+  .text,
+  .heading {
+    padding-left: 40px;
+  }
 }
 </style>
