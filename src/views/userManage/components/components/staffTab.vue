@@ -60,7 +60,7 @@
           <a @click="handleEdit(record)">编辑</a>
           <a
             ><a-popconfirm
-              title="你确定要删除该商家吗？"
+              title="你确定要删除该员工吗？"
               ok-text="确定"
               cancel-text="取消"
               @confirm="handleRemove(record.id)"
@@ -77,6 +77,13 @@
         </template>
       </span>
     </s-table>
+    <staff-form
+      v-model="editFormVisible"
+      ref="add-form"
+      :power-options="powerOptions"
+      :project-options="projectOptions"
+      @submit="refreshTable"
+    ></staff-form>
   </div>
 </template>
 
@@ -84,10 +91,12 @@
 import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
 import { AdvancedForm, STable } from '@/components'
-import { getShopStaffList, delShopStaff } from '@/api/userManage/business'
+import staffForm from '@/views/businessManage/components/staffForm'
+import { getProjectList, getShopStaffList, delShopStaff } from '@/api/userManage/business'
 export default {
   components: {
     AdvancedForm,
+    staffForm,
     STable
   },
   props: {
@@ -110,6 +119,7 @@ export default {
           value: '2'
         }
       ],
+      projectOptions: [],
       queryParam: {
         clerk_power_data: []
       },
@@ -174,27 +184,39 @@ export default {
           params.project_id = this.projectId
         }
         return getShopStaffList({ ...parameter, ...params, shops_id: this.info.shops_id })
-      }
+      },
+      editFormVisible: false
     }
   },
+  created () {
+    this.getProjectList()
+  },
   methods: {
+    // 获取项目列表
+    getProjectList () {
+      getProjectList().then(({ data }) => {
+        this.projectOptions = data || []
+      })
+    },
+    handleEdit (record) {
+      const form = cloneDeep(record)
+      form.staff_id = form.id
+      form.clerk_power_data = form.clerk_power ? form.clerk_power.split(',') : []
+      console.log(this.$refs['add-form'])
+      this.$refs['add-form'].setFieldsValue(form)
+      this.editFormVisible = true
+    },
     handleRemove (id) {
       delShopStaff({
         shops_clerk_id_text: id
       }).then(({ success }) => {
         if (success) {
-          const ids = id.split(',')
-          // 选中selectedRowKeys去除删除的key
-          this.selectedRowKeys = this.selectedRowKeys.filter(
-            obj => !ids.includes(obj)
-          )
           this.$message.success('删除成功')
           this.refreshTable()
         }
       })
     },
     refreshTable (bool = false) {
-      console.log(1111)
       this.$refs.table && this.$refs.table.refresh(bool)
     },
     resetTable () {

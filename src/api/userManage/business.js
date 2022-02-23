@@ -9,7 +9,7 @@ export const businessApi = {
   delShops: '/business/shops/del_shops',
   setShopsPower: '/business/shops/edit_shops_power',
   getUserList: '/business/shops/user_screen',
-  editShopAttestation: '/business/shops/edit_shops_attestation',
+  editShopAttestation: '/user/user/edit_shops_attestation',
   setShopAttestation: '/business/shops/affirm_shops_attestation',
   getShopCouponList: '/business/shops_coupon/shops_coupon_list',
   publishCoupon: '/business/shops_coupon/open_shops_coupon',

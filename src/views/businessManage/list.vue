@@ -194,6 +194,7 @@
     </a-modal>
     <check-form
       v-model="checkVisible"
+      ref="checkForm"
       :data="checkData"
       @submit="submitSuccess"
     ></check-form>
@@ -226,12 +227,6 @@ export default {
     storeForm
   },
   data () {
-    const auditStatus = [
-      { key: '1', tab: '待审核' },
-      { key: '3', tab: '已通过' },
-      { key: '2', tab: '未通过' },
-      { key: '0', tab: '未提交' }
-    ]
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
@@ -343,8 +338,12 @@ export default {
         if (!this.isParentProject) {
           params.project_id = this.projectId
         }
-        return getShopList({ ...parameter, ...params })
+        return getShopList({ ...parameter, ...params }).then(res => {
+          this.reviewedCount = res.data.be_reviewed_count
+          return res
+        })
       },
+      reviewedCount: 0,
       selectedRowKeys: [],
       selectedRows: [],
       projectOptions: [],
@@ -353,10 +352,10 @@ export default {
         power: []
       },
       powerOptions: [
-        // {
-        //   label: '提现申请',
-        //   value: '1'
-        // },
+        {
+          label: '提现申请',
+          value: '1'
+        },
         {
           label: '商铺券管理',
           value: '2'
@@ -366,10 +365,11 @@ export default {
           value: '3'
         }
       ],
-      auditStatus: cloneDeep(auditStatus),
-      tabList: [
-        { key: '', tab: '全部' },
-        ...auditStatus
+      auditStatus: [
+        { key: '1', tab: '待审核' },
+        { key: '3', tab: '已通过' },
+        { key: '2', tab: '未通过' },
+        { key: '0', tab: '未提交' }
       ],
       tabActiveKey: '',
       checkVisible: false,
@@ -388,6 +388,16 @@ export default {
         selectedRowKeys: this.selectedRowKeys,
         onChange: this.onSelectChange
       }
+    },
+    tabList () {
+      const num = this.reviewedCount
+      return [
+        { key: '', tab: '全部' },
+        { key: '1', tab: `待审核${num ? '(' + num + ')' : ''}` },
+        { key: '3', tab: '已通过' },
+        { key: '2', tab: '未通过' },
+        { key: '0', tab: '未提交' }
+      ]
     }
   },
   created () {
@@ -467,6 +477,7 @@ export default {
     },
     openCheck (data = this.selectedRows) {
       this.checkData = cloneDeep(data)
+      this.$refs.checkForm && this.$refs.checkForm.resetFields()
       this.checkVisible = true
     },
     handleRemove (id) {

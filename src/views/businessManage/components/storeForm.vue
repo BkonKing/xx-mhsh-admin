@@ -35,7 +35,7 @@
           @change="handleChangeProject"
         >
           <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-          <a-select-option v-for="item in userOptions" :key="item.id" :disabled="+item.is_shops_clerk">{{
+          <a-select-option v-for="item in userOptions" :key="item.id" :disabled="+item.is_shops_clerk || +item.is_shops">{{
             item.name_text
           }}</a-select-option>
         </a-select>

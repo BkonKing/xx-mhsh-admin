@@ -189,7 +189,6 @@ export default {
       })
     },
     resetFields () {
-      this.$refs.form.resetFields()
       this.form = clonedeep(form)
     }
   }

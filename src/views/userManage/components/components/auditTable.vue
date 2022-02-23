@@ -18,7 +18,7 @@
       v-model="checkVisible"
       :data="checkData"
       :type="checkType"
-      @submit="submitSuccess"
+      @submit="refreshTable"
     ></check-form>
   </div>
 </template>
@@ -94,9 +94,6 @@ export default {
       this.checkData = [info]
       this.checkType = type
       this.checkVisible = true
-    },
-    submitSuccess () {
-
     }
   }
 }

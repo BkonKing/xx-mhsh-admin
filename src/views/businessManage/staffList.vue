@@ -47,6 +47,7 @@
               <a-form-item label="店铺权限">
                 <a-select
                   v-model="queryParam.clerk_power_data"
+                  mode="multiple"
                   placeholder="请选择"
                 >
                   <a-select-option
@@ -75,7 +76,7 @@
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="openShopPower">
-              店铺权限
+              员工权限
             </a-menu-item>
             <a-menu-item key="2" @click="batchRemove">
               删除
@@ -100,7 +101,7 @@
             <a @click="handleEdit(record)">编辑</a>
             <a
               ><a-popconfirm
-                title="你确定要删除该商家吗？"
+                title="你确定要删除该员工吗？"
                 ok-text="确定"
                 cancel-text="取消"
                 @confirm="handleRemove(record.id)"
@@ -192,7 +193,9 @@ export default {
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       advanced: false,
       // 查询参数
-      queryParam: {},
+      queryParam: {
+        clerk_power_data: []
+      },
       columns: [
         {
           title: '店铺归属',
@@ -281,6 +284,7 @@ export default {
       projectOptions: [],
       permissionVisible: false,
       powerForm: {
+        type: '1',
         clerk_power_data: []
       },
       powerOptions: [
@@ -382,10 +386,7 @@ export default {
     handleEdit (record) {
       const form = cloneDeep(record)
       form.staff_id = form.id
-      form.company_id = form.company_id || undefined
-      form.division_id = form.division_id || undefined
-      form.post_id = form.post_id || undefined
-      form.clerk_power_data = form.clerk_power_data ? form.clerk_power_data.split(',') : []
+      form.clerk_power_data = form.clerk_power ? form.clerk_power.split(',') : []
       this.$refs['add-form'].setFieldsValue(form)
       this.editFormVisible = true
     },
@@ -395,7 +396,7 @@ export default {
     openShopPower () {
       if (this.selectedRowKeys.length) {
         this.powerForm.clerk_power_data = []
-        this.powerForm.type = ''
+        this.powerForm.type = '1'
         this.permissionVisible = true
       } else {
         this.$message.warning('请选择后再进行操作')
