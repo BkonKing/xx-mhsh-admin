@@ -80,29 +80,34 @@ const columns = [
     width: '6%'
   },
   {
+    title: '所属项目',
+    dataIndex: 'project_name',
+    width: '16%'
+  },
+  {
     title: '操作时间',
     dataIndex: 'ctime',
-    width: '16%'
+    width: '14%'
   },
   {
     title: '模块',
     dataIndex: 'module_type',
-    width: '16%'
+    width: '14%'
   },
   {
     title: '操作员',
     dataIndex: 'username',
-    width: '16%'
+    width: '13%'
   },
   {
     title: '操作类型',
     dataIndex: 'opt_type',
-    width: '12%'
+    width: '11%'
   },
   {
     title: '操作说明',
     dataIndex: 'content',
-    width: '34%'
+    width: '26%'
   }
 ]
 export default {
