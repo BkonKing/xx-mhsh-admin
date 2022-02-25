@@ -1,7 +1,10 @@
 <template>
   <page-header-view>
     <template #title>
-      {{info.coupon_name}}<span class="title-span">{{+info.is_visible ? '（APP显示名称）' : '（APP不显示名称）'}}</span>
+      {{ info.coupon_name
+      }}<span class="title-span">{{
+        +info.is_visible ? "（APP显示名称）" : "（APP不显示名称）"
+      }}</span>
     </template>
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
@@ -133,6 +136,9 @@
             <div>{{ info.ds_etime ? `${info.ds_etime}（定时结束）` : "" }}</div>
           </div></a-descriptions-item
         >
+        <a-descriptions-item label="券使用说明" :span="3">{{
+          info.coupon_rule
+        }}</a-descriptions-item>
       </a-descriptions>
     </a-card>
 
