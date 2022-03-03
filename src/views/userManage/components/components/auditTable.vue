@@ -10,13 +10,15 @@
       :scroll="{ y: 270 }"
     >
       <span class="table-action" slot="action" slot-scope="text, record">
-        <a v-if="+record.is_sh_btn" @click="handleEdit(record, 0)">审核</a>
-        <a v-if="+record.is_xg_btn" @click="handleEdit(record, 1)">修改</a>
+        <a v-if="+record.is_sh_btn && +projectId === +info.project_id" @click="handleEdit(record, 0)">审核</a>
+        <a v-if="+record.is_xg_btn && +projectId === +info.project_id" @click="handleEdit(record, 1)">修改</a>
       </span>
     </s-table>
     <check-form
       v-model="checkVisible"
+      ref="checkForm"
       :data="checkData"
+      :showUser="false"
       :type="checkType"
       @submit="refreshTable"
     ></check-form>
@@ -24,6 +26,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { STable } from '@/components'
 import CheckForm from '@/views/businessManage/components/CheckForm'
 import { getShopAttestationList } from '@/api/userManage'
@@ -82,6 +85,9 @@ export default {
       checkData: []
     }
   },
+  computed: {
+    ...mapGetters(['projectId'])
+  },
   methods: {
     refreshTable (bool = false) {
       this.$refs.table && this.$refs.table.refresh(bool)
@@ -89,10 +95,12 @@ export default {
     handleEdit (data, type) {
       const info = {
         ...this.info,
-        id: data.id
+        logId: data.id,
+        id: data.shops_id
       }
       this.checkData = [info]
       this.checkType = type
+      this.$refs.checkForm && this.$refs.checkForm.resetFields()
       this.checkVisible = true
     }
   }

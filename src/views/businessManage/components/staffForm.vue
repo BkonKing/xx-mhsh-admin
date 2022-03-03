@@ -19,6 +19,7 @@
           show-search
           :filter-option="filterProject"
           placeholder="输入名称进行搜索"
+          @change="getShopPower"
           ><a-select-option
             v-for="item in shopOptions"
             :key="item.id"
@@ -52,7 +53,7 @@
       <a-form-model-item label="店员姓名" prop="clerk_name" required>
         <a-input
           v-model="form.clerk_name"
-          :maxLength="20"
+          :maxLength="10"
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
@@ -73,7 +74,8 @@ import { debounce } from '@/utils/util'
 import {
   saveShopStaff,
   getShopOption,
-  getUserList
+  getUserList,
+  getShopPrivilege
 } from '@/api/userManage/business'
 
 const initialForm = {
@@ -82,16 +84,22 @@ const initialForm = {
   clerk_name: '',
   clerk_power_data: []
 }
+const powers = [
+  {
+    label: '店铺券管理',
+    value: '1'
+  },
+  {
+    label: '扫码核销券',
+    value: '2'
+  }
+]
 export default {
   name: 'staffForm',
   props: {
     value: {
       type: Boolean,
       default: false
-    },
-    powerOptions: {
-      type: Array,
-      default: () => []
     }
   },
   data () {
@@ -105,6 +113,16 @@ export default {
       fetching: false,
       shopOptions: [],
       userOptions: [],
+      powerOptions: [
+        {
+          label: '店铺券管理',
+          value: '1'
+        },
+        {
+          label: '扫码核销券',
+          value: '2'
+        }
+      ],
       rules: {
         shops_id: [{ required: true, message: '请选择店铺' }],
         mobile: [{ required: true, message: '请选择店员手机号' }],
@@ -145,6 +163,12 @@ export default {
         shops_name: ''
       })
       this.shopOptions = data.list || []
+    },
+    async getShopPower () {
+      const { list } = await getShopPrivilege({
+        shops_id: this.form.shops_id
+      })
+      this.powerOptions = list || []
     },
     filterProject (input, option) {
       return (
@@ -189,6 +213,9 @@ export default {
     },
     editStaff () {
       const params = clonedeep(this.form)
+      params.clerk_power_data = params.clerk_power_data.filter(obj =>
+        this.powerOptions.findIndex(option => option.value === obj) > -1
+      )
       saveShopStaff(params).then(({ success, message }) => {
         if (success) {
           this.$message.success('保存成功')
@@ -201,11 +228,13 @@ export default {
     },
     setFieldsValue (data) {
       this.form = data
+      this.getShopPower()
     },
     resetFields () {
       this.userOptions = []
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
+      this.powerOptions = clonedeep(powers)
     }
   }
 }

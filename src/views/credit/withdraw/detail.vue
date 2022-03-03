@@ -1,120 +1,156 @@
 <template>
-  <page-header-view :title="`提现单号：${info.coupon_name}`">
+  <page-header-view :title="title">
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="申请人" :span="2">
+          {{ info.user_type | userType }}
           <a :href="`${userUrl}?uid=${info.uid}`" target="_blank"
-            >{{ info.nickname }}{{ realname }}</a
+            >{{ realname }} {{ mobile }}</a
           >
         </a-descriptions-item>
         <a-descriptions-item label="店铺名称">
           {{ info.shops_name || "(暂无名称)" }}
         </a-descriptions-item>
         <a-descriptions-item label="店铺归属">
-          {{ info.limit_text || "--" }}
+          {{ info.shops_project || "美好生活家园运营中心" }}
         </a-descriptions-item>
       </a-descriptions>
     </template>
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button @click="handleDelete">修改打款</a-button>
-      <a-button @click="handleDelete">修改审核</a-button>
-      <a-button type="primary" @click="handleFinish">审核</a-button>
-      <a-button type="primary" @click="batchPublish">已打款</a-button>
+      <a-button v-if="+info.udpate_payment_button" @click="editPay(info, 2)"
+        >修改打款</a-button
+      >
+      <a-button v-if="+info.update_check_button" @click="editCheck(2)"
+        >修改审核</a-button
+      >
+      <a-button
+        v-if="+info.check_button"
+        type="primary"
+        @click="openCheck"
+        >审核</a-button
+      >
+      <a-button
+        v-if="+info.payment_button"
+        type="primary"
+        @click="openCheck(2)"
+        >已打款</a-button
+      >
     </template>
 
     <template v-slot:extraContent>
       <div class="status-list">
-        <div style="flex: 0 0 110px;">
+        <div style="flex: 0 0 130px;">
           <div class="text">状态</div>
-          <div class="heading">{{ info.coupon_status_name }}</div>
+          <div class="heading">{{ info.status_desc }}</div>
         </div>
       </div>
     </template>
 
-    <status-steps
+    <!-- <status-steps
       title="券状态"
       :data="stepsData"
       :current="stepCurrent"
       description="name"
       remarkKey="ctime"
-    ></status-steps>
+    ></status-steps> -->
 
     <a-card title="基本信息" style="margin-top: 24px">
       <h3>提现信息</h3>
       <a-descriptions>
         <a-descriptions-item label="实际提现"
-          ><span style="color: red;">{{
-            info.shops_coupon_id
-          }}</span></a-descriptions-item
+          ><span style="color: red;"
+            >￥{{ info.actual_rmb }}</span
+          ></a-descriptions-item
         >
-        <a-descriptions-item label="提现人民币">{{
-          info.coupon_type_name
-        }}</a-descriptions-item>
+        <a-descriptions-item label="提现人民币"
+          >￥{{ info.cash_rmb }}</a-descriptions-item
+        >
         <a-descriptions-item label="提现幸福币">{{
-          info.ctime
+          info.credits
         }}</a-descriptions-item>
-        <a-descriptions-item label="服务费">{{
-          info.coupon_scene_name
-        }}</a-descriptions-item>
+        <a-descriptions-item label="服务费"
+          >{{ info.service_rate
+          }}{{
+            info.service_fee ? `(本次收取￥${info.service_fee})` : ""
+          }}</a-descriptions-item
+        >
         <a-descriptions-item label="提现单号">
-          {{ info.coupon_mode_text }}</a-descriptions-item
+          {{ info.cashout_numb }}</a-descriptions-item
         >
         <a-descriptions-item label="申请说明">{{
-          info.available_text || "--"
+          info.cash_desc || "--"
         }}</a-descriptions-item>
       </a-descriptions>
       <h3>到账银行卡</h3>
       <a-descriptions>
         <a-descriptions-item label="卡类型">{{
-          info.shops_coupon_id
+          info.bank_name
         }}</a-descriptions-item>
         <a-descriptions-item label="卡号">{{
-          info.coupon_type_name
+          info.bank_card
         }}</a-descriptions-item>
         <a-descriptions-item label="手机号">{{
-          info.ctime
+          info.mobile
         }}</a-descriptions-item>
         <a-descriptions-item label="姓名">{{
-          info.coupon_scene_name
+          info.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="身份证号">
-          {{ info.coupon_mode_text }}</a-descriptions-item
+          {{ info.idcard }}</a-descriptions-item
         >
       </a-descriptions>
     </a-card>
 
-    <a-card title="打款信息" style="margin-top: 24px">
-      <s-table
+    <a-card
+      v-if="info.payment_list && info.payment_list.length"
+      title="打款信息"
+      style="margin-top: 24px"
+    >
+      <a-table
         ref="remitTable"
         size="default"
         rowKey="id"
         :columns="remitColumns"
-        :data="remitLoadData"
-        :showPagination="true"
+        :data-source="info.payment_list"
+        :showPagination="false"
       >
-      </s-table>
+      </a-table>
     </a-card>
 
-    <a-card title="审核信息" style="margin-top: 24px">
-      <s-table
+    <a-card
+      v-if="info.check_list && info.check_list.length"
+      title="审核信息"
+      style="margin-top: 24px"
+    >
+      <a-table
         ref="auditTable"
         size="default"
         rowKey="id"
         :columns="auditColumns"
-        :data="auditLoadData"
-        :showPagination="true"
+        :data-source="info.check_list"
+        :showPagination="false"
       >
-      </s-table>
+      </a-table>
     </a-card>
 
     <check-form-modal
-      v-model="publishVisible"
-      :data="checkData"
-      @success="publishSuccess"
+      ref="checkForm"
+      v-model="checkVisible"
+      :data="ids"
+      :info="checkData"
+      :type="checkMode"
+      :check-id="checkId"
+      @success="refreshPage"
     ></check-form-modal>
-    <pay-form-modal v-model="payVisible" :data="checkData"></pay-form-modal>
+    <pay-form-modal
+      v-model="payVisible"
+      :data="ids"
+      :info="payData"
+      :type="payType"
+      @success="refreshPage"
+    ></pay-form-modal>
   </page-header-view>
 </template>
 
@@ -122,24 +158,19 @@
 // /credit/withdraw/detail
 import { mapGetters } from 'vuex'
 import cloneDeep from 'lodash.clonedeep'
-import { STable } from '@/components'
+// import { STable } from '@/components'
 import CheckFormModal from './components/CheckFormModal'
 import PayFormModal from './components/PayFormModal'
 import StatusSteps from '@/views/businessManage/components/statusSteps'
-import {
-  getShopCouponInfo,
-  getUserCouponList,
-  finishCoupon,
-  deleteCoupon
-} from '@/api/userManage/business'
+import { getCashDetail, getCheckAndPayInfo } from '@/api/credit/withdraw'
 
 export default {
   name: 'withdrawDetail',
   components: {
     CheckFormModal,
     PayFormModal,
-    StatusSteps,
-    STable
+    StatusSteps
+    // STable
   },
   data () {
     return {
@@ -147,39 +178,45 @@ export default {
       info: {
         log_data: []
       },
-      publishVisible: false,
-      payVisible: false,
       remitColumns: [
         {
           title: '序号',
-          dataIndex: 'user_coupon_numb'
+          dataIndex: 'id',
+          customRender: (text, row, index) => {
+            return index + 1
+          }
         },
         {
           title: '操作时间',
-          dataIndex: 'c_status_name'
+          dataIndex: 'ctime'
         },
         {
           title: '打款结果',
-          dataIndex: 'nickname'
+          dataIndex: 'payment_result'
         },
         {
           title: '操作后台',
-          dataIndex: 'realname'
+          dataIndex: 'backstage'
         },
         {
           title: '操作人',
-          dataIndex: 'pay_money'
+          dataIndex: 'opt_user'
         },
         {
           title: '操作凭证',
-          dataIndex: 'pay_order_numb',
+          dataIndex: 'img',
           customRender: (text, row) => {
-            return <span>{text}张 <a onClick={this.openImg(row)}>查看</a></span>
+            return (
+              <span>张</span>
+              // <span>
+              //   {text.length}张 <a onClick={() => {this.openImg(text)}}>查看</a>
+              // </span>
+            )
           }
         },
         {
           title: '操作说明',
-          dataIndex: 'ptime'
+          dataIndex: 'explain'
         },
         {
           title: '操作',
@@ -187,44 +224,44 @@ export default {
           width: '100px',
           customRender: (text, row) => {
             return (
-              <a onClick={getShopCouponInfo}>
+              <a
+                onClick={() => {
+                  this.editPay(row, 2)
+                }}
+              >
                 修改
               </a>
             )
           }
         }
       ],
-      remitLoadData: parameter => {
-        return getUserCouponList(
-          Object.assign(parameter, {
-            shops_coupon_id: this.id
-          })
-        )
-      },
       auditColumns: [
         {
           title: '序号',
-          dataIndex: 'user_coupon_numb'
+          dataIndex: 'id',
+          customRender: (text, row, index) => {
+            return index + 1
+          }
         },
         {
           title: '审核时间',
-          dataIndex: 'c_status_name'
+          dataIndex: 'ctime'
         },
         {
           title: '审核结果',
-          dataIndex: 'nickname'
+          dataIndex: 'check_result'
         },
         {
           title: '审核后台',
-          dataIndex: 'realname'
+          dataIndex: 'backstage'
         },
         {
           title: '审核人',
-          dataIndex: 'pay_money'
+          dataIndex: 'opt_user'
         },
         {
           title: '操作说明',
-          dataIndex: 'ptime'
+          dataIndex: 'explain'
         },
         {
           title: '操作',
@@ -232,43 +269,35 @@ export default {
           width: '100px',
           customRender: (text, row) => {
             return (
-              <a onClick={getShopCouponInfo}>
+              <a
+                onClick={() => {
+                  this.editCheck(3, row)
+                }}
+              >
                 修改
               </a>
             )
           }
         }
       ],
-      auditLoadData: parameter => {
-        return getUserCouponList(
-          Object.assign(parameter, {
-            shops_coupon_id: this.id
-          })
-        )
-      }
+      checkVisible: false,
+      checkMode: 1,
+      checkData: {},
+      checkId: '',
+      payVisible: false,
+      payType: 1,
+      payData: {}
     }
   },
   computed: {
-    ...mapGetters(['isParentProject']),
-    baseUrl () {
-      return this.isParentProject ? '/zht' : '/xmht'
-    },
-    userUrl () {
-      return this.isParentProject
-        ? '/zht/user/user/getUserList'
-        : '/xmht/household/member/getMemberList'
-    },
+    ...mapGetters(['isParentProject', 'userUrl']),
     realname () {
       const realname = this.info.realname
-      return realname ? `(${realname})` : ''
+      return realname || ''
     },
-    activeCoupons () {
-      return [
-        {
-          id: this.id,
-          coupon_name: this.info.coupon_name
-        }
-      ]
+    mobile () {
+      const mobile = this.info.mobile
+      return mobile || ''
     },
     stepsData () {
       const stepArr = ['创建', '发布', '领取', '结束']
@@ -298,19 +327,33 @@ export default {
         3: 3
       }
       return step[this.info.coupon_status]
+    },
+    title () {
+      return `提现单号：${this.info.cashout_numb}`
+    },
+    ids () {
+      return [this.id]
+    }
+  },
+  filters: {
+    userType (value) {
+      const text = {
+        1: '项目 - ',
+        2: '商家 - '
+      }
+      return text[value]
     }
   },
   created () {
     this.id = this.$route.query.id
-    this.getShopCouponInfo()
+    this.getCashDetail()
   },
   methods: {
-    getShopCouponInfo () {
-      getShopCouponInfo({
-        shops_coupon_id: this.id
-      }).then(({ data }) => {
-        this.info = data
+    async getCashDetail () {
+      const { data } = await getCashDetail({
+        cash_id: this.id
       })
+      this.info = data
     },
     openImg (arr) {
       this.$viewerApi({
@@ -318,85 +361,38 @@ export default {
       })
     },
     refreshPage () {
-      this.getShopCouponInfo()
-      this.refreshTable()
+      this.getCashDetail()
     },
-    confirm ({ title, content, fn }) {
-      this.$confirm({
-        title,
-        content,
-        icon: () => (
-          <a-icon
-            type="exclamation-circle"
-            style="color: #faad14"
-            theme="filled"
-          />
-        ),
-        cancelText: '取消',
-        okText: '确定',
-        onOk () {
-          fn()
-        },
-        onCancel () {}
+    async openCheck (type = 1) {
+      const { data } = await getCheckAndPayInfo({
+        ids: [this.id],
+        type
       })
+      if (type === 1) {
+        this.checkMode = 1
+        this.checkData = data
+        this.checkVisible = true
+      } else {
+        this.payType = 1
+        this.payData = data
+        this.payVisible = true
+      }
     },
-    batchPublish () {
-      this.publishVisible = true
+    async editCheck (type, checkData) {
+      // this.checkData = this.info
+      this.checkMode = type
+      type === 3 && (this.checkId = checkData.id)
+      this.checkVisible = true
+      if (type === 2) {
+        this.$nextTick(() => {
+          this.$refs.checkForm.setCheckType(2)
+        })
+      }
     },
-    publishSuccess () {
-      this.refreshPage()
-    },
-    // 结束操作
-    handleFinish () {
-      this.confirm({
-        title: '结束店铺券',
-        content: () => (
-          <div>
-            <span style="color: #f5222d;">结束后将停止领取该券</span>
-            ，确定结束吗？
-          </div>
-        ),
-        fn: () => {
-          this.finishCoupon()
-        }
-      })
-    },
-    finishCoupon () {
-      finishCoupon({
-        shops_coupon_id_text: this.id
-      }).then(({ success }) => {
-        if (success) {
-          this.$message.success('提交成功')
-          this.refreshPage()
-        }
-      })
-    },
-    // 删除操作
-    handleDelete (id = this.selectedRowKeys) {
-      this.confirm({
-        title: '删除店铺券',
-        content: () => (
-          <div>
-            <span style="color: #f5222d;">优惠券及其相关信息都会被删除</span>
-            ，确定删除吗？
-          </div>
-        ),
-        fn: () => {
-          this.deleteCoupon()
-        }
-      })
-    },
-    deleteCoupon () {
-      deleteCoupon({
-        shops_coupon_id_text: this.id
-      }).then(({ success }) => {
-        if (success) {
-          this.$message.success('删除成功')
-          this.$router.replace({
-            name: 'storeCoupon'
-          })
-        }
-      })
+    editPay (data, type) {
+      this.payData = data
+      this.payType = type
+      this.payVisible = true
     }
   }
 }

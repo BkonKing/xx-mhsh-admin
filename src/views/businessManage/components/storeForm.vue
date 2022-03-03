@@ -13,15 +13,15 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
+      <h3>商家用户</h3>
       <template v-if="isEdit">
-        <h3>商家资料</h3>
         <a-form-model-item label="商家用户"
           >{{ form.nickname }}{{ realName }}
           {{ form.mobile }}</a-form-model-item
         >
-        <a-form-model-item label="商家认证"
-          >{{ form.attestation_text }}</a-form-model-item
-        >
+        <a-form-model-item label="商家认证">{{
+          form.attestation_text
+        }}</a-form-model-item>
       </template>
       <a-form-model-item v-else label="商家用户" prop="uid_text" required>
         <a-select
@@ -35,12 +35,16 @@
           @change="handleChangeProject"
         >
           <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-          <a-select-option v-for="item in userOptions" :key="item.id" :disabled="+item.is_shops_clerk || +item.is_shops">{{
-            item.name_text
-          }}</a-select-option>
+          <a-select-option
+            v-for="item in userOptions"
+            :key="item.id"
+            :disabled="+item.is_shops_clerk || +item.is_shops"
+            >{{ item.name_text }}</a-select-option
+          >
         </a-select>
         <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
       </a-form-model-item>
+      <h3>店铺信息</h3>
       <a-form-model-item label="店铺归属" prop="project_id">
         <a-select
           v-model="form.project_id"
@@ -85,12 +89,10 @@
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="店铺地址" prop="shops_notice">
+      <a-form-model-item label="店铺地址">
         <a-textarea
-          v-model="form.shops_notice"
-          rows="4"
-          :disabled="isMulDisabled"
-          placeholder="请输入"
+          :value="shopAddress"
+          :disabled="true"
         />
       </a-form-model-item>
       <a-form-model-item label="店铺公告" prop="shops_notice">
@@ -105,7 +107,10 @@
       <a-form-model-item label="经营者">
         <a-row type="flex" align="middle">
           <a-col flex="1">
-            <a-form-model-item prop="operator_realname" style="margin-bottom: 0;">
+            <a-form-model-item
+              prop="operator_realname"
+              style="margin-bottom: 0;"
+            >
               <a-input
                 v-model="form.operator_realname"
                 :maxLength="20"
@@ -155,7 +160,7 @@ const initialForm = {
   operator_mobile: ''
 }
 export default {
-  name: 'RepositoryForm',
+  name: 'storeForm',
   props: {
     value: {
       type: Boolean,
@@ -197,6 +202,15 @@ export default {
     realName () {
       const realname = this.form.realname
       return realname ? `(${realname})` : ''
+    },
+    shopAddress () {
+      const {
+        address_province: province,
+        address_city: city,
+        address_area: area,
+        address
+      } = this.form
+      return province ? `${province} ${city} ${area} ${address}` : ''
     }
   },
   watch: {

@@ -111,7 +111,7 @@ export default {
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       powerOptions: [
         {
-          label: '商铺券管理',
+          label: '店铺券管理',
           value: '1'
         },
         {

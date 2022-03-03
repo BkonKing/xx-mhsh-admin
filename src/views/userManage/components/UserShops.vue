@@ -31,7 +31,7 @@
           {{ info.attestation_text || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="经营者">
-          {{ info.operator_realname || "美好生活家园总部" }}
+          {{ info.operator_realname || "--" }}
         </a-descriptions-item>
         <a-descriptions-item label="联系方式">
           {{ info.operator_mobile || "--" }}
@@ -39,7 +39,10 @@
         <a-descriptions-item label="认证类型">
           {{ info.a_type_text || "--" }}
         </a-descriptions-item>
-        <a-descriptions-item label="身份证" :span="2">
+        <a-descriptions-item
+          :label="+info.a_type === 1 ? '身份证' : '营业执照'"
+          :span="2"
+        >
           {{
             info.voucher_img_data ? `${info.voucher_img_data.length}张` : "--"
           }}
@@ -59,6 +62,11 @@
         ref="couponTab"
         :info="info"
       ></coupon-tab>
+      <withdraw-tab
+        v-show="activeKey === '2'"
+        ref="withdrawTab"
+        :info="info"
+      ></withdraw-tab>
       <staff-tab
         v-show="activeKey === '3'"
         ref="staffTab"
@@ -72,12 +80,14 @@
 import { mapGetters } from 'vuex'
 import auditTable from './components/auditTable'
 import couponTab from './components/couponTab'
+import withdrawTab from './components/withdrawTab'
 import staffTab from './components/staffTab'
 
 export default {
   components: {
     auditTable,
     couponTab,
+    withdrawTab,
     staffTab
   },
   props: {

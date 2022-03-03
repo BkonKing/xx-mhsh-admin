@@ -156,13 +156,13 @@
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="batchCheck">
+            <a-menu-item key="1" @click="batchCheck()">
               通过
             </a-menu-item>
-            <a-menu-item key="3" @click="batchCheck">
+            <a-menu-item key="3" @click="batchCheck(2)">
               拒绝
             </a-menu-item>
-            <a-menu-item key="2" @click="batchCheck(2)">
+            <a-menu-item key="2" @click="batchOperation">
               已打款
             </a-menu-item>
           </a-menu>
@@ -182,6 +182,7 @@
       >
         <template v-slot:timeWait="text, row">
           <Timewait
+            v-if="+row.status < 4"
             :time="
               (new Date(row.ctime).getTime() - new Date().getTime()) / 1000
             "
@@ -194,10 +195,10 @@
           <router-link :to="`/credit/withdraw/detail?id=${record.id}`"
             >查看</router-link
           >
-          <a @click="openCheck([record.id], 1)">审核</a>
-          <a
-            v-if="isParentProject && +record.status === 3"
-            @click="openCheck([record.id], 2)"
+          <a v-if="+record.check_button" @click="openCheck([record.id], 1)"
+            >审核</a
+          >
+          <a v-if="+record.payment_button" @click="openCheck([record.id], 2)"
             >已打款</a
           >
         </span>
@@ -206,13 +207,21 @@
     <application-form-modal
       v-model="editVisible"
       ref="add-form"
-      @submit="submitSuccess"
+      @submit="refreshTable"
     ></application-form-modal>
     <check-form-modal
       v-model="checkVisible"
-      :data="checkData"
+      :data="selectIds"
+      :info="checkData"
+      :check-type="checkType"
+      @success="submitSuccess"
     ></check-form-modal>
-    <pay-form-modal v-model="payVisible" :data="checkData"></pay-form-modal>
+    <pay-form-modal
+      v-model="payVisible"
+      :data="selectIds"
+      :info="checkData"
+      @success="submitSuccess"
+    ></pay-form-modal>
   </page-header-view>
 </template>
 
@@ -274,7 +283,10 @@ export default {
         {
           title: '提现人民币',
           dataIndex: 'credits_sub',
-          sorter: true
+          sorter: true,
+          customRender (text) {
+            return `￥${text}`
+          }
         },
         {
           title: '申请人',
@@ -329,7 +341,7 @@ export default {
         }
         const arrivalTime = params.arrivalTime
         if (arrivalTime && arrivalTime.length) {
-          params.arrivalTime = `${arrivalTime[0]}~${arrivalTime[1]}`
+          params.arrival_time = `${arrivalTime[0]}~${arrivalTime[1]}`
         }
         if (!this.isParentProject) {
           params.project_id = this.projectId
@@ -361,6 +373,8 @@ export default {
       checkVisible: false,
       payVisible: false,
       checkData: {},
+      checkType: 0,
+      selectIds: [],
       remitVisible: false
     }
   },
@@ -381,17 +395,15 @@ export default {
       const {
         project_audit_count: projectCount,
         headquarters_audit_count: hCount,
-        payment_tobepaid_count: unPaidCount,
-        paid_count: paidCount,
-        rejected_count: rejectedCount
+        payment_tobepaid_count: unPaidCount
       } = this.statisticsData
       return [
         { key: '', tab: '全部' },
         { key: '1', tab: `项目审核${projectCount ? `(${projectCount})` : ''}` },
         { key: '2', tab: `总部审核${hCount ? `(${hCount})` : ''}` },
         { key: '3', tab: `待打款${unPaidCount ? `(${unPaidCount})` : ''}` },
-        { key: '4', tab: `已打款${paidCount ? `(${paidCount})` : ''}` },
-        { key: '5', tab: `已拒绝${rejectedCount ? `(${rejectedCount})` : ''}` }
+        { key: '4', tab: '已打款' },
+        { key: '5', tab: '已拒绝' }
       ]
     }
   },
@@ -418,6 +430,7 @@ export default {
       }
       this.tabActiveKey = key
       this.queryParam.cash_status = key || undefined
+      this.refreshTable()
     },
     getProjectList () {
       getProjectList().then(({ data }) => {
@@ -425,10 +438,9 @@ export default {
       })
     },
     // 获取对公账户
-    getAccount () {
-      getAccount().then(({ data }) => {
-        this.accountProjects = data || []
-      })
+    async getAccount () {
+      const { list } = await getAccount()
+      this.accountProjects = list || []
     },
     filterOption (input, option) {
       return (
@@ -450,23 +462,40 @@ export default {
       this.$refs['add-form'].resetFields()
       this.editVisible = true
     },
-    batchCheck (type) {
+    batchOperation () {
       if (this.selectedRowKeys.length) {
-        this.openCheck(this.selectedRowKeys, type)
+        if (this.selectedRows.every(obj => +obj.payment_button)) {
+          this.openCheck(this.selectedRowKeys, 2)
+        } else {
+          this.$message.warning('已选择的项中包含不可操作')
+        }
+      } else {
+        this.$message.warning('请选择后再进行操作')
+      }
+    },
+    batchCheck (checkType) {
+      if (this.selectedRowKeys.length) {
+        if (this.selectedRows.every(obj => +obj.check_button)) {
+          this.openCheck(this.selectedRowKeys, 1, checkType)
+        } else {
+          this.$message.warning('已选择的项中包含不可操作')
+        }
       } else {
         this.$message.warning('请选择后再进行操作')
       }
     },
     // type 1：审核 2：打款
-    async openCheck (ids, type) {
+    async openCheck (ids, type, checkType = 0) {
       this.$loading.show()
       const { data } = await getCheckAndPayInfo({
         ids,
-        type: 1
+        type
       })
+      this.selectIds = ids
       this.checkData = data
       this.$loading.hide()
       if (type === 1) {
+        this.checkType = checkType
         this.checkVisible = true
       } else {
         this.payVisible = true
@@ -484,6 +513,21 @@ export default {
     },
     submitSuccess () {
       this.refreshTable()
+      const len = this.selectIds.length
+      if (len > 1) {
+        this.onSelectChange([], [])
+      } else if (len === 1) {
+        this.cancelSelect([this.selectIds[0]])
+      }
+    },
+    // 取消选择
+    cancelSelect (data) {
+      this.selectedRowKeys = this.selectedRowKeys.filter(
+        obj => obj === data
+      )
+      this.selectedRows = this.selectedRows.filter(
+        obj => obj.id === data
+      )
     },
     openShopPower () {
       if (this.selectedRowKeys.length) {
@@ -538,10 +582,13 @@ export default {
 .status-list {
   display: flex;
   justify-content: flex-end;
-  text-align: left;
+  text-align: right;
   .text,
   .heading {
     padding-left: 40px;
+  }
+  .heading {
+    font-size: 20px;
   }
 }
 </style>

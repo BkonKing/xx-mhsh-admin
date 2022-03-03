@@ -15,7 +15,7 @@
     >
       <h3 v-if="isJustOne">商家认证</h3>
       <template v-if="isJustOne">
-        <a-form-model-item v-if="+type === 0" label="商家用户"
+        <a-form-model-item v-if="showUser" label="商家用户"
           >{{ onlyData.nickname }}({{ onlyData.realname }})
           {{ onlyData.mobile }}</a-form-model-item
         >
@@ -97,6 +97,10 @@ export default {
     UploadImage
   },
   props: {
+    showUser: {
+      type: Boolean,
+      default: true
+    },
     type: {
       type: Number,
       default: 0
@@ -164,7 +168,7 @@ export default {
       const params = clonedeep(this.form)
       editShopAttestation({
         ...params,
-        shops_attestation_log_id: this.data[0].id
+        shops_attestation_log_id: this.data[0].logId
       }).then(({ success, message }) => {
         if (success) {
           this.$message.success('修改成功')

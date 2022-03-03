@@ -23,7 +23,8 @@ export const businessApi = {
   getShopOption: '/business/shops_clerk/shops_name_clerk_screen',
   saveShopStaff: '/business/shops_clerk/edit_shops_clerk',
   setStaffPower: '/business/shops_clerk/batch_edit_shops_clerk_power',
-  delShopStaff: '/business/shops_clerk/del_shops_clerk'
+  delShopStaff: '/business/shops_clerk/del_shops_clerk',
+  getShopPrivilege: '/business/shops/get_shop_privilege'
 }
 
 export function getBusinessSetting (data) {
@@ -207,6 +208,14 @@ export function setStaffPower (data) {
 export function delShopStaff (data) {
   return request({
     url: businessApi.delShopStaff,
+    method: 'post',
+    data
+  })
+}
+
+export function getShopPrivilege (data) {
+  return request({
+    url: businessApi.getShopPrivilege,
     method: 'post',
     data
   })

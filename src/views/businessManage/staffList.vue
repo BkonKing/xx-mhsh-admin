@@ -31,7 +31,7 @@
                 />
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
+            <a-col v-if="isParentProject" :md="8" :sm="24">
               <a-form-item label="店铺归属">
                 <a-select v-model="queryParam.project_id" placeholder="请选择">
                   <a-select-option
@@ -61,6 +61,7 @@
             </a-col>
             <advanced-form
               :isAdvanced="false"
+              :md="isParentProject ? 8 : 16"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -122,7 +123,6 @@
     <staff-form
       v-model="editFormVisible"
       ref="add-form"
-      :power-options="powerOptions"
       :project-options="projectOptions"
       @submit="submitSuccess"
     ></staff-form>
@@ -210,7 +210,7 @@ export default {
           customRender: (text, row) => {
             return (
               <a
-                href={`${this.userUrl}?uid=${row.uid}&isShop=1`}
+                href={`${this.userUrl}?uid=${row.shops_uid}&isShop=1`}
                 target="_blank"
               >
                 {text || '(暂无名称)'}
@@ -289,7 +289,7 @@ export default {
       },
       powerOptions: [
         {
-          label: '商铺券管理',
+          label: '店铺券管理',
           value: '1'
         },
         {

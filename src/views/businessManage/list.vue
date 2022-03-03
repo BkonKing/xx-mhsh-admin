@@ -101,13 +101,13 @@
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="openShopPower">
+            <a-menu-item key="1" @click="batchOperation('batchSetPower')">
               商家权限
             </a-menu-item>
-            <a-menu-item key="3" @click="batchCheck">
+            <a-menu-item key="3" @click="batchOperation('batchCheck')">
               审核
             </a-menu-item>
-            <a-menu-item key="2" @click="batchRemove">
+            <a-menu-item key="2" @click="batchOperation('batchRemove')">
               删除
             </a-menu-item>
           </a-menu>
@@ -147,7 +147,7 @@
                 <a>删除</a>
               </a-popconfirm></a
             >
-            <a v-if="+record.a_state === 1" @click="openCheck([record])"
+            <a v-if="+record.a_state === 1 && (record.project_id == projectId || (isParentProject && !+record.project_id))" @click="openCheck([record])"
               >审核</a
             >
           </template>
@@ -357,7 +357,7 @@ export default {
           value: '1'
         },
         {
-          label: '商铺券管理',
+          label: '店铺券管理',
           value: '2'
         },
         {
@@ -439,46 +439,58 @@ export default {
       this.$refs['add-form'].resetFields()
       this.editForm = true
     },
+    batchOperation (methodName) {
+      if (this.selectedRowKeys.length) {
+        this[methodName]()
+      } else {
+        this.$message.warning('请选择后再进行操作')
+      }
+    },
+    batchSetPower () {
+      this.powerForm.power = []
+      this.permissionVisible = true
+    },
     // 批量删除
     batchRemove () {
-      if (this.selectedRowKeys.length) {
-        const that = this
-        this.$confirm({
-          title: '删除商家',
-          content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
-          icon: () => (
-            <a-icon
-              type="exclamation-circle"
-              style="color: #faad14"
-              theme="filled"
-            />
-          ),
-          cancelText: '取消',
-          okText: '确定',
-          onOk () {
-            that.handleRemove(that.selectedRowKeys.join(','))
-          },
-          onCancel () {}
-        })
-      } else {
-        this.$message.warning('请选择后再进行操作')
-      }
+      const that = this
+      this.$confirm({
+        title: '删除商家',
+        content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
+        icon: () => (
+          <a-icon
+            type="exclamation-circle"
+            style="color: #faad14"
+            theme="filled"
+          />
+        ),
+        cancelText: '取消',
+        okText: '确定',
+        onOk () {
+          that.handleRemove(that.selectedRowKeys.join(','))
+        },
+        onCancel () {}
+      })
     },
     batchCheck () {
-      if (this.selectedRowKeys.length) {
-        if (this.selectedRows.every(obj => +obj.a_state === 1)) {
-          this.openCheck()
-        } else {
-          this.$message.warning('已选择的项中包含不可操作')
-        }
+      if (this.selectedRows.every(obj => +obj.a_state === 1)) {
+        this.openCheck()
       } else {
-        this.$message.warning('请选择后再进行操作')
+        this.$message.warning('已选择的项中包含不可操作')
       }
     },
-    openCheck (data = this.selectedRows) {
-      this.checkData = cloneDeep(data)
-      this.$refs.checkForm && this.$refs.checkForm.resetFields()
-      this.checkVisible = true
+    setShopsPower () {
+      validAForm(this.$refs.form).then(async () => {
+        const { success } = await setShopsPower({
+          shops_id_text: this.selectedRowKeys.join(','),
+          power: this.powerForm.power.join(',')
+        })
+        if (success) {
+          this.$message.success('提交成功')
+          this.refreshTable()
+          this.onSelectChange([], [])
+          this.permissionVisible = false
+        }
+      })
     },
     handleRemove (id) {
       delShops({
@@ -486,14 +498,16 @@ export default {
       }).then(({ success }) => {
         if (success) {
           const ids = id.split(',')
-          // 选中selectedRowKeys去除删除的key
-          this.selectedRowKeys = this.selectedRowKeys.filter(
-            obj => !ids.includes(obj)
-          )
+          this.cancelSelect(ids)
           this.$message.success('删除成功')
           this.refreshTable()
         }
       })
+    },
+    openCheck (data = this.selectedRows) {
+      this.checkData = cloneDeep(data)
+      this.$refs.checkForm && this.$refs.checkForm.resetFields()
+      this.checkVisible = true
     },
     handleEdit (record) {
       const form = cloneDeep(record)
@@ -507,31 +521,22 @@ export default {
     },
     submitSuccess () {
       this.refreshTable()
-    },
-    openShopPower () {
-      if (this.selectedRowKeys.length) {
-        this.powerForm.power = []
-        this.permissionVisible = true
-      } else {
-        this.$message.warning('请选择后再进行操作')
+      const len = this.checkData.length
+      if (len > 1) {
+        this.onSelectChange([], [])
+      } else if (len === 1) {
+        this.cancelSelect([this.checkData[0].id])
       }
-    },
-    setShopsPower () {
-      validAForm(this.$refs.form).then(async () => {
-        const { success } = await setShopsPower({
-          shops_id_text: this.selectedRowKeys.join(','),
-          power: this.powerForm.power.join(',')
-        })
-        if (success) {
-          this.$message.success('提交成功')
-          this.refreshTable()
-          this.permissionVisible = false
-        }
-      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
+    },
+    // 取消选择
+    cancelSelect (data) {
+      this.selectedRowKeys = this.selectedRowKeys.filter(
+        obj => !data.includes(obj)
+      )
     }
   }
 }
