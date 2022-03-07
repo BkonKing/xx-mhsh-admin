@@ -4,9 +4,14 @@
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="申请人" :span="2">
           {{ info.user_type | userType }}
-          <a :href="`${userUrl}?uid=${info.uid}`" target="_blank"
-            >{{ realname }} {{ mobile }}</a
-          >
+          <template v-if="+info.user_type === 1">
+            <span>{{ realname }} {{ mobile }}</span>
+          </template>
+          <template v-else>
+            <a :href="`${userUrl}?uid=${info.uid}`" target="_blank"
+              >{{ realname }} {{ mobile }}</a
+            >
+          </template>
         </a-descriptions-item>
         <a-descriptions-item label="店铺名称">
           {{ info.shops_name || "(暂无名称)" }}
@@ -19,10 +24,10 @@
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button v-if="+info.udpate_payment_button" @click="editPay(2)"
+      <a-button v-if="+info.udpate_payment_button && isParentProject" @click="editPay(2)"
         >修改打款</a-button
       >
-      <a-button v-if="+info.update_check_button" @click="editCheck(2)"
+      <a-button v-if="+info.update_check_button && isParentProject" @click="editCheck(2)"
         >修改审核</a-button
       >
       <a-button
@@ -32,7 +37,7 @@
         >审核</a-button
       >
       <a-button
-        v-if="+info.payment_button"
+        v-if="+info.payment_button && isParentProject"
         type="primary"
         @click="openCheck(2)"
         >已打款</a-button
@@ -104,7 +109,7 @@
           info.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="身份证号">
-          {{ info.idcard }}</a-descriptions-item
+          {{ info.idcard || '--' }}</a-descriptions-item
         >
       </a-descriptions>
     </a-card>

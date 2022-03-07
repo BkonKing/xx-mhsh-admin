@@ -56,11 +56,14 @@
     >
       <template v-slot:timeWait="text, row">
         <Timewait
-          :time="(new Date(row.ctime).getTime() - new Date().getTime()) / 1000"
-          :delay="1000"
-          :showSecond="true"
-          upClass="color-red"
-        ></Timewait>
+            v-if="+row.status < 4"
+            :time="
+              (new Date(+text * 1000).getTime() - new Date().getTime()) / 1000
+            "
+            :delay="1000"
+            :showSecond="true"
+            upClass="color-red"
+          ></Timewait>
       </template>
       <span class="table-action" slot="action" slot-scope="text, record">
         <router-link :to="`/credit/withdraw/detail?id=${record.id}`"
@@ -107,7 +110,7 @@ export default {
         },
         {
           title: '审核时间',
-          dataIndex: 'shops_name',
+          dataIndex: 'process_time',
           scopedSlots: { customRender: 'timeWait' }
         },
         {
@@ -167,9 +170,9 @@ export default {
           params.arrivalTime = `${arrivalTime[0]}~${arrivalTime[1]}`
         }
         if (!this.isParentProject) {
-          params.project_id = this.projectId
+          params.shops_project = this.projectId
         }
-        return getCashList({ ...parameter, ...params, cash_user: this.info.uid })
+        return getCashList({ ...parameter, ...params, shops_name: this.info.shops_name })
       }
     }
   },

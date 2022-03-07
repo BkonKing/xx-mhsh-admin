@@ -24,8 +24,9 @@
           ><a-select
             v-model="form.uid"
             show-search
-            :filter-option="filterProject"
             placeholder="请选择"
+            :disabled="!isParentProject"
+            :filter-option="filterProject"
             @change="setProjectBank"
             ><a-select-option
               v-for="item in projectOptions"
@@ -36,9 +37,12 @@
             ></a-select
           ></a-form-model-item
         >
-        <a-form-model-item label="到账银行卡">{{
-          form.nickname || "--"
-        }}</a-form-model-item>
+        <a-form-model-item label="到账银行卡"
+          ><template v-if="form.bank_id"
+            >{{ projectBankInfo.bark_card }}（{{ projectBankInfo.bank_name }}）
+            <div>{{ projectBankInfo.realname }}</div></template
+          ><template v-else>--</template></a-form-model-item
+        >
       </template>
       <template v-else>
         <a-form-model-item label="提现账户" required
@@ -57,7 +61,7 @@
               :key="item.id"
               :value="item.id"
               :disabled="
-                item.project_id != projectId ||
+                +item.project_id != +projectId ||
                   !(item.card_info && item.card_info.length)
               "
               >{{ item.nickname }}</a-select-option
@@ -144,6 +148,11 @@ export default {
       projectOptions: [],
       bankOptions: [],
       serviceMoney: 0.05,
+      projectBankInfo: {
+        bank_name: '',
+        bark_card: '',
+        realname: ''
+      },
       rules: {
         uid_text: [{ required: true, message: '请选择商家用户' }],
         uid: [{ required: true, message: '请选择店铺归属' }]
@@ -172,9 +181,6 @@ export default {
       this.modalShow = val
       if (val) {
         this.form = clonedeep(initialForm)
-        if (!this.isParentProject) {
-          this.form.uid = this.projectId
-        }
       }
     },
     modalShow (val) {
@@ -184,6 +190,7 @@ export default {
   methods: {
     changeUserType () {
       this.form.uid = undefined
+      this.form.bank_id = undefined
       this.getDropDownUser()
     },
     async getDropDownUser (params) {
@@ -193,6 +200,10 @@ export default {
       })
       if (+this.form.user_type === 1) {
         this.projectOptions = list || []
+        if (!this.isParentProject) {
+          this.form.uid = list[0] ? list[0].id : ''
+          this.setProjectBank()
+        }
       } else {
         this.userOptions = list || []
         this.fetching = false
@@ -218,7 +229,13 @@ export default {
       })
     },
     setProjectBank () {
-
+      this.form.bank_id = ''
+      const data = this.projectOptions.find(obj => obj.id === this.form.uid)
+      const cardList = data.card_info || []
+      if (cardList && cardList.length) {
+        this.form.bank_id = cardList[0].id
+        this.projectBankInfo = cardList[0]
+      }
     },
     setBank () {
       this.form.bank_id = ''
@@ -256,7 +273,10 @@ export default {
       this.getDropDownUser()
     },
     resetFields () {
+      this.projectOptions = []
+      this.projectBankInfo = {}
       this.userOptions = []
+      this.bankOptions = []
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
       this.getDropDownUser()

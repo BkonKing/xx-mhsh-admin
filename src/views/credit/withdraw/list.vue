@@ -182,12 +182,13 @@
       >
         <template v-slot:timeWait="text, row">
           <Timewait
-            v-if="+row.status < 4"
+            v-if="+row.status < 4 && text"
             :time="
-              (new Date(row.ctime).getTime() - new Date().getTime()) / 1000
+              (new Date(+text * 1000).getTime() - new Date().getTime()) / 1000
             "
             :delay="1000"
             :showSecond="true"
+            :key="new Date().getTime()"
             upClass="color-red"
           ></Timewait>
         </template>
@@ -198,7 +199,7 @@
           <a v-if="+record.check_button" @click="openCheck([record.id], 1)"
             >审核</a
           >
-          <a v-if="+record.payment_button" @click="openCheck([record.id], 2)"
+          <a v-if="+record.payment_button && isParentProject" @click="openCheck([record.id], 2)"
             >已打款</a
           >
         </span>
@@ -268,7 +269,7 @@ export default {
         },
         {
           title: '审核时间',
-          dataIndex: 'shops_name',
+          dataIndex: 'process_time',
           scopedSlots: { customRender: 'timeWait' }
         },
         {
@@ -292,15 +293,21 @@ export default {
           title: '申请人',
           dataIndex: 'realname',
           customRender: (text, row) => {
-            return (
-              <a
-                href={`${this.userUrl}?uid=${row.uid}&isShop=1`}
-                target="_blank"
-              >
-                <div>{text}</div>
-                <div>{row.mobile}</div>
-              </a>
-            )
+            const { user_type: userType } = row
+            if (+userType === 1) {
+              return (<div><div>{text}</div>
+                <div>{row.mobile}</div></div>)
+            } else {
+              return (
+                <a
+                  href={`${this.userUrl}?uid=${row.uid}&isShop=1`}
+                  target="_blank"
+                >
+                  <div>{text}</div>
+                  <div>{row.mobile}</div>
+                </a>
+              )
+            }
           }
         },
         {
@@ -342,9 +349,6 @@ export default {
         const arrivalTime = params.arrivalTime
         if (arrivalTime && arrivalTime.length) {
           params.arrival_time = `${arrivalTime[0]}~${arrivalTime[1]}`
-        }
-        if (!this.isParentProject) {
-          params.project_id = this.projectId
         }
         return getCashList({ ...parameter, ...params }).then(res => {
           const { list, ...statisticsData } = res.data
@@ -417,13 +421,13 @@ export default {
     },
     handleTabChange (key) {
       if (['4', '5'].includes(key)) {
-        if (this.columns[1].dataIndex === 'shops_name') {
+        if (this.columns[1].dataIndex === 'process_time') {
           this.columns.splice(1, 1)
         }
-      } else if (this.columns[1].dataIndex !== 'shops_name') {
+      } else if (this.columns[1].dataIndex !== 'process_time') {
         const tabInfo = {
           title: '审核时间',
-          dataIndex: 'shops_name',
+          dataIndex: 'process_time',
           scopedSlots: { customRender: 'timeWait' }
         }
         this.columns.splice(1, 0, tabInfo)
@@ -500,16 +504,6 @@ export default {
       } else {
         this.payVisible = true
       }
-    },
-    handleEdit (record) {
-      const form = cloneDeep(record)
-      form.staff_id = form.id
-      form.company_id = form.company_id || undefined
-      form.division_id = form.division_id || undefined
-      form.post_id = form.post_id || undefined
-      form.power = form.power ? form.power.split(',') : []
-      this.$refs['add-form'].setFieldsValue(form)
-      this.editForm = true
     },
     submitSuccess () {
       this.refreshTable()
