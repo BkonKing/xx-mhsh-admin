@@ -7,8 +7,7 @@ export default {
   name: 'operatingCenter',
   component: RouteView,
   meta: {
-    title: '运营中心',
-    icon: 'table'
+    title: '运营中心'
   },
   redirect: '/operatingCenter/appmessage',
   children: [
@@ -17,8 +16,7 @@ export default {
       name: 'activity',
       component: RouteView,
       meta: {
-        title: '活动管理',
-        icon: 'table'
+        title: '活动管理'
       },
       redirect: '/operatingCenter/activity/integral',
       children: [
@@ -49,12 +47,46 @@ export default {
       ]
     },
     {
+      path: '/operatingCenter/special',
+      name: 'special',
+      component: RouteView,
+      meta: {
+        title: '专题管理'
+      },
+      redirect: '/operatingCenter/special/list',
+      children: [
+        {
+          path: '/operatingCenter/special/list',
+          name: 'specialList',
+          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/list'),
+          meta: {
+            title: '专题管理'
+          }
+        },
+        {
+          path: '/operatingCenter/special/detail',
+          name: 'specialDetail',
+          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/detail'),
+          meta: {
+            title: '专题详情'
+          }
+        },
+        {
+          path: '/operatingCenter/special/edit',
+          name: 'specialEdit',
+          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/edit'),
+          meta: {
+            title: '编辑专题'
+          }
+        }
+      ]
+    },
+    {
       path: '/operatingCenter/appmessage', // app消息
       name: 'appmessage',
       component: () => import('@/views/operatingCenter/announcement/appmessage/appmessage'),
       meta: {
-        title: 'APP消息',
-        icon: 'table'
+        title: 'APP消息'
       }
     },
     {
@@ -62,8 +94,7 @@ export default {
       name: 'shortNote',
       component: () => import('@/views/operatingCenter/announcement/shortNote/shortNote'),
       meta: {
-        title: '短信通知',
-        icon: 'table'
+        title: '短信通知'
       }
     },
     {
@@ -71,8 +102,7 @@ export default {
       name: 'addmsg',
       component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/addmsg'),
       meta: {
-        title: '新增消息',
-        icon: 'table'
+        title: '新增消息'
       }
     },
     {
@@ -80,8 +110,7 @@ export default {
       name: 'msgDetail',
       component: () => import('@/views/operatingCenter/announcement/appmessage/msgList/msgDetail/msgDetail'),
       meta: {
-        title: '消息详情',
-        icon: 'table'
+        title: '消息详情'
       }
     },
     {
@@ -89,8 +118,7 @@ export default {
       name: 'addNote',
       component: () => import('@/views/operatingCenter/announcement/shortNote/noteList/addNote'),
       meta: {
-        title: '新增短信',
-        icon: 'table'
+        title: '新增短信'
       }
     },
     {
@@ -98,8 +126,7 @@ export default {
       name: 'noteDetail',
       component: () => import('@/views/operatingCenter/announcement/shortNote/noteList/noteDetail/noteDetail'),
       meta: {
-        title: '短信详情',
-        icon: 'table'
+        title: '短信详情'
       }
     }
   ]
