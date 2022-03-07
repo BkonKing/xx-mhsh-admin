@@ -11,7 +11,8 @@ export const withdrawApi = {
   updateCheckDesc: '/cash/cash/updateCheckDesc',
   getCashDetail: '/cash/cash/getCashDetail',
   setPayment: '/cash/cash/Payment',
-  updatePayment: '/cash/cash/unpaidPayment'
+  updatePayment: '/cash/cash/unpaidPayment',
+  updatePaymentDesc: '/cash/cash/updatePayment'
 }
 
 // 获取对公账户
@@ -106,7 +107,16 @@ export function setPayment (data) {
 // 修改打款
 export function updatePayment (data) {
   return request({
-    url: withdrawApi.unpaidPayment,
+    url: withdrawApi.updatePayment,
+    method: 'post',
+    data
+  })
+}
+
+// 修改打款其他信息
+export function updatePaymentDesc (data) {
+  return request({
+    url: withdrawApi.updatePaymentDesc,
     method: 'post',
     data
   })

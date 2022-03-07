@@ -13,6 +13,14 @@ export default // 幸福币
   },
   children: [
     {
+      path: '/credit/setting',
+      name: 'creditSetting',
+      component: () => import('@/views/credit/setting'),
+      meta: {
+        title: '幸福币设置'
+      }
+    },
+    {
       path: '/credit/withdraw/list',
       name: 'withdrawList',
       component: () => import('@/views/credit/withdraw/list'),

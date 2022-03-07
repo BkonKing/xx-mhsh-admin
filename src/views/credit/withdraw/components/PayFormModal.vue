@@ -6,7 +6,7 @@
     :destroyOnClose="true"
     @ok="submit"
   >
-    <users-info v-if="+typeNum === 1" :data="info"></users-info>
+    <users-info v-if="typeNum === 1" :data="info"></users-info>
     <a-form-model
       ref="form"
       :model="form"
@@ -14,10 +14,18 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-model-item v-if="false" label="打款结果">
-        已打款
+      <a-form-model-item v-if="typeNum === 2" label="打款结果">
+        <span style="color: red;">未打款</span>
       </a-form-model-item>
-      <a-form-model-item label="上传凭证" required prop="cash_img">
+      <a-form-model-item v-if="typeNum === 3" label="打款结果">
+        <span>{{ statusText }}</span>
+      </a-form-model-item>
+      <a-form-model-item
+        v-if="typeNum !== 2"
+        label="上传凭证"
+        required
+        prop="cash_img"
+      >
         <upload-image v-model="form.cash_img" maxLength="10"></upload-image>
         <div style="line-height: 1;margin-top: -5px;">
           大小不超过2MB；支持扩展名：.png .jpg；
@@ -41,7 +49,11 @@ import clonedeep from 'lodash.clonedeep'
 import { UploadImage } from '@/components'
 import UsersInfo from './UsersInfo'
 import { validAForm } from '@/utils/util'
-import { setPayment } from '@/api/credit/withdraw'
+import {
+  setPayment,
+  updatePayment,
+  updatePaymentDesc
+} from '@/api/credit/withdraw'
 
 const form = {
   payment_desc: '',
@@ -60,7 +72,7 @@ export default {
     },
     data: {
       type: Array,
-      default: () => ([])
+      default: () => []
     },
     info: {
       type: Object,
@@ -81,6 +93,7 @@ export default {
       rules: {
         cash_img: [{ required: true, message: '请上传凭证', trigger: 'change' }]
       },
+      status: '',
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
       checkVisible: this.value
@@ -100,6 +113,13 @@ export default {
     },
     isUpdateDesc () {
       return this.typeNum === 3
+    },
+    statusText () {
+      const text = {
+        1: '已打款',
+        2: '未打款'
+      }
+      return text[this.status]
     }
   },
   watch: {
@@ -116,13 +136,43 @@ export default {
     }
   },
   methods: {
+    setStatus (status) {
+      this.status = status
+    },
+    setFormData (data) {
+      this.form = data
+    },
     // 审核
     submit () {
       validAForm(this.$refs.form).then(async () => {
-        const { success } = await setPayment({
-          ids: this.data,
-          ...this.form
-        })
+        const apiObj = {
+          1: setPayment,
+          2: updatePayment,
+          3: updatePaymentDesc
+        }
+        const api = apiObj[this.typeNum]
+        let params = {}
+        switch (this.typeNum) {
+          case 1:
+            params = { ids: this.data, ...this.form }
+            break
+          case 2:
+            params = {
+              cash_id: this.data[0],
+              status: this.status,
+              audit_desc: this.form.payment_desc
+            }
+            break
+          case 3:
+            params = {
+              cash_id: this.data[0],
+              check_id: this.payId,
+              img: this.form.cash_img,
+              audit_desc: this.form.payment_desc
+            }
+            break
+        }
+        const { success } = await api({ ...params })
         if (success) {
           this.$message.success('提交成功')
           this.$emit('success')

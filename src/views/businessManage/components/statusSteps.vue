@@ -3,15 +3,19 @@
     <a-steps class="check-tab-steps" :current="current" progressDot>
       <a-step v-for="(step, index) in data" :key="index">
         <template v-slot:title>
-          <span>{{ step[titleKey] }}</span>
+          <slot name="title">
+            <span>{{ step[titleKey] }}</span>
+          </slot>
         </template>
         <template v-slot:description>
-          <div v-if="step[description]">
-            {{ step[description] }}
-          </div>
-          <div v-if="step[remarkKey]">
-            {{ step[remarkKey] }}
-          </div>
+          <slot name="description" v-bind:data="step">
+            <div v-if="step[description]">
+              {{ step[description] }}
+            </div>
+            <div v-if="step[remarkKey]">
+              {{ step[remarkKey] }}
+            </div>
+          </slot>
         </template>
       </a-step>
     </a-steps>
@@ -44,9 +48,7 @@ export default {
       default: 0
     }
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 

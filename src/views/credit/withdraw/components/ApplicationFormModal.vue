@@ -26,18 +26,19 @@
             show-search
             :filter-option="filterProject"
             placeholder="请选择"
+            @change="setProjectBank"
             ><a-select-option
               v-for="item in projectOptions"
               :key="item.id"
               :value="item.id"
-              :disabled="!+item.is_choice"
+              :disabled="!(item.card_info && item.card_info.length)"
               >{{ item.nickname }}</a-select-option
             ></a-select
           ></a-form-model-item
         >
-        <a-form-model-item label="到账银行卡"
-          >{{ form.nickname || '--' }}</a-form-model-item
-        >
+        <a-form-model-item label="到账银行卡">{{
+          form.nickname || "--"
+        }}</a-form-model-item>
       </template>
       <template v-else>
         <a-form-model-item label="提现账户" required
@@ -55,7 +56,10 @@
               v-for="item in userOptions"
               :key="item.id"
               :value="item.id"
-              :disabled="!+item.is_choice"
+              :disabled="
+                item.project_id != projectId ||
+                  !(item.card_info && item.card_info.length)
+              "
               >{{ item.nickname }}</a-select-option
             >
           </a-select></a-form-model-item
@@ -213,10 +217,13 @@ export default {
         user: value
       })
     },
+    setProjectBank () {
+
+    },
     setBank () {
       this.form.bank_id = ''
       const data = this.userOptions.find(obj => obj.id === this.form.uid)
-      this.bankOptions = [data.card_info] || []
+      this.bankOptions = data.card_info || []
       if (this.bankOptions && this.bankOptions.length) {
         this.form.bank_id = this.bankOptions[0].id
       }

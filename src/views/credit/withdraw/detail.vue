@@ -19,7 +19,7 @@
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button v-if="+info.udpate_payment_button" @click="editPay(info, 2)"
+      <a-button v-if="+info.udpate_payment_button" @click="editPay(2)"
         >修改打款</a-button
       >
       <a-button v-if="+info.update_check_button" @click="editCheck(2)"
@@ -48,13 +48,19 @@
       </div>
     </template>
 
-    <!-- <status-steps
+    <status-steps
       title="券状态"
+      titleKey="step_name"
       :data="stepsData"
       :current="stepCurrent"
-      description="name"
-      remarkKey="ctime"
-    ></status-steps> -->
+    >
+      <template #description="{data}">
+        <div v-if="data.project_name">{{data.project_name}}</div>
+        <div v-if="data.user_type">{{data.user_type}}</div>
+        <div v-if="data.opt_user">{{data.opt_user}}</div>
+        <div v-if="data.ctime">{{data.ctime}}</div>
+      </template>
+    </status-steps>
 
     <a-card title="基本信息" style="margin-top: 24px">
       <h3>提现信息</h3>
@@ -145,8 +151,10 @@
       @success="refreshPage"
     ></check-form-modal>
     <pay-form-modal
+      ref="payForm"
       v-model="payVisible"
       :data="ids"
+      :payId="payId"
       :info="payData"
       :type="payType"
       @success="refreshPage"
@@ -206,12 +214,14 @@ export default {
           title: '操作凭证',
           dataIndex: 'img',
           customRender: (text, row) => {
-            return (
-              <span>张</span>
-              // <span>
-              //   {text.length}张 <a onClick={() => {this.openImg(text)}}>查看</a>
-              // </span>
-            )
+            if (text && text.length) {
+              return (
+                <span>
+                  {text.length}张 <a onClick={() => { this.openImg(text) }}>查看</a>
+                </span>
+              )
+            }
+            return '--'
           }
         },
         {
@@ -226,7 +236,7 @@ export default {
             return (
               <a
                 onClick={() => {
-                  this.editPay(row, 2)
+                  this.editPay(3, row)
                 }}
               >
                 修改
@@ -286,6 +296,7 @@ export default {
       checkId: '',
       payVisible: false,
       payType: 1,
+      payId: '',
       payData: {}
     }
   },
@@ -300,25 +311,7 @@ export default {
       return mobile || ''
     },
     stepsData () {
-      const stepArr = ['创建', '发布', '领取', '结束']
-      const logData = cloneDeep(this.info.log_data)
-      const { ds_etime: dsEndTime } = this.info
-      if (+this.info.coupon_status !== 3 && this.info.ds_etime) {
-        for (let index = logData.length; index < 4; index++) {
-          if (index === 3) {
-            logData.push({
-              ctime: dsEndTime,
-              name: '(定时结束)'
-            })
-            return
-          }
-          logData.push({})
-        }
-      }
-      return stepArr.map((obj, index) => ({
-        ...this.info.log_data[index],
-        title: obj
-      }))
+      return this.info.process
     },
     stepCurrent () {
       const step = {
@@ -378,21 +371,36 @@ export default {
         this.payVisible = true
       }
     },
-    async editCheck (type, checkData) {
+    editCheck (type, checkData) {
       // this.checkData = this.info
-      this.checkMode = type
       type === 3 && (this.checkId = checkData.id)
+      this.checkMode = type
       this.checkVisible = true
       if (type === 2) {
         this.$nextTick(() => {
-          this.$refs.checkForm.setCheckType(2)
+          const status = +this.info.check_status === 1 ? 2 : 1
+          this.$refs.checkForm.setCheckType(status)
         })
       }
     },
-    editPay (data, type) {
-      this.payData = data
+    editPay (type, data) {
+      // this.payData = data
       this.payType = type
       this.payVisible = true
+      if (type === 2) {
+        this.$nextTick(() => {
+          this.$refs.payForm.setStatus(3)
+        })
+      } else if (type === 3) {
+        this.payId = data.id
+        this.$nextTick(() => {
+          this.$refs.payForm.setStatus(data.type)
+          this.$refs.payForm.setFormData({
+            payment_desc: data.explain,
+            cash_img: data.img || []
+          })
+        })
+      }
     }
   }
 }

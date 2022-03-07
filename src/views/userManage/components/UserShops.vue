@@ -52,6 +52,7 @@
       <audit-table ref="auditTable" :info="info"></audit-table>
     </a-card>
     <a-card
+      v-if="info.uid"
       :tab-list="tabList"
       :active-tab-key="activeKey"
       @tabChange="onTabChange"
