@@ -64,6 +64,7 @@
         <div v-if="data.user_type">{{data.user_type}}</div>
         <div v-if="data.opt_user">{{data.opt_user}}</div>
         <div v-if="data.ctime">{{data.ctime}}</div>
+        <div v-if="data.time_desc" style="color: red;">{{data.time_desc}}</div>
       </template>
     </status-steps>
 
@@ -170,8 +171,6 @@
 <script>
 // /credit/withdraw/detail
 import { mapGetters } from 'vuex'
-import cloneDeep from 'lodash.clonedeep'
-// import { STable } from '@/components'
 import CheckFormModal from './components/CheckFormModal'
 import PayFormModal from './components/PayFormModal'
 import StatusSteps from '@/views/businessManage/components/statusSteps'
@@ -183,7 +182,6 @@ export default {
     CheckFormModal,
     PayFormModal,
     StatusSteps
-    // STable
   },
   data () {
     return {
@@ -283,6 +281,10 @@ export default {
           dataIndex: 'action',
           width: '100px',
           customRender: (text, row) => {
+            const isPermission = !this.isParentProject && +!row.updatecheck_button
+            if (isPermission) {
+              return ''
+            }
             return (
               <a
                 onClick={() => {
@@ -319,15 +321,10 @@ export default {
       return this.info.process
     },
     stepCurrent () {
-      const step = {
-        1: 2,
-        2: 1,
-        3: 3
-      }
-      return step[this.info.coupon_status]
+      return +this.info.is_payment
     },
     title () {
-      return `提现单号：${this.info.cashout_numb}`
+      return this.info.cashout_numb ? `提现单号：${this.info.cashout_numb}` : ''
     },
     ids () {
       return [this.id]
@@ -345,6 +342,9 @@ export default {
   created () {
     this.id = this.$route.query.id
     this.getCashDetail()
+    if (!this.isParentProject) {
+      this.remitColumns.pop()
+    }
   },
   methods: {
     async getCashDetail () {
@@ -366,7 +366,8 @@ export default {
         ids: [this.id],
         type
       })
-      if (type === 1) {
+      const isCheckType = type === 1
+      if (isCheckType) {
         this.checkMode = 1
         this.checkData = data
         this.checkVisible = true
@@ -385,6 +386,10 @@ export default {
         this.$nextTick(() => {
           const status = +this.info.check_status === 1 ? 2 : 1
           this.$refs.checkForm.setCheckType(status)
+        })
+      } else if (type === 3) {
+        this.$nextTick(() => {
+          this.$refs.checkForm.setCheckType(checkData.type)
         })
       }
     },

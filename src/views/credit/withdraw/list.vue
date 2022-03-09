@@ -414,6 +414,9 @@ export default {
   created () {
     this.initOptions()
   },
+  activated () {
+    this.refreshTable()
+  },
   methods: {
     initOptions () {
       this.getProjectList()
@@ -434,7 +437,7 @@ export default {
       }
       this.tabActiveKey = key
       this.queryParam.cash_status = key || undefined
-      this.refreshTable()
+      this.refreshTable(true)
     },
     getProjectList () {
       getProjectList().then(({ data }) => {

@@ -3,8 +3,8 @@
     v-model="modalShow"
     :title="title"
     :width="600"
-    @ok="handleSubmit"
     :destroyOnClose="true"
+    @ok="handleSubmit"
   >
     <a-form-model
       ref="form"
@@ -20,7 +20,7 @@
         </a-radio-group>
       </a-form-model-item>
       <template v-if="form.user_type === '1'">
-        <a-form-model-item label="提现账户" required
+        <a-form-model-item label="提现账户" prop="uid" required
           ><a-select
             v-model="form.uid"
             show-search
@@ -45,7 +45,7 @@
         >
       </template>
       <template v-else>
-        <a-form-model-item label="提现账户" required
+        <a-form-model-item label="提现账户" prop="uid" required
           ><a-select
             v-model="form.uid"
             show-search
@@ -61,7 +61,7 @@
               :key="item.id"
               :value="item.id"
               :disabled="
-                +item.project_id != +projectId ||
+                +item.project_id != projectIdNum ||
                   !(item.card_info && item.card_info.length)
               "
               >{{ item.nickname }}</a-select-option
@@ -94,7 +94,7 @@
       <a-form-model-item label="提现人民币">
         {{ rmb
         }}<template v-if="actualMoney"
-          >（实际提现<span style="font-size: 22px;color: red;"
+          >（实际提现<span style="font-size: 22px;color: red;line-height: 1;"
             >￥{{ actualMoney }}</span
           >）</template
         >
@@ -117,7 +117,7 @@
 import clonedeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { debounce } from '@/utils/util'
-import { cashApply, getUserList, getDropDownUser } from '@/api/credit/withdraw'
+import { cashApply, getDropDownUser, getProjectServiceFee } from '@/api/credit/withdraw'
 
 const initialForm = {
   user_type: '1',
@@ -138,7 +138,7 @@ export default {
   data () {
     this.fetchUser = debounce(this.fetchUser, 500)
     return {
-      title: '提现审核',
+      title: '提现申请',
       modalShow: this.value,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
@@ -147,20 +147,23 @@ export default {
       userOptions: [],
       projectOptions: [],
       bankOptions: [],
-      serviceMoney: 0.05,
+      serviceMoney: 0,
       projectBankInfo: {
         bank_name: '',
         bark_card: '',
         realname: ''
       },
       rules: {
-        uid_text: [{ required: true, message: '请选择商家用户' }],
+        credits: [{ required: true, message: '请输入提现幸福币' }],
         uid: [{ required: true, message: '请选择店铺归属' }]
       }
     }
   },
   computed: {
     ...mapGetters(['projectId', 'isParentProject']),
+    projectIdNum () {
+      return this.projectId ? +this.projectId : 0
+    },
     rmb () {
       return this.form.cash_rmb || '--'
     },
@@ -187,7 +190,14 @@ export default {
       this.$emit('input', val)
     }
   },
+  created () {
+    this.getProjectServiceFee()
+  },
   methods: {
+    async getProjectServiceFee () {
+      const { data } = await getProjectServiceFee()
+      this.serviceMoney = data
+    },
     changeUserType () {
       this.form.uid = undefined
       this.form.bank_id = undefined

@@ -14,8 +14,8 @@
       </div>
       <div v-if="projectUser && projectUser.length">
         项目账户 -
-        <span v-for="item in projectUser" :key="item.mobile">
-          {{ item.realname }}({{ item.mobile }})
+        <span v-for="(item, index) in projectUser" :key="item.mobile">
+          {{ item.realname }}({{ item.mobile }}){{index === projectUser.length - 1 ? '' : '、'}}
         </span>
       </div>
     </a-form-model-item>
@@ -23,7 +23,7 @@
       {{ data.cash_credits }}
     </a-form-model-item>
     <a-form-model-item label="提现人民币">
-      {{ data.cash_rmb }}（实际提现<span style="font-size: 22px;color: red;"
+      {{ data.cash_rmb }}（实际提现<span style="font-size: 22px;color: red;line-height: 1;"
         >￥{{ data.actual_rmb }}</span
       >）
     </a-form-model-item>

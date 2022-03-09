@@ -411,11 +411,11 @@ export default {
       shopAudit: [
         {
           label: '项目审核+总部审核',
-          value: '1'
+          value: '2'
         },
         {
           label: '总部审核',
-          value: '2'
+          value: '1'
         }
       ],
       isChange: true,

@@ -25,6 +25,7 @@ export default // 幸福币
       name: 'withdrawList',
       component: () => import('@/views/credit/withdraw/list'),
       meta: {
+        keepAlive: true,
         title: '提现申请'
       }
     },
