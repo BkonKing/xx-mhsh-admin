@@ -50,9 +50,7 @@
             v-model="form.uid"
             show-search
             placeholder="输入姓名/手机号/ID进行搜索"
-            :filter-option="false"
-            :not-found-content="fetching ? undefined : null"
-            @search="fetchUser"
+            :filter-option="filterUser"
             @change="setBank"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small" />
@@ -114,10 +112,15 @@
 </template>
 
 <script>
+import NP from 'number-precision'
 import clonedeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { debounce } from '@/utils/util'
-import { cashApply, getDropDownUser, getProjectServiceFee } from '@/api/credit/withdraw'
+import {
+  cashApply,
+  getDropDownUser,
+  getProjectServiceFee
+} from '@/api/credit/withdraw'
 
 const initialForm = {
   user_type: '1',
@@ -171,12 +174,11 @@ export default {
       if (!this.form.cash_rmb) {
         return 0
       }
-      const num = this.form.cash_rmb * this.serviceMoney
-      return num.toFixed(2)
+      const num = NP.times(this.form.cash_rmb, this.serviceMoney)
+      return (Math.floor(num * 100) / 100).toFixed(2)
     },
     actualMoney () {
-      const money = this.form.cash_rmb - this.charge
-      return money ? money.toFixed(2) : 0
+      return NP.minus(this.form.cash_rmb, this.charge)
     }
   },
   watch: {
@@ -225,6 +227,11 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       )
+    },
+    filterUser (input, option) {
+      const value = input.toLowerCase()
+      const text = option.componentOptions.children[0].text.toLowerCase()
+      return text.indexOf(value) >= 0 || option.key == value
     },
     fetchUser (value) {
       const isNumber = /^\d+$/.test(value) && value.length > 5

@@ -321,7 +321,7 @@ export default {
       return this.info.process
     },
     stepCurrent () {
-      return +this.info.is_payment
+      return +this.info.is_payment - 1
     },
     title () {
       return this.info.cashout_numb ? `提现单号：${this.info.cashout_numb}` : ''

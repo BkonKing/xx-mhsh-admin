@@ -4,7 +4,6 @@
     title="提现审核"
     :width="600"
     :destroyOnClose="true"
-    @ok="submit"
   >
     <users-info v-if="typeNum === 1" :data="info"></users-info>
     <a-form-model
@@ -41,6 +40,19 @@
         />
       </a-form-model-item>
     </a-form-model>
+    <template slot="footer">
+      <a-button key="back" @click="handleCancel">
+        取消
+      </a-button>
+      <a-button
+        key="submit"
+        type="primary"
+        :loading="loading"
+        @click="submit"
+      >
+        确认
+      </a-button>
+    </template>
   </a-modal>
 </template>
 
@@ -89,6 +101,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       form: clonedeep(form),
       rules: {
         cash_img: [{ required: true, message: '请上传凭证', trigger: 'change' }]
@@ -142,9 +155,13 @@ export default {
     setFormData (data) {
       this.form = data
     },
+    handleCancel () {
+      this.checkVisible = false
+    },
     // 审核
     submit () {
       validAForm(this.$refs.form).then(async () => {
+        this.loading = true
         const apiObj = {
           1: setPayment,
           2: updatePayment,
@@ -173,6 +190,7 @@ export default {
             break
         }
         const { success } = await api({ ...params })
+        this.loading = false
         if (success) {
           this.$message.success('提交成功')
           this.$emit('success')
