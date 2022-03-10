@@ -1,64 +1,74 @@
 <template>
   <a-card title="专题图片" style="margin-top: 24px" :bordered="false">
-    <div>
-      行与行自动上下拼接；列最多三个图片自动左右拼接；支持扩展名：.png .jpg；
-    </div>
-    <a-table
-      ref="table"
-      size="default"
-      rowKey="id"
-      :columns="tableColumns"
-      :dataSource="tableData"
-      :pagination="false"
-      style="margin-top: 24px"
-    >
-      <template slot="column1" slot-scope="text, record">
-        <cform
-          v-model="record.list[0]"
-          :goodsOptions="goodsOptions"
-          :specialOptions="specialOptions"
-        ></cform>
-      </template>
-      <template slot="column2" slot-scope="text, record">
-        <cform
-          v-model="record.list[1]"
-          :goodsOptions="goodsOptions"
-          :specialOptions="specialOptions"
-        ></cform>
-      </template>
-      <template slot="column3" slot-scope="text, record">
-        <cform
-          v-model="record.list[2]"
-          :goodsOptions="goodsOptions"
-          :specialOptions="specialOptions"
-        ></cform>
-      </template>
-      <template slot="list_order" slot-scope="text, record">
-        <a-input
-          v-model="record.list_order"
-          v-number-input.int
-          @blur="changeSort"
-        ></a-input>
-      </template>
-      <template slot="actions" slot-scope="text, record, index">
-        <a @click="remove(index)">删除</a>
-      </template>
-    </a-table>
-    <div class="add-btn" @click="add">
-      + 新增行
-    </div>
+    <a-row type="flex" :gutter="20">
+      <a-col flex="377px">
+        <mobile-preview :data="tableData"></mobile-preview>
+      </a-col>
+      <a-col flex="1">
+        <div>
+          行与行自动上下拼接；列最多三个图片自动左右拼接；支持扩展名：.png
+          .jpg；
+        </div>
+        <a-table
+          ref="table"
+          size="default"
+          rowKey="id"
+          :columns="tableColumns"
+          :dataSource="tableData"
+          :pagination="false"
+          style="margin-top: 24px"
+        >
+          <template slot="column1" slot-scope="text, record">
+            <cform
+              v-model="record.list[0]"
+              :goodsOptions="goodsOptions"
+              :specialOptions="specialOptions"
+            ></cform>
+          </template>
+          <template slot="column2" slot-scope="text, record">
+            <cform
+              v-model="record.list[1]"
+              :goodsOptions="goodsOptions"
+              :specialOptions="specialOptions"
+            ></cform>
+          </template>
+          <template slot="column3" slot-scope="text, record">
+            <cform
+              v-model="record.list[2]"
+              :goodsOptions="goodsOptions"
+              :specialOptions="specialOptions"
+            ></cform>
+          </template>
+          <template slot="list_order" slot-scope="text, record">
+            <a-input
+              v-model="record.list_order"
+              v-number-input.int
+              @blur="changeSort"
+            ></a-input>
+          </template>
+          <template slot="actions" slot-scope="text, record, index">
+            <a @click="remove(index)">删除</a>
+          </template>
+        </a-table>
+        <div class="add-btn" @click="add">
+          + 新增行
+        </div>
+      </a-col>
+    </a-row>
   </a-card>
 </template>
 
 <script>
+import clonedeep from 'lodash.clonedeep'
+import MobilePreview from './MobilePreview'
 import cform from './cform'
 import { sort } from '@/utils/util'
-import { searchGoods, getAllSpecial } from '@/api/commodity/specail'
-import clonedeep from 'lodash.clonedeep'
+import { searchGoods, getAllSpecial } from '@/api/operatingCenter/special'
 export default {
   name: 'SpecialImages',
   components: {
-    cform
+    cform,
+    MobilePreview
   },
   data () {
     return {

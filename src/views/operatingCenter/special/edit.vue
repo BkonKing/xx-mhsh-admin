@@ -12,40 +12,43 @@
           <a-input
             v-model="form.title"
             placeholder="请输入"
-            :maxLength="15"
+            :maxLength="25"
           ></a-input>
         </a-form-model-item>
         <a-form-model-item required prop="is_open" label="是否开启">
-          <a-switch
+          <a-radio-group
             v-model="form.is_open"
             @change="$refs.BasicForm.validateField('time')"
-          ></a-switch>
-          <a-form-model-item prop="time" style="margin-top: 10px;">
-            <a-range-picker
-              v-model="form.time"
-              :show-time="{ defaultValue: [defaultTime, defaultTime] }"
-              :placeholder="['开始时间', '结束时间']"
-              valueFormat="YYYY-MM-DD HH:mm:ss"
-              style="width: 100%;"
-            />
-          </a-form-model-item>
-          <div style="color: #00000072;">
-            达到设定时间将自动展示和关闭
-          </div>
+          >
+            <a-radio value="1">有限</a-radio>
+            <a-radio value="2">不限</a-radio>
+          </a-radio-group>
+          <template v-if="+form.is_open === 1">
+            <a-form-model-item
+              prop="time"
+              style="margin-top: 10px;margin-bottom: 0;"
+            >
+              <a-range-picker
+                v-model="form.time"
+                :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                :placeholder="['开始时间', '结束时间']"
+                valueFormat="YYYY-MM-DD HH:mm:ss"
+                style="width: 100%;"
+              />
+            </a-form-model-item>
+            <div style="color: #00000072;">
+              到达设定时间将自动生效和失效，生效期间则在APP显示
+            </div>
+          </template>
         </a-form-model-item>
         <a-form-model-item label="内容形式">
           <a-radio-group v-model="form.type" :options="contRadioGroup" />
-        </a-form-model-item>
-        <a-form-model-item v-if="isListType" label="商品排列">
-          <a-radio-group
-            v-model="form.arrange"
-            :options="permutationRadioGroup"
-          />
         </a-form-model-item>
         <a-form-model-item label="微信分享链接">
           <a-input
             v-model="form.wx_sharelink"
             placeholder="标题"
+            prefix="标题"
             :maxLength="50"
           ></a-input>
           <a-form-model-item style="margin-top: 10px;">
@@ -60,47 +63,7 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <a-card
-      v-if="isListType"
-      title="专题简介"
-      style="margin-top: 24px"
-      :bordered="false"
-    >
-      <a-form-model
-        ref="introForm"
-        :model="introForm"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-form-model-item prop="introduction_image" label="简介图片">
-          <upload-image
-            class="introduction-upload"
-            v-model="introForm.introduction_image"
-            maxLength="1"
-          ></upload-image>
-          <div style="margin-top: -11px;color: #00000072;">
-            单张；支持扩展名：.png .jpg；
-          </div>
-        </a-form-model-item>
-        <a-form-model-item prop="introduction_title" label="简介标题">
-          <a-input
-            v-model="introForm.introduction_title"
-            placeholder="请输入"
-            :maxLength="10"
-          ></a-input>
-        </a-form-model-item>
-        <a-form-model-item prop="introduction_content" label="简介内容">
-          <a-textarea
-            v-model="introForm.introduction_content"
-            placeholder="请输入"
-            :auto-size="{ minRows: 3, maxRows: 5 }"
-            :maxLength="500"
-          />
-        </a-form-model-item>
-      </a-form-model>
-    </a-card>
-    <special-goods v-if="isListType" ref="special-goods"></special-goods>
-    <special-images v-else ref="special-images"></special-images>
+    <special-images ref="special-images"></special-images>
     <div style="height: 80px;"></div>
     <footer-tool-bar style="width: 100%;">
       <a-button @click="$router.go(-1)" style="margin-right: 15px;">
@@ -118,9 +81,8 @@ import moment from 'moment'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import FooterToolBar from '@/components/FooterToolbar'
 import { /* STable, */ UploadImage } from '@/components'
-// import SpecialGoods from '@/views/commodity/special/components/SpecialGoods'
-// import SpecialImages from '@/views/commodity/special/components/SpecialImages'
-import { addSpecial, getSpecialById } from '@/api/operatingCenter/specail'
+import SpecialImages from './components/SpecialImages'
+import { addSpecial, getSpecialById } from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialEdit',
@@ -128,9 +90,8 @@ export default {
     PageHeaderView,
     FooterToolBar,
     // STable,
-    UploadImage
-    // SpecialGoods,
-    // SpecialImages
+    UploadImage,
+    SpecialImages
   },
   data () {
     const validateTime = (rule, value, callback) => {
@@ -148,7 +109,7 @@ export default {
       wrapperCol: { lg: { span: 10 }, sm: { span: 10 } },
       form: {
         title: '',
-        is_open: true,
+        is_open: '1',
         time: [],
         type: '1', // 专题类型 1专题商品2 图片专题
         arrange: 1 // 1一行一个 2一行两个
@@ -165,22 +126,7 @@ export default {
       contRadioGroup: [
         {
           value: '1',
-          label: '商品列表'
-        },
-        {
-          value: '2',
           label: '图片内容'
-        }
-      ],
-      // 商品排列
-      permutationRadioGroup: [
-        {
-          value: 1,
-          label: '一行一个'
-        },
-        {
-          value: 2,
-          label: '一行两个'
         }
       ],
       introForm: {
@@ -188,11 +134,6 @@ export default {
         introduction_image: [],
         introduction_content: ''
       }
-    }
-  },
-  computed: {
-    isListType () {
-      return this.form.type === '1'
     }
   },
   created () {
@@ -210,7 +151,7 @@ export default {
         // 基础信息
         this.form = {
           title: data.title,
-          is_open: data.is_open === 1,
+          is_open: data.is_open,
           time: [data.stime, data.etime],
           type: data.content_type,
           arrange: data.arrange,
@@ -229,29 +170,16 @@ export default {
     // 商品列表回填
     setGoodsList (data) {
       this.$nextTick(() => {
-        if (this.isListType) {
-          data.combination.forEach(obj => {
-            obj.combination_pic = obj.combination_pic
-              ? [obj.combination_pic]
-              : []
-            obj.fold = true // 展开
-            obj.list.forEach(goods => {
-              goods.is_open = goods.is_open === '1'
-            })
-          })
-          this.$refs['special-goods'].tableData = data.combination
-        } else {
-          this.$refs['special-images'].tableData = data.list.map(obj => {
-            return {
-              list_order: obj.list_order,
-              list: obj.list.map(image => ({
-                id: image.jump_id,
-                type: image.jump_type,
-                pic_url: image.image_url ? [image.image_url] : []
-              }))
-            }
-          })
-        }
+        this.$refs['special-images'].tableData = data.list.map(obj => {
+          return {
+            list_order: obj.list_order,
+            list: obj.list.map(image => ({
+              id: image.jump_id,
+              type: image.jump_type,
+              pic_url: image.image_url ? [image.image_url] : []
+            }))
+          }
+        })
       })
     },
     formValidate (form) {
@@ -268,18 +196,10 @@ export default {
     },
     handleSubmit () {
       Promise.all([this.formValidate('BasicForm')]).then(() => {
-        if (this.isListType) {
-          this.addSpecial({
-            ...this.form,
-            ...this.introForm,
-            combination: this.formatGoodsData()
-          })
-        } else {
-          this.addSpecial({
-            ...this.form,
-            list: this.formatImageData()
-          })
-        }
+        this.addSpecial({
+          ...this.form,
+          list: this.formatImageData()
+        })
       })
     },
     // 专题商品列表数据格式化
@@ -298,7 +218,7 @@ export default {
             list_order: obj.list_order,
             list: obj.list.map(goods => ({
               goods_id: goods.goods_id,
-              is_open: goods.is_open ? 1 : 0,
+              is_open: goods.is_open,
               list_order: goods.list_order
             }))
           }
@@ -330,8 +250,6 @@ export default {
       if (params.wx_sharepic) {
         params.wx_sharepic = params.wx_sharepic[0] || ''
       }
-      // 是否开启 1开启 2关闭
-      params.is_open = params.is_open ? 1 : 2
       // 操作类型 1添加 2修改
       params.opt_type = this.specialId ? 2 : 1
       this.specialId && (params.special_id = this.specialId)

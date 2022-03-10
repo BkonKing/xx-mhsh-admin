@@ -1,10 +1,26 @@
 <template>
   <page-header-view :title="info.title">
     <template v-slot:content>
-      <div>
-        展示时间：{{ info.stime ? `${info.stime} ~ ${info.etime}` : "--" }}
-      </div>
-      <div style="margin-top: 9px;">内容形式：{{ info.content_desc }}</div>
+      <a-descriptions size="small" :column="2">
+        <a-descriptions-item label="ID">
+          {{ info.content_desc }}
+        </a-descriptions-item>
+        <a-descriptions-item label="关联专区">
+          <a>{{ info.aaa }}</a>
+        </a-descriptions-item>
+        <a-descriptions-item label="所属项目">
+          {{ info.content_desc }}
+        </a-descriptions-item>
+        <a-descriptions-item label="有效时间">
+          {{ info.stime ? `${info.stime} ~ ${info.etime}` : "--" }}
+        </a-descriptions-item>
+        <a-descriptions-item label="内容形式">
+          {{ info.content_desc }}
+        </a-descriptions-item>
+        <a-descriptions-item label="创建时间">
+          {{ info.companyName }}
+        </a-descriptions-item>
+      </a-descriptions>
     </template>
 
     <!-- actions -->
@@ -27,7 +43,7 @@
       <div class="status-list">
         <div>
           <div class="text">状态</div>
-          <div class="heading">{{ info.is_open === 1 ? "开启" : "关闭" }}</div>
+          <div class="heading">{{ info.is_open }}</div>
         </div>
         <div>
           <div class="text">商品</div>
@@ -41,262 +57,111 @@
     </template>
 
     <a-card
-      title="微信分享"
+      title="基础信息"
       class="intro-card"
       style="margin-top: 24px"
       :bordered="false"
     >
       <a-row type="flex">
-        <a-col flex="72px">分享标题：</a-col>
-        <a-col>{{ info.wx_sharelink || "--" }}</a-col>
-      </a-row>
-      <a-row type="flex">
-        <a-col flex="72px">分享图片：</a-col>
+        <a-col flex="72px">专区图：</a-col>
         <a-col>
-          <t-image
-            v-if="info.wx_sharepic"
-            :images="[info.wx_sharepic]"
-            class="topic-image"
-          ></t-image>
-          <span v-else>--</span>
+          <a-row type="flex">
+            <a-col>
+              <t-image
+                v-if="info.topic_url"
+                :images="[info.topic_url]"
+                class="topic-image"
+              ></t-image>
+              <div>封面图</div>
+            </a-col>
+            <a-col>
+              <t-image
+                v-if="info.topic_url"
+                :images="[info.topic_url]"
+                class="topic-image"
+              ></t-image>
+              <div>背景图</div>
+            </a-col>
+          </a-row>
         </a-col>
       </a-row>
-    </a-card>
-
-    <a-card
-      v-if="isListType"
-      title="专题简介"
-      class="intro-card"
-      style="margin-top: 24px"
-      :bordered="false"
-    >
       <a-row type="flex">
-        <a-col flex="72px">简介图片：</a-col>
+        <a-col flex="72px">微信分享：</a-col>
         <a-col>
+          <div>{{ info.bbbbb }}</div>
+          <div>{{ info.ccccc }}</div>
           <t-image
             v-if="info.topic_url"
             :images="[info.topic_url]"
             class="topic-image"
           ></t-image>
-          <span v-else>--</span>
         </a-col>
       </a-row>
-      <a-row type="flex">
-        <a-col flex="72px">简介标题：</a-col>
-        <a-col>{{ info.topic_title || "--" }}</a-col>
-      </a-row>
-      <a-row type="flex">
-        <a-col flex="72px">简介内容：</a-col>
-        <a-col flex="1"> {{ info.topic_content || "--" }}</a-col>
-      </a-row>
     </a-card>
 
-    <a-card
-      v-if="isListType"
-      :title="`专题商品（${info.group_count}个组 ${info.goods_count}个商品）`"
-      style="margin-top: 24px"
-      :bordered="false"
-    >
-      <a-table
-        ref="table"
-        size="default"
-        rowKey="combination_id"
-        :columns="columns"
-        :dataSource="info.combination"
-        :pagination="false"
-        :expandedRowKeys="expandedRowKeys"
-        @expandedRowsChange="
-          expandedRowKeys => {
-            this.expandedRowKeys = expandedRowKeys;
-          }
-        "
-      >
-        <a-table
-          v-if="text.list && text.list.length"
-          slot="expandedRowRender"
-          slot-scope="text"
-          rowKey="goods_id"
-          :columns="innerColumns"
-          :data-source="text.list"
-          :pagination="false"
-          :showHeader="false"
-        >
-          <template slot="model" slot-scope="text">
-            <div v-for="(item, i) in text" :key="i" class="xx-flex">
-              <div class="xx-flex-label">{{ item.specs_name }}</div>
-              <div class="xx-flex-value">
-                ￥{{ item.s_price }}|￥{{ item.vip_price }}|￥{{ item.e_price }}
-              </div>
-            </div>
-          </template>
-          <template slot="inventory" slot-scope="text, row">
-            <div v-for="(item, i) in row.spec_info" :key="i">
-              {{ item.stock }}（{{ item.auction_stock || 0 }}）
-            </div>
-          </template>
-        </a-table>
-      </a-table>
-    </a-card>
-
-    <a-card v-else title="专题图片" style="margin-top: 24px" :bordered="false">
-      <a-table
-        ref="table"
-        size="default"
-        rowKey="id"
-        class="special-image-table"
-        :columns="imgColumns"
-        :dataSource="info.list"
-        :pagination="false"
-      >
-        <template slot="column1" slot-scope="text, record">
-          <image-card :data="record.list[0]"></image-card>
-        </template>
-        <template slot="column2" slot-scope="text, record">
-          <image-card :data="record.list[1]"></image-card>
-        </template>
-        <template slot="column3" slot-scope="text, record">
-          <image-card :data="record.list[2]"></image-card>
-        </template>
-      </a-table>
+    <a-card title="专题图片" style="margin-top: 24px" :bordered="false">
+      <a-row type="flex" :gutter="20">
+        <a-col flex="377px">
+          <mobile-preview :data="info"></mobile-preview>
+        </a-col>
+        <a-col flex="1">
+          <a-table
+            ref="table"
+            size="default"
+            rowKey="id"
+            class="special-image-table"
+            :columns="imgColumns"
+            :dataSource="info.list"
+            :pagination="false"
+          >
+            <template slot="column1" slot-scope="text, record">
+              <image-card :data="record.list[0]"></image-card>
+            </template>
+            <template slot="column2" slot-scope="text, record">
+              <image-card :data="record.list[1]"></image-card>
+            </template>
+            <template slot="column3" slot-scope="text, record">
+              <image-card :data="record.list[2]"></image-card>
+            </template>
+          </a-table>
+        </a-col>
+      </a-row>
     </a-card>
   </page-header-view>
 </template>
 
 <script>
-import PageHeaderView from '@/layouts/PageHeaderView'
 import { TImage } from '@/components'
-// import ImageCard from '@/views/commodity/special/components/ImageCard'
-import { getSpecialById } from '@/api/operatingCenter/specail'
+import PageHeaderView from '@/layouts/PageHeaderView'
+import ImageCard from './components/ImageCard'
+import MobilePreview from './components/MobilePreview'
+import { getSpecialById } from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialDetail',
   components: {
     PageHeaderView,
-    // ImageCard,
-    TImage
+    TImage,
+    ImageCard,
+    MobilePreview
   },
   data () {
     return {
       id: '',
       info: {
-        combination: []
+        list: [
+          {
+            id: '123',
+            list: [
+              {
+                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                type: 1,
+                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+              }
+            ]
+          }
+        ]
       },
-      expandedRowKeys: [],
-      columns: [
-        {
-          title: '序号',
-          width: 70,
-          customRender (text, record, index) {
-            return index + 1
-          }
-        },
-        {
-          title: '组名称',
-          width: 200,
-          dataIndex: 'combination_content',
-          customRender: (text, row) => {
-            return <div class="two-Multi">{text}</div>
-          }
-        },
-        {
-          title: '组图片',
-          width: 90,
-          dataIndex: 'combination_pic',
-          customRender: text => {
-            if (text) {
-              const src = [text]
-              const img = (
-                <t-image images={src} class="goods-image group-image"></t-image>
-              )
-              return img
-            } else {
-              return ''
-            }
-          }
-        },
-        {
-          title: '分类',
-          width: 110
-        },
-        {
-          title: '规格/价格(现价|会员价|优享价)'
-        },
-        {
-          title: '库存(可拍)',
-          width: 150
-        },
-        {
-          title: '状态',
-          width: 70
-        },
-        {
-          title: '排序',
-          width: 70,
-          dataIndex: 'list_order'
-        }
-      ],
-      innerColumns: [
-        {
-          title: '商品编码',
-          width: 70,
-          dataIndex: 'goods_id',
-          customRender: (text, row) => {
-            const url = `/nsolid/commodity/goods?goods_id=${text}`
-            return (
-              <a href={url} target="_blank">
-                {text}
-              </a>
-            )
-          }
-        },
-        {
-          title: '商品名称',
-          width: 200,
-          dataIndex: 'goods_name',
-          customRender: text => {
-            return <div class="two-Multi">{text}</div>
-          }
-        },
-        {
-          title: '组图片',
-          width: 90,
-          dataIndex: 'thumb',
-          customRender: text => {
-            if (text) {
-              const src = [text]
-              const img = <t-image images={src} class="goods-image"></t-image>
-              return img
-            } else {
-              return ''
-            }
-          }
-        },
-        {
-          title: '分类',
-          width: 110,
-          dataIndex: 'category_name'
-        },
-        {
-          title: '规格/价格(现价|会员价|优享价)',
-          dataIndex: 'spec_info',
-          scopedSlots: { customRender: 'model' }
-        },
-        {
-          title: '库存(可拍)',
-          width: 150,
-          scopedSlots: { customRender: 'inventory' }
-        },
-        {
-          title: '状态',
-          width: 70,
-          dataIndex: 'shelf'
-        },
-        {
-          title: '排序',
-          width: 70,
-          dataIndex: 'list_order'
-        }
-      ],
       imgColumns: [
         {
           title: '行',
@@ -333,26 +198,16 @@ export default {
       ]
     }
   },
-  computed: {
-    isListType () {
-      return this.info.content_type === '1'
-    }
-  },
   created () {
     this.id = this.$route.query.id
-    this.getSpecialById()
+    // this.getSpecialById()
   },
   methods: {
     getSpecialById () {
       getSpecialById({
         special_id: this.id
       }).then(({ data }) => {
-        this.info = data
-        if (this.isListType) {
-          this.expandedRowKeys = this.info.combination.map(
-            obj => obj.combination_id
-          )
-        }
+        this.info = data || {}
       })
     },
     goEdit () {
@@ -367,7 +222,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .preview-tooltip {
   .preview-tooltip-text {
     color: @error-color;
@@ -390,36 +245,14 @@ export default {
     vertical-align: top;
   }
 }
-.goods-image {
-  .image-box {
-    margin: 0;
-  }
-  img {
-    width: 45px;
-    height: 45px;
-  }
-}
-.group-image {
-  .image-box {
-    img {
-      width: 90px;
-    }
-  }
-}
-.topic-image img {
-  max-width: 400px;
-  max-height: 200px;
-}
-.xx-flex {
+.status-list {
   display: flex;
-  .xx-flex-label {
-    max-width: 104px;
-    margin-right: 15px;
-    .textOverflow();
-  }
-  .xx-flex-value {
-    flex: 1;
-    width: 0;
+  justify-content: flex-end;
+  text-align: left;
+  .text,
+  .heading {
+    padding-left: 40px;
+    text-align: right;
   }
 }
 .heading {
@@ -429,6 +262,11 @@ export default {
 .intro-card {
   .ant-row-flex + .ant-row-flex {
     margin-top: 20px;
+  }
+}
+/deep/ .ant-pro-page-header-wrap-page-header-warp {
+  .ant-pro-page-header-wrap-extraContent {
+    position: initial;
   }
 }
 </style>

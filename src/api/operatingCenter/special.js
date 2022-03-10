@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export const specailApi = {
+export const specialApi = {
   searchGoods: '/commodity_special/searchGoods',
   getAllSpecial: '/commodity_special/getAllSpecial',
   getCategory: '/commodity_special/getCategory',
@@ -15,7 +15,7 @@ export const specailApi = {
 // 获取所有的商品（添加专题图文使用）
 export function searchGoods (data) {
   return request({
-    url: specailApi.searchGoods,
+    url: specialApi.searchGoods,
     method: 'post',
     data
   })
@@ -24,7 +24,7 @@ export function searchGoods (data) {
 // 获取所有专题（添加专题图文使用）
 export function getAllSpecial (data) {
   return request({
-    url: specailApi.getAllSpecial,
+    url: specialApi.getAllSpecial,
     method: 'post',
     data
   })
@@ -33,7 +33,7 @@ export function getAllSpecial (data) {
 // 获取所有的商品分类
 export function getCategory (data) {
   return request({
-    url: specailApi.getCategory,
+    url: specialApi.getCategory,
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ export function getCategory (data) {
 // 获取所有的商品（添加专题商品使用）
 export function getGoods (data) {
   return request({
-    url: specailApi.getGoods,
+    url: specialApi.getGoods,
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function getGoods (data) {
 // 根据商品ID获取规格
 export function getSpecByGoodsId (data) {
   return request({
-    url: specailApi.getSpecByGoodsId,
+    url: specialApi.getSpecByGoodsId,
     method: 'post',
     data
   })
@@ -59,7 +59,7 @@ export function getSpecByGoodsId (data) {
 
 export function addSpecial (data) {
   return request({
-    url: specailApi.addSpecial,
+    url: specialApi.addSpecial,
     method: 'post',
     data
   })
@@ -67,7 +67,7 @@ export function addSpecial (data) {
 
 export function delSpecial (data) {
   return request({
-    url: specailApi.delSpecial,
+    url: specialApi.delSpecial,
     method: 'post',
     data
   })
@@ -75,7 +75,7 @@ export function delSpecial (data) {
 
 export function getSpecialById (data) {
   return request({
-    url: specailApi.getSpecialById,
+    url: specialApi.getSpecialById,
     method: 'post',
     data
   })
@@ -83,7 +83,7 @@ export function getSpecialById (data) {
 
 export function getList (data) {
   return request({
-    url: specailApi.getList,
+    url: specialApi.getList,
     method: 'post',
     data
   })

@@ -15,6 +15,7 @@ import AdvancedForm from '@/components/AdvancedForm'
 import PageHeader from '@/components/PageHeader'
 import UploadImage from '@/components/UploadImage'
 import DetailInfo from '@/components/DetailInfo'
+import TImage from '@/components/Image'
 
 export {
   FooterToolbar,
@@ -29,5 +30,6 @@ export {
   PageHeader,
   UploadImage,
   DetailInfo,
-  Timewait
+  Timewait,
+  TImage
 }

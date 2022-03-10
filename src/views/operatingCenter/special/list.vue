@@ -98,6 +98,7 @@
           <template>
             <a @click="goDetail(record)">查看</a>
             <a @click="goEdit(record)">编辑</a>
+            <a @click="goEdit(record)">结束</a>
             <a-popconfirm
               :icon="icon"
               placement="top"
@@ -125,7 +126,7 @@ import { mapGetters } from 'vuex'
 import { AdvancedForm, STable } from '@/components'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { getProjectList } from '@/api/userManage/business'
-import { getList, delSpecial } from '@/api/operatingCenter/specail'
+import { getList, delSpecial } from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialList',
@@ -168,6 +169,24 @@ export default {
           }
         },
         {
+          title: '专题状态',
+          dataIndex: 'open_desc',
+          sorter: true
+        },
+        {
+          title: '有效时间',
+          dataIndex: 'stime',
+          customRender: (text, row) => {
+            const ele = (
+              <div>
+                {text ? <div>起 {text}</div> : ''}
+                {row.etime ? <div>止 {row.etime}</div> : ''}
+              </div>
+            )
+            return text || row.etime ? ele : '--'
+          }
+        },
+        {
           title: '展示形式',
           dataIndex: 'type_desc'
         },
@@ -183,37 +202,16 @@ export default {
             return (
               <div>
                 浏览量
-                <a-tooltip>
-                  <template slot="title">一个用户仅算一次</template>
-                  <a-icon
-                    type="info-circle"
-                    style="color: #797979;margin-top: 3px;margin-left: 3px;"
-                  />
-                </a-tooltip>
+              <a-tooltip>
+                <template slot="title">一个用户仅算一次</template>
+                <a-icon
+                  type="info-circle"
+                  style="color: #797979;margin-top: 3px;margin-left: 3px;"
+                />
+              </a-tooltip>
               </div>
             )
           }
-        },
-        {
-          title: '专题状态',
-          dataIndex: 'open_desc'
-        },
-        {
-          title: '开启时间',
-          dataIndex: 'stime',
-          customRender: (text, row) => {
-            const ele = (
-              <div>
-                {text ? <div>起 {text}</div> : ''}
-                {row.etime ? <div>止 {row.etime}</div> : ''}
-              </div>
-            )
-            return text || row.etime ? ele : '--'
-          }
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'ctime'
         },
         {
           title: '操作',
@@ -233,7 +231,6 @@ export default {
   },
   created () {
     this.isParentProject && this.getProjectList()
-    !this.isParentProject && this.columns.splice(1, 1)
   },
   methods: {
     // 获取项目列表
@@ -270,7 +267,6 @@ export default {
         const status = value.some(record => {
           return record.coupon_status !== '2'
         })
-        console.log(status)
         if (status) {
           this.$message.warning('已选择的项中包含不可操作')
           return

@@ -1,14 +1,12 @@
 <template>
   <div class="image-card">
-    <div v-if="data.jump_name" class="jump-name">
-      {{ data.jump_type === 1 ? "跳转商品" : "跳转专题" }}：{{ data.jump_name }}
+    <div v-if="data.name" class="jump-name">
+      {{ data.type | typeName }}：<template v-if="data.type === 1"
+        ><a>{{ data.name }}</a></template
+      ><template v-else>{{ data.name }}</template>
     </div>
     <div v-else>--</div>
-    <t-image
-      v-if="data.image_url"
-      :images="[data.image_url]"
-      class="special-img"
-    />
+    <t-image v-if="data.url" :images="[data.url]" class="special-img" />
   </div>
 </template>
 
@@ -23,6 +21,16 @@ export default {
     data: {
       type: Object,
       default: () => ({})
+    }
+  },
+  filters: {
+    typeName (value) {
+      const name = {
+        1: '跳转至商品',
+        2: '跳转至链接',
+        3: '触发功能'
+      }
+      return name[value]
     }
   }
 }
@@ -44,6 +52,7 @@ export default {
 .jump-name {
   width: 100%;
   margin-bottom: 10px;
-  .textOverflow();
+  white-space: break-spaces;
+  .textOverflowMultiLine();
 }
 </style>
