@@ -40,7 +40,10 @@
                   v-model="formData.min_credits"
                   addon-before="最低(含)"
                   placeholder="请输入"
-                  v-number-input.int
+                  v-number-input.int="{
+                    min: 1
+                  }"
+                  @change="$refs.withdrawForm.validateField('max_credits')"
                 ></a-input></a-form-model-item
             ></a-col>
             <a-col flex="30px" style="text-align: center;"> ~ </a-col>
@@ -50,7 +53,10 @@
                   v-model="formData.max_credits"
                   addon-before="最高(含)"
                   placeholder="请输入"
-                  v-number-input.int
+                  v-number-input.int="{
+                    min: 1
+                  }"
+                  @change="$refs.withdrawForm.validateField('min_credits')"
                 ></a-input></a-form-model-item
             ></a-col>
           </a-row>
@@ -107,6 +113,26 @@ export default {
     FooterToolbar
   },
   data () {
+    const compareMinCredit = (rule, value, callback) => {
+      if (
+        this.formData.max_credits &&
+        parseFloat(value) > this.formData.max_credits
+      ) {
+        callback(new Error('单笔提现最低值不能比最高值高'))
+      } else {
+        callback()
+      }
+    }
+    const compareMaxCredit = (rule, value, callback) => {
+      if (
+        this.formData.min_credits &&
+        parseFloat(value) < this.formData.min_credits
+      ) {
+        callback(new Error('单笔提现最高值不能比最低值低'))
+      } else {
+        callback()
+      }
+    }
     return {
       formData: {
         project_examine_day: '',
@@ -117,7 +143,10 @@ export default {
         min_credits: '',
         max_credits: ''
       },
-      formRules: {},
+      formRules: {
+        min_credits: [{ validator: compareMinCredit }],
+        max_credits: [{ validator: compareMaxCredit }]
+      },
       shopAudit: [
         {
           label: '项目审核+总部审核',
@@ -165,12 +194,14 @@ export default {
     },
     async setCredits () {
       const params = cloneDeep(this.formData)
-      const { success } = await setCredits({
+      const { success, message } = await setCredits({
         ...params
       })
       if (success) {
         this.$message.success('提交成功')
         this.isChange = true
+      } else {
+        this.$message.error(message)
       }
     }
   }

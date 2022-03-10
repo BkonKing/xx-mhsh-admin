@@ -84,7 +84,10 @@
                   v-model="formData.min_credits"
                   addon-before="最低(含)"
                   placeholder="请输入"
-                  v-number-input.int
+                  v-number-input.int="{
+                    min: 1
+                  }"
+                  @change="$refs.withdrawForm.validateField('max_credits')"
                 ></a-input></a-form-model-item
             ></a-col>
             <a-col flex="30px" style="text-align: center;"> ~ </a-col>
@@ -94,7 +97,10 @@
                   v-model="formData.max_credits"
                   addon-before="最高(含)"
                   placeholder="请输入"
-                  v-number-input.int
+                  v-number-input.int="{
+                    min: 1
+                  }"
+                  @change="$refs.withdrawForm.validateField('min_credits')"
                 ></a-input></a-form-model-item
             ></a-col>
           </a-row>
@@ -219,7 +225,7 @@
           required
           style="margin-bottom: 0;"
         >
-          <a-textarea v-model="formData.coupon_instructions" :autosize="true" />
+          <a-textarea v-model="formData.coupon_instructions" :autoSize="true" />
           <div class="alert-text">APP店铺优惠券的使用说明展示</div>
         </a-form-model-item>
       </a-form-model>
@@ -260,6 +266,26 @@ export default {
     FooterToolbar
   },
   data () {
+    const compareMinCredit = (rule, value, callback) => {
+      if (
+        this.formData.max_credits &&
+        parseFloat(value) > this.formData.max_credits
+      ) {
+        callback(new Error('单笔提现最低值不能比最高值高'))
+      } else {
+        callback()
+      }
+    }
+    const compareMaxCredit = (rule, value, callback) => {
+      if (
+        this.formData.min_credits &&
+        parseFloat(value) < this.formData.min_credits
+      ) {
+        callback(new Error('单笔提现最高值不能比最低值低'))
+      } else {
+        callback()
+      }
+    }
     return {
       formData: {
         is_reveal: '',
@@ -294,7 +320,9 @@ export default {
         remind: { required: true, message: '请输入特别提醒' },
         banner: { required: true, message: '请上传领券banner' },
         banner_text: { required: true, message: '请输入文案' },
-        coupon_instructions: { required: true, message: '请输入店铺券使用说明' }
+        coupon_instructions: { required: true, message: '请输入店铺券使用说明' },
+        min_credits: [{ validator: compareMinCredit }],
+        max_credits: [{ validator: compareMaxCredit }]
       },
       revealOptions: [
         {
@@ -474,13 +502,15 @@ export default {
       params.receive_coupon = params.receive_coupon.join(',')
       params.coupon_goods_type = params.coupon_goods_type.join(',')
       params.banner = params.banner.length ? params.banner[0] : ''
-      const { success } = await setBusinessSetting({
+      const { success, message } = await setBusinessSetting({
         ...params,
         type: 1
       })
       if (success) {
         this.$message.success('提交成功')
         this.isChange = true
+      } else {
+        this.$message.error(message)
       }
     }
   }
