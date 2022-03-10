@@ -54,7 +54,7 @@
     </template>
 
     <status-steps
-      title="券状态"
+      title="提现进度"
       titleKey="step_name"
       :data="stepsData"
       :current="stepCurrent"
