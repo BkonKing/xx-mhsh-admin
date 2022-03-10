@@ -33,7 +33,7 @@
       <a-button
         v-if="+info.check_button"
         type="primary"
-        @click="openCheck"
+        @click="openCheck(1)"
         >审核</a-button
       >
       <a-button
