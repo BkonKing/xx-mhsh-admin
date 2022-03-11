@@ -100,7 +100,7 @@ export default {
       })
     },
     beforeUpload (file, fileList) {
-      console.log(file)
+      // console.log(file)
       const index = parseInt(this.maxLength) - this.fileList.length
       if (index > 0) {
         const active = fileList.findIndex(obj => obj.name === file.name) + 1

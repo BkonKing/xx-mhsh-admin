@@ -71,10 +71,10 @@
         <a-button type="primary" @click="goEdit">新增</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="batchOperation('openShopPower')">
+            <a-menu-item key="1" @click="batchOperation('openEditValidTime')">
               有效时间
             </a-menu-item>
-            <a-menu-item key="2" @click="batchOperation('batchRemove')">
+            <a-menu-item key="2" @click="batchOperation('batchFinish')">
               结束
             </a-menu-item>
             <a-menu-item key="3" @click="batchOperation('batchRemove')">
@@ -92,31 +92,63 @@
         :columns="columns"
         :sortKey="{ ascend: 'asc', descend: 'desc' }"
         :data="loadData"
+        :alert="{ clear: true }"
+        :rowSelection="rowSelection"
+        :rowSelectionPaging="true"
         :showPagination="true"
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
             <a @click="goDetail(record)">查看</a>
             <a @click="goEdit(record)">编辑</a>
-            <a @click="goEdit(record)">结束</a>
-            <a-popconfirm
-              :icon="icon"
-              placement="top"
-              ok-text="确定"
-              cancel-text="取消"
-              @confirm="handleRemove(record)"
-            >
-              <template slot="title">
-                <p>
-                  你确定要删除这行内容吗？
-                </p>
-              </template>
-              <a>删除</a>
-            </a-popconfirm>
+            <a @click="handleFinish([record])">结束</a>
+            <a @click="handleRemove([record])">删除</a>
           </template>
         </span>
       </s-table>
     </a-card>
+    <a-modal
+      v-model="validTimeVisible"
+      :title="validTimeTitle"
+      :width="600"
+      :destroyOnClose="true"
+      @ok="openEditValidTime"
+    >
+      <a-form-model
+        ref="validTimeForm"
+        :model="validTimeForm"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item label="已选专题">
+          {{ selectSpecialName }}
+        </a-form-model-item>
+        <a-form-model-item required prop="is_open" label="有效时间">
+          <a-radio-group v-model="validTimeForm.is_open">
+            <a-radio value="1">有限</a-radio>
+            <a-radio value="2">不限</a-radio>
+          </a-radio-group>
+          <template v-if="+validTimeForm.is_open === 1">
+            <a-form-model-item
+              prop="time"
+              :rules="{required: true, message: '请选择有效时间'}"
+              style="margin-top: 10px;margin-bottom: 0;"
+            >
+              <a-range-picker
+                v-model="validTimeForm.time"
+                :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                :placeholder="['开始时间', '结束时间']"
+                valueFormat="YYYY-MM-DD HH:mm:ss"
+                style="width: 100%;"
+              />
+            </a-form-model-item>
+            <div style="color: #00000072;">
+              到达设定时间将自动生效和失效，生效期间则在APP显示
+            </div>
+          </template>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </page-header-view>
 </template>
 
@@ -124,6 +156,7 @@
 import moment from 'moment'
 import { mapGetters } from 'vuex'
 import { AdvancedForm, STable } from '@/components'
+import { validAForm } from '@/utils/util'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { getProjectList } from '@/api/userManage/business'
 import { getList, delSpecial } from '@/api/operatingCenter/special'
@@ -139,13 +172,28 @@ export default {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
+      labelCol: { lg: { span: 5 }, sm: { span: 5 } },
+      wrapperCol: { lg: { span: 16 }, sm: { span: 16 } },
       statusOptions: [
         { value: '1', text: '未开始' },
         { value: '2', text: '进行中' },
         { value: '3', text: '已结束' }
       ],
+      selectedRowKeys: [],
+      selectedRows: [],
+      projectOptions: [],
       icon: h => (
         <a-icon theme="filled" type="close-circle" style="color: red" />
+      ),
+      warningIcon: h => (
+        <a-icon
+          type="exclamation-circle"
+          style="color: #faad14"
+          theme="filled"
+        />
+      ),
+      infoIcon: h => (
+        <a-icon type="info-circle" style="color: #1890ff" theme="filled" />
       ),
       // 查询参数
       queryParam: {},
@@ -202,13 +250,13 @@ export default {
             return (
               <div>
                 浏览量
-              <a-tooltip>
-                <template slot="title">一个用户仅算一次</template>
-                <a-icon
-                  type="info-circle"
-                  style="color: #797979;margin-top: 3px;margin-left: 3px;"
-                />
-              </a-tooltip>
+                <a-tooltip>
+                  <template slot="title">一个用户仅算一次</template>
+                  <a-icon
+                    type="info-circle"
+                    style="color: #797979;margin-top: 3px;margin-left: 3px;"
+                  />
+                </a-tooltip>
               </div>
             )
           }
@@ -223,11 +271,28 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return getList(Object.assign(parameter, this.queryParam))
+      },
+      validTimeVisible: false,
+      validTimeForm: {
+        is_open: '1',
+        time: []
       }
     }
   },
   computed: {
-    ...mapGetters(['projectId', 'isParentProject'])
+    ...mapGetters(['projectId', 'isParentProject']),
+    validTimeTitle () {
+      return `批量修改有效时间（${this.selectedRowKeys.length}）`
+    },
+    selectSpecialName () {
+      return this.selectedRows.map(obj => obj.name).join('、')
+    },
+    rowSelection () {
+      return {
+        selectedRowKeys: this.selectedRowKeys,
+        onChange: this.onSelectChange
+      }
+    }
   },
   created () {
     this.isParentProject && this.getProjectList()
@@ -248,56 +313,107 @@ export default {
     },
     batchOperation (key) {
       if (this.selectedRowKeys.length) {
-        this[key](this.selectedRowKeys)
+        this[key](this.selectedRows)
       } else {
         this.$message.warning('请选择后再进行操作')
       }
     },
-    openShopPower () {
-      if (this.selectedRowKeys.length) {
-        this.powerForm.power = []
-        this.permissionVisible = true
-      } else {
-        this.$message.warning('请选择后再进行操作')
+    openEditValidTime () {
+      this.validTimeForm = {
+        is_open: '1',
+        time: []
       }
+      this.validTimeVisible = true
     },
-    // 批量删除
-    batchRemove (value) {
-      if (value.length >= 1) {
-        const status = value.some(record => {
-          return record.coupon_status !== '2'
-        })
-        if (status) {
-          this.$message.warning('已选择的项中包含不可操作')
-          return
-        }
+    setValidTime () {
+      validAForm(this.$refs.validTimeForm).then(async () => {
+
+      })
+    },
+    batchFinish (value) {
+      const status = value.some(record => {
+        return record.coupon_status !== '2'
+      })
+      if (status) {
+        this.$message.warning('已选择的项中包含不可操作')
+        return
       }
+      this.handleFinish(value)
+    },
+    handleFinish (data) {
       const that = this
+      const isOnlyOne = data.length === 1
+      const content = isOnlyOne
+        ? `确定结束专题"${data[0].name}"吗？`
+        : `确定结束${data.length}个专题吗？`
       this.$confirm({
-        title: '删除专题',
-        content: `确定删除专题${this.selectedRowKeys.length}个商家吗？`,
-        icon: () => (
-          <a-icon
-            type="exclamation-circle"
-            style="color: #faad14"
-            theme="filled"
-          />
-        ),
-        cancelText: '取消',
-        okText: '确定',
+        title: '结束专题',
+        content,
+        icon: this.warningIcon,
         onOk () {
-          that.handleRemove(that.selectedRowKeys.join(','))
+          that.finishSpecial(that.selectedRowKeys.join(','))
         },
         onCancel () {}
       })
     },
-    handleRemove ({ id }) {
-      delSpecial({
+    async finishSpecial (id) {
+      const { success } = await delSpecial({
         special_id: id
-      }).then(({ data }) => {
-        this.$message.success('删除专题成功')
-        this.$refs.table.refresh()
       })
+      if (success) {
+        this.$message.success('操作成功')
+        this.refresh()
+      }
+    },
+    // 批量删除
+    batchRemove (value) {
+      const status = value.some(record => {
+        return record.coupon_status !== '2'
+      })
+      if (status) {
+        this.$message.warning('已选择的项中包含不可操作')
+        return
+      }
+      this.handleRemove(value)
+    },
+    handleRemove (data) {
+      const that = this
+      const isOnlyOne = data.length === 1
+      const oneContent = `确定删除专题"${data[0].name}"吗？`
+      const mulContent = () => (
+        <div>
+          <span style="color: #f5222d;">相关专题信息都会被删除</span>
+          ，确定删除{data.length}个专题吗？
+        </div>
+      )
+      this.$confirm({
+        title: '删除专题',
+        content: isOnlyOne ? oneContent : mulContent,
+        icon: this.warningIcon,
+        onOk () {
+          that.handleFinish(that.selectedRowKeys.join(','))
+        },
+        onCancel () {}
+      })
+    },
+    async delSpecial (id) {
+      const { success, message } = await delSpecial({
+        special_id: id
+      })
+      if (success) {
+        this.$message.success('操作成功')
+        this.refresh()
+      } else {
+        this.$info({
+          title: '无法删除活动',
+          content: message,
+          icon: this.infoIcon
+        })
+      }
+    },
+    onSelectChange (selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     goEdit ({ id }) {
       this.$router.push({

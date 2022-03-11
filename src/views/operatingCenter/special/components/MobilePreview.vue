@@ -1,18 +1,20 @@
 <template>
   <div class="mobile-container">
-    <div class="mobile-nav-bar">{{ data.zzzzz || "少时诵诗书" }}</div>
+    <div class="mobile-nav-bar">{{ data.title }}</div>
     <div class="mobile-content">
       <div
         v-for="(item, index) in data.list"
         :key="index"
         class="mobile-image-box"
       >
-        <img
-          v-for="(img, i) in item.list"
-          :key="`img${i}`"
-          :src="img.url"
-          class="mobile-image"
-        />
+        <template v-for="(imgData, i) in item.list">
+          <img
+            v-if="isImageUrlString ? imgData.url : imgData.url[0]"
+            :key="`img${i}`"
+            :src="isImageUrlString ? imgData.url : imgData.url[0]"
+            class="mobile-image"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -25,6 +27,15 @@ export default {
     data: {
       type: Object,
       default: () => ({})
+    },
+    imageUrlType: {
+      type: String,
+      default: 'string'
+    }
+  },
+  computed: {
+    isImageUrlString () {
+      return this.imageUrlType === 'string'
     }
   },
   methods: {
@@ -49,13 +60,16 @@ export default {
     text-align: center;
   }
   .mobile-content {
+    width: 375px;
     height: calc(100% - 44px);
-    overflow: auto;
+    overflow-y: auto;
   }
   .mobile-image-box {
     display: flex;
     .mobile-image {
       flex: 1;
+      width: 0;
+      object-fit: cover;
     }
   }
 }

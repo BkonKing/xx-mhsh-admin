@@ -130,3 +130,15 @@ export function debounce (fn, delay = 500) {
     }, delay)
   }
 }
+
+export function sort (data, key) {
+  return data.sort((current, last) => {
+    if (!current[key] || parseInt(current[key]) < parseInt(last[key])) {
+      return 1
+    } else if (!last[key] || parseInt(current[key]) > parseInt(last[key])) {
+      return -1
+    } else {
+      return 0
+    }
+  })
+}

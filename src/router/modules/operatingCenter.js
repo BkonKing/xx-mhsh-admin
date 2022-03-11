@@ -21,6 +21,41 @@ export default {
       redirect: '/operatingCenter/activity/integral',
       children: [
         {
+          path: '/operatingCenter/special/list',
+          name: 'specialList',
+          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/list'),
+          meta: {
+            title: '专题管理'
+          }
+        },
+        {
+          path: '/operatingCenter/special/list2',
+          name: 'specialList2',
+          component: RouteView,
+          meta: {
+            title: '专题管理'
+          },
+          redirect: '/operatingCenter/special/list',
+          children: [
+            {
+              path: '/operatingCenter/special/detail',
+              name: 'specialDetail',
+              component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/detail'),
+              meta: {
+                title: '专题详情'
+              }
+            },
+            {
+              path: '/operatingCenter/special/edit',
+              name: 'specialEdit',
+              component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/edit'),
+              meta: {
+                title: '编辑专题'
+              }
+            }
+          ]
+        },
+        {
           path: '/operatingCenter/activity/integral', // 完整地址
           name: 'integralActivity',
           component: () => import('@/views/operatingCenter/activity/integral'),
@@ -42,41 +77,6 @@ export default {
           component: () => import('@/views/operatingCenter/activity/invite/setting'),
           meta: {
             title: '邀请设置'
-          }
-        }
-      ]
-    },
-    {
-      path: '/operatingCenter/special',
-      name: 'special',
-      component: RouteView,
-      meta: {
-        title: '专题管理'
-      },
-      redirect: '/operatingCenter/special/list',
-      children: [
-        {
-          path: '/operatingCenter/special/list',
-          name: 'specialList',
-          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/list'),
-          meta: {
-            title: '专题管理'
-          }
-        },
-        {
-          path: '/operatingCenter/special/detail',
-          name: 'specialDetail',
-          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/detail'),
-          meta: {
-            title: '专题详情'
-          }
-        },
-        {
-          path: '/operatingCenter/special/edit',
-          name: 'specialEdit',
-          component: () => import(/* webpackChunkName: "special" */ '@/views/operatingCenter/special/edit'),
-          meta: {
-            title: '编辑专题'
           }
         }
       ]

@@ -1,14 +1,13 @@
 <template>
   <a-card title="专题图片" style="margin-top: 24px" :bordered="false">
+    <div style="margin-bottom: 24px">
+      行与行自动上下拼接；列最多三个图片自动左右拼接；支持扩展名：.png .jpg；
+    </div>
     <a-row type="flex" :gutter="20">
-      <a-col flex="377px">
-        <mobile-preview :data="tableData"></mobile-preview>
+      <a-col flex="397px">
+        <mobile-preview :data="previewData" image-url-type="array"></mobile-preview>
       </a-col>
       <a-col flex="1">
-        <div>
-          行与行自动上下拼接；列最多三个图片自动左右拼接；支持扩展名：.png
-          .jpg；
-        </div>
         <a-table
           ref="table"
           size="default"
@@ -16,7 +15,7 @@
           :columns="tableColumns"
           :dataSource="tableData"
           :pagination="false"
-          style="margin-top: 24px"
+          :scroll="{ y: 687 }"
         >
           <template slot="column1" slot-scope="text, record">
             <cform
@@ -43,6 +42,7 @@
             <a-input
               v-model="record.list_order"
               v-number-input.int
+              :maxLength="5"
               @blur="changeSort"
             ></a-input>
           </template>
@@ -69,6 +69,12 @@ export default {
   components: {
     cform,
     MobilePreview
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
@@ -100,7 +106,7 @@ export default {
           title: '排序',
           dataIndex: 'list_order',
           align: 'center',
-          width: 100,
+          width: 80,
           scopedSlots: { customRender: 'list_order' }
         },
         {
@@ -114,6 +120,14 @@ export default {
       tableData: [],
       goodsOptions: [],
       specialOptions: []
+    }
+  },
+  computed: {
+    previewData () {
+      return {
+        title: this.title,
+        list: this.tableData
+      }
     }
   },
   created () {
@@ -137,7 +151,7 @@ export default {
       const obj = {
         id: '',
         type: undefined,
-        pic_url: []
+        url: []
       }
       this.tableData.push({
         list: [clonedeep(obj), clonedeep(obj), clonedeep(obj)],
@@ -145,19 +159,6 @@ export default {
         id: Math.random()
       })
     },
-    // setFormData () {
-    //   const data = this.tableData[this.tableData.length - 1]
-    //   const obj = {
-    //     id: '',
-    //     type: undefined,
-    //     pic_url: []
-    //   }
-    //   this.$set(data, 'list', [])
-    //   const list = this.tableData[this.tableData.length - 1].list
-    //   for (let index = 0; index < 3; index++) {
-    //     this.$set(list, index, obj)
-    //   }
-    // },
     // 排序失去焦点重新排序
     changeSort () {
       this.tableData = sort(this.tableData, 'list_order')

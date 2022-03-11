@@ -1,42 +1,58 @@
 <template>
   <div class="c-form">
-    <a-row type="flex">
-      <a-col flex="90px">
-        <a-select
-          v-model="val.type"
-          placeholder="跳转至"
-          @change="handleTypeChange"
-          style="width: 90px;"
-        >
-          <a-select-option :value="1">
-            商品
-          </a-select-option>
-          <a-select-option :value="2">
-            专题
-          </a-select-option>
-        </a-select></a-col
+    <div style="margin-bottom: 10px">
+      <a-select
+        v-model="val.type"
+        placeholder="点击后"
+        @change="handleTypeChange"
+        style="width: 100%;"
       >
-      <a-col flex="1" style="width: 0;">
-        <a-select
-          v-model="val.id"
-          show-search
-          option-filter-prop="children"
-          :allowClear="true"
-          :showArrow="false"
-          :dropdownMatchSelectWidth="false"
-          :filter-option="filterOption"
-          style="width: 100%"
-        >
-          <a-select-option
-            v-for="item in options"
-            :key="item.value"
-            :value="item.value"
-            >{{ item.label}}</a-select-option
-          >
-        </a-select>
-      </a-col>
-    </a-row>
-    <upload-image v-model="val.pic_url" maxLength="1"></upload-image>
+        <a-select-option :value="0">
+          无
+        </a-select-option>
+        <a-select-option :value="1">
+          跳转至商品
+        </a-select-option>
+        <a-select-option :value="2">
+          跳转至链接
+        </a-select-option>
+        <a-select-option :value="3">
+          触发功能
+        </a-select-option>
+      </a-select>
+    </div>
+    <a-select
+      v-if="val.type === 1"
+      v-model="val.id"
+      show-search
+      option-filter-prop="children"
+      :allowClear="true"
+      :showArrow="false"
+      :dropdownMatchSelectWidth="false"
+      :filter-option="filterOption"
+      placeholder="搜索商品ID/名称"
+      style="width: 100%"
+    >
+      <a-select-option
+        v-for="item in options"
+        :key="item.value"
+        :value="item.value"
+        >{{ item.label }}</a-select-option
+      >
+    </a-select>
+    <a-select
+      v-else-if="val.type === 3"
+      v-model="val.ddddd"
+      :options="featureOptions"
+      placeholder="请选择"
+      style="width: 100%"
+    >
+    </a-select>
+    <a-input
+      v-else
+      v-model="val.ccccc"
+    ></a-input>
+    <upload-image v-model="val.url" maxLength="1"></upload-image>
   </div>
 </template>
 
@@ -64,7 +80,13 @@ export default {
   },
   data () {
     return {
-      val: this.value
+      val: this.value,
+      featureOptions: [
+        {
+          label: '签到',
+          value: '1'
+        }
+      ]
     }
   },
   computed: {
@@ -127,7 +149,12 @@ export default {
 }
 /deep/ .ant-upload-list-picture-card-container,
 /deep/ .ant-upload.ant-upload-select-picture-card {
-  height: 160px !important;
+  width: 100%;
+  height: 110px !important;
   margin-top: 10px;
+}
+/deep/ .ant-upload-list-item-uploading-text {
+  margin-top: 32px;
+  text-align: center;
 }
 </style>

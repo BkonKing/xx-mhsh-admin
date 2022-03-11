@@ -15,7 +15,7 @@
             :maxLength="25"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item required prop="is_open" label="是否开启">
+        <a-form-model-item required prop="is_open" label="有效时间">
           <a-radio-group
             v-model="form.is_open"
             @change="$refs.BasicForm.validateField('time')"
@@ -30,7 +30,7 @@
             >
               <a-range-picker
                 v-model="form.time"
-                :show-time="{ defaultValue: [defaultTime, defaultTime] }"
+                :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
                 :placeholder="['开始时间', '结束时间']"
                 valueFormat="YYYY-MM-DD HH:mm:ss"
                 style="width: 100%;"
@@ -44,14 +44,59 @@
         <a-form-model-item label="内容形式">
           <a-radio-group v-model="form.type" :options="contRadioGroup" />
         </a-form-model-item>
-        <a-form-model-item label="微信分享链接">
-          <a-input
-            v-model="form.wx_sharelink"
-            placeholder="标题"
-            prefix="标题"
-            :maxLength="50"
-          ></a-input>
-          <a-form-model-item style="margin-top: 10px;">
+        <a-form-model-item label="专题图" required>
+          <div>支持扩展名：.png .jpg；</div>
+          <a-row type="flex" :gutter="20">
+            <a-col flex="1">
+              <a-form-model-item prop="bbbbb" style="margin-bottom: 0;">
+                <upload-image
+                  v-model="form.bbbbb"
+                  maxLength="1"
+                  class="introduction-upload"
+                ></upload-image>
+              </a-form-model-item>
+              <div class="upload-image-alert">
+                <div>封面图</div>
+                <div>(尺寸750*600)</div>
+              </div>
+            </a-col>
+            <a-col flex="1">
+              <a-form-model-item prop="aaaaa" style="margin-bottom: 0;">
+                <upload-image
+                  v-model="form.aaaaa"
+                  maxLength="1"
+                  class="introduction-upload"
+                ></upload-image>
+              </a-form-model-item>
+              <div class="upload-image-alert">
+                <div>背景图</div>
+                <div>(尺寸750*600)</div>
+              </div>
+            </a-col>
+          </a-row>
+        </a-form-model-item>
+        <a-form-model-item
+          label="微信分享链接"
+          required
+          style="margin-bottom: 0;"
+        >
+          <a-form-model-item required prop="ccccc" style="margin-bottom: 24px;">
+            <a-input
+              v-model="form.ccccc"
+              placeholder="请输入"
+              prefix="标题"
+              :maxLength="50"
+            ></a-input>
+          </a-form-model-item>
+          <a-form-model-item required prop="ddddd">
+            <a-input
+              v-model="form.ddddd"
+              placeholder="请输入"
+              prefix="内容"
+              :maxLength="50"
+            ></a-input>
+          </a-form-model-item>
+          <a-form-model-item style="margin-bottom: 0;">
             <upload-image
               v-model="form.wx_sharepic"
               maxLength="1"
@@ -63,7 +108,7 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <special-images ref="special-images"></special-images>
+    <special-images ref="special-images" :title="form.title"></special-images>
     <div style="height: 80px;"></div>
     <footer-tool-bar style="width: 100%;">
       <a-button @click="$router.go(-1)" style="margin-right: 15px;">
@@ -82,6 +127,7 @@ import PageHeaderView from '@/layouts/PageHeaderView'
 import FooterToolBar from '@/components/FooterToolbar'
 import { /* STable, */ UploadImage } from '@/components'
 import SpecialImages from './components/SpecialImages'
+import { validAForm } from '@/utils/util'
 import { addSpecial, getSpecialById } from '@/api/operatingCenter/special'
 
 export default {
@@ -104,6 +150,7 @@ export default {
     return {
       specialId: '',
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
+      defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       loading: false,
       labelCol: { lg: { span: 7 }, sm: { span: 7 } },
       wrapperCol: { lg: { span: 10 }, sm: { span: 10 } },
@@ -116,6 +163,10 @@ export default {
       },
       rules: {
         title: [{ required: true, message: '请输入专题名称' }],
+        bbbbb: [{ required: true, message: '请上传封面图' }],
+        aaaaa: [{ required: true, message: '请上传背景图' }],
+        ccccc: [{ required: true, message: '请输入标题' }],
+        ddddd: [{ required: true, message: '请输入内容' }],
         time: [
           {
             validator: validateTime
@@ -195,34 +246,13 @@ export default {
       })
     },
     handleSubmit () {
-      Promise.all([this.formValidate('BasicForm')]).then(() => {
-        this.addSpecial({
+      console.log(this.formatImageData())
+      validAForm(this.$refs.BasicForm).then(() => {
+        this.saveSpecial({
           ...this.form,
           list: this.formatImageData()
         })
       })
-    },
-    // 专题商品列表数据格式化
-    formatGoodsData () {
-      return this.$refs['special-goods'].tableData
-        .filter(obj => {
-          return (
-            obj.combination_content || obj.combination_pic[0] || obj.list.length
-          )
-        })
-        .map(obj => {
-          return {
-            combination_content: obj.combination_content,
-            combination_pic: obj.combination_pic[0] || '',
-            combination_type: 1,
-            list_order: obj.list_order,
-            list: obj.list.map(goods => ({
-              goods_id: goods.goods_id,
-              is_open: goods.is_open,
-              list_order: goods.list_order
-            }))
-          }
-        })
     },
     // 图片专题数据格式化
     formatImageData () {
@@ -232,13 +262,13 @@ export default {
           list: obj.list.map(image => ({
             id: image.id,
             type: image.type,
-            pic_url: image.pic_url[0]
+            pic_url: image.url[0]
           }))
         }
       })
     },
     // 新增/修改专题
-    addSpecial (params) {
+    saveSpecial (params) {
       const { time } = params
       if (time && time.length) {
         params.stime = time[0]
@@ -265,6 +295,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-form-item-control,
+/deep/ .ant-form-item-label {
+  line-height: 32px;
+}
+/deep/ .ant-upload-list-item-uploading-text {
+  text-align: center;
+}
 /deep/ .ant-table-thead > tr > th {
   padding: 12px 8px;
 }
@@ -273,10 +310,19 @@ export default {
   vertical-align: top;
   line-height: 32px;
 }
+/deep/ .ant-input-affix-wrapper .ant-input:not(:first-child) {
+  padding-left: 50px;
+}
 .introduction-upload /deep/ .ant-upload-list-picture-card-container,
 .introduction-upload /deep/ .ant-upload.ant-upload-select-picture-card {
   width: 100%;
-  height: 190px;
-  margin-bottom: 0;
+  height: 126px;
+  margin-bottom: 8px;
+}
+.upload-image-alert {
+  margin-top: -11px;
+  color: #00000072;
+  text-align: center;
+  line-height: 18px;
 }
 </style>

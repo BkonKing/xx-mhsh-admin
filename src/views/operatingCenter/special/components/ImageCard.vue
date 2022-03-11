@@ -42,8 +42,9 @@ export default {
     margin: 0;
   }
   /deep/ img {
-    width: 100%;
-    max-height: 180px;
+    width: 100% !important;
+    height: initial !important;
+    max-height: 120px;
   }
 }
 .image-card {

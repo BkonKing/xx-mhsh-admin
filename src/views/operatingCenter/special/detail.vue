@@ -66,18 +66,18 @@
         <a-col flex="72px">专区图：</a-col>
         <a-col>
           <a-row type="flex">
-            <a-col>
+            <a-col style="text-align: center;">
               <t-image
-                v-if="info.topic_url"
-                :images="[info.topic_url]"
+                v-if="info.ddddd"
+                :images="[info.ddddd]"
                 class="topic-image"
               ></t-image>
               <div>封面图</div>
             </a-col>
-            <a-col>
+            <a-col style="text-align: center;">
               <t-image
-                v-if="info.topic_url"
-                :images="[info.topic_url]"
+                v-if="info.eeeee"
+                :images="[info.eeeee]"
                 class="topic-image"
               ></t-image>
               <div>背景图</div>
@@ -91,9 +91,8 @@
           <div>{{ info.bbbbb }}</div>
           <div>{{ info.ccccc }}</div>
           <t-image
-            v-if="info.topic_url"
-            :images="[info.topic_url]"
-            class="topic-image"
+            v-if="info.fffff"
+            :images="[info.fffff]"
           ></t-image>
         </a-col>
       </a-row>
@@ -101,7 +100,7 @@
 
     <a-card title="专题图片" style="margin-top: 24px" :bordered="false">
       <a-row type="flex" :gutter="20">
-        <a-col flex="377px">
+        <a-col flex="397px">
           <mobile-preview :data="info"></mobile-preview>
         </a-col>
         <a-col flex="1">
@@ -113,6 +112,7 @@
             :columns="imgColumns"
             :dataSource="info.list"
             :pagination="false"
+            :scroll="{ y: 615 }"
           >
             <template slot="column1" slot-scope="text, record">
               <image-card :data="record.list[0]"></image-card>
@@ -149,9 +149,44 @@ export default {
     return {
       id: '',
       info: {
+        bbbbb: '33333333333',
+        ccccc: '22222222222222',
+        ddddd: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190',
+        eeeee: 'https://img95.699pic.com/photo/40186/5971.jpg_wh300.jpg!/both/282x190',
+        fffff: 'https://img95.699pic.com/photo/40186/5968.jpg_wh300.jpg!/both/282x190',
         list: [
           {
             id: '123',
+            list: [
+              {
+                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                type: 1,
+                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+              }
+            ]
+          },
+          {
+            id: '1234',
+            list: [
+              {
+                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                type: 1,
+                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+              }
+            ]
+          },
+          {
+            id: '1233',
+            list: [
+              {
+                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                type: 1,
+                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+              }
+            ]
+          },
+          {
+            id: '12334',
             list: [
               {
                 name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
@@ -268,5 +303,11 @@ export default {
   .ant-pro-page-header-wrap-extraContent {
     position: initial;
   }
+}
+/deep/ .ant-pro-page-header-wrap-children-content {
+  padding-bottom: 24px;
+}
+.topic-image /deep/ img{
+  width: 220px !important;
 }
 </style>
