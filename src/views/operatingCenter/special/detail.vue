@@ -3,22 +3,22 @@
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="ID">
-          {{ info.content_desc }}
+          {{ info.id }}
         </a-descriptions-item>
         <a-descriptions-item label="关联专区">
           <a>{{ info.aaa }}</a>
         </a-descriptions-item>
         <a-descriptions-item label="所属项目">
-          {{ info.content_desc }}
+          {{ info.project_name }}
         </a-descriptions-item>
         <a-descriptions-item label="有效时间">
-          {{ info.stime ? `${info.stime} ~ ${info.etime}` : "--" }}
+          {{ info.limit_time || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="内容形式">
-          {{ info.content_desc }}
+          {{ info.content_type_name }}
         </a-descriptions-item>
         <a-descriptions-item label="创建时间">
-          {{ info.companyName }}
+          {{ info.ctime }}
         </a-descriptions-item>
       </a-descriptions>
     </template>
@@ -43,7 +43,7 @@
       <div class="status-list">
         <div>
           <div class="text">状态</div>
-          <div class="heading">{{ info.is_open }}</div>
+          <div class="heading">{{ info.state_name }}</div>
         </div>
         <div>
           <div class="text">商品</div>
@@ -51,7 +51,7 @@
         </div>
         <div>
           <div class="text">浏览量</div>
-          <div class="heading">{{ info.visit_num }}</div>
+          <div class="heading">{{ info.browse_num }}</div>
         </div>
       </div>
     </template>
@@ -68,16 +68,16 @@
           <a-row type="flex">
             <a-col style="text-align: center;">
               <t-image
-                v-if="info.ddddd"
-                :images="[info.ddddd]"
+                v-if="info.thumb"
+                :images="[info.thumb]"
                 class="topic-image"
               ></t-image>
               <div>封面图</div>
             </a-col>
             <a-col style="text-align: center;">
               <t-image
-                v-if="info.eeeee"
-                :images="[info.eeeee]"
+                v-if="info.bj_thumb"
+                :images="[info.bj_thumb]"
                 class="topic-image"
               ></t-image>
               <div>背景图</div>
@@ -88,11 +88,11 @@
       <a-row type="flex">
         <a-col flex="72px">微信分享：</a-col>
         <a-col>
-          <div>{{ info.bbbbb }}</div>
-          <div>{{ info.ccccc }}</div>
+          <div>{{ info.wechat_title }}</div>
+          <div>{{ info.wechat_content }}</div>
           <t-image
-            v-if="info.fffff"
-            :images="[info.fffff]"
+            v-if="info.wechat_img"
+            :images="[info.wechat_img]"
           ></t-image>
         </a-col>
       </a-row>
@@ -110,7 +110,7 @@
             rowKey="id"
             class="special-image-table"
             :columns="imgColumns"
-            :dataSource="info.list"
+            :dataSource="info.child"
             :pagination="false"
             :scroll="{ y: 615 }"
           >
@@ -135,7 +135,7 @@ import { TImage } from '@/components'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import ImageCard from './components/ImageCard'
 import MobilePreview from './components/MobilePreview'
-import { getSpecialById } from '@/api/operatingCenter/special'
+import { getSpecialDetail } from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialDetail',
@@ -149,19 +149,19 @@ export default {
     return {
       id: '',
       info: {
-        bbbbb: '33333333333',
-        ccccc: '22222222222222',
-        ddddd: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190',
-        eeeee: 'https://img95.699pic.com/photo/40186/5971.jpg_wh300.jpg!/both/282x190',
-        fffff: 'https://img95.699pic.com/photo/40186/5968.jpg_wh300.jpg!/both/282x190',
-        list: [
+        wechat_title: '33333333333',
+        wechat_content: '22222222222222',
+        thumb: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190',
+        bj_thumb: 'https://img95.699pic.com/photo/40186/5971.jpg_wh300.jpg!/both/282x190',
+        wechat_img: 'https://img95.699pic.com/photo/40186/5968.jpg_wh300.jpg!/both/282x190',
+        child: [
           {
             id: '123',
             list: [
               {
-                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                type: 1,
-                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                block_type: 1,
+                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
               }
             ]
           },
@@ -169,9 +169,9 @@ export default {
             id: '1234',
             list: [
               {
-                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                type: 1,
-                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                block_type: 1,
+                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
               }
             ]
           },
@@ -179,9 +179,9 @@ export default {
             id: '1233',
             list: [
               {
-                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                type: 1,
-                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
+                block_type: 1,
+                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
               }
             ]
           },
@@ -190,8 +190,8 @@ export default {
             list: [
               {
                 name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                type: 1,
-                url: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
+                block_type: 1,
+                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
               }
             ]
           }
@@ -235,12 +235,12 @@ export default {
   },
   created () {
     this.id = this.$route.query.id
-    // this.getSpecialById()
+    // this.getSpecialDetail()
   },
   methods: {
-    getSpecialById () {
-      getSpecialById({
-        special_id: this.id
+    getSpecialDetail () {
+      getSpecialDetail({
+        thematic_id: this.id
       }).then(({ data }) => {
         this.info = data || {}
       })

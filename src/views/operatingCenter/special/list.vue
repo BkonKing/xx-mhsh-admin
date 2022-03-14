@@ -6,7 +6,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="专题状态">
-                <a-select v-model="queryParam.isOpen" placeholder="请选择">
+                <a-select v-model="queryParam.state" placeholder="请选择">
                   <a-select-option
                     v-for="option in statusOptions"
                     :value="option.value"
@@ -20,7 +20,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="专题名称">
                 <a-input
-                  v-model="queryParam.specialSearch"
+                  v-model="queryParam.thematic_text"
                   placeholder="ID、名称"
                 ></a-input>
               </a-form-item>
@@ -28,7 +28,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="商品">
                 <a-input
-                  v-model="queryParam.goodsSearch"
+                  v-model="queryParam.goods_text"
                   placeholder="编号、名称"
                 ></a-input>
               </a-form-item>
@@ -101,8 +101,12 @@
           <template>
             <a @click="goDetail(record)">查看</a>
             <a @click="goEdit(record)">编辑</a>
-            <a @click="handleFinish([record])">结束</a>
-            <a @click="handleRemove([record])">删除</a>
+            <a v-if="+record.state1 === 1" @click="handleFinish([record])"
+              >结束</a
+            >
+            <a v-if="+record.state1 === 3" @click="handleRemove([record])"
+              >删除</a
+            >
           </template>
         </span>
       </s-table>
@@ -131,7 +135,7 @@
           <template v-if="+validTimeForm.is_open === 1">
             <a-form-model-item
               prop="time"
-              :rules="{required: true, message: '请选择有效时间'}"
+              :rules="{ required: true, message: '请选择有效时间' }"
               style="margin-top: 10px;margin-bottom: 0;"
             >
               <a-range-picker
@@ -154,12 +158,17 @@
 
 <script>
 import moment from 'moment'
+import cloneDeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { AdvancedForm, STable } from '@/components'
 import { validAForm } from '@/utils/util'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import { getProjectList } from '@/api/userManage/business'
-import { getList, delSpecial } from '@/api/operatingCenter/special'
+import {
+  getSpecialList,
+  delSpecial,
+  finishSpecial
+} from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialList',
@@ -175,8 +184,8 @@ export default {
       labelCol: { lg: { span: 5 }, sm: { span: 5 } },
       wrapperCol: { lg: { span: 16 }, sm: { span: 16 } },
       statusOptions: [
-        { value: '1', text: '未开始' },
-        { value: '2', text: '进行中' },
+        { value: '2', text: '未开始' },
+        { value: '1', text: '进行中' },
         { value: '3', text: '已结束' }
       ],
       selectedRowKeys: [],
@@ -204,27 +213,31 @@ export default {
         },
         {
           title: '所属项目',
-          dataIndex: 'title1',
+          dataIndex: 'project_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '专题名称',
-          dataIndex: 'title',
+          dataIndex: 'thematic_name',
           customRender: text => {
             return <div class="two-Multi">{text}</div>
           }
         },
         {
           title: '专题状态',
-          dataIndex: 'open_desc',
+          dataIndex: 'state',
           sorter: true
         },
         {
           title: '有效时间',
           dataIndex: 'stime',
           customRender: (text, row) => {
+            const isLimit = +row.is_limit
+            if (isLimit === 0) {
+              return '不限'
+            }
             const ele = (
               <div>
                 {text ? <div>起 {text}</div> : ''}
@@ -236,7 +249,7 @@ export default {
         },
         {
           title: '展示形式',
-          dataIndex: 'type_desc'
+          dataIndex: 'content_type_name'
         },
         {
           title: '商品',
@@ -244,7 +257,7 @@ export default {
           sorter: true
         },
         {
-          dataIndex: 'visit_num',
+          dataIndex: 'browse_num',
           sorter: true,
           title: () => {
             return (
@@ -270,7 +283,13 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return getList(Object.assign(parameter, this.queryParam))
+        const params = cloneDeep(this.queryParam)
+        const time = params.time
+        if (time && time.length) {
+          params.show_stime = time[0]
+          params.show_etime = time[1]
+        }
+        return getSpecialList(Object.assign(parameter, this.queryParam))
       },
       validTimeVisible: false,
       validTimeForm: {
@@ -326,13 +345,11 @@ export default {
       this.validTimeVisible = true
     },
     setValidTime () {
-      validAForm(this.$refs.validTimeForm).then(async () => {
-
-      })
+      validAForm(this.$refs.validTimeForm).then(async () => {})
     },
     batchFinish (value) {
       const status = value.some(record => {
-        return record.coupon_status !== '2'
+        return +record.state1 !== 1
       })
       if (status) {
         this.$message.warning('已选择的项中包含不可操作')
@@ -351,14 +368,14 @@ export default {
         content,
         icon: this.warningIcon,
         onOk () {
-          that.finishSpecial(that.selectedRowKeys.join(','))
+          that.finishSpecial(that.selectedRowKeys)
         },
         onCancel () {}
       })
     },
     async finishSpecial (id) {
-      const { success } = await delSpecial({
-        special_id: id
+      const { success } = await finishSpecial({
+        thematic_id_data: id
       })
       if (success) {
         this.$message.success('操作成功')
@@ -368,7 +385,7 @@ export default {
     // 批量删除
     batchRemove (value) {
       const status = value.some(record => {
-        return record.coupon_status !== '2'
+        return +record.state1 !== 3
       })
       if (status) {
         this.$message.warning('已选择的项中包含不可操作')
@@ -391,22 +408,22 @@ export default {
         content: isOnlyOne ? oneContent : mulContent,
         icon: this.warningIcon,
         onOk () {
-          that.handleFinish(that.selectedRowKeys.join(','))
+          that.handleFinish(that.selectedRowKeys)
         },
         onCancel () {}
       })
     },
     async delSpecial (id) {
-      const { success, message } = await delSpecial({
-        special_id: id
+      const { success, no_num: noNum } = await delSpecial({
+        thematic_id_data: id
       })
       if (success) {
         this.$message.success('操作成功')
         this.refresh()
-      } else {
+      } else if (+noNum > 0) {
         this.$info({
           title: '无法删除活动',
-          content: message,
+          content: noNum,
           icon: this.infoIcon
         })
       }

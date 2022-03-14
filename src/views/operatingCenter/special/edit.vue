@@ -8,22 +8,22 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item required prop="title" label="专题名称">
+        <a-form-model-item required prop="thematic_name" label="专题名称">
           <a-input
-            v-model="form.title"
+            v-model="form.thematic_name"
             placeholder="请输入"
             :maxLength="25"
           ></a-input>
         </a-form-model-item>
-        <a-form-model-item required prop="is_open" label="有效时间">
+        <a-form-model-item required prop="is_limit" label="有效时间">
           <a-radio-group
-            v-model="form.is_open"
+            v-model="form.is_limit"
             @change="$refs.BasicForm.validateField('time')"
           >
             <a-radio value="1">有限</a-radio>
-            <a-radio value="2">不限</a-radio>
+            <a-radio value="0">不限</a-radio>
           </a-radio-group>
-          <template v-if="+form.is_open === 1">
+          <template v-if="+form.is_limit === 1">
             <a-form-model-item
               prop="time"
               style="margin-top: 10px;margin-bottom: 0;"
@@ -42,15 +42,15 @@
           </template>
         </a-form-model-item>
         <a-form-model-item label="内容形式">
-          <a-radio-group v-model="form.type" :options="contRadioGroup" />
+          <a-radio-group :value="1" :options="contRadioGroup" />
         </a-form-model-item>
         <a-form-model-item label="专题图" required>
           <div>支持扩展名：.png .jpg；</div>
           <a-row type="flex" :gutter="20">
             <a-col flex="1">
-              <a-form-model-item prop="bbbbb" style="margin-bottom: 0;">
+              <a-form-model-item prop="thumb" style="margin-bottom: 0;">
                 <upload-image
-                  v-model="form.bbbbb"
+                  v-model="form.thumb"
                   maxLength="1"
                   class="introduction-upload"
                 ></upload-image>
@@ -61,9 +61,9 @@
               </div>
             </a-col>
             <a-col flex="1">
-              <a-form-model-item prop="aaaaa" style="margin-bottom: 0;">
+              <a-form-model-item prop="bj_thumb" style="margin-bottom: 0;">
                 <upload-image
-                  v-model="form.aaaaa"
+                  v-model="form.bj_thumb"
                   maxLength="1"
                   class="introduction-upload"
                 ></upload-image>
@@ -80,17 +80,17 @@
           required
           style="margin-bottom: 0;"
         >
-          <a-form-model-item required prop="ccccc" style="margin-bottom: 24px;">
+          <a-form-model-item required prop="wechat_title" style="margin-bottom: 24px;">
             <a-input
-              v-model="form.ccccc"
+              v-model="form.wechat_title"
               placeholder="请输入"
               prefix="标题"
               :maxLength="50"
             ></a-input>
           </a-form-model-item>
-          <a-form-model-item required prop="ddddd">
+          <a-form-model-item required prop="wechat_content">
             <a-input
-              v-model="form.ddddd"
+              v-model="form.wechat_content"
               placeholder="请输入"
               prefix="内容"
               :maxLength="50"
@@ -98,7 +98,7 @@
           </a-form-model-item>
           <a-form-model-item style="margin-bottom: 0;">
             <upload-image
-              v-model="form.wx_sharepic"
+              v-model="form.wechat_img"
               maxLength="1"
             ></upload-image>
             <div style="margin-top: -11px;color: #00000072;">
@@ -108,7 +108,7 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <special-images ref="special-images" :title="form.title"></special-images>
+    <special-images ref="special-images" :title="form.thematic_name"></special-images>
     <div style="height: 80px;"></div>
     <footer-tool-bar style="width: 100%;">
       <a-button @click="$router.go(-1)" style="margin-right: 15px;">
@@ -128,7 +128,7 @@ import FooterToolBar from '@/components/FooterToolbar'
 import { /* STable, */ UploadImage } from '@/components'
 import SpecialImages from './components/SpecialImages'
 import { validAForm } from '@/utils/util'
-import { addSpecial, getSpecialById } from '@/api/operatingCenter/special'
+import { addSpecial, getSpecialDetail } from '@/api/operatingCenter/special'
 
 export default {
   name: 'SpecialEdit',
@@ -141,7 +141,7 @@ export default {
   },
   data () {
     const validateTime = (rule, value, callback) => {
-      if (this.form.is_open && !value[0]) {
+      if (this.form.is_limit && !value[0]) {
         callback(new Error('请设定开启时间'))
       } else {
         callback()
@@ -155,18 +155,18 @@ export default {
       labelCol: { lg: { span: 7 }, sm: { span: 7 } },
       wrapperCol: { lg: { span: 10 }, sm: { span: 10 } },
       form: {
-        title: '',
-        is_open: '1',
+        thematic_name: '',
+        is_limit: '1',
         time: [],
         type: '1', // 专题类型 1专题商品2 图片专题
         arrange: 1 // 1一行一个 2一行两个
       },
       rules: {
-        title: [{ required: true, message: '请输入专题名称' }],
-        bbbbb: [{ required: true, message: '请上传封面图' }],
-        aaaaa: [{ required: true, message: '请上传背景图' }],
-        ccccc: [{ required: true, message: '请输入标题' }],
-        ddddd: [{ required: true, message: '请输入内容' }],
+        thematic_name: [{ required: true, message: '请输入专题名称' }],
+        thumb: [{ required: true, message: '请上传封面图' }],
+        bj_thumb: [{ required: true, message: '请上传背景图' }],
+        wechat_title: [{ required: true, message: '请输入标题' }],
+        wechat_content: [{ required: true, message: '请输入内容' }],
         time: [
           {
             validator: validateTime
@@ -191,23 +191,23 @@ export default {
     this.specialId = this.$route.query.id
   },
   mounted () {
-    this.specialId && this.getSpecialById()
+    this.specialId && this.getSpecialDetail()
   },
   methods: {
     // 编辑获取专题内容
-    getSpecialById () {
-      getSpecialById({
-        special_id: this.specialId
+    getSpecialDetail () {
+      getSpecialDetail({
+        thematic_id: this.specialId
       }).then(({ data }) => {
         // 基础信息
         this.form = {
-          title: data.title,
-          is_open: data.is_open,
+          thematic_name: data.thematic_name,
+          is_limit: data.is_limit,
           time: [data.stime, data.etime],
           type: data.content_type,
           arrange: data.arrange,
           wx_sharelink: data.wx_sharelink,
-          wx_sharepic: data.wx_sharepic ? [data.wx_sharepic] : []
+          wechat_img: data.wechat_img ? [data.wechat_img] : []
         }
         // 商品专题简介
         this.introForm = {
@@ -246,7 +246,6 @@ export default {
       })
     },
     handleSubmit () {
-      console.log(this.formatImageData())
       validAForm(this.$refs.BasicForm).then(() => {
         this.saveSpecial({
           ...this.form,
@@ -277,12 +276,12 @@ export default {
       if (params.introduction_image) {
         params.introduction_image = params.introduction_image[0] || ''
       }
-      if (params.wx_sharepic) {
-        params.wx_sharepic = params.wx_sharepic[0] || ''
+      if (params.wechat_img) {
+        params.wechat_img = params.wechat_img[0] || ''
       }
       // 操作类型 1添加 2修改
       params.opt_type = this.specialId ? 2 : 1
-      this.specialId && (params.special_id = this.specialId)
+      this.specialId && (params.thematic_id = this.specialId)
       addSpecial(params).then(({ success }) => {
         if (success) {
           this.$message.success('提交成功')
