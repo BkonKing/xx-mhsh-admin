@@ -11,6 +11,7 @@
         <a-form-model-item label="提现项目审核" prop="project_examine_day">
           <a-input-number
             v-model="formData.project_examine_day"
+            :min="1"
             @focus="saveCopyValue('project_examine_day')"
             @blur="setNullValue('project_examine_day')"
           ></a-input-number
@@ -19,6 +20,7 @@
         <a-form-model-item label="提现总部审核" prop="examine_day">
           <a-input-number
             v-model="formData.examine_day"
+            :min="1"
             @focus="saveCopyValue('examine_day')"
             @blur="setNullValue('examine_day')"
           ></a-input-number
@@ -27,6 +29,7 @@
         <a-form-model-item label="提现打款处理" prop="handle_day">
           <a-input-number
             v-model="formData.handle_day"
+            :min="1"
             @focus="saveCopyValue('handle_day')"
             @blur="setNullValue('handle_day')"
           ></a-input-number
@@ -188,7 +191,8 @@ export default {
       this.copyNum = this.formData[key]
     },
     setNullValue (key) {
-      if (!this.formData[key]) {
+      const value = this.formData[key]
+      if (value === '' || value === null) {
         this.formData[key] = this.copyNum
       }
     },

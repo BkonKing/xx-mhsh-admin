@@ -7,9 +7,9 @@ export default // 幸福币
   path: '/credit',
   name: 'credit',
   component: RouteView,
-  redirect: '/credit/withdraw',
+  redirect: '/credit/setting',
   meta: {
-    title: '商家管理'
+    title: '幸福币'
   },
   children: [
     {

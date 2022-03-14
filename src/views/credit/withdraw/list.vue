@@ -10,7 +10,7 @@
           <div class="text">待审核</div>
           <div class="heading">
             {{
-              statisticsData.to_be_reviewed
+              statisticsData.to_be_reviewed && showUnReviewNum
                 ? `￥${statisticsData.to_be_reviewed}`
                 : "--"
             }}
@@ -20,7 +20,7 @@
           <div class="text">待打款</div>
           <div class="heading">
             {{
-              statisticsData.to_be_paid
+              statisticsData.to_be_paid && showUnPayNum
                 ? `￥${statisticsData.to_be_paid}`
                 : "--"
             }}
@@ -29,7 +29,11 @@
         <div>
           <div class="text">已提现</div>
           <div class="heading">
-            {{ statisticsData.paid ? `￥${statisticsData.paid}` : "--" }}
+            {{
+              statisticsData.paid && showPayNum
+                ? `￥${statisticsData.paid}`
+                : "--"
+            }}
           </div>
         </div>
       </div>
@@ -199,7 +203,9 @@
           <a v-if="+record.check_button" @click="openCheck([record.id], 1)"
             >审核</a
           >
-          <a v-if="+record.payment_button && isParentProject" @click="openCheck([record.id], 2)"
+          <a
+            v-if="+record.payment_button && isParentProject"
+            @click="openCheck([record.id], 2)"
             >已打款</a
           >
         </span>
@@ -295,8 +301,12 @@ export default {
           customRender: (text, row) => {
             const { user_type: userType } = row
             if (+userType === 1) {
-              return (<div><div>{text}</div>
-                <div>{row.mobile}</div></div>)
+              return (
+                <div>
+                  <div>{text}</div>
+                  <div>{row.mobile}</div>
+                </div>
+              )
             } else {
               return (
                 <a
@@ -409,6 +419,15 @@ export default {
         { key: '4', tab: '已打款' },
         { key: '5', tab: '已拒绝' }
       ]
+    },
+    showUnReviewNum () {
+      return ['', '1', '2'].includes(this.tabActiveKey)
+    },
+    showUnPayNum () {
+      return ['', '3'].includes(this.tabActiveKey)
+    },
+    showPayNum () {
+      return ['', '4'].includes(this.tabActiveKey)
     }
   },
   created () {
@@ -519,12 +538,8 @@ export default {
     },
     // 取消选择
     cancelSelect (data) {
-      this.selectedRowKeys = this.selectedRowKeys.filter(
-        obj => obj === data
-      )
-      this.selectedRows = this.selectedRows.filter(
-        obj => obj.id === data
-      )
+      this.selectedRowKeys = this.selectedRowKeys.filter(obj => obj === data)
+      this.selectedRows = this.selectedRows.filter(obj => obj.id === data)
     },
     openShopPower () {
       if (this.selectedRowKeys.length) {

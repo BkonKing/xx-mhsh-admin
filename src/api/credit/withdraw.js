@@ -10,7 +10,7 @@ export const withdrawApi = {
   updateCheckCash: '/cash/cash/updateCheckCash',
   updateCheckDesc: '/cash/cash/updateCheckDesc',
   getCashDetail: '/cash/cash/getCashDetail',
-  setPayment: '/cash/cash/Payment',
+  setPayment: '/cash/cash/payment',
   updatePayment: '/cash/cash/unpaidPayment',
   updatePaymentDesc: '/cash/cash/updatePayment',
   getProjectServiceFee: '/cash/cash/getProjectServiceFee'

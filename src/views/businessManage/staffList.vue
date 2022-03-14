@@ -123,7 +123,7 @@
     <staff-form
       v-model="editFormVisible"
       ref="add-form"
-      :project-options="projectOptions"
+      :powers="powers"
       @submit="submitSuccess"
     ></staff-form>
     <a-modal
@@ -145,7 +145,7 @@
             prop="clerk_power_data"
             :rules="{ required: true, message: '请选择权限' }"
             required
-            ><a-checkbox-group v-model="powerForm.clerk_power_data" :options="powerOptions"
+            ><a-checkbox-group v-model="powerForm.clerk_power_data" :options="powers"
           /></a-form-model-item>
           <a-form-model-item label="操作" prop="type" style="margin-bottom: 0;"
             ><a-radio-group v-model="powerForm.type">
@@ -174,7 +174,8 @@ import {
   getShopStaffList,
   getProjectList,
   delShopStaff,
-  setStaffPower
+  setStaffPower,
+  getClerkPrivilege
 } from '@/api/userManage/business'
 import staffForm from './components/staffForm'
 
@@ -297,6 +298,7 @@ export default {
           value: '2'
         }
       ],
+      powers: [],
       editFormVisible: false
     }
   },
@@ -320,11 +322,17 @@ export default {
   methods: {
     initOptions () {
       this.getProjectList()
+      this.getClerkPrivilege()
     },
     // 获取项目列表
     getProjectList () {
       getProjectList().then(({ data }) => {
         this.projectOptions = data || []
+      })
+    },
+    getClerkPrivilege () {
+      getClerkPrivilege().then(({ data }) => {
+        this.powers = data || []
       })
     },
     refreshTable (bool = false) {

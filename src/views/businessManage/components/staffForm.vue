@@ -84,22 +84,16 @@ const initialForm = {
   clerk_name: '',
   clerk_power_data: []
 }
-const powers = [
-  {
-    label: '店铺券管理',
-    value: '1'
-  },
-  {
-    label: '扫码核销券',
-    value: '2'
-  }
-]
 export default {
   name: 'staffForm',
   props: {
     value: {
       type: Boolean,
       default: false
+    },
+    powers: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -234,7 +228,7 @@ export default {
       this.userOptions = []
       this.$refs.form && this.$refs.form.resetFields()
       this.form = clonedeep(initialForm)
-      this.powerOptions = clonedeep(powers)
+      this.powerOptions = clonedeep(this.powers)
     }
   }
 }
