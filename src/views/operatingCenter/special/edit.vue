@@ -42,13 +42,17 @@
           </template>
         </a-form-model-item>
         <a-form-model-item label="内容形式">
-          <a-radio-group :value="1" :options="contRadioGroup" />
+          <a-radio-group value="1" :options="contRadioGroup" />
         </a-form-model-item>
         <a-form-model-item label="专题图" required>
           <div>支持扩展名：.png .jpg；</div>
           <a-row type="flex" :gutter="20">
             <a-col flex="1">
-              <a-form-model-item prop="thumb" style="margin-bottom: 0;">
+              <a-form-model-item
+                class="upload-image-box"
+                prop="thumb"
+                style="margin-bottom: 0;"
+              >
                 <upload-image
                   v-model="form.thumb"
                   maxLength="1"
@@ -61,7 +65,11 @@
               </div>
             </a-col>
             <a-col flex="1">
-              <a-form-model-item prop="bj_thumb" style="margin-bottom: 0;">
+              <a-form-model-item
+                class="upload-image-box"
+                prop="bj_thumb"
+                style="margin-bottom: 0;"
+              >
                 <upload-image
                   v-model="form.bj_thumb"
                   maxLength="1"
@@ -80,7 +88,11 @@
           required
           style="margin-bottom: 0;"
         >
-          <a-form-model-item required prop="wechat_title" style="margin-bottom: 24px;">
+          <a-form-model-item
+            required
+            prop="wechat_title"
+            style="margin-bottom: 24px;"
+          >
             <a-input
               v-model="form.wechat_title"
               placeholder="请输入"
@@ -108,7 +120,10 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <special-images ref="special-images" :title="form.thematic_name"></special-images>
+    <special-images
+      ref="special-images"
+      :title="form.thematic_name"
+    ></special-images>
     <div style="height: 80px;"></div>
     <footer-tool-bar style="width: 100%;">
       <a-button @click="$router.go(-1)" style="margin-right: 15px;">
@@ -158,8 +173,8 @@ export default {
         thematic_name: '',
         is_limit: '1',
         time: [],
-        type: '1', // 专题类型 1专题商品2 图片专题
-        arrange: 1 // 1一行一个 2一行两个
+        thumb: [],
+        bj_thumb: []
       },
       rules: {
         thematic_name: [{ required: true, message: '请输入专题名称' }],
@@ -179,12 +194,7 @@ export default {
           value: '1',
           label: '图片内容'
         }
-      ],
-      introForm: {
-        introduction_title: '',
-        introduction_image: [],
-        introduction_content: ''
-      }
+      ]
     }
   },
   created () {
@@ -204,16 +214,8 @@ export default {
           thematic_name: data.thematic_name,
           is_limit: data.is_limit,
           time: [data.stime, data.etime],
-          type: data.content_type,
-          arrange: data.arrange,
           wx_sharelink: data.wx_sharelink,
           wechat_img: data.wechat_img ? [data.wechat_img] : []
-        }
-        // 商品专题简介
-        this.introForm = {
-          introduction_title: data.topic_title,
-          introduction_image: data.topic_url ? [data.topic_url] : [],
-          introduction_content: data.topic_content
         }
         this.setGoodsList(data)
       })
@@ -221,13 +223,13 @@ export default {
     // 商品列表回填
     setGoodsList (data) {
       this.$nextTick(() => {
-        this.$refs['special-images'].tableData = data.list.map(obj => {
+        this.$refs['special-images'].tableData = data.data.map(obj => {
           return {
-            list_order: obj.list_order,
-            list: obj.list.map(image => ({
-              id: image.jump_id,
-              type: image.jump_type,
-              pic_url: image.image_url ? [image.image_url] : []
+            sort: obj.sort,
+            data: obj.data.map(image => ({
+              id: image.id,
+              block_type: image.block_type,
+              block_img: image.block_img ? [image.block_img] : []
             }))
           }
         })
@@ -249,7 +251,7 @@ export default {
       validAForm(this.$refs.BasicForm).then(() => {
         this.saveSpecial({
           ...this.form,
-          list: this.formatImageData()
+          data: this.formatImageData()
         })
       })
     },
@@ -257,11 +259,11 @@ export default {
     formatImageData () {
       return this.$refs['special-images'].tableData.map(obj => {
         return {
-          list_order: obj.list_order,
-          list: obj.list.map(image => ({
+          sort: obj.sort,
+          data: obj.data.map(image => ({
             id: image.id,
-            type: image.type,
-            pic_url: image.url[0]
+            block_type: image.block_type,
+            block_img: image.block_img[0]
           }))
         }
       })
@@ -273,14 +275,9 @@ export default {
         params.stime = time[0]
         params.etime = time[1]
       }
-      if (params.introduction_image) {
-        params.introduction_image = params.introduction_image[0] || ''
-      }
       if (params.wechat_img) {
         params.wechat_img = params.wechat_img[0] || ''
       }
-      // 操作类型 1添加 2修改
-      params.opt_type = this.specialId ? 2 : 1
       this.specialId && (params.thematic_id = this.specialId)
       addSpecial(params).then(({ success }) => {
         if (success) {
@@ -317,6 +314,11 @@ export default {
   width: 100%;
   height: 126px;
   margin-bottom: 8px;
+}
+.upload-image-box /deep/ .ant-form-explain {
+  margin-top: -14px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 .upload-image-alert {
   margin-top: -11px;

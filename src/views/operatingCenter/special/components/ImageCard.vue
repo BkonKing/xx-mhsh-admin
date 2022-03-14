@@ -1,12 +1,12 @@
 <template>
   <div class="image-card">
     <div v-if="data.name" class="jump-name">
-      {{ data.type | typeName }}：<template v-if="data.type === 1"
+      {{ data.block_type | typeName }}：<template v-if="+data.block_type === 1"
         ><a>{{ data.name }}</a></template
       ><template v-else>{{ data.name }}</template>
     </div>
     <div v-else>--</div>
-    <t-image v-if="data.url" :images="[data.url]" class="special-img" />
+    <t-image v-if="data.block_img" :images="[data.block_img]" class="special-img" />
   </div>
 </template>
 

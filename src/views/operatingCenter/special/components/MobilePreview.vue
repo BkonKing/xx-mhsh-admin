@@ -7,11 +7,11 @@
         :key="index"
         class="mobile-image-box"
       >
-        <template v-for="(imgData, i) in item.list">
+        <template v-for="(imgData, i) in item.data">
           <img
-            v-if="isImageUrlString ? imgData.url : imgData.url[0]"
+            v-if="isImageUrlString ? imgData.block_img : imgData.block_img[0]"
             :key="`img${i}`"
-            :src="isImageUrlString ? imgData.url : imgData.url[0]"
+            :src="isImageUrlString ? imgData.block_img : imgData.block_img[0]"
             class="mobile-image"
           />
         </template>

@@ -2,7 +2,7 @@
   <div class="c-form">
     <div style="margin-bottom: 10px">
       <a-select
-        v-model="val.type"
+        v-model="val.block_type"
         placeholder="点击后"
         @change="handleTypeChange"
         style="width: 100%;"
@@ -22,8 +22,8 @@
       </a-select>
     </div>
     <a-select
-      v-if="val.type === 1"
-      v-model="val.id"
+      v-if="val.block_type === 1"
+      v-model="val.block_content"
       show-search
       option-filter-prop="children"
       :allowClear="true"
@@ -41,8 +41,8 @@
       >
     </a-select>
     <a-select
-      v-else-if="val.type === 3"
-      v-model="val.ddddd"
+      v-else-if="val.block_type === 3"
+      v-model="val.block_content"
       :options="featureOptions"
       placeholder="请选择"
       style="width: 100%"
@@ -50,9 +50,9 @@
     </a-select>
     <a-input
       v-else
-      v-model="val.ccccc"
+      v-model="val.block_content"
     ></a-input>
-    <upload-image v-model="val.url" maxLength="1"></upload-image>
+    <upload-image v-model="val.block_img" maxLength="1"></upload-image>
   </div>
 </template>
 
@@ -91,10 +91,10 @@ export default {
   },
   computed: {
     isGoodsType () {
-      return this.val.type === 1
+      return this.val.block_type === 1
     },
     options () {
-      if (!this.val.type) {
+      if (!this.val.block_type) {
         return []
       }
       return this.isGoodsType ? this.newGoodsOptions : this.newSpecialOptions

@@ -5,7 +5,8 @@ export const specialApi = {
   delSpecial: '/invite/thematic/del_thematic',
   finishSpecial: '/invite/thematic/end_thematic',
   getSpecialDetail: '/invite/thematic/thematic_info',
-  getSpecialList: '/invite/thematic/thematic_list'
+  getSpecialList: '/invite/thematic/thematic_list',
+  searchGoods: '/invite/thematic/searchGoods'
 }
 
 export function addSpecial (data) {
@@ -43,6 +44,14 @@ export function getSpecialDetail (data) {
 export function getSpecialList (data) {
   return request({
     url: specialApi.getSpecialList,
+    method: 'post',
+    data
+  })
+}
+
+export function searchGoods (data) {
+  return request({
+    url: specialApi.searchGoods,
     method: 'post',
     data
   })

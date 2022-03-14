@@ -19,28 +19,28 @@
         >
           <template slot="column1" slot-scope="text, record">
             <cform
-              v-model="record.list[0]"
+              v-model="record.data[0]"
               :goodsOptions="goodsOptions"
               :specialOptions="specialOptions"
             ></cform>
           </template>
           <template slot="column2" slot-scope="text, record">
             <cform
-              v-model="record.list[1]"
+              v-model="record.data[1]"
               :goodsOptions="goodsOptions"
               :specialOptions="specialOptions"
             ></cform>
           </template>
           <template slot="column3" slot-scope="text, record">
             <cform
-              v-model="record.list[2]"
+              v-model="record.data[2]"
               :goodsOptions="goodsOptions"
               :specialOptions="specialOptions"
             ></cform>
           </template>
           <template slot="list_order" slot-scope="text, record">
             <a-input
-              v-model="record.list_order"
+              v-model="record.sort"
               v-number-input.int
               :maxLength="5"
               @blur="changeSort"
@@ -63,7 +63,7 @@ import clonedeep from 'lodash.clonedeep'
 import MobilePreview from './MobilePreview'
 import cform from './cform'
 import { sort } from '@/utils/util'
-import { searchGoods, getAllSpecial } from '@/api/operatingCenter/special'
+import { searchGoods } from '@/api/operatingCenter/special'
 export default {
   name: 'SpecialImages',
   components: {
@@ -104,7 +104,7 @@ export default {
         },
         {
           title: '排序',
-          dataIndex: 'list_order',
+          dataIndex: 'sort',
           align: 'center',
           width: 80,
           scopedSlots: { customRender: 'list_order' }
@@ -132,7 +132,6 @@ export default {
   },
   created () {
     this.searchGoods()
-    this.getAllSpecial()
   },
   methods: {
     // 获取所有的商品
@@ -141,27 +140,21 @@ export default {
         this.goodsOptions = list || []
       })
     },
-    // 获取所有专题
-    getAllSpecial () {
-      getAllSpecial().then(({ list }) => {
-        this.specialOptions = list || []
-      })
-    },
     add () {
       const obj = {
         id: '',
-        type: undefined,
-        url: []
+        block_type: undefined,
+        block_img: []
       }
       this.tableData.push({
-        list: [clonedeep(obj), clonedeep(obj), clonedeep(obj)],
-        list_order: '',
+        data: [clonedeep(obj), clonedeep(obj), clonedeep(obj)],
+        sort: '',
         id: Math.random()
       })
     },
     // 排序失去焦点重新排序
     changeSort () {
-      this.tableData = sort(this.tableData, 'list_order')
+      this.tableData = sort(this.tableData, 'sort')
     },
     remove (index) {
       this.tableData.splice(index, 1)

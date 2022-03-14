@@ -115,13 +115,13 @@
             :scroll="{ y: 615 }"
           >
             <template slot="column1" slot-scope="text, record">
-              <image-card :data="record.list[0]"></image-card>
+              <image-card :data="record.data[0]"></image-card>
             </template>
             <template slot="column2" slot-scope="text, record">
-              <image-card :data="record.list[1]"></image-card>
+              <image-card :data="record.data[1]"></image-card>
             </template>
             <template slot="column3" slot-scope="text, record">
-              <image-card :data="record.list[2]"></image-card>
+              <image-card :data="record.data[2]"></image-card>
             </template>
           </a-table>
         </a-col>
@@ -157,39 +157,9 @@ export default {
         child: [
           {
             id: '123',
-            list: [
+            data: [
               {
                 block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                block_type: 1,
-                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
-              }
-            ]
-          },
-          {
-            id: '1234',
-            list: [
-              {
-                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                block_type: 1,
-                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
-              }
-            ]
-          },
-          {
-            id: '1233',
-            list: [
-              {
-                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                block_type: 1,
-                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
-              }
-            ]
-          },
-          {
-            id: '12334',
-            list: [
-              {
-                name: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
                 block_type: 1,
                 block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
               }
@@ -226,7 +196,7 @@ export default {
         },
         {
           title: '排序',
-          dataIndex: 'list_order',
+          dataIndex: 'sort',
           align: 'center',
           width: 100
         }
