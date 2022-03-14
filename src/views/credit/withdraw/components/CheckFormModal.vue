@@ -29,9 +29,9 @@
         <template v-else>{{ +form.type === 1 ? "通过" : "拒绝" }}</template>
       </a-form-model-item>
       <a-form-model-item
-        :label="isUpdateDesc ? '操作说明' : '审核说明'"
+        :label="isUpdate ? '操作说明' : '审核说明'"
         prop="audit_desc"
-        :rules="{ required: isUpdateDesc, message: '请输入操作说明' }"
+        :rules="{ required: isUpdate, message: '请输入操作说明' }"
       >
         <a-textarea
           v-model="form.audit_desc"
@@ -108,6 +108,9 @@ export default {
     },
     typeNum () {
       return +this.type
+    },
+    isUpdate () {
+      return [2, 3].includes(this.typeNum)
     },
     isUpdateDesc () {
       return this.typeNum === 3

@@ -13,14 +13,14 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <a-form-model-item v-if="typeNum === 2" label="打款结果">
+      <a-form-model-item v-if="isUpdate" label="打款结果">
         <span style="color: red;">未打款</span>
       </a-form-model-item>
-      <a-form-model-item v-if="typeNum === 3" label="打款结果">
+      <a-form-model-item v-if="isUpdateDesc" label="打款结果">
         <span>{{ statusText }}</span>
       </a-form-model-item>
       <a-form-model-item
-        v-if="typeNum !== 2"
+        v-if="!isUpdate"
         label="上传凭证"
         required
         prop="cash_img"
@@ -30,7 +30,11 @@
           大小不超过2MB；支持扩展名：.png .jpg；
         </div>
       </a-form-model-item>
-      <a-form-model-item label="操作说明" prop="payment_desc">
+      <a-form-model-item
+        label="操作说明"
+        prop="payment_desc"
+        :rules="{ required: isUpdate, message: '请输入操作说明' }"
+      >
         <a-textarea
           v-model="form.payment_desc"
           placeholder="请输入"
@@ -44,12 +48,7 @@
       <a-button key="back" @click="handleCancel">
         取消
       </a-button>
-      <a-button
-        key="submit"
-        type="primary"
-        :loading="loading"
-        @click="submit"
-      >
+      <a-button key="submit" type="primary" :loading="loading" @click="submit">
         确认
       </a-button>
     </template>
@@ -123,6 +122,9 @@ export default {
     },
     typeNum () {
       return +this.type
+    },
+    isUpdate () {
+      return this.typeNum === 2
     },
     isUpdateDesc () {
       return this.typeNum === 3
