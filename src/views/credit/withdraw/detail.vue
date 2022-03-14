@@ -13,10 +13,10 @@
             >
           </template>
         </a-descriptions-item>
-        <a-descriptions-item label="店铺名称">
+        <a-descriptions-item v-if="+info.user_type === 2" label="店铺名称">
           {{ info.shops_name || "(暂无名称)" }}
         </a-descriptions-item>
-        <a-descriptions-item label="店铺归属">
+        <a-descriptions-item v-if="+info.user_type === 2" label="店铺归属">
           {{ info.shops_project || "美好生活家园运营中心" }}
         </a-descriptions-item>
       </a-descriptions>
