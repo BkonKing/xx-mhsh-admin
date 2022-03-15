@@ -108,7 +108,7 @@
               :maxLength="50"
             ></a-input>
           </a-form-model-item>
-          <a-form-model-item style="margin-bottom: 0;">
+          <a-form-model-item prop="wechat_img" style="margin-bottom: 0;">
             <upload-image
               v-model="form.wechat_img"
               maxLength="1"
