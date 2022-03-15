@@ -167,7 +167,7 @@ export default {
         }
         const arrivalTime = params.arrivalTime
         if (arrivalTime && arrivalTime.length) {
-          params.arrivalTime = `${arrivalTime[0]}~${arrivalTime[1]}`
+          params.arrival_time = `${arrivalTime[0]}~${arrivalTime[1]}`
         }
         if (!this.isParentProject) {
           params.shops_project = this.projectId
