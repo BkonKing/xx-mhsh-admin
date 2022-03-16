@@ -49,6 +49,14 @@ export default {
       ]
     },
     {
+      path: '/operatingCenter/banner',
+      name: 'Banner',
+      component: () => import('@/views/operatingCenter/banner/list'),
+      meta: {
+        title: '轮播图'
+      }
+    },
+    {
       path: '/operatingCenter/appmessage', // app消息
       name: 'appmessage',
       component: () => import('@/views/operatingCenter/announcement/appmessage/appmessage'),
