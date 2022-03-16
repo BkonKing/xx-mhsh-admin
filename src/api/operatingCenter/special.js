@@ -4,6 +4,7 @@ export const specialApi = {
   addSpecial: '/invite/thematic/edit_thematic',
   delSpecial: '/invite/thematic/del_thematic',
   finishSpecial: '/invite/thematic/end_thematic',
+  editLimitTime: '/invite/thematic/limit_time_thematic',
   getSpecialDetail: '/invite/thematic/thematic_info',
   getSpecialList: '/invite/thematic/thematic_list',
   searchGoods: '/invite/thematic/searchGoods'
@@ -28,6 +29,14 @@ export function delSpecial (data) {
 export function finishSpecial (data) {
   return request({
     url: specialApi.finishSpecial,
+    method: 'post',
+    data
+  })
+}
+
+export function editLimitTime (data) {
+  return request({
+    url: specialApi.editLimitTime,
     method: 'post',
     data
   })

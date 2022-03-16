@@ -127,12 +127,12 @@
         <a-form-model-item label="已选专题">
           {{ selectSpecialName }}
         </a-form-model-item>
-        <a-form-model-item required prop="is_open" label="有效时间">
-          <a-radio-group v-model="validTimeForm.is_open">
+        <a-form-model-item required prop="is_limit" label="有效时间">
+          <a-radio-group v-model="validTimeForm.is_limit">
             <a-radio value="1">有限</a-radio>
             <a-radio value="2">不限</a-radio>
           </a-radio-group>
-          <template v-if="+validTimeForm.is_open === 1">
+          <template v-if="+validTimeForm.is_limit === 1">
             <a-form-model-item
               prop="time"
               :rules="{ required: true, message: '请选择有效时间' }"
@@ -167,7 +167,8 @@ import { getProjectList } from '@/api/userManage/business'
 import {
   getSpecialList,
   delSpecial,
-  finishSpecial
+  finishSpecial,
+  editLimitTime
 } from '@/api/operatingCenter/special'
 
 export default {
@@ -293,7 +294,7 @@ export default {
       },
       validTimeVisible: false,
       validTimeForm: {
-        is_open: '1',
+        is_limit: '1',
         time: []
       }
     }
@@ -339,13 +340,28 @@ export default {
     },
     openEditValidTime () {
       this.validTimeForm = {
-        is_open: '1',
+        is_limit: '1',
         time: []
       }
       this.validTimeVisible = true
     },
     setValidTime () {
-      validAForm(this.$refs.validTimeForm).then(async () => {})
+      validAForm(this.$refs.validTimeForm).then(async () => {
+        const params = cloneDeep(this.validTimeForm)
+        const time = params.time
+        if (time && time.length) {
+          params.s_time = time[0]
+          params.e_time = time[1]
+        }
+        const { success } = await editLimitTime({
+          ...params,
+          thematic_id_data: this.selectedRowKeys
+        })
+        if (success) {
+          this.$message.success('操作成功')
+          this.refresh()
+        }
+      })
     },
     batchFinish (value) {
       const status = value.some(record => {
