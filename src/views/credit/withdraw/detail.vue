@@ -193,29 +193,35 @@ export default {
         {
           title: '序号',
           dataIndex: 'id',
+          width: 70,
           customRender: (text, row, index) => {
             return index + 1
           }
         },
         {
           title: '操作时间',
-          dataIndex: 'ctime'
+          dataIndex: 'ctime',
+          width: 160
         },
         {
           title: '打款结果',
-          dataIndex: 'payment_result'
+          dataIndex: 'payment_result',
+          width: 90
         },
         {
           title: '操作后台',
-          dataIndex: 'backstage'
+          dataIndex: 'backstage',
+          class: 'nowrap'
         },
         {
           title: '操作人',
-          dataIndex: 'opt_user'
+          dataIndex: 'opt_user',
+          class: 'nowrap'
         },
         {
           title: '操作凭证',
           dataIndex: 'img',
+          width: 95,
           customRender: (text, row) => {
             if (text && text.length) {
               return (
@@ -234,7 +240,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '100px',
+          width: 70,
+          align: 'center',
           customRender: (text, row) => {
             return (
               <a
@@ -252,25 +259,30 @@ export default {
         {
           title: '序号',
           dataIndex: 'id',
+          width: 70,
           customRender: (text, row, index) => {
             return index + 1
           }
         },
         {
           title: '审核时间',
-          dataIndex: 'ctime'
+          dataIndex: 'ctime',
+          width: 160
         },
         {
           title: '审核结果',
-          dataIndex: 'check_result'
+          dataIndex: 'check_result',
+          width: 90
         },
         {
           title: '审核后台',
-          dataIndex: 'backstage'
+          dataIndex: 'backstage',
+          class: 'nowrap'
         },
         {
           title: '审核人',
-          dataIndex: 'opt_user'
+          dataIndex: 'opt_user',
+          class: 'nowrap'
         },
         {
           title: '操作说明',
@@ -279,7 +291,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width: '100px',
+          width: 70,
+          align: 'center',
           customRender: (text, row) => {
             const isPermission = !this.isParentProject && +!row.updatecheck_button
             if (isPermission) {
@@ -476,5 +489,12 @@ h3 {
 }
 .red-text {
   color: red;
+}
+/deep/ .nowrap {
+  word-break: keep-all !important;
+  white-space: nowrap !important;
+}
+/deep/ .ant-table-tbody > tr > td {
+  word-break: break-all;
 }
 </style>
