@@ -114,6 +114,7 @@
             v-model="formData.service_fee"
             :min="0"
             :max="100"
+            :precision="2"
             @focus="saveCopyValue('service_fee')"
             @blur="setNullValue('service_fee')"
           ></a-input-number

@@ -63,7 +63,7 @@
         <div v-if="data.project_name">{{data.project_name}}</div>
         <div v-if="data.user_type">{{data.user_type}}</div>
         <div v-if="data.opt_user">{{data.opt_user}}</div>
-        <div v-if="data.ctime">{{data.ctime}}</div>
+        <div v-if="data.ctime" :class="{'red-text': data.ctime.indexOf('超时') > -1}">{{data.ctime}}</div>
         <div v-if="data.time_desc" style="color: red;">{{data.time_desc}}</div>
       </template>
     </status-steps>
@@ -467,5 +467,14 @@ export default {
   .heading {
     padding-left: 40px;
   }
+}
+/deep/ .ant-card-head-title {
+  font-weight: bold;
+}
+h3 {
+  font-weight: bold;
+}
+.red-text {
+  color: red;
 }
 </style>
