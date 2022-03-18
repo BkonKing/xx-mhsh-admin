@@ -66,7 +66,7 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" @click="goEdit">新增</a-button>
+        <a-button type="primary" @click="handlerAdd">新增</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
             <a-menu-item key="1" @click="batchOperation('openEditValidTime')">
@@ -106,7 +106,7 @@
           ></a-input>
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
-          <a @click="goEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">编辑</a>
           <a-popconfirm
             v-if="+record.state1 === 1"
             title="你确定要删除这行内容吗？"
@@ -164,6 +164,11 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <add-form-modal
+      v-model="addModalVisible"
+      ref="add-form"
+      @submit="AddSuccess"
+    ></add-form-modal>
   </page-header-view>
 </template>
 
@@ -174,6 +179,7 @@ import { mapGetters } from 'vuex'
 import { AdvancedForm, STable } from '@/components'
 import { validAForm } from '@/utils/util'
 import PageHeaderView from '@/layouts/PageHeaderView'
+import AddFormModal from './components/AddFormModal'
 import { getProjectList } from '@/api/userManage/business'
 import {
   getSpecialList,
@@ -186,6 +192,7 @@ export default {
   name: 'Banner',
   components: {
     AdvancedForm,
+    AddFormModal,
     PageHeaderView,
     STable
   },
@@ -206,11 +213,15 @@ export default {
       ],
       typeOptions: [
         { value: '1', label: '跳转商品' },
-        { value: '2', label: '跳转活动' },
         { value: '3', label: '跳转任务' },
+        { value: '2', label: '跳转活动' },
         { value: '4', label: '跳转资讯' },
-        { value: '5', label: '跳转外链' },
-        { value: '6', label: '跳转其它' }
+        { value: '5', label: '跳转公告' },
+        { value: '6', label: '跳转帖子' },
+        { value: '7', label: '跳转电影' },
+        { value: '8', label: '跳转专题' },
+        { value: '9', label: '跳转外链' },
+        { value: '10', label: '跳转其它' }
       ],
       projectOptions: [],
       selectedRowKeys: [],
@@ -316,6 +327,7 @@ export default {
       loadData: parameter => {
         return getSpecialList(Object.assign(parameter, this.queryParam))
       },
+      addModalVisible: false,
       activeData: {},
       openTimeVisible: false,
       openTimeForm: {
@@ -466,13 +478,22 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    goEdit ({ id }) {
-      this.$router.push({
-        name: 'specialEdit',
-        query: {
-          id
-        }
-      })
+    handlerAdd ({ id }) {
+      this.$refs['add-form'].resetFields()
+      this.addModalVisible = true
+    },
+    handleEdit (record) {
+      const form = cloneDeep(record)
+      form.staff_id = form.id
+      form.company_id = form.company_id || undefined
+      form.division_id = form.division_id || undefined
+      form.post_id = form.post_id || undefined
+      form.power = form.power ? form.power.split(',') : []
+      this.$refs['add-form'].setFieldsValue(form)
+      this.addModalVisible = true
+    },
+    AddSuccess () {
+
     }
   }
 }
