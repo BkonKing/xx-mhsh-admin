@@ -27,6 +27,7 @@ export const appUser = {
   getUserList: '/user/user/new_getUserList',
   getMemberList: '/household/member/getMemberList',
   getUserShopInfo: '/user/user/user_shops_info',
+  getShopAttestationList: '/user/user/shops_attestation_log_list',
   editBatchUserTag: '/user/tag/batch_edit_user_tag',
   getUserInfo: '/ajax/userInfo',
   getClogList: '/ajax/new_getClogList',
@@ -230,6 +231,15 @@ export function getMemberList (data) {
 export function getUserShopInfo (data) {
   return request({
     url: appUser.getUserShopInfo,
+    method: 'post',
+    data
+  })
+}
+
+// 商家审核记录列表数据 接口
+export function getShopAttestationList (data) {
+  return request({
+    url: appUser.getShopAttestationList,
     method: 'post',
     data
   })

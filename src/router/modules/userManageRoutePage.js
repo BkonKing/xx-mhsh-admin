@@ -56,6 +56,14 @@ export default {
           }
         },
         {
+          path: '/store/staffList',
+          name: 'storeStaffList',
+          component: () => import('@/views/businessManage/staffList'),
+          meta: {
+            title: '员工列表'
+          }
+        },
+        {
           path: '/store/coupon',
           name: 'storeCoupon',
           component: () => import('@/views/businessManage/coupon'),

@@ -1,5 +1,9 @@
 <template>
-  <page-header-view>
+  <page-header-view
+    :tab-list="tabList"
+    :tab-active-key="tabActiveKey"
+    @tabChange="handleTabChange"
+  >
     <a-card class="search-card" :bordered="false">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
@@ -33,19 +37,56 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="添加时间">
-                <a-range-picker
-                  v-model="queryParam.time"
-                  valueFormat="YYYY-MM-DD HH:mm:ss"
-                  :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
-                  :placeholder="['开始时间', '结束时间']"
-                  style="width: 100%;"
-                />
+              <a-form-item label="认证状态">
+                <a-select
+                  v-model="queryParam.is_attestation"
+                  placeholder="请选择"
+                >
+                  <a-select-option value="1">已认证</a-select-option>
+                  <a-select-option value="2">未认证</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="认证类型">
+                <a-select v-model="queryParam.a_type" placeholder="请选择">
+                  <a-select-option value="1">个人</a-select-option>
+                  <a-select-option value="2">商户</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col v-if="!isParentProject || advanced" :md="8" :sm="24">
+              <a-form-item label="审核状态">
+                <a-select
+                  v-model="queryParam.state_val"
+                  placeholder="请选择"
+                  :disabled="tabActiveKey !== ''"
+                >
+                  <a-select-option
+                    v-for="item in auditStatus"
+                    :key="item.key"
+                    :value="item.key"
+                    >{{ item.tab }}</a-select-option
+                  >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
+              <a-col :md="8" :sm="24">
+                <a-form-item label="添加时间">
+                  <a-range-picker
+                    v-model="queryParam.time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
+                </a-form-item>
+              </a-col>
+            </template>
             <advanced-form
+              v-model="advanced"
               :md="isParentProject ? 16 : 24"
-              :isAdvanced="false"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -60,10 +101,13 @@
         </a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="openShopPower">
+            <a-menu-item key="1" @click="batchOperation('batchSetPower')">
               商家权限
             </a-menu-item>
-            <a-menu-item key="2" @click="batchRemove">
+            <a-menu-item key="3" @click="batchOperation('batchCheck')">
+              审核
+            </a-menu-item>
+            <a-menu-item key="2" @click="batchOperation('batchRemove')">
               删除
             </a-menu-item>
           </a-menu>
@@ -83,9 +127,7 @@
       >
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a
-              :href="`${userUrl}?uid=${record.uid}&isShop=1`"
-              target="_blank"
+            <a :href="`${userUrl}?uid=${record.uid}&isShop=1`" target="_blank"
               >查看</a
             >
             <a @click="handleEdit(record)">编辑</a>
@@ -105,6 +147,9 @@
                 <a>删除</a>
               </a-popconfirm></a
             >
+            <a v-if="+record.a_state === 1 && (record.project_id == projectId || (isParentProject && !+record.project_id))" @click="openCheck([record])"
+              >审核</a
+            >
           </template>
         </span>
       </s-table>
@@ -120,16 +165,18 @@
       v-model="permissionVisible"
       title="设置商家权限"
       :width="600"
-      @ok="setShopsPower"
       :destroyOnClose="true"
+      @ok="setShopsPower"
     >
-      <div class="permission-modal-row">给{{selectedRows.length}}个店铺设置权限：</div>
+      <div class="permission-modal-row">
+        给{{ selectedRows.length }}个店铺设置权限：
+      </div>
       <div class="permission-modal-row">
         <span
           v-for="item in selectedRows"
           :key="item.id"
           class="permission-modal-span"
-          >{{ item.shops_name || '(暂无名称)' }}</span
+          >{{ item.shops_name || "(暂无名称)" }}</span
         >
       </div>
       <div class="permission-modal-line"></div>
@@ -145,6 +192,12 @@
         </a-form-model>
       </div>
     </a-modal>
+    <check-form
+      v-model="checkVisible"
+      ref="checkForm"
+      :data="checkData"
+      @submit="submitSuccess"
+    ></check-form>
   </page-header-view>
 </template>
 
@@ -156,6 +209,7 @@ import { mapGetters } from 'vuex'
 import { STable, AdvancedForm } from '@/components'
 import { validAForm } from '@/utils/util'
 import storeForm from './components/storeForm'
+import CheckForm from './components/CheckForm'
 import {
   getShopList,
   getProjectList,
@@ -167,8 +221,9 @@ import {
 export default {
   name: 'storeList',
   components: {
-    STable,
     AdvancedForm,
+    CheckForm,
+    STable,
     storeForm
   },
   data () {
@@ -176,8 +231,11 @@ export default {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       editForm: false,
+      advanced: false,
       // 查询参数
-      queryParam: {},
+      queryParam: {
+        state_val: undefined
+      },
       columns: [
         {
           title: '店铺归属',
@@ -192,6 +250,10 @@ export default {
           customRender: text => {
             return <div class="two-Multi">{text || '(暂无名称)'}</div>
           }
+        },
+        {
+          title: '商家认证',
+          dataIndex: 'attestation_text'
         },
         {
           title: '幸福币',
@@ -255,7 +317,7 @@ export default {
             )
           },
           dataIndex: 'action',
-          width: '140px',
+          width: '180px',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -276,8 +338,12 @@ export default {
         if (!this.isParentProject) {
           params.project_id = this.projectId
         }
-        return getShopList({ ...parameter, ...params })
+        return getShopList({ ...parameter, ...params }).then(res => {
+          this.reviewedCount = res.data.be_reviewed_count
+          return res
+        })
       },
+      reviewedCount: 0,
       selectedRowKeys: [],
       selectedRows: [],
       projectOptions: [],
@@ -286,31 +352,52 @@ export default {
         power: []
       },
       powerOptions: [
-        // {
-        //   label: '提现申请',
-        //   value: '1'
-        // },
         {
-          label: '商铺券管理',
+          label: '提现申请',
+          value: '1'
+        },
+        {
+          label: '店铺券管理',
           value: '2'
         },
         {
           label: '扫码核销券',
           value: '3'
         }
-      ]
+      ],
+      auditStatus: [
+        { key: '1', tab: '待审核' },
+        { key: '3', tab: '已通过' },
+        { key: '2', tab: '未通过' },
+        { key: '0', tab: '未提交' }
+      ],
+      tabActiveKey: '',
+      checkVisible: false,
+      checkData: []
     }
   },
   computed: {
     ...mapGetters(['projectId', 'isParentProject']),
     userUrl () {
-      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+      return this.isParentProject
+        ? '/zht/user/user/getUserList'
+        : '/xmht/household/member/getMemberList'
     },
     rowSelection () {
       return {
         selectedRowKeys: this.selectedRowKeys,
         onChange: this.onSelectChange
       }
+    },
+    tabList () {
+      const num = this.reviewedCount
+      return [
+        { key: '', tab: '全部' },
+        { key: '1', tab: `待审核${num ? '(' + num + ')' : ''}` },
+        { key: '3', tab: '已通过' },
+        { key: '2', tab: '未通过' },
+        { key: '0', tab: '未提交' }
+      ]
     }
   },
   created () {
@@ -328,6 +415,11 @@ export default {
         value: obj.key
       }))
     },
+    handleTabChange (key) {
+      this.tabActiveKey = key
+      this.queryParam.state_val = key || undefined
+      this.refreshTable()
+    },
     // 获取项目列表
     getProjectList () {
       getProjectList().then(({ data }) => {
@@ -338,37 +430,67 @@ export default {
       this.$refs.table.refresh(bool)
     },
     resetTable () {
-      this.queryParam = {}
+      this.queryParam = {
+        state_val: this.tabActiveKey || undefined
+      }
       this.refreshTable(true)
     },
     addShop () {
       this.$refs['add-form'].resetFields()
       this.editForm = true
     },
-    // 批量删除
-    batchRemove () {
+    batchOperation (methodName) {
       if (this.selectedRowKeys.length) {
-        const that = this
-        this.$confirm({
-          title: '删除商家',
-          content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
-          icon: () => (
-            <a-icon
-              type="exclamation-circle"
-              style="color: #faad14"
-              theme="filled"
-            />
-          ),
-          cancelText: '取消',
-          okText: '确定',
-          onOk () {
-            that.handleRemove(that.selectedRowKeys.join(','))
-          },
-          onCancel () {}
-        })
+        this[methodName]()
       } else {
         this.$message.warning('请选择后再进行操作')
       }
+    },
+    batchSetPower () {
+      this.powerForm.power = []
+      this.permissionVisible = true
+    },
+    // 批量删除
+    batchRemove () {
+      const that = this
+      this.$confirm({
+        title: '删除商家',
+        content: `确定删除${this.selectedRowKeys.length}个商家吗？`,
+        icon: () => (
+          <a-icon
+            type="exclamation-circle"
+            style="color: #faad14"
+            theme="filled"
+          />
+        ),
+        cancelText: '取消',
+        okText: '确定',
+        onOk () {
+          that.handleRemove(that.selectedRowKeys.join(','))
+        },
+        onCancel () {}
+      })
+    },
+    batchCheck () {
+      if (this.selectedRows.every(obj => +obj.a_state === 1)) {
+        this.openCheck()
+      } else {
+        this.$message.warning('已选择的项中包含不可操作')
+      }
+    },
+    setShopsPower () {
+      validAForm(this.$refs.form).then(async () => {
+        const { success } = await setShopsPower({
+          shops_id_text: this.selectedRowKeys.join(','),
+          power: this.powerForm.power.join(',')
+        })
+        if (success) {
+          this.$message.success('提交成功')
+          this.refreshTable()
+          this.onSelectChange([], [])
+          this.permissionVisible = false
+        }
+      })
     },
     handleRemove (id) {
       delShops({
@@ -376,14 +498,16 @@ export default {
       }).then(({ success }) => {
         if (success) {
           const ids = id.split(',')
-          // 选中selectedRowKeys去除删除的key
-          this.selectedRowKeys = this.selectedRowKeys.filter(
-            obj => !ids.includes(obj)
-          )
+          this.cancelSelect(ids)
           this.$message.success('删除成功')
           this.refreshTable()
         }
       })
+    },
+    openCheck (data = this.selectedRows) {
+      this.checkData = cloneDeep(data)
+      this.$refs.checkForm && this.$refs.checkForm.resetFields()
+      this.checkVisible = true
     },
     handleEdit (record) {
       const form = cloneDeep(record)
@@ -397,31 +521,22 @@ export default {
     },
     submitSuccess () {
       this.refreshTable()
-    },
-    openShopPower () {
-      if (this.selectedRowKeys.length) {
-        this.powerForm.power = []
-        this.permissionVisible = true
-      } else {
-        this.$message.warning('请选择后再进行操作')
+      const len = this.checkData.length
+      if (len > 1) {
+        this.onSelectChange([], [])
+      } else if (len === 1) {
+        this.cancelSelect([this.checkData[0].id])
       }
-    },
-    setShopsPower () {
-      validAForm(this.$refs.form).then(async () => {
-        const { success } = await setShopsPower({
-          shops_id_text: this.selectedRowKeys.join(','),
-          power: this.powerForm.power.join(',')
-        })
-        if (success) {
-          this.$message.success('提交成功')
-          this.refreshTable()
-          this.permissionVisible = false
-        }
-      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
+    },
+    // 取消选择
+    cancelSelect (data) {
+      this.selectedRowKeys = this.selectedRowKeys.filter(
+        obj => !data.includes(obj)
+      )
     }
   }
 }

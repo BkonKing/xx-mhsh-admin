@@ -3,8 +3,8 @@
     v-model="modalShow"
     :title="title"
     :width="600"
-    @ok="handleSubmit"
     :destroyOnClose="true"
+    @ok="handleSubmit"
   >
     <a-form-model
       ref="form"
@@ -13,11 +13,16 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-      <h3>商家资料</h3>
-      <a-form-model-item v-if="isEdit" label="商家用户"
-        >{{ this.form.nickname }}{{ realName }}
-        {{ this.form.mobile }}</a-form-model-item
-      >
+      <h3>商家用户</h3>
+      <template v-if="isEdit">
+        <a-form-model-item label="商家用户"
+          >{{ form.nickname }}{{ realName }}
+          {{ form.mobile }}</a-form-model-item
+        >
+        <a-form-model-item label="商家认证">{{
+          form.attestation_text
+        }}</a-form-model-item>
+      </template>
       <a-form-model-item v-else label="商家用户" prop="uid_text" required>
         <a-select
           v-model="form.uid_text"
@@ -30,12 +35,16 @@
           @change="handleChangeProject"
         >
           <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-          <a-select-option v-for="item in userOptions" :key="item.id"
+          <a-select-option
+            v-for="item in userOptions"
+            :key="item.id"
+            :disabled="+item.is_shops_clerk || +item.is_shops"
             >{{ item.name_text }}</a-select-option
           >
         </a-select>
         <div class="alert-text">输入用户姓名、手机号、ID进行搜索</div>
       </a-form-model-item>
+      <h3>店铺信息</h3>
       <a-form-model-item label="店铺归属" prop="project_id">
         <a-select
           v-model="form.project_id"
@@ -50,7 +59,12 @@
           ></a-select
         >
       </a-form-model-item>
-      <a-form-model-item label="店铺名称" prop="shops_name" :required="isEdit" :rules="{ required: isEdit, message: '请输入店铺名称' }">
+      <a-form-model-item
+        label="店铺名称"
+        prop="shops_name"
+        :required="isEdit"
+        :rules="{ required: isEdit, message: '请输入店铺名称' }"
+      >
         <a-input
           v-model="form.shops_name"
           :maxLength="20"
@@ -66,7 +80,7 @@
           placeholder="请输入"
         ></a-input>
       </a-form-model-item>
-      <a-form-model-item label="联系方式" prop="phone">
+      <a-form-model-item label="店铺电话" prop="phone">
         <a-input
           v-model="form.phone"
           v-number-input
@@ -74,6 +88,12 @@
           :disabled="isMulDisabled"
           placeholder="请输入"
         ></a-input>
+      </a-form-model-item>
+      <a-form-model-item label="店铺地址">
+        <a-textarea
+          :value="shopAddress"
+          :disabled="true"
+        />
       </a-form-model-item>
       <a-form-model-item label="店铺公告" prop="shops_notice">
         <a-textarea
@@ -83,6 +103,35 @@
           :disabled="isMulDisabled"
           placeholder="请输入"
         />
+      </a-form-model-item>
+      <a-form-model-item label="经营者">
+        <a-row type="flex" align="middle">
+          <a-col flex="1">
+            <a-form-model-item
+              prop="operator_realname"
+              style="margin-bottom: 0;"
+            >
+              <a-input
+                v-model="form.operator_realname"
+                :maxLength="20"
+                :disabled="isMulDisabled"
+                placeholder="姓名"
+              ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col flex="30px" style="text-align: center;"> -- </a-col>
+          <a-col flex="1">
+            <a-form-model-item prop="operator_mobile" style="margin-bottom: 0;">
+              <a-input
+                v-model="form.operator_mobile"
+                v-number-input
+                :maxLength="15"
+                :disabled="isMulDisabled"
+                placeholder="联系方式"
+              ></a-input>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
       </a-form-model-item>
       <h3>商家权限</h3>
       <a-form-model-item label="权限" prop="power">
@@ -106,10 +155,12 @@ const initialForm = {
   business_hours: '',
   phone: '',
   power: [],
-  shops_notice: ''
+  shops_notice: '',
+  operator_realname: '',
+  operator_mobile: ''
 }
 export default {
-  name: 'RepositoryForm',
+  name: 'storeForm',
   props: {
     value: {
       type: Boolean,
@@ -151,6 +202,15 @@ export default {
     realName () {
       const realname = this.form.realname
       return realname ? `(${realname})` : ''
+    },
+    shopAddress () {
+      const {
+        address_province: province,
+        address_city: city,
+        address_area: area,
+        address
+      } = this.form
+      return province ? `${province} ${city} ${area} ${address}` : ''
     }
   },
   watch: {
@@ -188,6 +248,8 @@ export default {
         this.form.business_hours = ''
         this.form.phone = ''
         this.form.shops_notice = ''
+        this.form.operator_realname = ''
+        this.form.operator_mobile = ''
       }
     },
     fetchUser (value) {
@@ -252,5 +314,9 @@ export default {
 h3 {
   margin-bottom: 24px;
   font-weight: bold;
+}
+/deep/ .ant-modal-body {
+  max-height: 600px;
+  overflow: auto;
 }
 </style>

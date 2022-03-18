@@ -11,7 +11,9 @@ const getters = {
   userInfo: state => state.user.info,
   multiTab: state => state.app.multiTab,
   projectId: state => state.user.projectId,
-  isParentProject: state => !+state.user.projectId
+  isParentProject: state => !+state.user.projectId,
+  userUrl: state => !+state.user.projectId ? '/zht/user/user/getUserList'
+    : '/xmht/household/member/getMemberList'
 }
 
 export default getters

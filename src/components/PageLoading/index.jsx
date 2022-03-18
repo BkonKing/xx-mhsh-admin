@@ -15,7 +15,7 @@ export const PageLoading = {
   render () {
     const style = {
       textAlign: 'center',
-      background: 'rgba(0,0,0,0.6)',
+      background: 'rgba(0,0,0,0)',
       position: 'fixed',
       top: 0,
       bottom: 0,
