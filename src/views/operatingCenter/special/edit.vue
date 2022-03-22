@@ -57,11 +57,12 @@
                   v-model="form.thumb"
                   maxLength="1"
                   class="introduction-upload"
+                  @change="changeThumb"
                 ></upload-image>
               </a-form-model-item>
               <div class="upload-image-alert">
                 <div>封面图</div>
-                <div>(尺寸750*600)</div>
+                <div>(尺寸710*326)</div>
               </div>
             </a-col>
             <a-col flex="1">
@@ -78,7 +79,7 @@
               </a-form-model-item>
               <div class="upload-image-alert">
                 <div>背景图</div>
-                <div>(尺寸750*600)</div>
+                <div>(尺寸710*326)</div>
               </div>
             </a-col>
           </a-row>
@@ -114,7 +115,7 @@
               maxLength="1"
             ></upload-image>
             <div style="margin-top: -11px;color: #00000072;">
-              尺寸750*600；支持扩展名：.png .jpg；
+              尺100*尺100；支持扩展名：.png .jpg；
             </div>
           </a-form-model-item>
         </a-form-model-item>
@@ -140,24 +141,24 @@
 import moment from 'moment'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import FooterToolBar from '@/components/FooterToolbar'
-import { /* STable, */ UploadImage } from '@/components'
+import { UploadImage } from '@/components'
 import SpecialImages from './components/SpecialImages'
 import { validAForm } from '@/utils/util'
 import { addSpecial, getSpecialDetail } from '@/api/operatingCenter/special'
+import cloneDeep from 'lodash.clonedeep'
 
 export default {
   name: 'SpecialEdit',
   components: {
     PageHeaderView,
     FooterToolBar,
-    // STable,
     UploadImage,
     SpecialImages
   },
   data () {
     const validateTime = (rule, value, callback) => {
       if (this.form.is_limit && !value[0]) {
-        callback(new Error('请设定开启时间'))
+        callback(new Error('请设定有效时间'))
       } else {
         callback()
       }
@@ -208,50 +209,28 @@ export default {
     getSpecialDetail () {
       getSpecialDetail({
         thematic_id: this.specialId
-      }).then(({ data }) => {
-        // 基础信息
-        this.form = {
-          thematic_name: data.thematic_name,
-          is_limit: data.is_limit,
-          time: [data.stime, data.etime],
-          wx_sharelink: data.wx_sharelink,
-          wechat_img: data.wechat_img ? [data.wechat_img] : []
-        }
-        this.setGoodsList(data)
-      })
-    },
-    // 商品列表回填
-    setGoodsList (data) {
-      this.$nextTick(() => {
-        this.$refs['special-images'].tableData = data.data.map(obj => {
-          return {
-            sort: obj.sort,
-            data: obj.data.map(image => ({
-              id: image.id,
-              block_type: image.block_type,
-              block_img: image.block_img ? [image.block_img] : []
-            }))
-          }
+      }).then(({ data, child }) => {
+        const formData = cloneDeep(data)
+        formData.time = formData.limit_time ? formData.limit_time.split(' ~ ') : []
+        formData.thumb = formData.thumb ? [formData.thumb] : []
+        formData.bj_thumb = formData.bj_thumb ? [formData.bj_thumb] : []
+        formData.wechat_img = formData.wechat_img ? [formData.wechat_img] : []
+        this.form = formData
+        this.$nextTick(() => {
+          this.$refs['special-images'].setData(child)
         })
       })
     },
-    formValidate (form) {
-      return new Promise((resolve, reject) => {
-        this.$refs[form].validate(valid => {
-          if (valid) {
-            resolve()
-          } else {
-            reject(new Error(false))
-            return false
-          }
-        })
-      })
+    changeThumb () {
+      if (this.form.bj_thumb.length === 0) {
+        this.form.bj_thumb = cloneDeep(this.form.thumb)
+      }
     },
     handleSubmit () {
-      validAForm(this.$refs.BasicForm).then(() => {
+      Promise.all([validAForm(this.$refs.BasicForm), this.$refs['special-images'].validate()]).then(() => {
         this.saveSpecial({
           ...this.form,
-          data: this.formatImageData()
+          child: this.formatImageData()
         })
       })
     },
@@ -261,9 +240,10 @@ export default {
         return {
           sort: obj.sort,
           data: obj.data.map(image => ({
-            id: image.id,
+            thematic_content_id: image.thematic_content_id,
             block_type: image.block_type,
-            block_img: image.block_img[0]
+            block_content: image.block_content,
+            block_img: image.block_img ? image.block_img[0] : ''
           }))
         }
       })
@@ -272,12 +252,12 @@ export default {
     saveSpecial (params) {
       const { time } = params
       if (time && time.length) {
-        params.stime = time[0]
-        params.etime = time[1]
+        params.s_time = time[0]
+        params.e_time = time[1]
       }
-      if (params.wechat_img) {
-        params.wechat_img = params.wechat_img[0] || ''
-      }
+      params.thumb = params.thumb ? params.thumb[0] : ''
+      params.bj_thumb = params.bj_thumb ? params.bj_thumb[0] : ''
+      params.wechat_img = params.wechat_img ? params.wechat_img[0] : ''
       this.specialId && (params.thematic_id = this.specialId)
       addSpecial(params).then(({ success }) => {
         if (success) {
@@ -312,7 +292,7 @@ export default {
 .introduction-upload /deep/ .ant-upload-list-picture-card-container,
 .introduction-upload /deep/ .ant-upload.ant-upload-select-picture-card {
   width: 100%;
-  height: 126px;
+  height: 163px;
   margin-bottom: 8px;
 }
 .upload-image-box /deep/ .ant-form-explain {

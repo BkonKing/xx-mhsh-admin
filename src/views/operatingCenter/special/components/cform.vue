@@ -2,62 +2,70 @@
   <div class="c-form">
     <div style="margin-bottom: 10px">
       <a-select
-        v-model="val.block_type"
+        v-model="formData.block_type"
         placeholder="点击后"
         @change="handleTypeChange"
         style="width: 100%;"
       >
-        <a-select-option :value="0">
+        <a-select-option value="0">
           无
         </a-select-option>
-        <a-select-option :value="1">
+        <a-select-option value="1">
           跳转至商品
         </a-select-option>
-        <a-select-option :value="2">
+        <a-select-option value="2">
           跳转至链接
         </a-select-option>
-        <a-select-option :value="3">
+        <a-select-option value="3">
           触发功能
         </a-select-option>
       </a-select>
     </div>
     <a-select
-      v-if="val.block_type === 1"
-      v-model="val.block_content"
+      v-if="+formData.block_type === 1"
+      v-model="formData.block_content"
       show-search
       option-filter-prop="children"
-      :allowClear="true"
       :showArrow="false"
       :dropdownMatchSelectWidth="false"
-      :filter-option="filterOption"
+      :filter-option="false"
+      :not-found-content="fetching ? undefined : null"
       placeholder="搜索商品ID/名称"
+      @search="fetchGoods"
       style="width: 100%"
     >
       <a-select-option
         v-for="item in options"
-        :key="item.value"
-        :value="item.value"
-        >{{ item.label }}</a-select-option
+        :key="item.id"
+        :value="item.id"
+        >{{ item.goods_name }}</a-select-option
       >
     </a-select>
     <a-select
-      v-else-if="val.block_type === 3"
-      v-model="val.block_content"
+      v-else-if="+formData.block_type === 3"
+      v-model="formData.block_content"
       :options="featureOptions"
       placeholder="请选择"
       style="width: 100%"
     >
     </a-select>
-    <a-input
-      v-else
-      v-model="val.block_content"
-    ></a-input>
-    <upload-image v-model="val.block_img" maxLength="1"></upload-image>
+    <a-input v-else v-model="formData.block_content"></a-input>
+    <a-form-model ref="cForm" :model="formData">
+      <a-form-model-item
+        prop="block_img"
+        :rules="{ required: true, message: '请上传图片' }"
+        style="margin-bottom: 0;"
+      >
+        <upload-image v-model="formData.block_img" maxLength="1"></upload-image>
+      </a-form-model-item>
+    </a-form-model>
   </div>
 </template>
 
 <script>
 import { UploadImage } from '@/components'
+import { debounce, validAForm } from '@/utils/util'
+import { searchGoods } from '@/api/operatingCenter/special'
 // import cloneDeep from 'lodash.clonedeep'
 export default {
   name: 'cform',
@@ -68,19 +76,14 @@ export default {
     value: {
       type: Object,
       default: () => ({})
-    },
-    goodsOptions: {
-      type: Array,
-      default: () => []
-    },
-    specialOptions: {
-      type: Array,
-      default: () => []
     }
   },
   data () {
+    this.fetchGoods = debounce(this.fetchGoods, 500)
     return {
-      val: this.value,
+      formData: this.value,
+      fetching: false,
+      goodsOptions: [],
       featureOptions: [
         {
           label: '签到',
@@ -91,45 +94,43 @@ export default {
   },
   computed: {
     isGoodsType () {
-      return this.val.block_type === 1
+      return +this.formData.block_type === 1
     },
     options () {
-      if (!this.val.block_type) {
-        return []
+      // 回填默认值
+      if (!this.goodsOptions.length && this.formData.goods_name) {
+        return [{ id: this.formData.block_content, goods_name: this.formData.goods_name }]
       }
-      return this.isGoodsType ? this.newGoodsOptions : this.newSpecialOptions
-    },
-    newGoodsOptions () {
-      return this.goodsOptions.map(obj => {
-        return {
-          value: obj.id,
-          label: obj.goods_name
-        }
-      })
-    },
-    newSpecialOptions () {
-      return this.specialOptions.map(obj => {
-        return {
-          value: obj.id,
-          label: obj.title
-        }
-      })
+      return this.goodsOptions
     }
   },
   watch: {
-    val: {
+    formData: {
       handler (val) {
         this.$emit('input', val)
       },
       deep: true
     },
     value (val) {
-      this.val = val
+      this.formData = val
     }
   },
   methods: {
+    fetchGoods (value) {
+      if (!value) {
+        return
+      }
+      this.formData.goods_name = ''
+      this.fetching = true
+      searchGoods({
+        goods_text: value
+      }).then(({ data }) => {
+        this.goodsOptions = data.list
+        this.fetching = false
+      })
+    },
     handleTypeChange () {
-      this.val.id = ''
+      this.formData.block_content = undefined
     },
     filterOption (input, option) {
       return (
@@ -138,6 +139,12 @@ export default {
           .indexOf(input.toLowerCase()) >= 0 ||
         option.key == input.toLowerCase()
       )
+    },
+    validate () {
+      if (!+this.formData.block_type) {
+        return Promise.resolve()
+      }
+      return validAForm(this.$refs.cForm)
     }
   }
 }
@@ -152,6 +159,10 @@ export default {
   width: 100%;
   height: 110px !important;
   margin-top: 10px;
+  margin-bottom: 0;
+}
+/deep/ .ant-form-explain {
+  margin-top: -10px;
 }
 /deep/ .ant-upload-list-item-uploading-text {
   margin-top: 32px;

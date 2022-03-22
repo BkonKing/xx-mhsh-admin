@@ -1,12 +1,12 @@
 <template>
-  <page-header-view :title="info.title">
+  <page-header-view :title="info.thematic_name">
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="ID">
           {{ info.id }}
         </a-descriptions-item>
-        <a-descriptions-item label="关联专区">
-          <a>{{ info.aaa }}</a>
+        <a-descriptions-item v-if="+info.special_id" label="关联专区">
+          <a :href="specialUrl" target="_blank">{{ info.special_name }}</a>
         </a-descriptions-item>
         <a-descriptions-item label="所属项目">
           {{ info.project_name }}
@@ -25,7 +25,7 @@
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button @click="goEdit">编辑</a-button>
+      <a-button v-if="info.project_id == projectId || (isParentProject && !+info.project_id)" @click="goEdit">编辑</a-button>
       <a-tooltip
         overlayClassName="preview-tooltip"
         trigger="click"
@@ -33,7 +33,7 @@
       >
         <template slot="title">
           <div class="preview-tooltip-text">请手机扫码预览</div>
-          <img src="" alt="" />
+          <img :src="info.qr_code" alt="" />
         </template>
         <a-button type="primary">预览</a-button>
       </a-tooltip>
@@ -101,7 +101,7 @@
     <a-card title="专题图片" style="margin-top: 24px" :bordered="false">
       <a-row type="flex" :gutter="20">
         <a-col flex="397px">
-          <mobile-preview :data="info"></mobile-preview>
+          <mobile-preview :data="previewData"></mobile-preview>
         </a-col>
         <a-col flex="1">
           <a-table
@@ -110,7 +110,7 @@
             rowKey="id"
             class="special-image-table"
             :columns="imgColumns"
-            :dataSource="info.child"
+            :dataSource="tableData"
             :pagination="false"
             :scroll="{ y: 615 }"
           >
@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { TImage } from '@/components'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import ImageCard from './components/ImageCard'
@@ -148,25 +149,8 @@ export default {
   data () {
     return {
       id: '',
-      info: {
-        wechat_title: '33333333333',
-        wechat_content: '22222222222222',
-        thumb: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190',
-        bj_thumb: 'https://img95.699pic.com/photo/40186/5971.jpg_wh300.jpg!/both/282x190',
-        wechat_img: 'https://img95.699pic.com/photo/40186/5968.jpg_wh300.jpg!/both/282x190',
-        child: [
-          {
-            id: '123',
-            data: [
-              {
-                block_content: '是打发第三方是打发第三方是打发第三方是打发第三方是打发第三方',
-                block_type: 1,
-                block_img: 'https://img95.699pic.com/photo/40174/9787.jpg_wh300.jpg!/both/282x190'
-              }
-            ]
-          }
-        ]
-      },
+      info: {},
+      tableData: [],
       imgColumns: [
         {
           title: '行',
@@ -203,16 +187,33 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
+    previewData () {
+      return {
+        list: this.tableData,
+        title: this.info.thematic_name
+      }
+    },
+    specialUrl () {
+      const id = this.info.special_id
+      if (id) {
+        return this.isParentProject ? `/zht/life/special/getSpecialList?special_id=${id}` : `/xmht/life/special/getSpecialList?special_id=${id}`
+      }
+      return ''
+    }
+  },
   created () {
     this.id = this.$route.query.id
-    // this.getSpecialDetail()
+    this.getSpecialDetail()
   },
   methods: {
     getSpecialDetail () {
       getSpecialDetail({
         thematic_id: this.id
-      }).then(({ data }) => {
+      }).then(({ data, child }) => {
         this.info = data || {}
+        this.tableData = child || []
       })
     },
     goEdit () {
@@ -228,23 +229,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.preview-tooltip {
-  .preview-tooltip-text {
-    color: @error-color;
-  }
-  .ant-tooltip-arrow::before {
-    background-color: #fff;
-  }
-  .ant-tooltip-inner {
-    padding: 8px 12px;
-    background: #fff;
-  }
-  img {
-    width: 100px;
-    height: 100px;
-    margin-top: 10px;
-  }
-}
 .special-image-table {
   td {
     vertical-align: top;
@@ -256,7 +240,7 @@ export default {
   text-align: left;
   .text,
   .heading {
-    padding-left: 40px;
+    padding-left: 36px;
     text-align: right;
   }
 }
@@ -278,6 +262,27 @@ export default {
   padding-bottom: 24px;
 }
 .topic-image /deep/ img{
-  width: 220px !important;
+  width: 355px !important;
+  height: 163px !important;
+}
+</style>
+
+<style lang="less">
+.preview-tooltip {
+  .preview-tooltip-text {
+    color: @error-color;
+  }
+  .ant-tooltip-arrow::before {
+    background-color: #fff;
+  }
+  .ant-tooltip-inner {
+    padding: 8px 12px;
+    background: #fff;
+  }
+  img {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+  }
 }
 </style>

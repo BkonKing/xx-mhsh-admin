@@ -7,7 +7,7 @@ export const specialApi = {
   editLimitTime: '/invite/thematic/limit_time_thematic',
   getSpecialDetail: '/invite/thematic/thematic_info',
   getSpecialList: '/invite/thematic/thematic_list',
-  searchGoods: '/invite/thematic/searchGoods'
+  searchGoods: '/invite/thematic/goods_search'
 }
 
 export function addSpecial (data) {

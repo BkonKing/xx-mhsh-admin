@@ -98,8 +98,13 @@
         :showPagination="true"
       >
         <span class="table-action" slot="action" slot-scope="text, record">
-          <template>
-            <a @click="goDetail(record)">查看</a>
+          <a @click="goDetail(record)">查看</a>
+          <template
+            v-if="
+              record.project_id == projectId ||
+                (isParentProject && !+record.project_id)
+            "
+          >
             <a @click="goEdit(record)">编辑</a>
             <a v-if="+record.state1 === 1" @click="handleFinish([record])"
               >结束</a
@@ -116,7 +121,7 @@
       :title="validTimeTitle"
       :width="600"
       :destroyOnClose="true"
-      @ok="openEditValidTime"
+      @ok="setValidTime"
     >
       <a-form-model
         ref="validTimeForm"
@@ -130,7 +135,7 @@
         <a-form-model-item required prop="is_limit" label="有效时间">
           <a-radio-group v-model="validTimeForm.is_limit">
             <a-radio value="1">有限</a-radio>
-            <a-radio value="2">不限</a-radio>
+            <a-radio value="0">不限</a-radio>
           </a-radio-group>
           <template v-if="+validTimeForm.is_limit === 1">
             <a-form-model-item
@@ -233,7 +238,7 @@ export default {
         },
         {
           title: '有效时间',
-          dataIndex: 'stime',
+          dataIndex: 's_time',
           customRender: (text, row) => {
             const isLimit = +row.is_limit
             if (isLimit === 0) {
@@ -241,11 +246,11 @@ export default {
             }
             const ele = (
               <div>
-                {text ? <div>起 {text}</div> : ''}
-                {row.etime ? <div>止 {row.etime}</div> : ''}
+                <div>{text}</div>
+                <div>{row.e_time}</div>
               </div>
             )
-            return text || row.etime ? ele : '--'
+            return text || row.e_time ? ele : '--'
           }
         },
         {
@@ -290,7 +295,7 @@ export default {
           params.show_stime = time[0]
           params.show_etime = time[1]
         }
-        return getSpecialList(Object.assign(parameter, this.queryParam))
+        return getSpecialList(Object.assign(parameter, params))
       },
       validTimeVisible: false,
       validTimeForm: {
@@ -305,7 +310,7 @@ export default {
       return `批量修改有效时间（${this.selectedRowKeys.length}）`
     },
     selectSpecialName () {
-      return this.selectedRows.map(obj => obj.name).join('、')
+      return this.selectedRows.map(obj => obj.thematic_name).join('、')
     },
     rowSelection () {
       return {
@@ -358,8 +363,8 @@ export default {
           thematic_id_data: this.selectedRowKeys
         })
         if (success) {
-          this.$message.success('操作成功')
-          this.refresh()
+          this.validTimeVisible = false
+          this.operateSuccess(this.selectedRowKeys)
         }
       })
     },
@@ -377,25 +382,25 @@ export default {
       const that = this
       const isOnlyOne = data.length === 1
       const content = isOnlyOne
-        ? `确定结束专题"${data[0].name}"吗？`
+        ? `确定结束专题"${data[0].thematic_name}"吗？`
         : `确定结束${data.length}个专题吗？`
+      const ids = isOnlyOne ? [data[0].id] : this.selectedRowKeys
       this.$confirm({
         title: '结束专题',
         content,
         icon: this.warningIcon,
         onOk () {
-          that.finishSpecial(that.selectedRowKeys)
+          that.finishSpecial(ids)
         },
         onCancel () {}
       })
     },
-    async finishSpecial (id) {
+    async finishSpecial (ids) {
       const { success } = await finishSpecial({
-        thematic_id_data: id
+        thematic_id_data: ids
       })
       if (success) {
-        this.$message.success('操作成功')
-        this.refresh()
+        this.operateSuccess(ids)
       }
     },
     // 批量删除
@@ -412,41 +417,63 @@ export default {
     handleRemove (data) {
       const that = this
       const isOnlyOne = data.length === 1
-      const oneContent = `确定删除专题"${data[0].name}"吗？`
+      const oneContent = `确定删除专题"${data[0].thematic_name}"吗？`
       const mulContent = () => (
         <div>
           <span style="color: #f5222d;">相关专题信息都会被删除</span>
           ，确定删除{data.length}个专题吗？
         </div>
       )
+      const ids = isOnlyOne ? [data[0].id] : this.selectedRowKeys
       this.$confirm({
         title: '删除专题',
         content: isOnlyOne ? oneContent : mulContent,
         icon: this.warningIcon,
         onOk () {
-          that.handleFinish(that.selectedRowKeys)
+          that.delSpecial(ids)
         },
         onCancel () {}
       })
     },
-    async delSpecial (id) {
-      const { success, no_num: noNum } = await delSpecial({
-        thematic_id_data: id
+    async delSpecial (ids) {
+      const {
+        success,
+        no_num: disabledNum,
+        no_thematic_text: name
+      } = await delSpecial({
+        thematic_id_data: ids
       })
       if (success) {
-        this.$message.success('操作成功')
-        this.refresh()
-      } else if (+noNum > 0) {
+        this.operateSuccess(ids)
+      } else if (+disabledNum > 0) {
         this.$info({
           title: '无法删除活动',
-          content: noNum,
-          icon: this.infoIcon
+          content: `专题"${name}"已关联专区，暂不能删除`,
+          icon: this.infoIcon,
+          onOk: () => {
+            this.operateCallback(ids)
+          }
         })
       }
+    },
+    operateSuccess (ids) {
+      this.$message.success('操作成功')
+      this.operateCallback(ids)
+    },
+    operateCallback (ids) {
+      this.refresh()
+      ids.length > 1 ? this.onSelectChange([], []) : this.cancelSelect(ids)
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
+    },
+    // 取消选择
+    cancelSelect (data) {
+      this.selectedRowKeys = this.selectedRowKeys.filter(
+        obj => !data.includes(obj)
+      )
+      this.selectedRows = this.selectedRows.filter(obj => !data.includes(obj))
     },
     goEdit ({ id }) {
       this.$router.push({
@@ -468,4 +495,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.table-action a + a {
+  margin-left: 10px;
+}
+</style>

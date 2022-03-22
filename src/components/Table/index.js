@@ -94,6 +94,13 @@ export default {
     rowSelectionPaging: {
       type: Boolean,
       default: false
+    },
+    sortKey: {
+      type: Object,
+      default: () => ({
+        ascend: 'ascend',
+        descend: 'descend'
+      })
     }
   }),
   watch: {
@@ -177,7 +184,7 @@ export default {
         sortField: sorter.field
       }) || {},
       (sorter && sorter.order && {
-        sortOrder: sorter.order
+        sortOrder: this.sortKey[sorter.order]
       }) || {}, {
         ...filters
       }

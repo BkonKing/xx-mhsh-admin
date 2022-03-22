@@ -1,17 +1,28 @@
 <template>
   <div class="image-card">
-    <div v-if="data.name" class="jump-name">
+    <div v-if="+data.block_type" class="jump-name">
       {{ data.block_type | typeName }}：<template v-if="+data.block_type === 1"
-        ><a>{{ data.name }}</a></template
-      ><template v-else>{{ data.name }}</template>
+        ><a :href="goodsDetailUrl" target="_blank">{{
+          data.goods_name
+        }}</a></template
+      ><template v-else-if="+data.block_type === 2">{{
+        data.block_content
+      }}</template
+      ><template v-else>{{ data.block_content | featureText }}</template>
     </div>
     <div v-else>--</div>
-    <t-image v-if="data.block_img" :images="[data.block_img]" class="special-img" />
+    <t-image
+      v-if="data.block_img"
+      :images="[data.block_img]"
+      class="special-img"
+    />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { TImage } from '@/components'
+
 export default {
   name: 'ImageCard',
   components: {
@@ -23,6 +34,15 @@ export default {
       default: () => ({})
     }
   },
+  computed: {
+    ...mapGetters(['projectId', 'isParentProject']),
+    goodsDetailUrl () {
+      const id = this.data.block_content
+      return this.isParentProject
+        ? `/zht/life/goods/getGoodsList?goods_id=${id}`
+        : `/xmht/life/goods/getGoodsList?goods_id=${id}`
+    }
+  },
   filters: {
     typeName (value) {
       const name = {
@@ -31,6 +51,14 @@ export default {
         3: '触发功能'
       }
       return name[value]
+    },
+    featureText (value) {
+      let text = '--'
+      const textObj = {
+        1: '签到'
+      }
+      value && (text = textObj[value])
+      return text
     }
   }
 }

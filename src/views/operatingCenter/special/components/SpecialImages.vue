@@ -5,7 +5,10 @@
     </div>
     <a-row type="flex" :gutter="20">
       <a-col flex="397px">
-        <mobile-preview :data="previewData" image-url-type="array"></mobile-preview>
+        <mobile-preview
+          :data="previewData"
+          image-url-type="array"
+        ></mobile-preview>
       </a-col>
       <a-col flex="1">
         <a-table
@@ -18,25 +21,13 @@
           :scroll="{ y: 687 }"
         >
           <template slot="column1" slot-scope="text, record">
-            <cform
-              v-model="record.data[0]"
-              :goodsOptions="goodsOptions"
-              :specialOptions="specialOptions"
-            ></cform>
+            <cform :ref="`cform1${record.id}`" v-model="record.data[0]"></cform>
           </template>
           <template slot="column2" slot-scope="text, record">
-            <cform
-              v-model="record.data[1]"
-              :goodsOptions="goodsOptions"
-              :specialOptions="specialOptions"
-            ></cform>
+            <cform :ref="`cform2${record.id}`" v-model="record.data[1]"></cform>
           </template>
           <template slot="column3" slot-scope="text, record">
-            <cform
-              v-model="record.data[2]"
-              :goodsOptions="goodsOptions"
-              :specialOptions="specialOptions"
-            ></cform>
+            <cform :ref="`cform3${record.id}`" v-model="record.data[2]"></cform>
           </template>
           <template slot="list_order" slot-scope="text, record">
             <a-input
@@ -63,7 +54,12 @@ import clonedeep from 'lodash.clonedeep'
 import MobilePreview from './MobilePreview'
 import cform from './cform'
 import { sort } from '@/utils/util'
-import { searchGoods } from '@/api/operatingCenter/special'
+const obj = {
+  id: '',
+  block_type: undefined,
+  block_content: undefined,
+  block_img: []
+}
 export default {
   name: 'SpecialImages',
   components: {
@@ -119,7 +115,8 @@ export default {
       ],
       tableData: [],
       goodsOptions: [],
-      specialOptions: []
+      specialOptions: [],
+      formData: clonedeep(obj)
     }
   },
   computed: {
@@ -130,26 +127,19 @@ export default {
       }
     }
   },
-  created () {
-    this.searchGoods()
-  },
   methods: {
-    // 获取所有的商品
-    searchGoods () {
-      searchGoods().then(({ list }) => {
-        this.goodsOptions = list || []
-      })
-    },
     add () {
-      const obj = {
-        id: '',
-        block_type: undefined,
-        block_img: []
-      }
-      this.tableData.push({
+      this.tableData.push(clonedeep({
         data: [clonedeep(obj), clonedeep(obj), clonedeep(obj)],
         sort: '',
         id: Math.random()
+      }))
+      this.$nextTick(() => {
+        const tableElement = document.getElementsByClassName(
+          'ant-table-body'
+        )[0]
+        const tableBody = document.getElementsByClassName('ant-table-tbody')[0]
+        tableElement.scrollTop = tableBody.offsetHeight
       })
     },
     // 排序失去焦点重新排序
@@ -158,6 +148,48 @@ export default {
     },
     remove (index) {
       this.tableData.splice(index, 1)
+    },
+    validate () {
+      const cformValidate = []
+      this.tableData.forEach(obj => {
+        cformValidate.push(this.$refs[`cform1${obj.id}`].validate())
+        cformValidate.push(this.$refs[`cform2${obj.id}`].validate())
+        cformValidate.push(this.$refs[`cform3${obj.id}`].validate())
+      })
+      return Promise.all(cformValidate)
+    },
+    setData (data) {
+      this.tableData = data.map(obj => {
+        const listData =
+          obj.data && obj.data.length
+            ? this.completionListRow(obj.data)
+            : [
+              clonedeep(this.formData),
+              clonedeep(this.formData),
+              clonedeep(this.formData)
+            ]
+        return {
+          sort: obj.sort,
+          data: listData
+        }
+      })
+    },
+    // 补全当行数据为3个对象
+    completionListRow (data) {
+      const rowData = []
+      for (let index = 0; index < 3; index++) {
+        let itemData = data[index]
+        itemData = itemData ? {
+          id: Math.random(),
+          block_type: itemData.block_type,
+          thematic_content_id: itemData.thematic_content_id,
+          block_content: itemData.block_content,
+          goods_name: itemData.goods_name,
+          block_img: itemData.block_img ? [itemData.block_img] : []
+        } : clonedeep(this.formData)
+        rowData.push(itemData)
+      }
+      return rowData
     }
   }
 }
