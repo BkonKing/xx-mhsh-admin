@@ -211,7 +211,7 @@ export default {
         thematic_id: this.specialId
       }).then(({ data, child }) => {
         const formData = cloneDeep(data)
-        formData.time = +formData.limit_time ? formData.limit_time.split(' ~ ') : []
+        formData.time = +formData.is_limit ? formData.limit_time.split(' ~ ') : []
         formData.thumb = formData.thumb ? [formData.thumb] : []
         formData.bj_thumb = formData.bj_thumb ? [formData.bj_thumb] : []
         formData.wechat_img = formData.wechat_img ? [formData.wechat_img] : []
@@ -227,11 +227,28 @@ export default {
       }
     },
     handleSubmit () {
-      Promise.all([validAForm(this.$refs.BasicForm), this.$refs['special-images'].validate()]).then(() => {
+      Promise.all([validAForm(this.$refs.BasicForm), this.$refs['special-images'].validate(), this.validImageData()]).then(() => {
         this.saveSpecial({
           ...this.form,
           child: this.formatImageData()
         })
+      })
+    },
+    // 需至少上传一张图片
+    validImageData () {
+      return new Promise((resolve, reject) => {
+        const status = this.$refs['special-images'].tableData.some(obj => {
+          return obj.data.some(image => {
+            return image.block_img
+          })
+        })
+        if (status) {
+          resolve()
+        } else {
+          this.$message.error('请至少上传一张专题图片')
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject()
+        }
       })
     },
     // 图片专题数据格式化

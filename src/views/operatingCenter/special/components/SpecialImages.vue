@@ -170,7 +170,8 @@ export default {
             ]
         return {
           sort: obj.sort,
-          data: listData
+          data: listData,
+          id: Math.random()
         }
       })
     },
