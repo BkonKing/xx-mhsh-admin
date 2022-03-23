@@ -11,6 +11,13 @@ const taskPages = {
   '#/taskCentre/setting/setting': '/task/task/getSetting' // 任务设置
 }
 
+const activitySpecial = {
+  '#/operatingCenter/special/list': '/activity/special/specialList',
+  '#/operatingCenter/special/edit': '/activity/special/edit',
+  '#/operatingCenter/special/detail': '/activity/special/detail'
+}
+
 export default {
-  ...taskPages
+  ...taskPages,
+  ...activitySpecial
 }
