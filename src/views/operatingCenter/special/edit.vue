@@ -211,7 +211,7 @@ export default {
         thematic_id: this.specialId
       }).then(({ data, child }) => {
         const formData = cloneDeep(data)
-        formData.time = formData.limit_time ? formData.limit_time.split(' ~ ') : []
+        formData.time = +formData.limit_time ? formData.limit_time.split(' ~ ') : []
         formData.thumb = formData.thumb ? [formData.thumb] : []
         formData.bj_thumb = formData.bj_thumb ? [formData.bj_thumb] : []
         formData.wechat_img = formData.wechat_img ? [formData.wechat_img] : []
