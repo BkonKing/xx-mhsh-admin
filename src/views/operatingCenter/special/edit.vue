@@ -56,6 +56,7 @@
                 <upload-image
                   v-model="form.thumb"
                   maxLength="1"
+                  :noHost="true"
                   class="introduction-upload"
                   @change="changeThumb"
                 ></upload-image>
@@ -74,6 +75,7 @@
                 <upload-image
                   v-model="form.bj_thumb"
                   maxLength="1"
+                  :noHost="true"
                   class="introduction-upload"
                 ></upload-image>
               </a-form-model-item>
@@ -113,9 +115,10 @@
             <upload-image
               v-model="form.wechat_img"
               maxLength="1"
+              :noHost="true"
             ></upload-image>
             <div style="margin-top: -11px;color: #00000072;">
-              尺100*尺100；支持扩展名：.png .jpg；
+              尺寸100*100；支持扩展名：.png .jpg；
             </div>
           </a-form-model-item>
         </a-form-model-item>

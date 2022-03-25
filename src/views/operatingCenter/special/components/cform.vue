@@ -56,7 +56,7 @@
         :rules="{ required: true, message: '请上传图片' }"
         style="margin-bottom: 0;"
       >
-        <upload-image v-model="formData.block_img" maxLength="1"></upload-image>
+        <upload-image v-model="formData.block_img" :noHost="true" maxLength="1"></upload-image>
       </a-form-model-item>
     </a-form-model>
   </div>

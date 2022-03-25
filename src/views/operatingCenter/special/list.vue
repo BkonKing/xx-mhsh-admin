@@ -269,13 +269,13 @@ export default {
             return (
               <div>
                 浏览量
-                <a-tooltip>
-                  <template slot="title">一个用户仅算一次</template>
-                  <a-icon
-                    type="info-circle"
-                    style="color: #797979;margin-top: 3px;margin-left: 3px;"
-                  />
-                </a-tooltip>
+              <a-tooltip>
+                <template slot="title">一个用户仅算一次</template>
+                <a-icon
+                  type="info-circle"
+                  style="color: #797979;margin-top: 3px;margin-left: 3px;"
+                />
+              </a-tooltip>
               </div>
             )
           }
@@ -445,7 +445,8 @@ export default {
       })
       if (success) {
         this.operateSuccess(ids)
-      } else if (+disabledNum > 0) {
+      }
+      if (+disabledNum > 0) {
         this.$info({
           title: '无法删除活动',
           content: `专题"${name}"已关联专区，暂不能删除`,
