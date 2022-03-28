@@ -242,7 +242,7 @@ export default {
       return new Promise((resolve, reject) => {
         const status = this.$refs['special-images'].tableData.some(obj => {
           return obj.data.some(image => {
-            return image.block_img
+            return image.block_img && image.block_img.length
           })
         })
         if (status) {

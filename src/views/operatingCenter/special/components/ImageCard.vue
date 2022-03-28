@@ -6,7 +6,7 @@
           data.goods_name
         }}</a></template
       ><template v-else-if="+data.block_type === 2">{{
-        data.block_content
+        data.block_content || '--'
       }}</template
       ><template v-else>{{ data.block_content | featureText }}</template>
     </div>

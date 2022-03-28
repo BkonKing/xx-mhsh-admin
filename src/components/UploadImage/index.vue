@@ -56,6 +56,10 @@ export default {
     openFileDialogOnClick: {
       type: Boolean,
       default: true
+    },
+    showHttpFile: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -156,7 +160,7 @@ export default {
   },
   watch: {
     value (val) {
-      if (val !== this.uploadList) {
+      if (val !== this.uploadList || this.showHttpFile) {
         this.fileList = this.format(val)
       }
     }

@@ -2,7 +2,7 @@
   <page-header-view :title="info.thematic_name">
     <template v-slot:content>
       <a-descriptions size="small" :column="2">
-        <a-descriptions-item label="ID">
+        <a-descriptions-item label="ID" :span="+info.special_id ? 1 : 2">
           {{ info.id }}
         </a-descriptions-item>
         <a-descriptions-item v-if="+info.special_id" label="关联专区">
@@ -63,8 +63,8 @@
       :bordered="false"
     >
       <a-row type="flex">
-        <a-col flex="72px">专区图：</a-col>
-        <a-col>
+        <a-col flex="72px" style="text-align: right;">专区图：</a-col>
+        <a-col flex="1">
           <a-row type="flex">
             <a-col style="text-align: center;">
               <t-image
@@ -86,13 +86,14 @@
         </a-col>
       </a-row>
       <a-row type="flex">
-        <a-col flex="72px">微信分享：</a-col>
-        <a-col>
+        <a-col flex="72px" style="text-align: right;">微信分享：</a-col>
+        <a-col flex="1">
           <div>{{ info.wechat_title }}</div>
           <div>{{ info.wechat_content }}</div>
           <t-image
             v-if="info.wechat_img"
             :images="[info.wechat_img]"
+            style="margin-top: 10px;margin-left: -5px;"
           ></t-image>
         </a-col>
       </a-row>

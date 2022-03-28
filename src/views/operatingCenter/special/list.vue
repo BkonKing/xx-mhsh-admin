@@ -269,13 +269,13 @@ export default {
             return (
               <div>
                 浏览量
-              <a-tooltip>
-                <template slot="title">一个用户仅算一次</template>
-                <a-icon
-                  type="info-circle"
-                  style="color: #797979;margin-top: 3px;margin-left: 3px;"
-                />
-              </a-tooltip>
+                <a-tooltip>
+                  <template slot="title">一个用户仅算一次</template>
+                  <a-icon
+                    type="info-circle"
+                    style="color: #797979;margin-top: 3px;margin-left: 3px;"
+                  />
+                </a-tooltip>
               </div>
             )
           }
@@ -499,5 +499,8 @@ export default {
 <style lang="less" scoped>
 .table-action a + a {
   margin-left: 10px;
+}
+/deep/ .ant-pro-page-header-wrap-children-content {
+  padding-bottom: 24px;
 }
 </style>

@@ -56,7 +56,13 @@
         :rules="{ required: true, message: '请上传图片' }"
         style="margin-bottom: 0;"
       >
-        <upload-image v-model="formData.block_img" :noHost="true" maxLength="1"></upload-image>
+        <upload-image
+          class="special-upload-image"
+          v-model="formData.block_img"
+          maxLength="1"
+          :noHost="true"
+          :showHttpFile="true"
+        ></upload-image>
       </a-form-model-item>
     </a-form-model>
   </div>
@@ -99,7 +105,12 @@ export default {
     options () {
       // 回填默认值
       if (!this.goodsOptions.length && this.formData.goods_name) {
-        return [{ id: this.formData.block_content, goods_name: this.formData.goods_name }]
+        return [
+          {
+            id: this.formData.block_content,
+            goods_name: this.formData.goods_name
+          }
+        ]
       }
       return this.goodsOptions
     }
@@ -167,5 +178,15 @@ export default {
 /deep/ .ant-upload-list-item-uploading-text {
   margin-top: 32px;
   text-align: center;
+}
+.special-upload-image /deep/ .ant-upload-list-picture-card {
+  .ant-upload-list-item-thumbnail {
+    display: flex;
+    img {
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
 }
 </style>

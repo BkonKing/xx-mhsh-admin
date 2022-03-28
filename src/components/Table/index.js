@@ -221,6 +221,7 @@ export default {
             this.localDataSource = r.list // 返回结果中的数组数据
           } else {
             this.localPagination = Object.assign({}, {
+              pageSize: this.localPagination.pageSize,
               total: 0
             })
             this.localDataSource = [] // 返回结果中的数组数据

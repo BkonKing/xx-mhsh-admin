@@ -13,6 +13,7 @@ const taskPages = {
 
 const activitySpecial = {
   '#/operatingCenter/special/list': '/activity/special/specialList',
+  '#/operatingCenter/special/list2': '/activity/special/specialList',
   '#/operatingCenter/special/edit': '/activity/special/edit',
   '#/operatingCenter/special/detail': '/activity/special/detail'
 }

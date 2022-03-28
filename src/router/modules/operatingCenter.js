@@ -33,7 +33,7 @@ export default {
           name: 'specialList2',
           component: RouteView,
           meta: {
-            title: '专题管理'
+            title: '专题列表'
           },
           redirect: '/operatingCenter/special/list',
           children: [
