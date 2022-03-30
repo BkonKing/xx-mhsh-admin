@@ -81,7 +81,7 @@
               </a-form-model-item>
               <div class="upload-image-alert">
                 <div>背景图</div>
-                <div>(尺寸710*326)</div>
+                <div>(尺寸750*381)</div>
               </div>
             </a-col>
           </a-row>
