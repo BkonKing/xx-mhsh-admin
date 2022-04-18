@@ -7,7 +7,9 @@ export const specialApi = {
   editLimitTime: '/invite/thematic/limit_time_thematic',
   getSpecialDetail: '/invite/thematic/thematic_info',
   getSpecialList: '/invite/thematic/thematic_list',
-  searchGoods: '/invite/thematic/goods_search'
+  searchGoods: '/invite/thematic/goods_search',
+  getSpecialOptions: '/invite/thematic/tj_thematic_list',
+  saveWxHomeSpecial: '/invite/thematic/save_tj_thematic'
 }
 
 export function addSpecial (data) {
@@ -61,6 +63,22 @@ export function getSpecialList (data) {
 export function searchGoods (data) {
   return request({
     url: specialApi.searchGoods,
+    method: 'post',
+    data
+  })
+}
+
+export function getSpecialOptions (data) {
+  return request({
+    url: specialApi.getSpecialOptions,
+    method: 'post',
+    data
+  })
+}
+
+export function saveWxHomeSpecial (data) {
+  return request({
+    url: specialApi.saveWxHomeSpecial,
     method: 'post',
     data
   })

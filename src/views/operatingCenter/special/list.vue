@@ -83,6 +83,7 @@
           </a-menu>
           <a-button> 批量操作 <a-icon type="down" /> </a-button>
         </a-dropdown>
+        <a-button @click="openSetting">设置</a-button>
       </div>
 
       <s-table
@@ -158,6 +159,36 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal
+      v-model="wxHomeVisible"
+      title="设置"
+      :width="660"
+      :destroyOnClose="true"
+      @ok="setWxHome"
+    >
+      <a-form-model
+        ref="wxHomeForm"
+        :model="wxHomeForm"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item label="小程序首页专题" prop="thematic_id" required>
+          <a-select
+            v-model="wxHomeForm.thematic_id"
+            show-search
+            placeholder="请选择"
+            :filter-option="filterSpecial"
+          >
+            <a-select-option
+              v-for="item in specialOptions"
+              :key="item.id"
+              :value="item.id"
+              >{{ item.thematic_name }}</a-select-option
+            >
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </page-header-view>
 </template>
 
@@ -173,7 +204,9 @@ import {
   getSpecialList,
   delSpecial,
   finishSpecial,
-  editLimitTime
+  editLimitTime,
+  getSpecialOptions,
+  saveWxHomeSpecial
 } from '@/api/operatingCenter/special'
 
 export default {
@@ -301,7 +334,12 @@ export default {
       validTimeForm: {
         is_limit: '1',
         time: []
-      }
+      },
+      wxHomeVisible: false,
+      wxHomeForm: {
+        thematic_id: undefined
+      },
+      specialOptions: []
     }
   },
   computed: {
@@ -464,6 +502,32 @@ export default {
     operateCallback (ids) {
       this.refresh()
       ids.length > 1 ? this.onSelectChange([], []) : this.cancelSelect(ids)
+    },
+    openSetting () {
+      this.getSpecialOptions()
+      this.wxHomeForm.thematic_id = undefined
+      this.wxHomeVisible = true
+    },
+    getSpecialOptions () {
+      getSpecialOptions().then(({ data }) => {
+        this.specialOptions = data.list
+      })
+    },
+    filterSpecial (input, option) {
+      const value = input.toLowerCase()
+      const text = option.componentOptions.children[0].text.toLowerCase()
+      return text.indexOf(value) >= 0 || option.key == value
+    },
+    setWxHome () {
+      validAForm(this.$refs.wxHomeForm).then(async () => {
+        const { success } = await saveWxHomeSpecial({
+          ...this.wxHomeForm
+        })
+        if (success) {
+          this.$message.success('设置成功')
+          this.wxHomeVisible = false
+        }
+      })
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
