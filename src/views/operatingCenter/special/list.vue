@@ -505,12 +505,12 @@ export default {
     },
     openSetting () {
       this.getSpecialOptions()
-      this.wxHomeForm.thematic_id = undefined
       this.wxHomeVisible = true
     },
     getSpecialOptions () {
-      getSpecialOptions().then(({ data }) => {
+      getSpecialOptions().then(({ data, thematic_id: id }) => {
         this.specialOptions = data.list
+        this.wxHomeForm.thematic_id = id || undefined
       })
     },
     filterSpecial (input, option) {
