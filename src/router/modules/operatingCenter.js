@@ -78,6 +78,14 @@ export default {
           meta: {
             title: '邀请设置'
           }
+        },
+        {
+          path: '/operatingCenter/handRoomGift/index',
+          name: 'handRoomGift',
+          component: () => import('@/views/operatingCenter/handRoomGift/index'),
+          meta: {
+            title: '交房礼'
+          }
         }
       ]
     },
