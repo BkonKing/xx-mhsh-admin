@@ -46,6 +46,7 @@
       <a-form-model
         ref="editFrom"
         :model="editFrom"
+        :rules="editFromRules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
@@ -69,7 +70,7 @@
               />
             </a-form-model-item>
             <div style="color: #00000072;line-height: 1;">
-              到达设定时间将自动生效和失效，生效期间则在APP显示
+              到达设定时间将自动生效和失效
             </div>
           </template>
         </a-form-model-item>
@@ -111,6 +112,7 @@
 </template>
 
 <script>
+// /operatingCenter/handRoomGift/index
 import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { getBuild } from '@/api/community'
@@ -181,6 +183,11 @@ export default {
         goodIds: [],
         buildingIds: []
       },
+      editFromRules: {
+        timeType: { required: true, message: '请选择有效时间' },
+        goodIds: { required: true, message: '请选择活动商品' },
+        buildingIds: { required: true, message: '请选择可购买楼栋' }
+      },
       buildOptions: [],
       goodsOptions: []
     }
@@ -204,7 +211,7 @@ export default {
       if (data) {
         const editData = cloneDeep(data)
         editData.buildingIds = editData.buildingIds
-          ? editData.buildingIds.split(',').map((data) => +data)
+          ? editData.buildingIds.split(',').map(data => +data)
           : []
         editData.goodIds = editData.goodsIds
           ? editData.goodsIds.split(',')
