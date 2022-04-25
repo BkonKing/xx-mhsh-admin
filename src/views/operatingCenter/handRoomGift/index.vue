@@ -139,7 +139,7 @@ export default {
         {
           title: '活动时间',
           dataIndex: 'activityStime',
-          width: 182,
+          width: 190,
           customRender: (text, row) => {
             const timeType = +row.timeType
             const eTime = row.activityEtime
