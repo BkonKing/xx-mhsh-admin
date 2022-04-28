@@ -475,10 +475,6 @@ h3 {
   margin-bottom: 20px;
   font-weight: bold;
 }
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 .form-item-text {
   /deep/ .ant-form-item-control,
   /deep/ .ant-form-item-label {

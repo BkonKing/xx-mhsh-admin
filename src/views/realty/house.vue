@@ -918,10 +918,6 @@ export default {
   .ant-input:not(:first-child) {
   padding-left: 61px;
 }
-.house-edit-modal .ant-form-item-control,
-.house-edit-modal .ant-form-item-label {
-  line-height: 32px;
-}
 .house-edit-modal .ant-modal-body .ant-input-affix-wrapper .ant-input-prefix {
   height: 100%;
   border-right: 1px solid #eee;

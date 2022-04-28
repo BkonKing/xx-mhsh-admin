@@ -149,10 +149,6 @@ export default {
   min-width: 80px;
   flex-shrink: 0;
 }
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 .table-action a + a {
   margin-left: 10px;
 }

@@ -249,11 +249,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 表单行高
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 .edit-form /deep/ .ant-form-item:last-child {
   margin-bottom: 0;
 }

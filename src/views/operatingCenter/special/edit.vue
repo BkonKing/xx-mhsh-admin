@@ -291,10 +291,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 /deep/ .ant-upload-list-item-uploading-text {
   text-align: center;
 }
