@@ -165,7 +165,7 @@ export default {
           dataIndex: 'goodsStr'
         },
         {
-          title: '可购买楼栋',
+          title: '可购买楼栋(仅业主)',
           dataIndex: 'buildingStr'
         },
         {
