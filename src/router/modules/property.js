@@ -7,84 +7,75 @@ export default {
   name: 'property',
   component: RouteView,
   meta: {
-    title: '物业管家',
-    icon: 'table'
+    title: '物业管家'
   },
-  redirect: '/property/butler', // 二级菜单需要重定向一个三级菜单地址
+  redirect: '/property/lifePay',
   children: [
     {
-      path: '/property/lifePay', // 完整地址
+      path: '/property/lifePay',
       name: 'lifePay',
       component: RouteView,
       meta: {
-        title: '生活缴费',
-        icon: 'table'
+        title: '生活缴费'
       },
-      redirect: '/property/lifePay/balanceManage',
+      redirect: '/property/lifePay/paymentRecord',
       children: [
         {
-          path: '/property/lifePay/paymentRecord', // 完整地址
+          path: '/property/lifePay/paymentRecord',
           name: 'paymentRecord',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/payment'),
+          component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/payment'),
           meta: {
-            title: '充缴记录',
-            icon: 'table'
+            title: '充缴记录'
           }
         },
         {
-          path: '/property/lifePay/callpayRecord', // 完整地址
+          path: '/property/lifePay/callpayRecord',
           name: 'callpayRecord',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/callpay'),
+          component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/callpay'),
           meta: {
-            title: '催缴记录',
-            icon: 'table'
+            title: '催缴记录'
           }
         },
         {
-          path: '/property/lifePay/balanceManage', // 完整地址
+          path: '/property/lifePay/balanceManage',
           name: 'balanceManage',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/balance'),
+          component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/balance'),
           meta: {
-            title: '余额管理',
-            icon: 'table'
+            title: '余额管理'
           }
         },
         {
-          path: '/property/lifePay/balanceManage', // 完整地址
+          path: '/property/lifePay/balanceManage',
           name: 'balanceManage',
           component: RouteView,
           meta: {
-            title: '余额管理',
-            icon: 'table'
+            title: '余额管理'
           },
           children: [
             {
-              path: '/property/lifePay/balanceDetail', // 完整地址
+              path: '/property/lifePay/balanceDetail',
               name: 'balanceDetail',
-              component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/balance-detail'),
+              component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/balance-detail'),
               meta: {
-                title: '余额详情',
-                icon: 'table'
+                title: '余额详情'
               }
             }
           ]
         },
         {
-          path: '/property/lifePay/statistics', // 完整地址
+          path: '/property/lifePay/statistics',
           name: 'statistics',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/statistics'),
+          component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/statistics'),
           meta: {
-            title: '数据统计',
-            icon: 'table'
+            title: '数据统计'
           }
         },
         {
-          path: '/property/lifePay/logs', // 完整地址
+          path: '/property/lifePay/logs',
           name: 'logs',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/property/lifePay/logs'),
+          component: () => import(/* webpackChunkName: "property" */ '@/views/property/lifePay/logs'),
           meta: {
-            title: '操作日志',
-            icon: 'table'
+            title: '操作日志'
           }
         }
       ]

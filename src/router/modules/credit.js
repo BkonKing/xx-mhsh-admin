@@ -15,7 +15,7 @@ export default // 幸福币
     {
       path: '/credit/setting',
       name: 'creditSetting',
-      component: () => import('@/views/credit/setting'),
+      component: () => import(/* webpackChunkName: "credit" */ '@/views/credit/setting'),
       meta: {
         title: '幸福币设置'
       }
@@ -23,7 +23,7 @@ export default // 幸福币
     {
       path: '/credit/withdraw/list',
       name: 'withdrawList',
-      component: () => import('@/views/credit/withdraw/list'),
+      component: () => import(/* webpackChunkName: "credit" */ '@/views/credit/withdraw/list'),
       meta: {
         keepAlive: true,
         title: '提现申请'
@@ -41,7 +41,7 @@ export default // 幸福币
         {
           path: '/credit/withdraw/detail',
           name: 'withdrawDetail',
-          component: () => import('@/views/credit/withdraw/detail'),
+          component: () => import(/* webpackChunkName: "credit" */ '@/views/credit/withdraw/detail'),
           meta: {
             title: '提现详情'
           }

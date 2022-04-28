@@ -15,7 +15,7 @@ export default {
     {
       path: '/community/freeServer/list',
       name: 'freeServerList',
-      component: () => import('@/views/community/freeServer/list'),
+      component: () => import(/* webpackChunkName: "community" */ '@/views/community/freeServer/list'),
       meta: {
         title: '免费服务'
       }
@@ -33,7 +33,7 @@ export default {
         {
           path: '/community/freeServer/setting',
           name: 'freeServerSetting',
-          component: () => import('@/views/community/freeServer/setting'),
+          component: () => import(/* webpackChunkName: "community" */ '@/views/community/freeServer/setting'),
           meta: {
             title: '服务设置'
           }
@@ -44,7 +44,7 @@ export default {
     {
       path: '/community/serviceLog',
       name: 'serviceLog',
-      component: () => import('@/views/community/serviceLog/index'),
+      component: () => import(/* webpackChunkName: "community" */ '@/views/community/serviceLog/index'),
       meta: {
         title: '服务记录'
       }

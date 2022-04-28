@@ -8,105 +8,94 @@ export default {
   name: 'movie',
   component: PageView,
   meta: {
-    title: '电影管理',
-    icon: 'table'
+    title: '电影管理'
   },
-  redirect: '/movie/order', // 二级菜单需要重定向一个三级菜单地址
+  redirect: '/movie/order',
   children: [
     {
-      path: '/movie/order', // 完整地址
+      path: '/movie/order',
       name: 'movieOrder',
-      component: () => import(/* webpackChunkName: "life" */ '@/views/movie/order'),
+      component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/order'),
       meta: {
-        title: '影票订单',
-        icon: 'table'
+        title: '影票订单'
       }
     },
     {
-      path: '/movie/order', // 完整地址
+      path: '/movie/order',
       name: 'movieOrder',
       component: RouteView,
       meta: {
-        title: '影票订单',
-        icon: 'table'
+        title: '影票订单'
       },
       children: [
         {
-          path: '/movie/detail', // 完整地址
+          path: '/movie/detail',
           name: 'movieDetail',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/movie/detail'),
+          component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/detail'),
           meta: {
-            title: '订单详情',
-            icon: 'table'
+            title: '订单详情'
           }
         }
       ]
     },
     {
-      path: '/movie/refund', // 完整地址
+      path: '/movie/refund',
       name: 'refund',
-      component: () => import(/* webpackChunkName: "life" */ '@/views/movie/refund'),
+      component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/refund'),
       meta: {
-        title: '退款申请',
-        icon: 'table'
+        title: '退款申请'
       }
     },
     {
-      path: '/movie/refund', // 完整地址
+      path: '/movie/refund',
       name: 'refund',
       component: RouteView,
       meta: {
-        title: '退款申请',
-        icon: 'table'
+        title: '退款申请'
       },
       children: [
         {
-          path: '/movie/refundDetail', // 完整地址
+          path: '/movie/refundDetail',
           name: 'refundDetail',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/movie/refundDetail'),
+          component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/refundDetail'),
           meta: {
-            title: '退款详情',
-            icon: 'table'
+            title: '退款详情'
           }
         }
       ]
     },
     {
-      path: '/movie/film', // 完整地址
+      path: '/movie/film',
       name: 'film',
-      component: () => import(/* webpackChunkName: "life" */ '@/views/movie/film'),
+      component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/film'),
       meta: {
-        title: '影片列表',
-        icon: 'table'
+        title: '影片列表'
       }
     },
     {
-      path: '/movie/film', // 完整地址
+      path: '/movie/film',
       name: 'film',
       component: RouteView,
       meta: {
-        title: '影片列表',
-        icon: 'table'
+        title: '影片列表'
       },
       children: [
         {
-          path: '/movie/filmDetail', // 完整地址
+          path: '/movie/filmDetail',
           name: 'filmDetail',
-          component: () => import(/* webpackChunkName: "life" */ '@/views/movie/filmDetail'),
+          component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/filmDetail'),
           meta: {
-            title: '影片详情',
-            icon: 'table'
+            title: '影片详情'
           }
         }
       ]
     },
     {
-      path: '/movie/filmSet', // 完整地址
+      path: '/movie/filmSet',
       name: 'filmSet',
-      component: () => import(/* webpackChunkName: "life" */ '@/views/movie/filmSet'),
+      component: () => import(/* webpackChunkName: "movie" */ '@/views/movie/filmSet'),
       meta: {
-        title: '电影设置',
-        icon: 'table'
+        title: '电影设置'
       }
     }
   ]
