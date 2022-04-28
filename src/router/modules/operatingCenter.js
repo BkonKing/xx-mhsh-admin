@@ -9,16 +9,16 @@ export default {
   meta: {
     title: '运营中心'
   },
-  redirect: '/operatingCenter/appmessage',
+  redirect: '/operatingCenter/special/list',
   children: [
     {
-      path: '/operatingCenter/activity', // 完整地址
+      path: '/operatingCenter/activity',
       name: 'activity',
       component: RouteView,
       meta: {
         title: '活动管理'
       },
-      redirect: '/operatingCenter/activity/integral',
+      redirect: '/operatingCenter/special/list',
       children: [
         {
           path: '/operatingCenter/special/list',
@@ -56,7 +56,7 @@ export default {
           ]
         },
         {
-          path: '/operatingCenter/activity/integral', // 完整地址
+          path: '/operatingCenter/activity/integral',
           name: 'integralActivity',
           component: () => import('@/views/operatingCenter/activity/integral'),
           meta: {
@@ -77,6 +77,14 @@ export default {
           component: () => import('@/views/operatingCenter/activity/invite/setting'),
           meta: {
             title: '邀请设置'
+          }
+        },
+        {
+          path: '/operatingCenter/lottery/index',
+          name: 'lotteryIndex',
+          component: () => import('@/views/operatingCenter/activity/lottery/index'),
+          meta: {
+            title: '转盘抽奖'
           }
         },
         {
