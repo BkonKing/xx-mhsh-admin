@@ -556,13 +556,4 @@ export default {
     padding-left: 40px;
   }
 }
-
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 </style>

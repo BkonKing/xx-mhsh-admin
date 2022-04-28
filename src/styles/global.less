@@ -2,7 +2,8 @@
 
 html,
 body,
-#app, #root {
+#app,
+#root {
   height: 100%;
 }
 
@@ -18,14 +19,14 @@ body {
 
 ::-webkit-scrollbar-track {
   width: 6px;
-  background: rgba(#101F1C, 0.1);
+  background: rgba(#101f1c, 0.1);
   -webkit-border-radius: 2em;
   -moz-border-radius: 2em;
   border-radius: 2em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(#101F1C, 0.5);
+  background-color: rgba(#101f1c, 0.5);
   background-clip: padding-box;
   min-height: 28px;
   -webkit-border-radius: 2em;
@@ -34,7 +35,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(#101F1C, 1);
+  background-color: rgba(#101f1c, 1);
 }
 
 // 数据列表 样式
@@ -51,9 +52,6 @@ body {
 }
 // 数据列表 搜索条件
 .table-page-search-wrapper {
-  /deep/ .ant-form-item-label {
-    min-width: 88px;
-  }
   .ant-form-inline {
     .ant-form-item {
       display: flex;
@@ -66,9 +64,15 @@ body {
         vertical-align: middle;
       }
 
+      .ant-form-item-control {
+        height: 32px;
+      }
+
       > .ant-form-item-label {
         padding-right: 8px;
         width: auto;
+        min-width: 80px;
+        flex-shrink: 0;
       }
     }
   }
@@ -97,17 +101,24 @@ body {
   }
 }
 
+.form-item-text {
+  .ant-form-item-control,
+  .ant-form-item-label {
+    line-height: 24px;
+  }
+}
+
 .text-right {
   text-align: right;
 }
 .color-1890FF {
-  color: #1890FF;
+  color: #1890ff;
 }
 .color-F5222D {
-  color: #F5222D;
+  color: #f5222d;
 }
 .color-00025 {
-  color: rgba(0, 0, 0, 0.25)
+  color: rgba(0, 0, 0, 0.25);
 }
 
 .popover-toast {
@@ -160,7 +171,7 @@ div.ant-pro-grid-content.wide {
 }
 
 .color-red {
-  color: #F5222D;
+  color: #f5222d;
 }
 
 // 两行省略

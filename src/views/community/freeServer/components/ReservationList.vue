@@ -266,12 +266,12 @@ export default {
             return (
               <div>
                 时长
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>排队时长/借用时长</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>排队时长/借用时长</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },
@@ -297,13 +297,13 @@ export default {
             return (
               <div>
                 操作
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <div>完成：完成服务</div>
-                    <div>取消：取消预约</div>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <div>完成：完成服务</div>
+                  <div>取消：取消预约</div>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },
@@ -435,10 +435,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
 </style>

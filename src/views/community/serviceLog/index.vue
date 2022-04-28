@@ -465,21 +465,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
 h3 {
   margin-bottom: 20px;
   font-weight: bold;
-}
-.form-item-text {
-  /deep/ .ant-form-item-control,
-  /deep/ .ant-form-item-label {
-    line-height: 24px;
-  }
 }
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;

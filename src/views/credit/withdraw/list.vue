@@ -561,14 +561,6 @@ export default {
 /deep/ .ant-pro-page-header-wrap-children-content {
   padding-bottom: 24px;
 }
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 .alert-text {
   color: @error-color;
 }

@@ -201,13 +201,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 表单显示行高
-.form-item-text {
-  /deep/ .ant-form-item-control,
-  /deep/ .ant-form-item-label {
-    line-height: 24px;
-  }
-}
 .edit-form /deep/ .ant-form-item:last-child {
   margin-bottom: 0;
 }

@@ -342,12 +342,12 @@ export default {
             return (
               <div>
                 操作
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>删除即解除员工身份</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>删除即解除员工身份</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -611,14 +611,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 .alert-text {
   color: @error-color;
 }

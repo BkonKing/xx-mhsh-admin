@@ -212,12 +212,12 @@ export default {
             return (
               <div>
                 是否启用
-                <a-tooltip placement="top">
-                  <template slot="title">
-                    <span>开启则APP显示服务</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+              <a-tooltip placement="top">
+                <template slot="title">
+                  <span>开启则APP显示服务</span>
+                </template>
+                <a-icon type="info-circle" style="margin-left: 5px;" />
+              </a-tooltip>
               </div>
             )
           },
@@ -314,12 +314,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
 .table-page-search-submitButtons {
   text-align: right;
 }

@@ -355,7 +355,7 @@ export default {
           content: h => (
             <div>
               确定删除{this.selectedRowKeys.length}个店员吗？
-            <span style="color:red;">删除后则失去店铺权限</span>
+              <span style="color:red;">删除后则失去店铺权限</span>
             </div>
           ),
           icon: () => (
@@ -435,14 +435,6 @@ export default {
 <style lang="less" scoped>
 /deep/ .ant-pro-page-header-wrap-children-content {
   padding-bottom: 24px;
-}
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
 }
 .alert-text {
   color: @error-color;

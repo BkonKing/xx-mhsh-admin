@@ -290,12 +290,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 </style>
