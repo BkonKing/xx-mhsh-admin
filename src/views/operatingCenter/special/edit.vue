@@ -47,7 +47,7 @@
         <a-form-model-item label="专题图" required>
           <div>支持扩展名：.png .jpg；</div>
           <a-row type="flex" :gutter="20">
-            <a-col flex="1">
+            <a-col flex="220px">
               <a-form-model-item
                 class="upload-image-box"
                 prop="thumb"
@@ -66,7 +66,7 @@
                 <div>(尺寸710*326)</div>
               </div>
             </a-col>
-            <a-col flex="1">
+            <a-col flex="220px">
               <a-form-model-item
                 class="upload-image-box"
                 prop="bj_thumb"
@@ -111,15 +111,45 @@
               :maxLength="50"
             ></a-input>
           </a-form-model-item>
-          <a-form-model-item prop="wechat_img" style="margin-bottom: 0;">
-            <upload-image
-              v-model="form.wechat_img"
-              maxLength="1"
-              :noHost="true"
-            ></upload-image>
-            <div style="margin-top: -11px;color: #00000072;">
-              尺寸100*100；支持扩展名：.png .jpg；
-            </div>
+          <a-form-model-item style="margin-bottom: 0;">
+            <a-row type="flex" :gutter="20">
+              <a-col flex="220px">
+                <a-form-model-item
+                  class="upload-image-box"
+                  prop="wechat_img"
+                  style="margin-bottom: 0;"
+                >
+                  <upload-image
+                    v-model="form.wechat_img"
+                    maxLength="1"
+                    class="introduction-upload"
+                    :noHost="true"
+                  ></upload-image>
+                </a-form-model-item>
+                <div class="upload-image-alert">
+                  <div>APP分享图</div>
+                  <div>(尺寸100*100；支持：.png .jpg)</div>
+                </div>
+              </a-col>
+              <a-col flex="220px">
+                <a-form-model-item
+                  class="upload-image-box"
+                  prop="wechat_xcx_img"
+                  style="margin-bottom: 0;"
+                >
+                  <upload-image
+                    v-model="form.wechat_xcx_img"
+                    maxLength="1"
+                    class="introduction-upload"
+                    :noHost="true"
+                  ></upload-image>
+                </a-form-model-item>
+                <div class="upload-image-alert">
+                  <div>小程序分享图</div>
+                  <div>(尺寸500*400；支持：.png .jpg)</div>
+                </div>
+              </a-col>
+            </a-row>
           </a-form-model-item>
         </a-form-model-item>
       </a-form-model>
@@ -214,10 +244,13 @@ export default {
         thematic_id: this.specialId
       }).then(({ data, child }) => {
         const formData = cloneDeep(data)
-        formData.time = +formData.is_limit ? formData.limit_time.split(' ~ ') : []
+        formData.time = +formData.is_limit
+          ? formData.limit_time.split(' ~ ')
+          : []
         formData.thumb = formData.thumb ? [formData.thumb] : []
         formData.bj_thumb = formData.bj_thumb ? [formData.bj_thumb] : []
         formData.wechat_img = formData.wechat_img ? [formData.wechat_img] : []
+        formData.wechat_xcx_img = formData.wechat_xcx_img ? [formData.wechat_xcx_img] : []
         this.form = formData
         this.$nextTick(() => {
           this.$refs['special-images'].setData(child)
@@ -230,7 +263,11 @@ export default {
       }
     },
     handleSubmit () {
-      Promise.all([validAForm(this.$refs.BasicForm), this.$refs['special-images'].validate(), this.validImageData()]).then(() => {
+      Promise.all([
+        validAForm(this.$refs.BasicForm),
+        this.$refs['special-images'].validate(),
+        this.validImageData()
+      ]).then(() => {
         this.saveSpecial({
           ...this.form,
           child: this.formatImageData()
@@ -278,6 +315,7 @@ export default {
       params.thumb = params.thumb ? params.thumb[0] : ''
       params.bj_thumb = params.bj_thumb ? params.bj_thumb[0] : ''
       params.wechat_img = params.wechat_img ? params.wechat_img[0] : ''
+      params.wechat_xcx_img = params.wechat_xcx_img ? params.wechat_xcx_img[0] : ''
       this.specialId && (params.thematic_id = this.specialId)
       addSpecial(params).then(({ success }) => {
         if (success) {
@@ -311,8 +349,9 @@ export default {
 }
 .introduction-upload /deep/ .ant-upload-list-picture-card-container,
 .introduction-upload /deep/ .ant-upload.ant-upload-select-picture-card {
-  width: 100%;
-  height: 163px;
+  width: 220px;
+  height: 120px;
+  margin-right: 0;
   margin-bottom: 8px;
 }
 .upload-image-box /deep/ .ant-form-explain {
