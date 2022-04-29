@@ -13,7 +13,7 @@
       >
         <template slot="title">
           <div class="preview-tooltip-text">请手机扫码预览</div>
-          <img :src="infoData.qr_code" alt="" />
+          <img :src="infoData.award_preview_code" alt="" />
         </template>
         <a-button type="primary">预览</a-button>
       </a-tooltip>
@@ -23,21 +23,23 @@
       <div class="status-list">
         <div>
           <div class="text">状态</div>
-          <div class="heading">{{ infoData.state_name }}</div>
+          <div class="heading">{{ infoData.state }}</div>
         </div>
         <div>
           <div class="text">奖品</div>
-          <div class="heading">{{ infoData.goods_num }}</div>
+          <div class="heading">{{ infoData.award_num }}</div>
         </div>
         <div>
           <div class="text">二维码</div>
-          <div class="heading">{{ infoData.browse_num }}</div>
+          <div class="heading">
+            <a-icon type="qrcode" @click="previewImage" />
+          </div>
         </div>
       </div>
     </template>
-    <setting-tab v-if="tabActiveKey === '0'"></setting-tab>
-    <record-tab v-if="tabActiveKey === '1'" type="1" key="1"></record-tab>
-    <record-tab v-if="tabActiveKey === '2'" type="2" key="2"></record-tab>
+    <setting-tab v-show="tabActiveKey === '0'" @success="getLotteryData"></setting-tab>
+    <record-tab v-show="tabActiveKey === '1'" type="1" key="1"></record-tab>
+    <record-tab v-show="tabActiveKey === '2'" type="2" key="2"></record-tab>
   </page-header-view>
 </template>
 
@@ -47,7 +49,7 @@ import { mapGetters } from 'vuex'
 import PageHeaderView from '@/layouts/PageHeaderView'
 import SettingTab from './components/SettingTab'
 import RecordTab from './components/RecordTab'
-import { getLotteryTabData } from '@/api/operatingCenter/lottery'
+import { getLotteryData } from '@/api/operatingCenter/lottery'
 
 export default {
   name: 'SpecialDetail',
@@ -86,14 +88,20 @@ export default {
     }
   },
   created () {
-    this.getLotteryTabData()
+    this.getLotteryData()
   },
   methods: {
-    async getLotteryTabData () {
-      const { data, tab_data: tabData } = await getLotteryTabData()
+    async getLotteryData () {
+      const { data } = await getLotteryData()
+      this.infoData = data
     },
     handleTabChange (key) {
       this.tabActiveKey = key
+    },
+    previewImage () {
+      this.$viewerApi({
+        images: [this.infoData.award_code]
+      })
     }
   }
 }

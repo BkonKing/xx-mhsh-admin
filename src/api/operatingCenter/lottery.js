@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 export const lotteryApi = {
+  getLotteryData: '/invite/award/awardData',
   getLotterySetting: '/invite/award/getZpSetting',
   saveLotterySetting: '/invite/award/saveZpSetting',
   getGoodsList: '/invite/award/getGoodsList',
@@ -9,6 +10,15 @@ export const lotteryApi = {
   getLotteryLogList: '/invite/award/awardLogList',
   getLotteryTabData: '/invite/award/awardTabData',
   editLotteryStatus: '/invite/award/editAwardCash'
+}
+
+// 转盘数据
+export function getLotteryData (data) {
+  return request({
+    url: lotteryApi.getLotteryData,
+    method: 'post',
+    data
+  })
 }
 
 // 转盘基础数据

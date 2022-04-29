@@ -44,12 +44,16 @@
             v-model="formData.chance_frequency"
             :min="1"
             :precision="0"
+            @focus="handleFocus('chance_frequency')"
+            @blur="handleBlur('chance_frequency')"
           ></a-input-number
           ><span style="margin-left:8px;margin-right: 8px;">次，其中前</span>
           <a-input-number
             v-model="formData.free_frequency"
-            :min="1"
+            :min="0"
             :precision="0"
+            @focus="handleFocus('free_frequency')"
+            @blur="handleBlur('free_frequency')"
           ></a-input-number
           ><span style="margin-left:8px;">次免费抽奖</span>
           <div class="alert-text">每人每天最多可抽奖次数</div>
@@ -57,8 +61,10 @@
         <a-form-model-item label="抽奖消耗" prop="consume">
           <a-input-number
             v-model="formData.consume"
-            :min="1"
+            :min="0"
             :precision="0"
+            @focus="handleFocus('consume')"
+            @blur="handleBlur('consume')"
           ></a-input-number
           ><span style="margin-left:8px;">幸福币/次</span>
         </a-form-model-item>
@@ -75,26 +81,29 @@
           ><span style="margin-left:8px;">次/天，当用户还有抽奖次数时</span>
           <div class="alert-text">首页弹窗提示每天最多次数</div>
         </a-form-model-item>
-        <a-form-model-item label="兑奖工作人员" prop="eeee">
+        <a-form-model-item label="兑奖工作人员" prop="power_uid_data">
           <a-select
-            v-model="formData.eeee"
-            type="multiple"
+            v-model="formData.power_uid_data"
+            mode="multiple"
             show-search
-            placeholder="输入姓名/手机号/ID进行搜索"
-            :filter-option="filterUser"
+            placeholder="搜索手机号/姓名"
+            :filter-option="false"
+            :not-found-content="fetching ? undefined : null"
+            @search="fetchUser"
           >
             <a-spin v-if="fetching" slot="notFoundContent" size="small" />
             <a-select-option
               v-for="item in userOptions"
               :key="item.id"
               :value="item.id"
-              >{{ item.nickname }}</a-select-option
+              >{{ item.mobile }} {{ item.realname }}</a-select-option
             >
           </a-select>
+          <div class="alert-text">拥有前端扫一扫核销奖品兑换码的权限</div>
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <prize-setting :data="prizeList"></prize-setting>
+    <prize-setting ref="prizeSetting" :data="prizeList"></prize-setting>
     <div style="height: 56px;"></div>
     <footer-tool-bar style="width: 100%;">
       <a-button @click="$router.go(-1)" style="margin-right: 15px;">
@@ -110,9 +119,11 @@
 <script>
 import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
+import { debounce, validAForm } from '@/utils/util'
 import FooterToolBar from '@/components/FooterToolbar'
 import PrizeSetting from './PrizeSetting'
-import { getLotterySetting } from '@/api/operatingCenter/lottery'
+import { getLotterySetting, saveLotterySetting } from '@/api/operatingCenter/lottery'
+import { getUserList } from '@/api/userManage/business'
 
 export default {
   name: 'SettingTab',
@@ -121,6 +132,7 @@ export default {
     PrizeSetting
   },
   data () {
+    this.fetchUser = debounce(this.fetchUser, 500)
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
@@ -135,7 +147,8 @@ export default {
         free_frequency: '',
         consume: '',
         explain: '',
-        popup: ''
+        popup: '',
+        power_uid_data: []
       },
       formRules: {
         title: [{ required: true, message: '请输入活动标题' }],
@@ -143,7 +156,8 @@ export default {
       },
       fetching: false,
       userOptions: [],
-      prizeList: []
+      prizeList: [],
+      copyNum: 0 // 抽奖一会和免费次数暂存拷贝数据
     }
   },
   created () {
@@ -151,17 +165,63 @@ export default {
   },
   methods: {
     getLotterySetting () {
-      getLotterySetting().then(({ setting_info: settingInfo, award_list: prizeList }) => {
-        console.log(settingInfo)
-        this.formData = settingInfo || {}
-        this.prizeList = prizeList || []
+      getLotterySetting().then(
+        ({ setting_info: settingInfo, award_list: prizeList, power_list: uidList }) => {
+          let uidData = uidList || []
+          if (uidData.length) {
+            uidData = uidList.map((obj) => obj.uid)
+            this.userOptions = uidList.map((obj) => ({
+              ...obj,
+              id: obj.uid
+            }))
+          }
+          this.formData = settingInfo || {}
+          this.formData.power_uid_data = uidData
+          this.prizeList = prizeList || []
+        }
+      )
+    },
+    handleFocus (key) {
+      this.copyNum = this.formData[key]
+    },
+    handleBlur (key) {
+      const value = this.formData[key]
+      if (value === null || value === '') {
+        this.formData[key] = this.copyNum
+      }
+    },
+    handleSubmit () {
+      Promise.all([validAForm(this.$refs.BasicForm), this.$refs.prizeSetting.validate()]).then(() => {
+        saveLotterySetting({
+          ...this.formData,
+          setting_id: this.formData.id,
+          award_data: this.$refs.prizeSetting.tableData.map((data, index) => {
+            return {
+              sort: index,
+              ...data
+            }
+          })
+        }).then((success) => {
+          if (success) {
+            this.$message.success('提交成功')
+            this.$emit('success')
+          }
+        })
       })
     },
-    handleSubmit () {},
-    filterUser (input, option) {
-      const value = input.toLowerCase()
-      const text = option.componentOptions.children[0].text.toLowerCase()
-      return text.indexOf(value) >= 0 || option.key == value
+    fetchUser (value) {
+      const isNumber = /^\d+$/.test(value) && value.length > 7
+      const isChinese = /[\u4e00-\u9fa5]/gm.test(value)
+      if (!isNumber && !isChinese) {
+        return
+      }
+      this.fetching = true
+      getUserList({
+        user_text: value
+      }).then(({ data }) => {
+        this.userOptions = data.list
+        this.fetching = false
+      })
     }
   }
 }
@@ -169,7 +229,7 @@ export default {
 
 <style lang="less" scoped>
 .alert-text {
-  line-height: 1.4;
+  line-height: 1.6;
   color: #00000072;
 }
 </style>

@@ -154,7 +154,7 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { DetailInfo, STable, AdvancedForm } from '@/components'
-import { getLotteryLogList, editLotteryStatus } from '@/api/operatingCenter/lottery'
+import { getLotteryTabData, getLotteryLogList, editLotteryStatus } from '@/api/operatingCenter/lottery'
 
 export default {
   name: 'recordTab',
@@ -181,20 +181,20 @@ export default {
       return this.isPrize ? '兑奖记录' : ''
     },
     lotteryNum () {
-      const num = this.data.inviter_num
-      const num1 = this.data.share_num
+      const num = this.infoData.inviter_num
+      const num1 = this.infoData.share_num
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     },
     lotteryNum1 () {
-      const num = this.data.inviter_num
-      const num1 = this.data.share_num
+      const num = this.infoData.inviter_num
+      const num1 = this.infoData.share_num
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     },
     lotteryNum2 () {
-      const num = this.data.inviter_num
-      const num1 = this.data.share_num
+      const num = this.infoData.inviter_num
+      const num1 = this.infoData.share_num
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     }
@@ -205,7 +205,7 @@ export default {
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       labelCol: { lg: { span: 6 }, sm: { span: 6 } },
       wrapperCol: { lg: { span: 18 }, sm: { span: 18 } },
-      data: {},
+      infoData: {},
       queryParam: {},
       columns: [
         {
@@ -351,6 +351,10 @@ export default {
       : this.columns.splice(3, 0, ...this.lotteryColumns)
   },
   methods: {
+    async getLotteryTabData () {
+      const { tab_data: data } = await getLotteryTabData()
+      this.infoData = data
+    },
     reset () {},
     refresh () {},
     search () {},
