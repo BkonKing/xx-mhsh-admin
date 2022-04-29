@@ -541,19 +541,4 @@ export default {
     top: 3px;
   }
 }
-
-/deep/ .ant-pro-page-header-wrap-page-header-warp {
-  .ant-pro-page-header-wrap-extraContent {
-    position: initial;
-  }
-}
-.status-list {
-  display: flex;
-  justify-content: flex-end;
-  text-align: left;
-  .text,
-  .heading {
-    padding-left: 40px;
-  }
-}
 </style>

@@ -38,11 +38,7 @@ body {
   background-color: rgba(#101f1c, 1);
 }
 
-// 数据列表 样式
-.table-alert {
-  margin-bottom: 16px;
-}
-// 数据列表 操作
+// 数据列表 操作行
 .table-operator {
   margin-bottom: 18px;
 
@@ -50,6 +46,7 @@ body {
     margin-right: 8px;
   }
 }
+
 // 数据列表 搜索条件
 .table-page-search-wrapper {
   .ant-form-inline {
@@ -109,13 +106,21 @@ body {
   }
 }
 
-.text-right {
-  text-align: right;
+// 页面右上角状态显示栏
+.status-list {
+  display: flex;
+  justify-content: flex-end;
+  text-align: left;
+  .text,
+  .heading {
+    padding-left: 40px;
+    text-align: right;
+  }
 }
 .color-1890FF {
   color: #1890ff;
 }
-.color-F5222D {
+.color-red {
   color: #f5222d;
 }
 .color-00025 {
@@ -123,13 +128,13 @@ body {
 }
 
 .popover-toast {
-  /deep/ .ant-popover-inner-content {
+  .ant-popover-inner-content {
     background-color: rgba(0, 0, 0, 0.7);
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
   }
-  /deep/ .ant-popover-arrow {
+  .ant-popover-arrow {
     border-right-color: rgba(0, 0, 0, 0.7) !important;
     border-bottom-color: rgba(0, 0, 0, 0.7) !important;
   }
@@ -152,7 +157,7 @@ div.ant-pro-grid-content.wide {
     top: 0;
   }
 }
-.ant-pro-page-header-wrap-page-header-warp {
+.page-header-extraContent-fixed .ant-pro-page-header-wrap-page-header-warp {
   position: relative;
   .ant-pro-page-header-wrap-extraContent {
     position: absolute;
@@ -165,14 +170,6 @@ div.ant-pro-grid-content.wide {
   .ant-card-body {
     padding-bottom: 0;
   }
-}
-
-.flex {
-  display: flex;
-}
-
-.color-red {
-  color: #f5222d;
 }
 
 // 两行省略

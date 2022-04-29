@@ -105,16 +105,6 @@ export default {
     vertical-align: top;
   }
 }
-.status-list {
-  display: flex;
-  justify-content: flex-end;
-  text-align: left;
-  .text,
-  .heading {
-    padding-left: 36px;
-    text-align: right;
-  }
-}
 .heading {
   font-size: 20px;
   color: #000000d9;
@@ -127,17 +117,8 @@ export default {
 /deep/ .ant-pro-page-header-wrap-main .ant-pro-page-header-wrap-row {
   justify-content: flex-end;
 }
-/deep/ .ant-pro-page-header-wrap-page-header-warp {
-  .ant-pro-page-header-wrap-extraContent {
-    position: initial;
-  }
-}
 /deep/ .ant-pro-page-header-wrap-children-content {
   padding-bottom: 24px;
-}
-.topic-image /deep/ img {
-  width: 355px !important;
-  height: 163px !important;
 }
 </style>
 

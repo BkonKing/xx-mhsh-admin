@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrapper>
+  <page-header-wrapper class="page-header-extraContent-fixed">
     <template v-slot:extraContent>
       <div v-if="dataObj" class="extra-content">
         <div v-if="payStatu[0]" class="stat-item">

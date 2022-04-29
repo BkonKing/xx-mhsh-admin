@@ -1,5 +1,6 @@
 <template>
   <page-header-wrapper
+    class="page-header-extraContent-fixed"
     :tab-list="tabList"
     :tab-active-key="tabIndex"
     :tab-change="tabSelect"

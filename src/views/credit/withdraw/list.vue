@@ -1,5 +1,6 @@
 <template>
   <page-header-view
+    class="page-header-extraContent-fixed"
     :tab-list="tabList"
     :tab-active-key="tabActiveKey"
     @tabChange="handleTabChange"
@@ -579,16 +580,7 @@ export default {
 .permission-modal-span + .permission-modal-span::before {
   content: "、";
 }
-.status-list {
-  display: flex;
-  justify-content: flex-end;
-  text-align: right;
-  .text,
-  .heading {
-    padding-left: 40px;
-  }
-  .heading {
-    font-size: 20px;
-  }
+.heading {
+  font-size: 20px;
 }
 </style>
