@@ -134,10 +134,9 @@
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="openRemark(record)">备注</a>
+            <a @click="openRemark(record)">备注</a>
             <a
               v-if="[0, 1].includes(record.status)"
-              style="margin-right: 10px;"
               @click="finishService([record.id])"
               >完成</a
             >
@@ -266,12 +265,12 @@ export default {
             return (
               <div>
                 时长
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>排队时长/借用时长</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>排队时长/借用时长</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -297,13 +296,13 @@ export default {
             return (
               <div>
                 操作
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <div>完成：完成服务</div>
-                  <div>取消：取消预约</div>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <div>完成：完成服务</div>
+                    <div>取消：取消预约</div>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },

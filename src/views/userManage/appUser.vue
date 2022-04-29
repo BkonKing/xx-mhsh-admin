@@ -163,8 +163,8 @@
         </div>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="check(record)">查看</a>
-            <a style="margin-right: 10px;" @click="openTagModal(record)"
+            <a @click="check(record)">查看</a>
+            <a @click="openTagModal(record)"
               >标签</a
             >
             <a @click="openEditModal(record)">编辑</a>

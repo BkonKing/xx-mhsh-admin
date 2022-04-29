@@ -195,8 +195,7 @@
           </template>
           <span class="table-action" slot="action" slot-scope="text, record">
             <template>
-              <!-- <a style="margin-right: 10px;">查看</a> -->
-              <a style="margin-right: 10px;" @click="openEditModal(record)"
+              <a @click="openEditModal(record)"
                 >编辑</a
               >
               <a @click="deleteHouse(record)">删除</a>

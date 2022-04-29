@@ -142,9 +142,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .table-action a + a {
-  margin-left: 10px;
-}
 h3 {
   font-weight: bold;
 }

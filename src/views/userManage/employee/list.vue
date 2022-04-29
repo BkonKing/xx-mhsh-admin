@@ -614,7 +614,4 @@ export default {
 .alert-text {
   color: @error-color;
 }
-.table-action a + a {
-  margin-left: 10px;
-}
 </style>

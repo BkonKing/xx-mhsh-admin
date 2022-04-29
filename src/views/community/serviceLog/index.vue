@@ -175,7 +175,7 @@
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="openLogModal(record)"
+            <a @click="openLogModal(record)"
               >查看</a
             >
             <a @click="openEditModal(record)">跟进</a>

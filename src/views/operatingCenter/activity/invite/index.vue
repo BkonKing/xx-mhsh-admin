@@ -143,9 +143,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-action a + a {
-  margin-left: 10px;
-}
 .table-card {
   /deep/ .ant-tabs-bar {
     margin-bottom: 0;

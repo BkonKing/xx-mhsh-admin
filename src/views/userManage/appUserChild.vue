@@ -100,7 +100,7 @@
           <a-avatar v-if="text" :size="40" :src="text" />
         </div>
         <span class="table-action" slot="action" slot-scope="text, record">
-          <a style="margin-right: 10px;" @click="check(record)">查看</a>
+          <a @click="check(record)">查看</a>
         </span>
       </s-table>
     </a-card>
