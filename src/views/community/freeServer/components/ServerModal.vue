@@ -7,7 +7,6 @@
     @ok="submit"
   >
     <a-form-model
-      class="edit-form"
       ref="form"
       :model="formData"
       :label-col="{ span: 5 }"
@@ -97,7 +96,7 @@
           @change="handleChange"
         />
       </a-form-model-item>
-      <a-form-model-item label="是否启用" prop="is_enabled">
+      <a-form-model-item class="mb-0" label="是否启用" prop="is_enabled">
         <a-switch v-model="formData.is_enabled"></a-switch>
       </a-form-model-item>
     </a-form-model>
@@ -249,7 +248,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.edit-form /deep/ .ant-form-item:last-child {
-  margin-bottom: 0;
-}
 </style>

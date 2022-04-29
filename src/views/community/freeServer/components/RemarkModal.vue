@@ -7,7 +7,6 @@
   >
     <a-spin :spinning="spinning">
       <a-form-model
-        class="edit-form"
         ref="editForm"
         :model="editForm"
         :label-col="{ span: 5 }"
@@ -24,7 +23,9 @@
         <a-form-model-item class="form-item-text" label="预约服务">
           <div>{{ editForm.category_type_desc }} - {{ editForm.category }}</div>
           <a-row type="flex">
-            <template v-if="[2,3].includes(editForm.status)">{{timeString}}</template>
+            <template v-if="[2, 3].includes(editForm.status)">{{
+              timeString
+            }}</template>
             <span v-if="isShowOverTime || isShowTiming">(</span>
             <a-col v-if="isShowOverTime"
               ><Timewait
@@ -65,7 +66,7 @@
         </a-form-model-item>
         <a-form-model-item
           v-if="editForm.etime"
-          class="form-item-text"
+          class="form-item-text mb-0"
           label="结束时间"
         >
           <div>{{ editForm.etime || "--" }}</div>
@@ -201,9 +202,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.edit-form /deep/ .ant-form-item:last-child {
-  margin-bottom: 0;
-}
 .marginTime {
   margin-left: 12px;
 }

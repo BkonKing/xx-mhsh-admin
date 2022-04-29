@@ -1,7 +1,6 @@
 <template>
   <a-modal v-model="visible" :title="title" :destroyOnClose="true" @ok="submit">
     <a-form-model
-      class="edit-form"
       ref="form"
       :model="editForm"
       :label-col="{ span: 5 }"
@@ -27,7 +26,7 @@
           >
         </a-select>
       </a-form-model-item>
-      <a-form-model-item label="补充说明" prop="note">
+      <a-form-model-item class="mb-0" label="补充说明" prop="note">
         <a-textarea
           v-model="editForm.note"
           :maxLength="100"
@@ -116,9 +115,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.edit-form /deep/ .ant-form-item:last-child {
-  margin-bottom: 0;
-}
 .alert-text {
   color: @error-color;
 }
