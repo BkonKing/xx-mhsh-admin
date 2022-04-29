@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ant-pro-page-header-wrap">
     <page-header :routes="routes"></page-header>
     <a-card title="签到奖励" style="margin: 24px;">
       <a-form-model

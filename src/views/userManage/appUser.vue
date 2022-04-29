@@ -1,46 +1,41 @@
 <template>
-  <div class="appUser">
-    <page-header :routes="routes"></page-header>
-    <div style="padding: 24px;">
-      <a-card class="search-card" :bordered="false">
-        <div class="table-page-search-wrapper">
-          <a-form layout="inline">
-            <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="所属项目">
-                  <a-select
-                    v-model="queryParam.project_id"
-                    placeholder="请选择"
+  <page-header-view class="appUser">
+    <a-card class="search-card" :bordered="false">
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="所属项目">
+                <a-select v-model="queryParam.project_id" placeholder="请选择">
+                  <a-select-option
+                    v-for="item in projectOptions"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.project_name }}</a-select-option
                   >
-                    <a-select-option
-                      v-for="item in projectOptions"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.project_name }}</a-select-option
-                    >
-                  </a-select>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="用户类型">
+                <a-select
+                  v-model="queryParam.user_type"
+                  :options="userTypeOptions"
+                  placeholder="请选择"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
+              <a-col :md="8" :sm="24">
+                <a-form-item label="用户">
+                  <a-input
+                    v-model="queryParam.sSearch"
+                    placeholder="ID、昵称、姓名、手机号"
+                  ></a-input>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="用户类型">
-                  <a-select
-                    v-model="queryParam.user_type"
-                    :options="userTypeOptions"
-                    placeholder="请选择"
-                  >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <template v-if="advanced">
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="用户">
-                    <a-input
-                      v-model="queryParam.sSearch"
-                      placeholder="ID、昵称、姓名、手机号"
-                    ></a-input>
-                  </a-form-item>
-                </a-col>
-                <!-- <a-col :md="8" :sm="24">
+              <!-- <a-col :md="8" :sm="24">
               <a-form-item label="注册时间">
                 <a-range-picker
                   v-model="queryParam.service_time"
@@ -51,7 +46,7 @@
                 />
               </a-form-item>
             </a-col> -->
-                <!-- <a-col :md="8" :sm="24">
+              <!-- <a-col :md="8" :sm="24">
               <a-form-item label="是否员工">
                 <a-select v-model="queryParam.build_id1" placeholder="请选择">
                   <a-select-option value="1">是</a-select-option>
@@ -60,136 +55,123 @@
               </a-form-item>
             </a-col> -->
 
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="是否注销">
-                    <a-select
-                      v-model="queryParam.is_cancel"
-                      placeholder="请选择"
-                    >
-                      <a-select-option value="0">申请中</a-select-option>
-                      <a-select-option value="1">已注销</a-select-option>
-                      <a-select-option value="2">未注销</a-select-option>
-                    </a-select>
-                  </a-form-item>
-                </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="是否注销">
+                  <a-select v-model="queryParam.is_cancel" placeholder="请选择">
+                    <a-select-option value="0">申请中</a-select-option>
+                    <a-select-option value="1">已注销</a-select-option>
+                    <a-select-option value="2">未注销</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
 
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="用户标签">
-                    <a-tree-select
-                      v-model="queryParam.user_tag"
-                      style="width: 100%"
-                      multiple
-                      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                      :tree-data="labelOptions"
-                      :treeCheckable="true"
-                      :showCheckedStrategy="SHOW_PARENT"
-                      :maxTagCount="3"
-                      treeNodeFilterProp="title"
-                      placeholder="请选择"
-                      :replaceFields="{
-                        key: 'id',
-                        value: 'id',
-                        title: 'tag_name',
-                        children: 'child'
-                      }"
-                      tree-default-expand-all
+              <a-col :md="8" :sm="24">
+                <a-form-item label="用户标签">
+                  <a-tree-select
+                    v-model="queryParam.user_tag"
+                    style="width: 100%"
+                    multiple
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                    :tree-data="labelOptions"
+                    :treeCheckable="true"
+                    :showCheckedStrategy="SHOW_PARENT"
+                    :maxTagCount="3"
+                    treeNodeFilterProp="title"
+                    placeholder="请选择"
+                    :replaceFields="{
+                      key: 'id',
+                      value: 'id',
+                      title: 'tag_name',
+                      children: 'child'
+                    }"
+                    tree-default-expand-all
+                  >
+                  </a-tree-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="服务时间">
+                  <a-range-picker
+                    v-model="queryParam.service_time"
+                    valueFormat="YYYY-MM-DD HH:mm:ss"
+                    :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
+                    :ranges="{
+                      本周: [moment().startOf('week'), moment().endOf('week')],
+                      本月: [moment().startOf('month'), moment().endOf('month')]
+                    }"
+                    :placeholder="['开始时间', '结束时间']"
+                    style="width: 100%;"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="满意度">
+                  <a-select v-model="queryParam.satisfied" placeholder="请选择">
+                    <a-select-option
+                      v-for="item in satisfactionOptions"
+                      :key="item.value"
+                      :value="item.value"
+                      >{{ item.label }}</a-select-option
                     >
-                    </a-tree-select>
-                  </a-form-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="服务时间">
-                    <a-range-picker
-                      v-model="queryParam.service_time"
-                      valueFormat="YYYY-MM-DD HH:mm:ss"
-                      :show-time="{ defaultValue: [defaultTime, defaultEndTime] }"
-                      :ranges="{
-                        本周: [
-                          moment().startOf('week'),
-                          moment().endOf('week')
-                        ],
-                        本月: [
-                          moment().startOf('month'),
-                          moment().endOf('month')
-                        ]
-                      }"
-                      :placeholder="['开始时间', '结束时间']"
-                      style="width: 100%;"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="满意度">
-                    <a-select
-                      v-model="queryParam.satisfied"
-                      placeholder="请选择"
-                    >
-                      <a-select-option
-                        v-for="item in satisfactionOptions"
-                        :key="item.value"
-                        :value="item.value"
-                        >{{ item.label }}</a-select-option
-                      >
-                    </a-select>
-                  </a-form-item>
-                </a-col>
-              </template>
-              <advanced-form
-                v-model="advanced"
-                :md="16"
-                @reset="resetTable"
-                @search="$refs.table.refresh(true)"
-              ></advanced-form>
-            </a-row>
-          </a-form>
-        </div>
-      </a-card>
-      <a-card style="margin-top: 24px" :bordered="false">
-        <div class="table-operator">
-          <a-button @click="openMulTagModel">
-            添加标签
-          </a-button>
-        </div>
-        <s-table
-          ref="table"
-          size="default"
-          rowKey="id"
-          :columns="columns"
-          :data="loadData"
-          :showPagination="true"
-          :alert="{ clear: true }"
-          :rowSelection="rowSelection"
-        >
-          <template slot="userInfo" slot-scope="text, record">
-            <template v-if="text || record.mobile">
-              <div>{{ text }}</div>
-              <div>{{ record.mobile }}</div>
+                  </a-select>
+                </a-form-item>
+              </a-col>
             </template>
-            <template v-else>无</template>
+            <advanced-form
+              v-model="advanced"
+              :md="16"
+              @reset="resetTable"
+              @search="$refs.table.refresh(true)"
+            ></advanced-form>
+          </a-row>
+        </a-form>
+      </div>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false">
+      <div class="table-operator">
+        <a-button @click="openMulTagModel">
+          添加标签
+        </a-button>
+      </div>
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        :showPagination="true"
+        :alert="{ clear: true }"
+        :rowSelection="rowSelection"
+      >
+        <template slot="userInfo" slot-scope="text, record">
+          <template v-if="text || record.mobile">
+            <div>{{ text }}</div>
+            <div>{{ record.mobile }}</div>
           </template>
-          <template slot="tags" slot-scope="text">
-            <s-tag v-for="label in text" :key="label.id" :color="label.colour">
-              {{ label.tag_name }}
-            </s-tag>
+          <template v-else>无</template>
+        </template>
+        <template slot="tags" slot-scope="text">
+          <s-tag v-for="label in text" :key="label.id" :color="label.colour">
+            {{ label.tag_name }}
+          </s-tag>
+        </template>
+        <template slot="userType" slot-scope="text">
+          {{ text | userType }}
+        </template>
+        <div slot="avatar" slot-scope="text">
+          <a-avatar v-if="text" :size="40" :src="text" />
+        </div>
+        <span class="table-action" slot="action" slot-scope="text, record">
+          <template>
+            <a style="margin-right: 10px;" @click="check(record)">查看</a>
+            <a style="margin-right: 10px;" @click="openTagModal(record)"
+              >标签</a
+            >
+            <a @click="openEditModal(record)">编辑</a>
           </template>
-          <template slot="userType" slot-scope="text">
-            {{ text | userType }}
-          </template>
-          <div slot="avatar" slot-scope="text">
-            <a-avatar v-if="text" :size="40" :src="text" />
-          </div>
-          <span class="table-action" slot="action" slot-scope="text, record">
-            <template>
-              <a style="margin-right: 10px;" @click="check(record)">查看</a>
-              <a style="margin-right: 10px;" @click="openTagModal(record)"
-                >标签</a
-              >
-              <a @click="openEditModal(record)">编辑</a>
-            </template>
-          </span>
-        </s-table>
-      </a-card>
-    </div>
+        </span>
+      </s-table>
+    </a-card>
     <chekcDrawer ref="chekcDrawer" :uid="activeUid"></chekcDrawer>
     <a-modal
       v-model="userVisible"
@@ -270,11 +252,12 @@
       :userList="userList"
       @success="saveTagSuccess"
     ></check-user-tag>
-  </div>
+  </page-header-view>
 </template>
 
 <script>
-import { STable, AdvancedForm, PageHeader } from '@/components'
+import PageHeaderView from '@/layouts/PageHeaderView'
+import { STable, AdvancedForm } from '@/components'
 import { TreeSelect } from 'ant-design-vue'
 import chekcDrawer from './checkDrawer'
 import STag from './components/tag'
@@ -297,24 +280,13 @@ export default {
     AdvancedForm,
     STag,
     checkUserTag,
-    PageHeader
+    PageHeaderView
   },
   data () {
     return {
       defaultTime: moment('00:00:00', 'HH:mm:ss'),
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       SHOW_PARENT,
-      routes: [
-        {
-          breadcrumbName: '用户管理'
-        },
-        {
-          breadcrumbName: 'APP用户'
-        },
-        {
-          breadcrumbName: '真实用户'
-        }
-      ],
       advanced: false,
       queryParam: {},
       userTypeOptions: [

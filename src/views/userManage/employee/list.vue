@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ant-pro-page-header-wrap">
     <page-header :routes="routes"></page-header>
     <div style="padding: 24px;">
       <a-card class="search-card" :bordered="false">

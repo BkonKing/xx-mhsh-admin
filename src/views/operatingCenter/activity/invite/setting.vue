@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <page-header :routes="routes"></page-header>
-    <div style="padding: 24px;">
+  <page-header-view>
       <a-card title="基础信息" :bordered="false">
         <a-form-model
           ref="BasicForm"
@@ -216,7 +214,6 @@
           >提交</a-button
         >
       </footer-toolbar>
-    </div>
     <a-modal
       title="新增关联任务"
       width="1000px"
@@ -227,7 +224,7 @@
     >
       <task-table v-if="visible" ref="goods-table"></task-table>
     </a-modal>
-  </div>
+  </page-header-view>
 </template>
 
 <script>
@@ -235,7 +232,8 @@
 import moment from 'moment'
 import clonedeep from 'lodash.clonedeep'
 import { Empty } from 'ant-design-vue'
-import { PageHeader, UploadImage, FooterToolbar } from '@/components'
+import PageHeaderView from '@/layouts/PageHeaderView'
+import { UploadImage, FooterToolbar } from '@/components'
 import taskTable from './components/taskTable'
 import { getInviteSetting, saveInviteSetting } from '@/api/invite'
 
@@ -244,7 +242,7 @@ export default {
   components: {
     FooterToolbar,
     UploadImage,
-    PageHeader,
+    PageHeaderView,
     taskTable
   },
   data () {
@@ -282,23 +280,6 @@ export default {
       }
     ]
     return {
-      routes: [
-        {
-          path: '/operatingCenter/activity/invite/index',
-          breadcrumbName: '运营中心'
-        },
-        {
-          path: '',
-          breadcrumbName: '活动管理'
-        },
-        {
-          path: '/operatingCenter/activity/invite/index',
-          breadcrumbName: '美好红包'
-        },
-        {
-          breadcrumbName: '邀请设置'
-        }
-      ],
       projectList: [],
       // 邀请人选项
       inviterOptions: [

@@ -1,58 +1,56 @@
 <template>
-  <div class="appUser">
-    <page-header :routes="routes"></page-header>
-    <div style="padding: 24px;">
-      <a-card class="search-card" :bordered="false">
-        <div class="table-page-search-wrapper">
-          <a-form layout="inline">
-            <a-row :gutter="48">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="楼栋">
-                  <a-select
-                    v-model="queryParam.building_id"
-                    placeholder="请选择"
-                    @change="handleBuildChange"
+  <page-header-view class="appUser" :breadcrumb="{}" :routes="routes">
+    <a-card class="search-card" :bordered="false">
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline">
+          <a-row :gutter="48">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="楼栋">
+                <a-select
+                  v-model="queryParam.building_id"
+                  placeholder="请选择"
+                  @change="handleBuildChange"
+                >
+                  <a-select-option
+                    v-for="item in buildOptions"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.building_name }}</a-select-option
                   >
-                    <a-select-option
-                      v-for="item in buildOptions"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.building_name }}</a-select-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="单元">
-                  <a-select v-model="queryParam.unit_id" placeholder="请选择">
-                    <a-select-option
-                      v-for="item in unitOptions"
-                      :key="item.id"
-                      :value="item.id"
-                      >{{ item.unit_name }}</a-select-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="用户类型">
-                  <a-select
-                    v-model="queryParam.house_role"
-                    :options="userTypeOptions"
-                    placeholder="请选择"
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="单元">
+                <a-select v-model="queryParam.unit_id" placeholder="请选择">
+                  <a-select-option
+                    v-for="item in unitOptions"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.unit_name }}</a-select-option
                   >
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="用户">
-                  <a-input
-                    v-model="queryParam.sSearch"
-                    placeholder="ID、昵称、姓名、手机号"
-                  ></a-input>
-                </a-form-item>
-              </a-col>
-              <!-- <a-col :md="8" :sm="24">
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="用户类型">
+                <a-select
+                  v-model="queryParam.house_role"
+                  :options="userTypeOptions"
+                  placeholder="请选择"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="用户">
+                <a-input
+                  v-model="queryParam.sSearch"
+                  placeholder="ID、昵称、姓名、手机号"
+                ></a-input>
+              </a-form-item>
+            </a-col>
+            <!-- <a-col :md="8" :sm="24">
                   <a-form-item label="注册时间">
                     <a-range-picker
                       v-model="queryParam.service_time"
@@ -63,7 +61,7 @@
                     />
                   </a-form-item>
                 </a-col> -->
-              <!-- <a-col :md="8" :sm="24">
+            <!-- <a-col :md="8" :sm="24">
                   <a-form-item label="是否员工">
                     <a-select v-model="queryParam.build_id1" placeholder="请选择">
                       <a-select-option value="1">是</a-select-option>
@@ -71,48 +69,48 @@
                     </a-select>
                   </a-form-item>
                 </a-col> -->
-              <advanced-form
-                v-model="advanced"
-                :md="16"
-                :is-advanced="false"
-                @reset="resetTable"
-                @search="$refs.table.refresh(true)"
-              ></advanced-form>
-            </a-row>
-          </a-form>
-        </div>
-      </a-card>
-      <a-card style="margin-top: 24px" :bordered="false">
-        <s-table
-          ref="table"
-          size="default"
-          rowKey="id"
-          :columns="columns"
-          :data="loadData"
-          :showPagination="true"
-        >
-          <template slot="userInfo" slot-scope="text, record">
-            <template v-if="text || record.mobile">
-              <div>{{ text }}</div>
-              <div>{{ record.mobile }}</div>
-            </template>
-            <template v-else>无</template>
+            <advanced-form
+              v-model="advanced"
+              :md="16"
+              :is-advanced="false"
+              @reset="resetTable"
+              @search="$refs.table.refresh(true)"
+            ></advanced-form>
+          </a-row>
+        </a-form>
+      </div>
+    </a-card>
+    <a-card style="margin-top: 24px" :bordered="false">
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        :showPagination="true"
+      >
+        <template slot="userInfo" slot-scope="text, record">
+          <template v-if="text || record.mobile">
+            <div>{{ text }}</div>
+            <div>{{ record.mobile }}</div>
           </template>
-          <div slot="avatar" slot-scope="text">
-            <a-avatar v-if="text" :size="40" :src="text" />
-          </div>
-          <span class="table-action" slot="action" slot-scope="text, record">
-            <a style="margin-right: 10px;" @click="check(record)">查看</a>
-          </span>
-        </s-table>
-      </a-card>
-    </div>
+          <template v-else>无</template>
+        </template>
+        <div slot="avatar" slot-scope="text">
+          <a-avatar v-if="text" :size="40" :src="text" />
+        </div>
+        <span class="table-action" slot="action" slot-scope="text, record">
+          <a style="margin-right: 10px;" @click="check(record)">查看</a>
+        </span>
+      </s-table>
+    </a-card>
     <chekcDrawer ref="chekcDrawer" :uid="activeUid"></chekcDrawer>
-  </div>
+  </page-header-view>
 </template>
 
 <script>
-import { STable, AdvancedForm, PageHeader } from '@/components'
+import PageHeaderView from '@/layouts/PageHeaderView'
+import { STable, AdvancedForm } from '@/components'
 import chekcDrawer from './checkDrawer'
 import cloneDeep from 'lodash.clonedeep'
 import moment from 'moment'
@@ -123,7 +121,7 @@ export default {
     chekcDrawer,
     STable,
     AdvancedForm,
-    PageHeader
+    PageHeaderView
   },
   data () {
     return {
@@ -131,6 +129,7 @@ export default {
       defaultEndTime: moment('23:59:59', 'HH:mm:ss'),
       routes: [
         {
+          path: '/userManage/appUserChild',
           breadcrumbName: '用户管理'
         },
         {

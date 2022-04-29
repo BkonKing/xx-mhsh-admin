@@ -24,6 +24,7 @@ const PageHeaderWrapperProps = {
   extraContent: PropTypes.any,
   pageHeaderRender: PropTypes.func,
   breadcrumb: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]).def(true),
+  routes: PropTypes.oneOfType([PropTypes.array]),
   back: PropTypes.func,
 
   // only use `pro-layout` in children
@@ -167,6 +168,19 @@ const PageHeaderWrapper = {
 
     let breadcrumb = {}
     const propsBreadcrumb = this.$props.breadcrumb
+
+    const defaultItemRender = ({ route, params, routes, paths, h }) => {
+      return routes.indexOf(route) === routes.length - 1 && (
+        <span>{route.breadcrumbName}</span>
+      ) || (
+        <router-link to={{ path: route.path || '/', params }}>{route.breadcrumbName}</router-link>
+      )
+    }
+
+    // If custom breadcrumb render undefined
+    // use default breadcrumb..
+    const itemRender = /* this.breadcrumbRender || */ defaultItemRender
+
     if (propsBreadcrumb === true) {
       const routes = $route.matched.concat().map(route => {
         return {
@@ -174,22 +188,10 @@ const PageHeaderWrapper = {
           breadcrumbName: i18n(route.meta.title)
         }
       })
-
-      const defaultItemRender = ({ route, params, routes, paths, h }) => {
-        return routes.indexOf(route) === routes.length - 1 && (
-          <span>{route.breadcrumbName}</span>
-        ) || (
-          <router-link to={{ path: route.path || '/', params }}>{route.breadcrumbName}</router-link>
-        )
-      }
-
-      // If custom breadcrumb render undefined
-      // use default breadcrumb..
-      const itemRender = /* this.breadcrumbRender || */ defaultItemRender
-
       breadcrumb = { props: { routes, itemRender } }
     } else {
-      breadcrumb = propsBreadcrumb || null
+      const routes = this.$props.routes
+      breadcrumb = propsBreadcrumb ? { props: { routes, itemRender } } : null
     }
 
     const props = {
