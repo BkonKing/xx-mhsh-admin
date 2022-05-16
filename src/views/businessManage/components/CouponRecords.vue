@@ -67,15 +67,12 @@
               </a-col>
               <a-col :md="8" :sm="24">
                 <a-form-item label="所属商户">
-                  <a-select
-                    v-model="queryParam.shops_id"
-                    placeholder="请选择"
-                  >
+                  <a-select v-model="queryParam.shops_id" placeholder="请选择">
                     <a-select-option
                       v-for="item in shopList"
                       :key="item.id"
                       :value="item.id"
-                      >{{ item.shops_name || '暂无名称' }}</a-select-option
+                      >{{ item.shops_name || "暂无名称" }}</a-select-option
                     >
                   </a-select>
                 </a-form-item>
@@ -102,10 +99,20 @@
                   />
                 </a-form-item>
               </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="券来源">
+                  <a-select
+                    v-model="queryParam.source_type"
+                    :options="sourceStatus"
+                    placeholder="请选择"
+                  >
+                  </a-select>
+                </a-form-item>
+              </a-col>
             </template>
             <advanced-form
               v-model="advanced"
-              :md="16"
+              :md="8"
               @reset="resetTable"
               @search="refreshTable(true)"
             ></advanced-form>
@@ -234,8 +241,7 @@ export default {
           dataIndex: 'shops_realname',
           customRender: (text, row) => {
             return (
-              <a href={`${this.userUrl}?uid=${row.shops_uid}`}
-                target="_blank">
+              <a href={`${this.userUrl}?uid=${row.shops_uid}`} target="_blank">
                 <div>{text}</div>
                 <div>{row.shops_mobile}</div>
               </a>
@@ -272,7 +278,9 @@ export default {
       return this.isParentProject ? '/zht' : '/xmht'
     },
     userUrl () {
-      return this.isParentProject ? '/zht/user/user/getUserList' : '/xmht/household/member/getMemberList'
+      return this.isParentProject
+        ? '/zht/user/user/getUserList'
+        : '/xmht/household/member/getMemberList'
     }
   },
   created () {
@@ -289,5 +297,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

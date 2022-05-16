@@ -370,6 +370,10 @@ export default {
         {
           label: '折扣券',
           value: '2'
+        },
+        {
+          label: '满送券',
+          value: '3'
         }
       ],
       useTypes: [

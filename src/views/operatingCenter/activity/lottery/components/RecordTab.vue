@@ -154,7 +154,11 @@ import moment from 'moment'
 import cloneDeep from 'lodash.clonedeep'
 import { mapGetters } from 'vuex'
 import { DetailInfo, STable, AdvancedForm } from '@/components'
-import { getLotteryTabData, getLotteryLogList, editLotteryStatus } from '@/api/operatingCenter/lottery'
+import {
+  getLotteryTabData,
+  getLotteryLogList,
+  editLotteryStatus
+} from '@/api/operatingCenter/lottery'
 
 export default {
   name: 'recordTab',
@@ -181,20 +185,20 @@ export default {
       return this.isPrize ? '兑奖记录' : ''
     },
     lotteryNum () {
-      const num = this.infoData.inviter_num
-      const num1 = this.infoData.share_num
+      const num = this.infoData.one_1
+      const num1 = this.infoData.one_2
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     },
     lotteryNum1 () {
-      const num = this.infoData.inviter_num
-      const num1 = this.infoData.share_num
+      const num = this.infoData.two_1
+      const num1 = this.infoData.two_2
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     },
     lotteryNum2 () {
-      const num = this.infoData.inviter_num
-      const num1 = this.infoData.share_num
+      const num = this.infoData.three_1
+      const num1 = this.infoData.three_2
       // eslint-disable-next-line no-irregular-whitespace
       return `${num || 0}人　${num1 || 0}次`
     }
@@ -242,10 +246,26 @@ export default {
             const {
               award_name: awardName,
               source_text: sourceText,
+              award_type: type,
               source_id: sourceId
             } = row
             if ([1, 2, 3].includes(+text)) {
-              const source = sourceId ? <a>{sourceText}</a> : ''
+              let source = ''
+              if (sourceId) {
+                let href = ''
+                if (+type === 1) {
+                  href = `${this.baseUrl}/life/goods/getGoodsList?goods_id=${sourceId}`
+                } else if (+type === 2) {
+                  href = `${this.baseUrl}/life/coupon/getCouponList`
+                } else if (+type === 3) {
+                  href = `${this.baseUrl}/user/shop/detail?id=${sourceId}`
+                }
+                source = (
+                  <a href={href} target="_blank">
+                    ({sourceText})
+                  </a>
+                )
+              }
               return (
                 <div>
                   <div>{awardName}</div>
@@ -283,7 +303,10 @@ export default {
                   info = (
                     <div>
                       APP扫码核销
-                      <a href={`${this.userUrl}?uid=${examineUid}`}>
+                      <a
+                        href={`${this.userUrl}?uid=${examineUid}`}
+                        target="_blank"
+                      >
                         {prizeText}
                       </a>
                     </div>
@@ -316,11 +339,13 @@ export default {
       prizeColumns: [
         {
           title: '兑奖时间',
-          dataIndex: 'etime'
+          dataIndex: 'etime',
+          sorter: true
         },
         {
           title: '操作',
           dataIndex: 'action',
+          width: 64,
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -332,11 +357,13 @@ export default {
           params.s_ctime = time[0]
           params.e_ctime = time[1]
         }
-        return getLotteryLogList({
+        const newParams = {
           ...parameter,
           ...params,
           page_type: this.isPrize ? 1 : 0
-        })
+        }
+        this.getLotteryTabData(newParams)
+        return getLotteryLogList(newParams)
       },
       editConvertVisible: false,
       editConvertForm: {
@@ -351,16 +378,20 @@ export default {
       : this.columns.splice(3, 0, ...this.lotteryColumns)
   },
   methods: {
-    async getLotteryTabData () {
-      const { tab_data: data } = await getLotteryTabData()
+    async getLotteryTabData (params) {
+      const { tab_data: data } = await getLotteryTabData(params)
       this.infoData = data
     },
-    reset () {},
-    refresh () {},
-    search () {},
-    openEdit ({ award_log_id, is_convert }) {
+    refresh (bool = false) {
+      this.$refs.table.refresh(bool)
+    },
+    reset () {
+      this.queryParam = {}
+      this.refresh(true)
+    },
+    openEdit ({ id, is_convert }) {
       this.editConvertForm = {
-        award_log_id,
+        award_log_id: id,
         is_convert: is_convert || '1'
       }
       this.editConvertVisible = true
@@ -369,6 +400,7 @@ export default {
       const { success } = await editLotteryStatus(this.editConvertForm)
       if (success) {
         this.$message.success('提交成功')
+        this.refresh()
         this.editConvertVisible = false
       }
     }

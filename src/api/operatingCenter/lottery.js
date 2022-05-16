@@ -75,7 +75,7 @@ export function getLotteryLogList (data) {
   })
 }
 
-// 中奖兑换
+// tab统计数据
 export function getLotteryTabData (data) {
   return request({
     url: lotteryApi.getLotteryTabData,

@@ -69,7 +69,7 @@
           ><span style="margin-left:8px;">幸福币/次</span>
         </a-form-model-item>
         <a-form-model-item label="活动说明" prop="explain" required>
-          <a-input v-model="formData.explain" type="textarea"></a-input>
+          <a-textarea v-model="formData.explain" autoSize></a-textarea>
           <div class="alert-text">前端活动页面的活动说明展示</div>
         </a-form-model-item>
         <a-form-model-item label="提示抽奖弹窗" prop="popup">
@@ -103,13 +103,22 @@
         </a-form-model-item>
       </a-form-model>
     </a-card>
-    <prize-setting ref="prizeSetting" :data="prizeList"></prize-setting>
+    <prize-setting
+      ref="prizeSetting"
+      :infoData="formData"
+      :data="prizeList"
+      @tableChange="submitDisabled = false"
+    ></prize-setting>
     <div style="height: 56px;"></div>
     <footer-tool-bar style="width: 100%;">
-      <a-button @click="$router.go(-1)" style="margin-right: 15px;">
+      <a-button @click="getLotterySetting" style="margin-right: 15px;">
         取消
       </a-button>
-      <a-button type="primary" @click="handleSubmit" :loading="loading"
+      <a-button
+        type="primary"
+        :loading="loading"
+        :disabled="submitDisabled"
+        @click="handleSubmit"
         >提交</a-button
       >
     </footer-tool-bar>
@@ -122,7 +131,10 @@ import moment from 'moment'
 import { debounce, validAForm } from '@/utils/util'
 import FooterToolBar from '@/components/FooterToolbar'
 import PrizeSetting from './PrizeSetting'
-import { getLotterySetting, saveLotterySetting } from '@/api/operatingCenter/lottery'
+import {
+  getLotterySetting,
+  saveLotterySetting
+} from '@/api/operatingCenter/lottery'
 import { getUserList } from '@/api/userManage/business'
 
 export default {
@@ -157,7 +169,16 @@ export default {
       fetching: false,
       userOptions: [],
       prizeList: [],
-      copyNum: 0 // 抽奖一会和免费次数暂存拷贝数据
+      copyNum: 0, // 抽奖一会和免费次数暂存拷贝数据
+      submitDisabled: false
+    }
+  },
+  watch: {
+    formData: {
+      handler () {
+        this.submitDisabled = false
+      },
+      deep: true
     }
   },
   created () {
@@ -166,18 +187,32 @@ export default {
   methods: {
     getLotterySetting () {
       getLotterySetting().then(
-        ({ setting_info: settingInfo, award_list: prizeList, power_list: uidList }) => {
+        ({
+          setting_info: settingInfo,
+          award_list: prizeList,
+          power_list: uidList
+        }) => {
           let uidData = uidList || []
           if (uidData.length) {
-            uidData = uidList.map((obj) => obj.uid)
-            this.userOptions = uidList.map((obj) => ({
+            uidData = uidList.map(obj => obj.uid)
+            settingInfo.power_uid_data = uidData
+            this.userOptions = uidList.map(obj => ({
               ...obj,
               id: obj.uid
             }))
           }
+          if (settingInfo?.s_time) {
+            settingInfo.time = [settingInfo.s_time, settingInfo.e_time]
+          }
           this.formData = settingInfo || {}
-          this.formData.power_uid_data = uidData
-          this.prizeList = prizeList || []
+          this.prizeList =
+            prizeList.map(obj => ({
+              goods_id: '',
+              ...obj
+            })) || []
+          this.$nextTick(() => {
+            this.submitDisabled = true
+          })
         }
       )
     },
@@ -191,19 +226,36 @@ export default {
       }
     },
     handleSubmit () {
-      Promise.all([validAForm(this.$refs.BasicForm), this.$refs.prizeSetting.validate()]).then(() => {
+      Promise.all([
+        validAForm(this.$refs.BasicForm),
+        this.$refs.prizeSetting.validate()
+      ]).then(() => {
+        const params = cloneDeep(this.formData)
+        if (params.time?.length) {
+          params.s_time = params.time[0]
+          params.e_time = params.time[1]
+        }
         saveLotterySetting({
-          ...this.formData,
-          setting_id: this.formData.id,
+          ...params,
+          setting_id: params.id,
           award_data: this.$refs.prizeSetting.tableData.map((data, index) => {
+            const {
+              i,
+              couponOptions,
+              ctime,
+              is_del,
+              project_id,
+              ...params
+            } = data
             return {
-              sort: index,
-              ...data
+              ...params,
+              sort: index
             }
           })
-        }).then((success) => {
+        }).then(success => {
           if (success) {
             this.$message.success('提交成功')
+            this.getLotterySetting()
             this.$emit('success')
           }
         })

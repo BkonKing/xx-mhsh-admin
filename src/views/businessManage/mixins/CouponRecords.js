@@ -48,6 +48,20 @@ export default {
         //   value: '3'
         // }
       ],
+      sourceStatus: [
+        {
+          label: '页面领取',
+          value: '2'
+        },
+        {
+          label: '系统发放',
+          value: '1'
+        },
+        {
+          label: '抽奖获得',
+          value: '3'
+        }
+      ],
       queryParam: {}
     }
   },

@@ -5,7 +5,10 @@
     </div>
     <a-row type="flex" :gutter="20">
       <a-col flex="397px">
-        <mobile-preview :data="previewData"></mobile-preview>
+        <mobile-preview
+          :infoData="infoData"
+          :listData="tableData"
+        ></mobile-preview>
       </a-col>
       <a-col flex="1">
         <table class="ant-table w-full">
@@ -27,25 +30,35 @@
                 <span class="text-red-400">*</span>奖项
               </th>
               <th class="ant-table-row-cell-break-word">
-                奖项图<a-tooltip placement="top">
-                  <template slot="title">
-                    <span>设置图片则显示</span>
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+                <div class="flex items-center">
+                  奖项图<a-tooltip placement="top">
+                    <template slot="title">
+                      <span>设置图片则显示</span>
+                    </template>
+                    <a-icon
+                      type="info-circle"
+                      style="margin-left: 5px;font-size: 14px;"
+                    />
+                  </a-tooltip>
+                </div>
               </th>
               <th class="ant-table-row-cell-break-word">
-                兑奖方式<a-tooltip
-                  overlayClassName="max-w-screen-sm"
-                  placement="top"
-                >
-                  <template slot="title">
-                    <span
-                      >系统自动生成：奖项为商品/优惠券，中奖后自动生成0元商品/优惠券订单<br />联系工作人员兑奖：需线下进行兑奖，可扫码核销奖品或后台标记为“已兑奖”</span
-                    >
-                  </template>
-                  <a-icon type="info-circle" style="margin-left: 5px;" />
-                </a-tooltip>
+                <div class="flex items-center">
+                  兑奖方式<a-tooltip
+                    overlayClassName="max-w-screen-sm"
+                    placement="top"
+                  >
+                    <template slot="title">
+                      <span
+                        >系统自动生成：奖项为商品/优惠券，中奖后自动生成0元商品/优惠券订单<br />联系工作人员兑奖：需线下进行兑奖，可扫码核销奖品或后台标记为“已兑奖”</span
+                      >
+                    </template>
+                    <a-icon
+                      type="info-circle"
+                      style="margin-left: 5px;font-size: 14px;"
+                    />
+                  </a-tooltip>
+                </div>
               </th>
               <th class="ant-table-align-center" style="width: 110px;">
                 <span class="text-red-400">*</span>中奖率
@@ -236,6 +249,7 @@
                   v-model="item.img"
                   :maxLength="1"
                   :isOne="true"
+                  :no-host="true"
                 ></upload-image>
               </td>
               <td class="ant-table-row-cell-break-word">
@@ -318,6 +332,10 @@ export default {
     data: {
       type: Array,
       default: () => []
+    },
+    infoData: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -352,19 +370,17 @@ export default {
       ShopCouponOptions: []
     }
   },
-  computed: {
-    previewData () {
-      return {
-        title: this.title,
-        list: this.tableData
-      }
-    }
-  },
   watch: {
     data (newValue) {
       if (this.tableData != newValue) {
         this.tableData = this.setData(newValue)
       }
+    },
+    tableData: {
+      handler () {
+        this.$emit('tableChange')
+      },
+      deep: true
     }
   },
   created () {},
@@ -452,32 +468,42 @@ export default {
         let options = {}
         if (type === 1) {
           options = {
-            goodsOptions: [{
-              id: obj.goods_id,
-              goods_name: obj.goods_text,
-              specs_list: [{
+            goodsOptions: [
+              {
+                id: obj.goods_id,
+                goods_name: obj.goods_text,
+                specs_list: [
+                  {
+                    id: obj.source_id,
+                    specs_name: obj.source_text
+                  }
+                ]
+              }
+            ],
+            specOptions: [
+              {
                 id: obj.source_id,
                 specs_name: obj.source_text
-              }]
-            }],
-            specOptions: [{
-              id: obj.source_id,
-              specs_name: obj.source_text
-            }]
+              }
+            ]
           }
         } else if (type === 2) {
           options = {
-            couponOptions: [{
-              id: obj.source_id,
-              coupon_name: obj.source_text
-            }]
+            couponOptions: [
+              {
+                id: obj.source_id,
+                coupon_name: obj.source_text
+              }
+            ]
           }
         } else if (type === 3) {
           options = {
-            ShopCouponOptions: [{
-              id: obj.source_id,
-              coupon_name: obj.source_text
-            }]
+            ShopCouponOptions: [
+              {
+                id: obj.source_id,
+                coupon_name: obj.source_text
+              }
+            ]
           }
         }
         return {

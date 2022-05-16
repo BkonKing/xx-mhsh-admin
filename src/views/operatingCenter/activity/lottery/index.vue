@@ -1,11 +1,11 @@
 <template>
   <page-header-view
+    class="page-header-extraContent-fixed"
     :tab-list="tabList"
     :tab-active-key="tabActiveKey"
     :tab-change="handleTabChange"
   >
-    <!-- actions -->
-    <template v-slot:extra>
+    <template v-slot:extraContent>
       <a-tooltip
         overlayClassName="preview-tooltip"
         trigger="click"
@@ -17,10 +17,7 @@
         </template>
         <a-button type="primary">预览</a-button>
       </a-tooltip>
-    </template>
-
-    <template v-slot:extraContent>
-      <div class="status-list">
+      <div class="status-list mt-3">
         <div>
           <div class="text">状态</div>
           <div class="heading">{{ infoData.state }}</div>
@@ -32,12 +29,19 @@
         <div>
           <div class="text">二维码</div>
           <div class="heading">
-            <a-icon type="qrcode" @click="previewImage" />
+            <a-icon
+              type="qrcode"
+              style="font-size: 30px"
+              @click="previewImage"
+            />
           </div>
         </div>
       </div>
     </template>
-    <setting-tab v-show="tabActiveKey === '0'" @success="getLotteryData"></setting-tab>
+    <setting-tab
+      v-show="tabActiveKey === '0'"
+      @success="getLotteryData"
+    ></setting-tab>
     <record-tab v-show="tabActiveKey === '1'" type="1" key="1"></record-tab>
     <record-tab v-show="tabActiveKey === '2'" type="2" key="2"></record-tab>
   </page-header-view>
