@@ -14,7 +14,7 @@ export default {
     {
       path: '/realty/house',
       name: 'realtyLog',
-      component: () => import('@/views/realty/house'),
+      component: () => import(/* webpackChunkName: "realty" */ '@/views/realty/house'),
       meta: {
         title: '房屋管理'
       }

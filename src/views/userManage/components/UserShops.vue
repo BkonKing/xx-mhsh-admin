@@ -142,17 +142,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/
-  .table-page-search-wrapper
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
-/deep/ .table-action a + a {
-  margin-left: 10px;
-}
 h3 {
   font-weight: bold;
 }

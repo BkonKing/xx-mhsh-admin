@@ -3,12 +3,11 @@
     <a-card title="取消预约">
       <a-form-model
         ref="form"
-        class="edit-form"
         :model="editForm"
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 12 }"
       >
-        <a-form-model-item label="取消原因" required>
+        <a-form-model-item class="mb-0" label="取消原因" required>
           <a-row
             v-for="(item, index) in editForm.cancelList"
             :key="item.id"
@@ -157,14 +156,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 表单行高
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
-.edit-form /deep/ .ant-form-item:last-child {
-  margin-bottom: 0;
-}
 .addBtn {
   width: calc(100% - 38px);
   height: 32px;

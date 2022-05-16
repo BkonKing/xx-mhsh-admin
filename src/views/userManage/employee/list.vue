@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ant-pro-page-header-wrap">
     <page-header :routes="routes"></page-header>
     <div style="padding: 24px;">
       <a-card class="search-card" :bordered="false">
@@ -611,22 +611,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 .alert-text {
   color: @error-color;
-}
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
-.table-action a + a {
-  margin-left: 10px;
 }
 </style>

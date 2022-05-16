@@ -224,8 +224,12 @@ export default {
           value: '1'
         },
         {
-          label: '折扣券',
+          label: '满折券',
           value: '2'
+        },
+        {
+          label: '满送券',
+          value: '3'
         }
       ],
       useTypes: [
@@ -575,23 +579,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 .alert-text {
   color: @error-color;
-}
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
-.table-action a + a {
-  margin-left: 10px;
 }
 /deep/ .ant-table-thead > tr > th,
 /deep/ .ant-table-tbody > tr > td {

@@ -195,8 +195,7 @@
           </template>
           <span class="table-action" slot="action" slot-scope="text, record">
             <template>
-              <!-- <a style="margin-right: 10px;">查看</a> -->
-              <a style="margin-right: 10px;" @click="openEditModal(record)"
+              <a @click="openEditModal(record)"
                 >编辑</a
               >
               <a @click="deleteHouse(record)">删除</a>
@@ -576,12 +575,12 @@ export default {
             return (
               <div>
                 是否启用
-              <a-tooltip placement="top">
-                <template slot="title">
-                  <span>开启则APP显示房屋</span>
-                </template>
-                <a-icon type="info-circle" style="margin-left: 5px;" />
-              </a-tooltip>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>开启则APP显示房屋</span>
+                  </template>
+                  <a-icon type="info-circle" style="margin-left: 5px;" />
+                </a-tooltip>
               </div>
             )
           },
@@ -874,18 +873,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
-.form-item-text {
-  /deep/ .ant-form-item-control,
-  /deep/ .ant-form-item-label {
-    line-height: 24px;
-  }
-}
 .appUser {
   margin-bottom: 24px;
   .avatar {
@@ -917,10 +904,6 @@ export default {
   .ant-input-affix-wrapper
   .ant-input:not(:first-child) {
   padding-left: 61px;
-}
-.house-edit-modal .ant-form-item-control,
-.house-edit-modal .ant-form-item-label {
-  line-height: 32px;
 }
 .house-edit-modal .ant-modal-body .ant-input-affix-wrapper .ant-input-prefix {
   height: 100%;

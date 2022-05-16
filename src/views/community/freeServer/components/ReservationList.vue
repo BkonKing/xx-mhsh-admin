@@ -134,10 +134,9 @@
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="openRemark(record)">备注</a>
+            <a @click="openRemark(record)">备注</a>
             <a
               v-if="[0, 1].includes(record.status)"
-              style="margin-right: 10px;"
               @click="finishService([record.id])"
               >完成</a
             >
@@ -435,10 +434,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
 </style>

@@ -452,18 +452,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 .alert-text {
   color: #00000072;
   line-height: 1;

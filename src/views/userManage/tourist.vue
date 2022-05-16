@@ -1,107 +1,116 @@
 <template>
-  <div class="tourist">
-    <a-card class="card">
-      <div class="table-page-search-wrapper">
-        <a-form-model layout="inline">
-          <a-row :gutter="36">
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="类型">
-                <a-select v-model="type" placeholder="请选择">
-                  <a-select-option value="1">
-                    游客定位
-                  </a-select-option>
-                  <a-select-option value="2">
-                    游客未认证业主
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="用户">
-                <a-input placeholder="昵称、手机号" v-model="search"></a-input>
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24" v-if="btnBol">
-              <a-form-model-item label="注册时间">
-                <a-range-picker
-                  v-model="createTime"
-                  class="piker-time"
-                  :ranges="{
-                    Today: [moment(), moment()],
-                    'This Month': [moment(), moment().endOf('month')]
-                  }"
-                  show-time
-                  @change="onChangeTime"
-                  format="YYYY-MM-DD HH:mm:ss"
-                />
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="btnBol ? 24 : 8" :sm="24" :lg="btnBol ? 24 : 8">
-              <div class="btns">
-                <a-button class="btn1" type="primary" @click="toSearch"
-                  >查询</a-button
-                >
-                <a-button @click="reset">重置</a-button>
-                <a-button type="link" @click="toggle">
-                  {{ !btnBol ? "展开" : "收起" }}
-                  <a-icon :type="!btnBol ? 'down' : 'up'"
-                /></a-button>
-              </div>
-            </a-col>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
-    <a-card class="card2">
-      <a-table
-        rowKey="id"
-        :columns="columns"
-        :data-source="tableData"
-        :pagination="false"
-      >
-        <template slot="user_type" slot-scope="user_type">
-          <div>
-            <span v-if="user_type === 0">游客-定位</span>
-            <span v-if="user_type === 5">游客-未认证业主</span>
-          </div>
-        </template>
-        <template slot="avatar" slot-scope="avatar">
-          <div class="avator" v-html="avatar"></div>
-        </template>
-        <template slot="opera" slot-scope="text, record">
-          <div class="opera">
-            <a-button type="link" @click="openUserDetail(record.id)"
-              >查看</a-button
-            >
-          </div>
-        </template>
-      </a-table>
-      <div class="pagination">
-        <a-pagination
-          v-model="pagination.currentPage"
-          show-quick-jumper
-          show-size-changer
-          :page-size-options="pagination.sizes"
-          :total="pagination.total"
-          :page-size.sync="pagination.pageSize"
-          :show-total="
-            (total, range) =>
-              `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
-                total / pagination.pageSize
-              )}页`
-          "
-          @change="onChangePage"
-          @showSizeChange="sizeChange"
-        />
-      </div>
-    </a-card>
-  </div>
+  <page-header-view>
+    <div class="tourist">
+      <a-card class="card">
+        <div class="table-page-search-wrapper">
+          <a-form-model layout="inline">
+            <a-row :gutter="36">
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="类型">
+                  <a-select v-model="type" placeholder="请选择">
+                    <a-select-option value="1">
+                      游客定位
+                    </a-select-option>
+                    <a-select-option value="2">
+                      游客未认证业主
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-model-item label="用户">
+                  <a-input
+                    placeholder="昵称、手机号"
+                    v-model="search"
+                  ></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="8" :sm="24" v-if="btnBol">
+                <a-form-model-item label="注册时间">
+                  <a-range-picker
+                    v-model="createTime"
+                    class="piker-time"
+                    :ranges="{
+                      Today: [moment(), moment()],
+                      'This Month': [moment(), moment().endOf('month')]
+                    }"
+                    show-time
+                    @change="onChangeTime"
+                    format="YYYY-MM-DD HH:mm:ss"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :md="btnBol ? 24 : 8" :sm="24" :lg="btnBol ? 24 : 8">
+                <div class="btns">
+                  <a-button class="btn1" type="primary" @click="toSearch"
+                    >查询</a-button
+                  >
+                  <a-button @click="reset">重置</a-button>
+                  <a-button type="link" @click="toggle">
+                    {{ !btnBol ? "展开" : "收起" }}
+                    <a-icon :type="!btnBol ? 'down' : 'up'"
+                  /></a-button>
+                </div>
+              </a-col>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
+      <a-card class="card2">
+        <a-table
+          rowKey="id"
+          :columns="columns"
+          :data-source="tableData"
+          :pagination="false"
+        >
+          <template slot="user_type" slot-scope="user_type">
+            <div>
+              <span v-if="user_type === 0">游客-定位</span>
+              <span v-if="user_type === 5">游客-未认证业主</span>
+            </div>
+          </template>
+          <template slot="avatar" slot-scope="avatar">
+            <div class="avator" v-html="avatar"></div>
+          </template>
+          <template slot="opera" slot-scope="text, record">
+            <div class="opera">
+              <a-button type="link" @click="openUserDetail(record.id)"
+                >查看</a-button
+              >
+            </div>
+          </template>
+        </a-table>
+        <div class="pagination">
+          <a-pagination
+            v-model="pagination.currentPage"
+            show-quick-jumper
+            show-size-changer
+            :page-size-options="pagination.sizes"
+            :total="pagination.total"
+            :page-size.sync="pagination.pageSize"
+            :show-total="
+              (total, range) =>
+                `共 ${total} 条记录 第${pagination.currentPage}/${Math.ceil(
+                  total / pagination.pageSize
+                )}页`
+            "
+            @change="onChangePage"
+            @showSizeChange="sizeChange"
+          />
+        </div>
+      </a-card>
+    </div>
+  </page-header-view>
 </template>
 
 <script>
+import PageHeaderView from '@/layouts/PageHeaderView'
 import moment from 'moment'
 import { toGetList } from '@/api/userManage'
 export default {
+  components: {
+    PageHeaderView
+  },
   data () {
     return {
       pagination: {

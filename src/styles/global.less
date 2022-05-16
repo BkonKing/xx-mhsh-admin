@@ -2,7 +2,8 @@
 
 html,
 body,
-#app, #root {
+#app,
+#root {
   height: 100%;
 }
 
@@ -18,14 +19,14 @@ body {
 
 ::-webkit-scrollbar-track {
   width: 6px;
-  background: rgba(#101F1C, 0.1);
+  background: rgba(#101f1c, 0.1);
   -webkit-border-radius: 2em;
   -moz-border-radius: 2em;
   border-radius: 2em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(#101F1C, 0.5);
+  background-color: rgba(#101f1c, 0.5);
   background-clip: padding-box;
   min-height: 28px;
   -webkit-border-radius: 2em;
@@ -34,14 +35,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(#101F1C, 1);
+  background-color: rgba(#101f1c, 1);
 }
 
-// 数据列表 样式
-.table-alert {
-  margin-bottom: 16px;
-}
-// 数据列表 操作
+// 数据列表 操作行
 .table-operator {
   margin-bottom: 18px;
 
@@ -49,11 +46,9 @@ body {
     margin-right: 8px;
   }
 }
+
 // 数据列表 搜索条件
 .table-page-search-wrapper {
-  /deep/ .ant-form-item-label {
-    min-width: 88px;
-  }
   .ant-form-inline {
     .ant-form-item {
       display: flex;
@@ -66,14 +61,15 @@ body {
         vertical-align: middle;
       }
 
-      > .ant-form-item-label {
-        line-height: 32px;
-        padding-right: 8px;
-        width: auto;
-      }
       .ant-form-item-control {
         height: 32px;
-        line-height: 32px;
+      }
+
+      > .ant-form-item-label {
+        padding-right: 8px;
+        width: auto;
+        min-width: 80px;
+        flex-shrink: 0;
       }
     }
   }
@@ -83,6 +79,11 @@ body {
     margin-bottom: 24px;
     white-space: nowrap;
   }
+}
+
+// 数据表格 操作栏
+.table-action a + a {
+  margin-left: 10px;
 }
 
 @media (max-width: @screen-xs) {
@@ -102,27 +103,43 @@ body {
   }
 }
 
-.text-right {
-  text-align: right;
+// 展示表单的行高
+.form-item-text {
+  .ant-form-item-control,
+  .ant-form-item-label {
+    line-height: 24px;
+  }
+}
+
+// 页面右上角状态显示栏
+.status-list {
+  display: flex;
+  justify-content: flex-end;
+  text-align: left;
+  .text,
+  .heading {
+    padding-left: 40px;
+    text-align: right;
+  }
 }
 .color-1890FF {
-  color: #1890FF;
+  color: #1890ff;
 }
-.color-F5222D {
-  color: #F5222D;
+.color-red {
+  color: #f5222d;
 }
 .color-00025 {
-  color: rgba(0, 0, 0, 0.25)
+  color: rgba(0, 0, 0, 0.25);
 }
 
 .popover-toast {
-  /deep/ .ant-popover-inner-content {
+  .ant-popover-inner-content {
     background-color: rgba(0, 0, 0, 0.7);
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
   }
-  /deep/ .ant-popover-arrow {
+  .ant-popover-arrow {
     border-right-color: rgba(0, 0, 0, 0.7) !important;
     border-bottom-color: rgba(0, 0, 0, 0.7) !important;
   }
@@ -145,7 +162,7 @@ div.ant-pro-grid-content.wide {
     top: 0;
   }
 }
-.ant-pro-page-header-wrap-page-header-warp {
+.page-header-extraContent-fixed .ant-pro-page-header-wrap-page-header-warp {
   position: relative;
   .ant-pro-page-header-wrap-extraContent {
     position: absolute;
@@ -158,14 +175,6 @@ div.ant-pro-grid-content.wide {
   .ant-card-body {
     padding-bottom: 0;
   }
-}
-
-.flex {
-  display: flex;
-}
-
-.color-red {
-  color: #F5222D;
 }
 
 // 两行省略

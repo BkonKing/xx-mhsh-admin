@@ -7,127 +7,114 @@ export default {
   name: 'taskCentre',
   component: RouteView,
   meta: {
-    title: '任务中心',
-    icon: 'table'
+    title: '任务中心'
   },
-  redirect: '/taskCentre/task', // 二级菜单需要重定向一个三级菜单地址
+  redirect: '/taskCentre/task',
   children: [
     {
-      path: '/taskCentre/task', // 完整地址
+      path: '/taskCentre/task',
       name: 'task',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/task'),
       meta: {
-        title: '任务',
-        icon: 'table'
+        title: '任务'
       }
     },
     {
-      path: '/taskCentre/askQuestion', // 完整地址
+      path: '/taskCentre/askQuestion',
       name: 'askQuestion',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/askQuestion'),
       meta: {
-        title: '提问',
-        icon: 'table'
+        title: '提问'
       }
     },
     {
-      path: '/taskCentre/evaluate', // 完整地址
+      path: '/taskCentre/evaluate',
       name: 'evaluate',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/evaluate'),
       meta: {
-        title: '评价',
-        icon: 'table'
+        title: '评价'
       }
     },
     {
-      path: '/taskCentre/complain', // 完整地址
+      path: '/taskCentre/complain',
       name: 'complain',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/complain'),
       meta: {
-        title: '投诉',
-        icon: 'table'
+        title: '投诉'
       }
     },
     {
-      path: '/taskCentre/taskGroup', // 完整地址
+      path: '/taskCentre/taskGroup',
       name: 'taskGroup',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/taskGroup'),
       meta: {
-        title: '任务群',
-        icon: 'table'
+        title: '任务群'
       }
     },
     {
-      path: '/taskCentre/setting/setting', // 完整地址
+      path: '/taskCentre/setting/setting',
       name: 'setting',
       component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/setting/setting'),
       meta: {
-        title: '设置',
-        icon: 'table'
+        title: '设置'
       }
     },
     {
-      path: '/taskCentre/taskGroup2', // 完整地址
+      path: '/taskCentre/taskGroup2',
       name: 'taskGroup2',
       component: RouteView,
       meta: {
-        title: '任务群',
-        icon: 'table'
+        title: '任务群'
       },
       redirect: '/taskCentre/taskGroup',
       children: [
         {
-          path: '/taskCentre/groupDetail', // 完整地址
+          path: '/taskCentre/groupDetail',
           name: 'groupDetail',
           component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/groupDetail'),
           meta: {
-            title: '群详情',
-            icon: 'table'
+            title: '群详情'
           }
         }
       ]
     },
     {
-      path: '/taskCentre/task2', // 完整地址
+      path: '/taskCentre/task2',
       name: 'task2',
       component: RouteView,
       meta: {
-        title: '任务',
-        icon: 'table'
+        title: '任务'
       },
       redirect: '/taskCentre/task',
       children: [
         // {
-        //   path: '/taskCentre/addTask', // 完整地址
+        //   path: '/taskCentre/addTask',
         //   name: 'addTask',
         //   component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/addTask'),
         //   meta: {
-        //     title: '新建任务',
-        //     icon: 'table'
+        //     title: '新建任务'
         //   }
         // },
         {
-          path: '/taskCentre/complete', // 完整地址
+          path: '/taskCentre/complete',
           name: 'complete',
           component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/complete'),
           meta: {
-            title: '任务详情',
-            icon: 'table'
+            title: '任务详情'
           }
         },
         {
-          path: '/taskCentre/toCheck', // 完整地址
+          path: '/taskCentre/toCheck',
           name: 'toCheck',
           component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/toCheck'),
           meta: {
-            title: '任务详情',
-            icon: 'table'
+            title: '任务详情'
           }
         }
       ]
     },
     {
-      path: '/taskCentre/complain11', // 完整地址
+      path: '/taskCentre/complain11',
       name: 'task3',
       component: RouteView,
       meta: {
@@ -136,12 +123,11 @@ export default {
       redirect: '/taskCentre/complain',
       children: [
         {
-          path: '/taskCentre/complainDetail', // 完整地址
+          path: '/taskCentre/complainDetail',
           name: 'complainDetail',
           component: () => import(/* webpackChunkName: "task" */ '@/views/taskCentre/complainDetail'),
           meta: {
-            title: '投诉详情',
-            icon: 'table'
+            title: '投诉详情'
           }
         }
       ]

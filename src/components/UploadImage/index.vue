@@ -1,12 +1,12 @@
 <template>
   <a-upload
     v-bind="$attrs"
-    :action="uploadUrl"
-    list-type="picture-card"
+    multiple
     name="imgFile"
+    list-type="picture-card"
+    :action="uploadUrl"
     :headers="headers"
     :file-list="fileList"
-    multiple
     :disabled="disabled"
     :openFileDialogOnClick="openFileDialogOnClick"
     :beforeUpload="beforeUpload"
@@ -34,7 +34,7 @@ export default {
   name: 'UploadImage',
   props: {
     value: {
-      type: Array,
+      type: [Array, String],
       default: () => []
     },
     maxLength: {
@@ -60,6 +60,10 @@ export default {
     showHttpFile: {
       type: Boolean,
       default: false
+    },
+    isOne: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -71,7 +75,10 @@ export default {
         // Authorization: 'fc58d4dcb702624e2be057276f4a79a77f3a1a42',
         Projectid: Cookies.get('project_id')
       },
-      uploadUrl: process.env.NODE_ENV === 'production' ? '/nsolid/spi/v1/upload/uploads/uImages' : '/api/upload/uploads/uImages'
+      uploadUrl:
+        process.env.NODE_ENV === 'production'
+          ? '/nsolid/spi/v1/upload/uploads/uImages'
+          : '/api/upload/uploads/uImages'
     }
   },
   methods: {
@@ -83,6 +90,12 @@ export default {
       ).toString(36)
     },
     format (list) {
+      if (!list) {
+        return []
+      }
+      if (this.isOne && this.maxLength === 1) {
+        list = [list]
+      }
       return list.map(item => {
         const index = this.genId(5)
         return {
@@ -152,9 +165,13 @@ export default {
           .filter(item => {
             return item
           })
-        this.uploadList = uploadList
-        this.$emit('input', uploadList)
-        this.$emit('change', uploadList)
+        if (this.isOne && this.maxLength === 1) {
+          this.uploadList = uploadList[0] || ''
+        } else {
+          this.uploadList = uploadList
+        }
+        this.$emit('input', this.uploadList)
+        this.$emit('change', this.uploadList)
       }
     }
   },

@@ -69,7 +69,7 @@
       </a-row>
       <a-row>
         <a-col :span="8" class="text-right"><p>退款金额：</p></a-col>
-        <a-col :span="16" class="color-F5222D"><p>￥{{ dataInfo.basic.actual_price }}（￥{{ dataInfo.basic.actual_rmb_price }} + 幸福币{{ dataInfo.basic.actual_refund_happiness }}）</p></a-col>
+        <a-col :span="16" class="color-red"><p>￥{{ dataInfo.basic.actual_price }}（￥{{ dataInfo.basic.actual_rmb_price }} + 幸福币{{ dataInfo.basic.actual_refund_happiness }}）</p></a-col>
       </a-row>
       <a-row>
         <a-col :span="16" :offset="8">

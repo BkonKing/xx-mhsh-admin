@@ -235,16 +235,6 @@ export default {
     vertical-align: top;
   }
 }
-.status-list {
-  display: flex;
-  justify-content: flex-end;
-  text-align: left;
-  .text,
-  .heading {
-    padding-left: 36px;
-    text-align: right;
-  }
-}
 .heading {
   font-size: 20px;
   color: #000000d9;
@@ -252,11 +242,6 @@ export default {
 .intro-card {
   .ant-row-flex + .ant-row-flex {
     margin-top: 20px;
-  }
-}
-/deep/ .ant-pro-page-header-wrap-page-header-warp {
-  .ant-pro-page-header-wrap-extraContent {
-    position: initial;
   }
 }
 /deep/ .ant-pro-page-header-wrap-children-content {

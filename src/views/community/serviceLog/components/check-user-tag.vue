@@ -333,10 +333,6 @@ export default {
 <style lang="less" scoped>
 .table-page-search-wrapper {
   margin-top: 24px;
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
 }
 .header {
   padding: 0 24px 6px 0;

@@ -104,7 +104,7 @@
       </div>
       <div>
         <p>申请金额： <span>￥{{ pltkData.sum_price }}（￥{{ pltkData.rmb_price }} + 幸福币{{ pltkData.hapiness }}）</span></p>
-        <p>退款金额： <span class="color-F5222D">￥{{ pltkData.refund_price }}（￥{{ pltkData.refund_rmbprice }} + 幸福币{{ pltkData.refund_hapiness }}）</span></p>
+        <p>退款金额： <span class="color-red">￥{{ pltkData.refund_price }}（￥{{ pltkData.refund_rmbprice }} + 幸福币{{ pltkData.refund_hapiness }}）</span></p>
       </div>
     </a-modal>
     <a-modal

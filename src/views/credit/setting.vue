@@ -214,11 +214,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 表单行高
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
 .alert-text {
   color: #00000072;
   line-height: 1;

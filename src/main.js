@@ -18,6 +18,7 @@ import '@/core/icons'
 import bootstrap from './core/bootstrap' // 获取localstorage赋值到vuex
 import './core/lazy_use' // 懒加载组件
 import './permission' // 路由权限控制
+import 'tailwindcss/tailwind.css'
 import './styles/global.less' // 全局样式
 import './styles/antd-reset.less' // ant 样式覆盖
 import moment from 'moment'

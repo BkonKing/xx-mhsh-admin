@@ -1,5 +1,6 @@
 <template>
   <page-header-view
+    class="page-header-extraContent-fixed"
     :tab-list="tabList"
     :tab-active-key="tabActiveKey"
     @tabChange="handleTabChange"
@@ -561,23 +562,8 @@ export default {
 /deep/ .ant-pro-page-header-wrap-children-content {
   padding-bottom: 24px;
 }
-.table-page-search-wrapper
-  /deep/
-  .ant-form-inline
-  .ant-form-item
-  > .ant-form-item-label {
-  min-width: 80px;
-  flex-shrink: 0;
-}
 .alert-text {
   color: @error-color;
-}
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
-.table-action a + a {
-  margin-left: 10px;
 }
 .permission-modal-row {
   margin-bottom: 18px;
@@ -591,16 +577,7 @@ export default {
 .permission-modal-span + .permission-modal-span::before {
   content: "、";
 }
-.status-list {
-  display: flex;
-  justify-content: flex-end;
-  text-align: right;
-  .text,
-  .heading {
-    padding-left: 40px;
-  }
-  .heading {
-    font-size: 20px;
-  }
+.heading {
+  font-size: 20px;
 }
 </style>

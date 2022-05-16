@@ -273,9 +273,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-action a + a {
-  margin-left: 10px;
-}
 /deep/ .ant-pro-page-header-wrap-children-content {
   padding-bottom: 24px;
 }

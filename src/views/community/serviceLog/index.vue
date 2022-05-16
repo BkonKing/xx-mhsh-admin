@@ -175,7 +175,7 @@
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
           <template>
-            <a style="margin-right: 10px;" @click="openLogModal(record)"
+            <a @click="openLogModal(record)"
               >查看</a
             >
             <a @click="openEditModal(record)">跟进</a>
@@ -465,25 +465,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.table-page-search-wrapper {
-  /deep/ .ant-form-inline .ant-form-item > .ant-form-item-label {
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-}
 h3 {
   margin-bottom: 20px;
   font-weight: bold;
-}
-/deep/ .ant-form-item-control,
-/deep/ .ant-form-item-label {
-  line-height: 32px;
-}
-.form-item-text {
-  /deep/ .ant-form-item-control,
-  /deep/ .ant-form-item-label {
-    line-height: 24px;
-  }
 }
 /deep/ .ant-table-tbody td {
   padding-bottom: 11px;
