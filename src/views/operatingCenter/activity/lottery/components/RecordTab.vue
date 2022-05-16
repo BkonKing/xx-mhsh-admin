@@ -272,6 +272,8 @@ export default {
                   {source}
                 </div>
               )
+            } else if (+text === 4) {
+              return awardName
             } else {
               return '--'
             }
@@ -354,8 +356,13 @@ export default {
         const params = cloneDeep(this.queryParam)
         const time = params.time
         if (time && time.length) {
-          params.s_ctime = time[0]
-          params.e_ctime = time[1]
+          if (this.isPrize) {
+            params.s_etime = time[0]
+            params.e_etime = time[1]
+          } else {
+            params.s_ctime = time[0]
+            params.e_ctime = time[1]
+          }
         }
         const newParams = {
           ...parameter,
