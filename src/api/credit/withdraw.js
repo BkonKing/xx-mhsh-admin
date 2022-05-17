@@ -13,7 +13,8 @@ export const withdrawApi = {
   setPayment: '/cash/cash/payment',
   updatePayment: '/cash/cash/unpaidPayment',
   updatePaymentDesc: '/cash/cash/updatePayment',
-  getProjectServiceFee: '/cash/cash/getProjectServiceFee'
+  getProjectServiceFee: '/cash/cash/getProjectServiceFee',
+  getCashPrivilege: '/cash/cash/getCashPrivilege'
 }
 
 // 获取对公账户
@@ -127,6 +128,15 @@ export function updatePaymentDesc (data) {
 export function getProjectServiceFee (data) {
   return request({
     url: withdrawApi.getProjectServiceFee,
+    method: 'post',
+    data
+  })
+}
+
+// 获取提现权限
+export function getCashPrivilege (data) {
+  return request({
+    url: withdrawApi.getCashPrivilege,
     method: 'post',
     data
   })

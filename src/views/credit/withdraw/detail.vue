@@ -24,20 +24,21 @@
 
     <!-- actions -->
     <template v-slot:extra>
-      <a-button v-if="+info.udpate_payment_button && isParentProject" @click="editPay(2)"
+      <a-button
+        v-if="+info.udpate_payment_button && isParentProject && cashPayment"
+        @click="editPay(2)"
         >修改打款</a-button
       >
-      <a-button v-if="+info.update_check_button && isParentProject" @click="editCheck(2)"
+      <a-button
+        v-if="+info.update_check_button && isParentProject && cashCheck"
+        @click="editCheck(2)"
         >修改审核</a-button
       >
-      <a-button
-        v-if="+info.check_button"
-        type="primary"
-        @click="openCheck(1)"
+      <a-button v-if="+info.check_button && cashCheck" type="primary" @click="openCheck(1)"
         >审核</a-button
       >
       <a-button
-        v-if="+info.payment_button && isParentProject"
+        v-if="+info.payment_button && isParentProject && cashPayment"
         type="primary"
         @click="openCheck(2)"
         >已打款</a-button
@@ -60,11 +61,18 @@
       :current="stepCurrent"
     >
       <template #description="{data}">
-        <div v-if="data.project_name">{{data.project_name}}</div>
-        <div v-if="data.user_type">{{data.user_type}}</div>
-        <div v-if="data.opt_user">{{data.opt_user}}</div>
-        <div v-if="data.ctime" :class="{'red-text': data.ctime.indexOf('超时') > -1}">{{data.ctime}}</div>
-        <div v-if="data.time_desc" style="color: red;">{{data.time_desc}}</div>
+        <div v-if="data.project_name">{{ data.project_name }}</div>
+        <div v-if="data.user_type">{{ data.user_type }}</div>
+        <div v-if="data.opt_user">{{ data.opt_user }}</div>
+        <div
+          v-if="data.ctime"
+          :class="{ 'red-text': data.ctime.indexOf('超时') > -1 }"
+        >
+          {{ data.ctime }}
+        </div>
+        <div v-if="data.time_desc" style="color: red;">
+          {{ data.time_desc }}
+        </div>
       </template>
     </status-steps>
 
@@ -110,7 +118,7 @@
           info.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="身份证号">
-          {{ info.idcard || '--' }}</a-descriptions-item
+          {{ info.idcard || "--" }}</a-descriptions-item
         >
       </a-descriptions>
     </a-card>
@@ -174,7 +182,11 @@ import { mapGetters } from 'vuex'
 import CheckFormModal from './components/CheckFormModal'
 import PayFormModal from './components/PayFormModal'
 import StatusSteps from '@/views/businessManage/components/statusSteps'
-import { getCashDetail, getCheckAndPayInfo } from '@/api/credit/withdraw'
+import {
+  getCashDetail,
+  getCheckAndPayInfo,
+  getCashPrivilege
+} from '@/api/credit/withdraw'
 
 export default {
   name: 'withdrawDetail',
@@ -226,7 +238,14 @@ export default {
             if (text && text.length) {
               return (
                 <span>
-                  {text.length}张 <a onClick={() => { this.openImg(text) }}>查看</a>
+                  {text.length}张{' '}
+                  <a
+                    onClick={() => {
+                      this.openImg(text)
+                    }}
+                  >
+                    查看
+                  </a>
                 </span>
               )
             }
@@ -294,7 +313,8 @@ export default {
           width: 70,
           align: 'center',
           customRender: (text, row) => {
-            const isPermission = !this.isParentProject && +!row.updatecheck_button
+            const isPermission =
+              !this.isParentProject && +!row.updatecheck_button
             if (isPermission) {
               return ''
             }
@@ -317,7 +337,9 @@ export default {
       payVisible: false,
       payType: 1,
       payId: '',
-      payData: {}
+      payData: {},
+      cashCheck: false,
+      cashPayment: false
     }
   },
   computed: {
@@ -337,7 +359,9 @@ export default {
       return +this.info.is_payment - 1
     },
     title () {
-      return this.info.cashout_numb ? `提现单号：${this.info.cashout_numb}` : ''
+      return this.info.cashout_numb
+        ? `提现单号：${this.info.cashout_numb}`
+        : ''
     },
     ids () {
       return [this.id]
@@ -355,6 +379,7 @@ export default {
   created () {
     this.id = this.$route.query.id
     this.getCashDetail()
+    this.getCashPrivilege()
     if (!this.isParentProject) {
       this.remitColumns.pop()
     }
@@ -365,6 +390,12 @@ export default {
         cash_id: this.id
       })
       this.info = data
+    },
+    async getCashPrivilege () {
+      const { data } = await getCashPrivilege()
+      const { cashCheck, cashPayment } = data
+      this.cashCheck = +cashCheck
+      this.cashPayment = +cashPayment
     },
     openImg (arr) {
       this.$viewerApi({
