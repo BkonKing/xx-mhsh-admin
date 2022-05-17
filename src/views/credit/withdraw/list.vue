@@ -156,18 +156,18 @@
     </a-card>
     <a-card style="margin-top: 24px" :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" @click="addApplication">
+        <a-button v-if="cashApply" type="primary" @click="addApplication">
           新增申请
         </a-button>
-        <a-dropdown>
+        <a-dropdown v-if="cashCheck || cashPayment">
           <a-menu slot="overlay">
-            <a-menu-item key="1" @click="batchCheck()">
+            <a-menu-item v-if="cashCheck" key="1" @click="batchCheck()">
               通过
             </a-menu-item>
-            <a-menu-item key="3" @click="batchCheck(2)">
+            <a-menu-item v-if="cashCheck" key="3" @click="batchCheck(2)">
               拒绝
             </a-menu-item>
-            <a-menu-item key="2" @click="batchOperation">
+            <a-menu-item v-if="cashPayment" key="2" @click="batchOperation">
               已打款
             </a-menu-item>
           </a-menu>
@@ -198,14 +198,18 @@
           ></Timewait>
         </template>
         <span class="table-action" slot="action" slot-scope="text, record">
-          <router-link :to="`/credit/withdraw/detail?id=${record.id}`"
+          <router-link
+            v-if="cashView"
+            :to="`/credit/withdraw/detail?id=${record.id}`"
             >查看</router-link
           >
-          <a v-if="+record.check_button" @click="openCheck([record.id], 1)"
+          <a
+            v-if="+record.check_button && cashCheck"
+            @click="openCheck([record.id], 1)"
             >审核</a
           >
           <a
-            v-if="+record.payment_button && isParentProject"
+            v-if="+record.payment_button && isParentProject && cashPayment"
             @click="openCheck([record.id], 2)"
             >已打款</a
           >
@@ -246,7 +250,8 @@ import { getProjectList } from '@/api/userManage/business'
 import {
   getAccount,
   getCashList,
-  getCheckAndPayInfo
+  getCheckAndPayInfo,
+  getCashPrivilege
 } from '@/api/credit/withdraw'
 
 export default {
@@ -390,7 +395,11 @@ export default {
       checkData: {},
       checkType: 0,
       selectIds: [],
-      remitVisible: false
+      remitVisible: false,
+      cashApply: false,
+      cashCheck: false,
+      cashPayment: false,
+      cashView: false
     }
   },
   computed: {
@@ -441,6 +450,15 @@ export default {
     initOptions () {
       this.getProjectList()
       this.getAccount()
+      this.getCashPrivilege()
+    },
+    async getCashPrivilege () {
+      const { data } = await getCashPrivilege()
+      const { cashApply, cashCheck, cashPayment, cashView } = data
+      this.cashApply = +cashApply
+      this.cashCheck = +cashCheck
+      this.cashPayment = +cashPayment
+      this.cashView = +cashView
     },
     handleTabChange (key) {
       if (['4', '5'].includes(key)) {
