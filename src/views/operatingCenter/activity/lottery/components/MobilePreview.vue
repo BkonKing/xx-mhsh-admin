@@ -184,9 +184,9 @@ export default {
   border: 1px solid #eee;
   overflow-y: auto;
   .mobile-nav-bar {
-    width: 90%;
+    width: 100%;
     height: 44px;
-    margin: 0 5%;
+    padding: 0 5%;
     line-height: 44px;
     position: absolute;
     top: 0;
@@ -195,6 +195,7 @@ export default {
     text-align: center;
     z-index: 1;
     color: #222222;
+    background: #52ccfa;
     .textOverflow();
   }
   .bg {
@@ -286,6 +287,7 @@ export default {
         top: 0;
         left: 0;
         .award-name {
+          width: 100%;
           padding: 0px 20/2px;
           text-align: center;
         }

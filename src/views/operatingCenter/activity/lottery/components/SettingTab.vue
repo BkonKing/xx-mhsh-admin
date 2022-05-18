@@ -231,8 +231,8 @@ export default {
         this.$refs.prizeSetting.validate()
       ]).then(() => {
         const awardData = this.$refs.prizeSetting.tableData || []
-        if (awardData.length < 5) {
-          this.$message.error('奖项需设置5~12个')
+        if (awardData.length < 6) {
+          this.$message.error('奖项需设置6~12个')
           return
         }
         const params = cloneDeep(this.formData)
