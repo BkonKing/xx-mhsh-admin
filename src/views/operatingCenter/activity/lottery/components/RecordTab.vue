@@ -254,7 +254,7 @@ export default {
               if (sourceId) {
                 let href = ''
                 if (+type === 1) {
-                  href = `${this.baseUrl}/life/goods/getGoodsList?goods_id=${sourceId}`
+                  href = `${this.baseUrl}/life/goods/getGoodsList?goods_id=${row.goods_id}`
                 } else if (+type === 2) {
                   href = `${this.baseUrl}/life/coupon/getCouponList`
                 } else if (+type === 3) {
@@ -305,12 +305,12 @@ export default {
                   info = (
                     <div>
                       APP扫码核销
-                      <a
-                        href={`${this.userUrl}?uid=${examineUid}`}
-                        target="_blank"
-                      >
-                        {prizeText}
-                      </a>
+                    <a
+                      href={`${this.userUrl}?uid=${examineUid}`}
+                      target="_blank"
+                    >
+                      {prizeText}
+                    </a>
                     </div>
                   )
                 } else {

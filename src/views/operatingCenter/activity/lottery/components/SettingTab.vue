@@ -230,6 +230,11 @@ export default {
         validAForm(this.$refs.BasicForm),
         this.$refs.prizeSetting.validate()
       ]).then(() => {
+        const awardData = this.$refs.prizeSetting.tableData || []
+        if (awardData.length < 5) {
+          this.$message.error('奖项需设置5~12个')
+          return
+        }
         const params = cloneDeep(this.formData)
         if (params.time?.length) {
           params.s_time = params.time[0]
@@ -238,7 +243,7 @@ export default {
         saveLotterySetting({
           ...params,
           setting_id: params.id,
-          award_data: this.$refs.prizeSetting.tableData.map((data, index) => {
+          award_data: awardData.map((data, index) => {
             const {
               i,
               couponOptions,

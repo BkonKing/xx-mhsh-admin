@@ -118,12 +118,14 @@ export default {
         file.preview = await getBase64(file.originFileObj)
       }
       const url = file.response ? file.response.data : file.url
+      const initialViewIndex = this.isOne ? 0 : this.value.findIndex(obj => url === obj)
+      const images = this.isOne ? [this.value] : this.value
       this.$viewerApi({
         options: {
           toolbar: true,
-          initialViewIndex: this.value.findIndex(obj => url === obj)
+          initialViewIndex
         },
-        images: this.value
+        images
       })
     },
     beforeUpload (file, fileList) {

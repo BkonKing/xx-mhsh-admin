@@ -104,7 +104,7 @@
                       >
                         <a-select
                           v-model="item.award_type"
-                          class="w-full"
+                          class="w-full no-right-border-radius"
                           :options="awardTypes"
                           @change="changeAwardType(item)"
                         >
@@ -122,7 +122,7 @@
                             >
                               <a-select
                                 v-model="item.goods_id"
-                                class="w-6/12"
+                                class="w-6/12 no-left-border-radius no-right-border-radius"
                                 show-search
                                 placeholder="商品编号/名称"
                                 :filter-option="false"
@@ -150,7 +150,10 @@
                               prop="source_id"
                               :rules="{ required: true, message: '请选择' }"
                             >
-                              <a-select v-model="item.source_id" class="w-6/12">
+                              <a-select
+                                v-model="item.source_id"
+                                class="w-6/12 no-left-border-radius"
+                              >
                                 <a-select-option
                                   v-for="item in item.specOptions"
                                   :key="item.id"
@@ -170,7 +173,7 @@
                       >
                         <a-select
                           v-model="item.source_id"
-                          class="w-full"
+                          class="w-full no-left-border-radius"
                           show-search
                           placeholder="券编号/名称"
                           :filter-option="false"
@@ -198,7 +201,7 @@
                       >
                         <a-select
                           v-model="item.source_id"
-                          class="w-full"
+                          class="w-full no-left-border-radius"
                           show-search
                           placeholder="券编号/名称"
                           :filter-option="false"
@@ -218,14 +221,20 @@
                           >
                         </a-select>
                       </a-form-model-item>
-                      <a-input v-else disabled value="--"></a-input>
+                      <a-input
+                        v-else
+                        class="no-left-border-radius"
+                        disabled
+                        value="--"
+                      ></a-input>
                     </a-col>
                   </a-row>
                   <a-row type="flex" class="mt-3">
                     <a-col flex="100px">
                       <a-input
-                        :disabled="true"
                         value="转盘文字"
+                        class="no-right-border-radius"
+                        :disabled="true"
                         style="width: 100px;"
                       ></a-input>
                     </a-col>
@@ -237,7 +246,7 @@
                       >
                         <a-input
                           v-model="item.award_name"
-                          class="w-full"
+                          class="w-full no-left-border-radius"
                         ></a-input>
                       </a-form-model-item>
                     </a-col>
@@ -537,5 +546,18 @@ export default {
 }
 .input-group-item {
   width: calc(100% - 100px);
+}
+.no-right-border-radius,
+.no-right-border-radius /deep/ .ant-select-selection,
+.no-right-border-radius /deep/ .ant-input {
+  border-right-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.no-left-border-radius,
+.no-left-border-radius /deep/ .ant-select-selection,
+.no-left-border-radius /deep/ .ant-input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 </style>

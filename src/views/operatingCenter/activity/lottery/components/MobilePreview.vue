@@ -184,8 +184,9 @@ export default {
   border: 1px solid #eee;
   overflow-y: auto;
   .mobile-nav-bar {
-    width: 100%;
+    width: 90%;
     height: 44px;
+    margin: 0 5%;
     line-height: 44px;
     position: absolute;
     top: 0;
@@ -194,6 +195,7 @@ export default {
     text-align: center;
     z-index: 1;
     color: #222222;
+    .textOverflow();
   }
   .bg {
     width: 375px;
