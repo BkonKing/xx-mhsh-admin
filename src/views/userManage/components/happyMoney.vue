@@ -1,6 +1,10 @@
 <template>
   <div class="happyMoney">
+
     <a-card class="card">
+      <div class="table-operator">
+        <a-button @click="exportReport">导出</a-button>
+      </div>
       <s-table
         ref="table"
         rowKey="id"
@@ -100,6 +104,14 @@ export default {
   methods: {
     refresh () {
       this.$refs.table.refresh(true)
+    },
+    exportReport () {
+      console.log(this.uid)
+      const baseUrl =
+        process.env.NODE_ENV === 'production'
+          ? process.env.VUE_APP_API_BASE_URL
+          : '/apilife'
+      location.href = `${baseUrl}/life/exportdata/creditsImport?uid=` + this.uid
     }
   }
 }
@@ -110,5 +122,6 @@ export default {
   .card {
     margin-top: 24px;
   }
+
 }
 </style>
